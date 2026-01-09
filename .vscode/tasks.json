@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Copy to Foundry",
+			"type": "shell",
+			"command": "Remove-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood'; Get-ChildItem -Path . -Exclude .* | Copy-Item -Destination 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force",
+			"group": "build"
+		}
+	]
+}
