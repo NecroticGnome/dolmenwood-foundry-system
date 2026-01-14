@@ -1,0 +1,70 @@
+@font-face {
+	font-family: 'Longdon Decorative';
+	src: url('./fonts/LongdonDecorative.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'IM Fell DW Pica';
+	src: url('./fonts/IMFellDWPica.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Poly';
+	src: url('./fonts/Poly.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Cooper Hewitt';
+	src: url('./fonts/CooperHewitt.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+.theme-dark,
+.theme-light {
+	--dolmen-font-title: "Longdon Decorative", serif;
+	--dolmen-font-subtitle: "IM Fell DW Pica", serif;
+	--dolmen-font-header: "Cooper Hewitt", sans-serif;
+	--dolmen-font-body: "Poly", serif;
+}
+
+.theme-dark .dolmen {
+	--dolmen-color-background: #141210;
+	--dolmen-color-text: #f2eee9;
+
+	--dolmen-color-h1: #ff6a5c;
+	--dolmen-color-h2: #e89078;
+	--dolmen-color-h3: #cfa18f;
+
+	--dolmen-color-inner-background: #f5e4e0;
+
+	--dolmen-color-box-background: #1f1c18;
+	--dolmen-color-box-border: #e89078;
+
+	--dolmen-color-table-header: #a67c67;
+	--dolmen-color-table-row-odd: #1b1916;
+	--dolmen-color-table-border: #cfa18f;
+}
+
+.theme-light .dolmen {
+	--dolmen-color-background: #ffffff;
+	--dolmen-color-text: #000000;
+	--dolmen-color-h1: #d54134;
+	--dolmen-color-h2: #dd6d54;
+	--dolmen-color-h3: #633121;
+
+	--dolmen-color-inner-background: #f5e4e0;
+
+	--dolmen-color-box-background: #f5eede;
+	--dolmen-color-box-border: #dd6d54;
+
+	--dolmen-color-table-header: #865d4a;
+	--dolmen-color-table-row-odd: #e4dbd5;
+	--dolmen-color-table-border: #633121;
+}

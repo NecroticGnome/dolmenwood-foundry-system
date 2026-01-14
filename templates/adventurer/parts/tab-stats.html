@@ -1,0 +1,293 @@
+<section class="tab-content tab-stats {{tab.cssClass}}" data-group="primary" data-tab="stats">
+	<!-- Header Section -->
+	<section class="two-columns-header">
+		<section class="details boxed-section">
+			<h2>{{localize "DOLMEN.Details"}}</h2>
+			<div class="header-details">
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Name"}}</label>
+					<input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'DOLMEN.Name'}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Kindred"}}</label>
+					<select name="system.kindred">
+						{{selectOptions @root.kindredChoices selected=system.kindred}}
+					</select>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Class"}}</label>
+					<select name="system.class">
+						{{selectOptions @root.classChoices selected=system.class}}
+					</select>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Background"}}</label>
+					<input type="text" name="system.background.profession" value="{{system.background.profession}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Alignment"}}</label>
+					<select name="system.alignment">
+						{{selectOptions @root.alignmentChoices selected=system.alignment}}
+					</select>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Affiliation"}}</label>
+					<input type="text" name="system.affiliation" value="{{system.affiliation}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.MoonSign"}}</label>
+					<div class="dual-select">
+						<select name="system.moonName" value="{{system.moonName}}">
+							{{selectOptions @root.moonNameChoices selected=system.moonName}}
+						</select>
+						<select name="system.moonPhase" value="{{system.moonPhase}}">
+							{{selectOptions @root.moonPhaseChoices selected=system.moonPhase}}
+						</select>
+					</div>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Languages"}}</label>
+					<input type="text" name="system.languages" value="{{system.languages}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Level"}}</label>
+					<input type="text" name="system.level" value="{{system.level}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.XPCurrent"}}</label>
+					<input type="text" name="system.xp.current" value="{{system.xp.current}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.NextLevel"}}</label>
+					<input type="text" name="system.xp.nextLevel" value="{{system.xp.nextLevel}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.XPModifier"}}</label>
+					<input type="text" name="system.xp.mod" value="{{system.xp.mod}}">
+				</div>
+			</div>
+		</section>
+		<!-- Portrait Section -->
+		<section class="portrait-section boxed-section">
+			<div class="portrait-container">
+				<img src="{{actor.img}}" alt="{{actor.name}}" class="portrait-image" data-edit="img">
+			</div>
+		</section>
+	</section>
+
+	<!-- Ability Scores Section -->
+	<section class="ability-scores boxed-section">
+		<h2>{{localize "DOLMEN.AbilityScores"}}</h2>
+		<div class="abilities-grid">
+			<div class="ability">
+				<h3>{{localize "DOLMEN.Abilities.Strength"}}</h3><i class="fa fa-dice-five rollable"></i>
+				<div class="ability-values">
+					<div class="ability-score">
+						<label>{{localize "DOLMEN.Score"}}</label>
+						<input type="number" name="system.abilities.strength.score" value="{{system.abilities.strength.score}}" min="3" max="18">
+					</div>
+					<div class="ability-mod">
+						<label>{{localize "DOLMEN.Mod"}}</label>
+						<input type="number" name="system.abilities.strength.mod" value="{{system.abilities.strength.mod}}" min="-3" max="3">
+					</div>
+				</div>
+				<span class="ability-hint">{{localize "DOLMEN.Abilities.StrengthHint"}}</span>
+			</div>
+			<div class="ability">
+				<h3>{{localize "DOLMEN.Abilities.Intelligence"}}</h3><i class="fa fa-dice-five rollable"></i>
+				<div class="ability-values">
+					<div class="ability-score">
+						<label>{{localize "DOLMEN.Score"}}</label>
+						<input type="number" name="system.abilities.intelligence.score" value="{{system.abilities.intelligence.score}}" min="3" max="18">
+					</div>
+					<div class="ability-mod">
+						<label>{{localize "DOLMEN.Mod"}}</label>
+						<input type="number" name="system.abilities.intelligence.mod" value="{{system.abilities.intelligence.mod}}" min="-3" max="3">
+					</div>
+				</div>
+				<span class="ability-hint">{{localize "DOLMEN.Abilities.IntelligenceHint"}}</span>
+			</div>
+			<div class="ability">
+				<h3>{{localize "DOLMEN.Abilities.Wisdom"}}</h3><i class="fa fa-dice-five rollable"></i>
+				<div class="ability-values">
+					<div class="ability-score">
+						<label>{{localize "DOLMEN.Score"}}</label>
+						<input type="number" name="system.abilities.wisdom.score" value="{{system.abilities.wisdom.score}}" min="3" max="18">
+					</div>
+					<div class="ability-mod">
+						<label>{{localize "DOLMEN.Mod"}}</label>
+						<input type="number" name="system.abilities.wisdom.mod" value="{{system.abilities.wisdom.mod}}" min="-3" max="3">
+					</div>
+				</div>
+				<span class="ability-hint">{{localize "DOLMEN.Abilities.WisdomHint"}}</span>
+			</div>
+			<div class="ability">
+				<h3>{{localize "DOLMEN.Abilities.Dexterity"}}</h3><i class="fa fa-dice-five rollable"></i>
+				<div class="ability-values">
+					<div class="ability-score">
+						<label>{{localize "DOLMEN.Score"}}</label>
+						<input type="number" name="system.abilities.dexterity.score" value="{{system.abilities.dexterity.score}}" min="3" max="18">
+					</div>
+					<div class="ability-mod">
+						<label>{{localize "DOLMEN.Mod"}}</label>
+						<input type="number" name="system.abilities.dexterity.mod" value="{{system.abilities.dexterity.mod}}" min="-3" max="3">
+					</div>
+				</div>
+				<span class="ability-hint">{{localize "DOLMEN.Abilities.DexterityHint"}}</span>
+			</div>
+			<div class="ability">
+				<h3>{{localize "DOLMEN.Abilities.Constitution"}}</h3><i class="fa fa-dice-five rollable"></i>
+				<div class="ability-values">
+					<div class="ability-score">
+						<label>{{localize "DOLMEN.Score"}}</label>
+						<input type="number" name="system.abilities.constitution.score" value="{{system.abilities.constitution.score}}" min="3" max="18">
+					</div>
+					<div class="ability-mod">
+						<label>{{localize "DOLMEN.Mod"}}</label>
+						<input type="number" name="system.abilities.constitution.mod" value="{{system.abilities.constitution.mod}}" min="-3" max="3">
+					</div>
+				</div>
+				<span class="ability-hint">{{localize "DOLMEN.Abilities.ConstitutionHint"}}</span>
+			</div>
+			<div class="ability">
+				<h3>{{localize "DOLMEN.Abilities.Charisma"}}</h3><i class="fa fa-dice-five rollable"></i>
+				<div class="ability-values">
+					<div class="ability-score">
+						<label>{{localize "DOLMEN.Score"}}</label>
+						<input type="number" name="system.abilities.charisma.score" value="{{system.abilities.charisma.score}}" min="3" max="18">
+					</div>
+					<div class="ability-mod">
+						<label>{{localize "DOLMEN.Mod"}}</label>
+						<input type="number" name="system.abilities.charisma.mod" value="{{system.abilities.charisma.mod}}" min="-3" max="3">
+					</div>
+				</div>
+				<span class="ability-hint">{{localize "DOLMEN.Abilities.CharismaHint"}}</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- Save Targets Section -->
+	<section class="two-columns-combat">
+		<section class="save-targets boxed-section">
+			<h2>{{localize "DOLMEN.SaveTargets"}}</h2>
+			<div class="saves-grid">
+				<div class="save">
+					<label>{{localize "DOLMEN.Saves.Doom"}}</label>
+					<input type="number" name="system.saves.doom" value="{{system.saves.doom}}" min="1" max="20">
+				</div>
+				<i class="fa fa-dice-d20 rollable"></i>
+				<div class="save">
+					<label>{{localize "DOLMEN.Saves.Ray"}}</label>
+					<input type="number" name="system.saves.ray" value="{{system.saves.ray}}" min="1" max="20">
+				</div>
+				<i class="fa fa-dice-d20 rollable"></i>
+				<div class="save">
+					<label>{{localize "DOLMEN.Saves.Hold"}}</label>
+					<input type="number" name="system.saves.hold" value="{{system.saves.hold}}" min="1" max="20">
+				</div>
+				<i class="fa fa-dice-d20 rollable"></i>
+				<div class="save">
+					<label>{{localize "DOLMEN.Saves.Blast"}}</label>
+					<input type="number" name="system.saves.blast" value="{{system.saves.blast}}" min="1" max="20">
+				</div>
+				<i class="fa fa-dice-d20 rollable"></i>
+				<div class="save">
+					<label>{{localize "DOLMEN.Saves.Spell"}}</label>
+					<input type="number" name="system.saves.spell" value="{{system.saves.spell}}" min="1" max="20">
+				</div>
+				<i class="fa fa-dice-d20 rollable"></i>
+				<div class="save accent">
+					<label>{{localize "DOLMEN.MagicResistance"}}</label>
+					<input type="number" name="system.magicResistance" value="{{system.magicResistance}}">
+				</div>
+			</div>
+		</section>
+		<!-- Combat Stats Row -->
+		<section class="combat boxed-section">
+			<h2>{{localize "DOLMEN.Combat.Title"}}</h2>
+			<div class="combat-grid">
+				<div class="combat-stat hp-block">
+					<label>{{localize "DOLMEN.Combat.HP"}}</label>
+					<div class="hp-values">
+						<input type="number" name="system.hp.value" value="{{system.hp.value}}" min="0" class="hp-current">
+						<span class="hp-separator">/</span>
+						<input type="number" name="system.hp.max" value="{{system.hp.max}}" min="1" class="hp-max">
+					</div>
+				</div>
+				<div class="combat-stat">
+					<label>{{localize "DOLMEN.Combat.AC"}}</label>
+					<input type="number" name="system.ac" value="{{system.ac}}" min="0">
+				</div>
+				<div class="combat-stat">
+					<label>{{localize "DOLMEN.Combat.Attack"}}</label>
+					<input type="number" name="system.attack" value="{{system.attack}}">
+				</div>
+				<div>
+					<i class="fa fa-swords rollable"></i>
+					<i class="fa fa-bow-arrow rollable"></i>
+				</div>
+			</div>
+		</section>
+	</section>
+	<section class="two-columns">
+		<!-- Skills Section -->
+		<section class="skills boxed-section">
+			<h2>{{localize "DOLMEN.SkillTargets"}}</h2>
+			<div class="skills-grid">
+				<div class="skill">
+					<label>{{localize "DOLMEN.Skills.Listen"}}</label>
+					<input type="number" name="system.skills.listen" value="{{system.skills.listen}}" min="2" max="6">
+					<i class="fa fa-dice-five rollable"></i>
+				</div>
+				<div class="skill">
+					<label>{{localize "DOLMEN.Skills.Search"}}</label>
+					<input type="number" name="system.skills.search" value="{{system.skills.search}}" min="2" max="6">
+					<i class="fa fa-dice-five rollable"></i>
+				</div>
+				<div class="skill">
+					<label>{{localize "DOLMEN.Skills.Survival"}}</label>
+					<input type="number" name="system.skills.survival" value="{{system.skills.survival}}" min="2" max="6">
+					<i class="fa fa-dice-five rollable"></i>
+				</div>
+				{{#each system.extraSkills}}
+				<div class="skill extra-skill" data-skill-index="{{@index}}">
+					<label>{{localize (concat "DOLMEN.Skills." this.id)}}</label>
+					<input type="number" name="system.extraSkills.{{@index}}.target" value="{{this.target}}" min="2" max="6">
+					<button type="button" class="remove-skill-btn" data-skill-index="{{@index}}" title="{{localize 'DOLMEN.RemoveSkill'}}">
+						<i class="fas fa-times"></i>
+					</button>
+					<i class="fa fa-dice-five rollable"></i>
+				</div>
+				{{/each}}
+				{{#if (lt system.extraSkills.length @root.maxExtraSkills)}}
+				<div class="skill add-skill-container">
+					<button type="button" class="add-skill-btn" title="{{localize 'DOLMEN.AddSkill'}}">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+				{{/if}}
+			</div>
+		</section>
+		<!-- Movement Section -->
+		<section class="movement boxed-section">
+			<h2>{{localize "DOLMEN.Movement.Title"}}</h2>
+			<div class="movement-grid">
+				<div class="movement-stat">
+					<label>{{localize "DOLMEN.Movement.Speed"}}</label>
+					<input type="number" name="system.speed" value="{{system.speed}}" min="0">
+					<span class="unit">{{localize "DOLMEN.Movement.FeetPerRound"}}</span>
+				</div>
+				<div class="movement-stat">
+					<label>{{localize "DOLMEN.Movement.Exploring"}}</label>
+					<input type="number" name="system.movement.exploring" value="{{system.movement.exploring}}" min="0">
+					<span class="unit">{{localize "DOLMEN.Movement.FeetPerTurn"}}</span>
+				</div>
+				<div class="movement-stat">
+					<label>{{localize "DOLMEN.Movement.Overland"}}</label>
+					<input type="number" name="system.movement.overland" value="{{system.movement.overland}}" min="0">
+					<span class="unit">{{localize "DOLMEN.Movement.TravelPoints"}}</span>
+				</div>
+			</div>
+		</section>
+	</section>
+</section>

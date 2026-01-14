@@ -1,0 +1,579 @@
+/* Base Sheet Styles */
+.sheet.dolmen,
+.sheet.dolmen textarea {
+	font-family: var(--dolmen-font-body);
+}
+
+.sheet.dolmen .window-content {
+	background-color: var(--dolmen-color-box-background);
+	color: var(--dolmen-color-text);
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.sheet.dolmen .window-content h1,
+.sheet.dolmen .window-content h2,
+.sheet.dolmen .window-content h3 {
+	font-family: var(--dolmen-font-header);
+	font-weight: normal;
+	margin: 0;
+	letter-spacing: 0.025rem;
+	text-transform: uppercase;
+}
+
+.sheet.dolmen .window-content h1 {
+	color: var(--dolmen-color-h1);
+}
+
+.sheet.dolmen .window-content h2 {
+	font-size: 0.8rem;
+	border-bottom: 1px solid var(--dolmen-color-box-border);
+	padding-bottom: 0.25rem;
+	margin-bottom: 0.25rem;
+	margin-top: -0.5rem;
+	margin-left: -0.5rem;
+	padding-top: 0.25rem;
+	padding-left: 0.5rem;
+	width: calc(100% + 1rem);
+	background-color: var(--dolmen-color-h1);
+	color: var(--dolmen-color-background);
+}
+
+.sheet.dolmen .window-content h3 {
+	color: var(--dolmen-color-h3);
+	font-size: 0.8rem;
+}
+
+/* Rollable Icons */
+.sheet.dolmen .rollable {
+	text-align: center;
+	cursor: pointer;
+	color: var(--dolmen-color-h2);
+	transition: color 0.2s;
+	line-height: 1.2rem;
+	height: 0;
+	font-weight: normal;
+}
+
+.sheet.dolmen .rollable:hover {
+	color: var(--dolmen-color-h1);
+}
+
+/* Tab Navigation */
+.sheet.dolmen .tabs {
+	display: flex;
+	gap: 0;
+	background-color: var(--dolmen-color-h1);
+	border-bottom: 2px solid var(--dolmen-color-h1);
+	padding: 0 0.5rem;
+	justify-content: flex-start;
+}
+
+.sheet.dolmen .tabs .item {
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+	border-bottom: 2px solid transparent;
+	margin-bottom: -2px;
+	color: var(--dolmen-color-background);
+	opacity: 0.7;
+	transition: opacity 0.2s, border-color 0.2s;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	line-height: 1;
+}
+
+.sheet.dolmen .tabs .item:hover {
+	opacity: 1;
+}
+
+.sheet.dolmen .tabs .item.active {
+	opacity: 1;
+	color: var(--dolmen-color-h1);
+	background-color: var(--dolmen-color-box-background);
+	text-shadow: none;
+}
+
+.sheet.dolmen .tabs .item i {
+	margin-right: 0.25rem;
+}
+
+/* Tab Content */
+.sheet.dolmen .tab-content {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 0.5rem;
+	padding-top: 1.0rem;
+	flex: 1;
+	overflow-y: auto;
+}
+
+.sheet.dolmen .tab-content:not(.active) {
+	display: none;
+}
+
+.sheet.dolmen .tab-content .boxed-section {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-h1);
+	border-radius: 0;
+	padding: 0.5rem;
+}
+
+/* Generic Stat Container - used by combat-stat, movement-stat, encumbrance-stat, save, coin */
+.sheet.dolmen .tab-content .stat-block,
+.sheet.dolmen .tab-content .combat-stat,
+.sheet.dolmen .tab-content .movement-stat,
+.sheet.dolmen .tab-content .encumbrance-stat,
+.sheet.dolmen .tab-content .save,
+.sheet.dolmen .tab-content .coin {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+/* Generic Stat Input - bold centered inputs */
+.sheet.dolmen .tab-content .stat-block input,
+.sheet.dolmen .tab-content .combat-stat input,
+.sheet.dolmen .tab-content .movement-stat input,
+.sheet.dolmen .tab-content .encumbrance-stat input,
+.sheet.dolmen .tab-content .save input,
+.sheet.dolmen .tab-content .coin input {
+	font-size: 1rem;
+	font-weight: bold;
+	width: 3rem;
+}
+
+/* Header Section */
+.sheet.dolmen .tab-content .details {
+	display: flex;
+	flex-direction: column;
+}
+
+.sheet.dolmen .tab-content .header-details {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .header-field {
+	display: flex;
+	flex-direction: column;
+}
+
+.sheet.dolmen .tab-content label {
+	font-size: 0.7rem;
+	color: var(--dolmen-color-h3);
+}
+
+.sheet.dolmen .tab-content .dual-select {
+	display: flex;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen .tab-content .dual-select select {
+	flex: 1;
+}
+
+/* Portrait Section */
+.sheet.dolmen .tab-content .portrait-section {
+	padding: 0;
+	overflow: hidden;
+}
+
+.sheet.dolmen .tab-content .portrait-section h2 {
+	width: 11.5rem;
+	padding: 0.25rem;
+	margin: 0;
+	position: absolute;
+	z-index: 1;
+}
+
+.sheet.dolmen .tab-content .portrait-container {
+	position: relative;
+	width: 11.5rem;
+	height: 100%;
+}
+
+.sheet.dolmen .tab-content .portrait-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	cursor: pointer;
+}
+
+/* XP Modal */
+.xp-modal-content {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.xp-modal-content .form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.xp-modal-content label {
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+
+.xp-modal-content input {
+	padding: 0.5rem;
+	font-size: 1rem;
+	text-align: center;
+}
+
+.xp-modal-content .xp-calculation {
+	background-color: var(--dolmen-color-inner-background);
+	border: 1px solid var(--dolmen-color-box-border);
+	padding: 0.5rem;
+	text-align: center;
+	font-size: 0.9rem;
+}
+
+.xp-modal-content .xp-total {
+	font-weight: bold;
+	font-size: 1.1rem;
+	color: var(--dolmen-color-h1);
+}
+
+/* Form Inputs */
+.sheet.dolmen .tab-content input,
+.sheet.dolmen .tab-content select,
+.sheet.dolmen .tab-content textarea {
+	background-color: var(--dolmen-color-background);
+	color: var(--dolmen-color-text);
+	border: 1px solid var(--dolmen-color-table-border);
+	border-radius: 2px;
+	padding: 0.25rem;
+	font-size: 0.85rem;
+	box-shadow: var(--input-box-shadow);
+}
+
+.sheet.dolmen .tab-content input[type="number"] {
+	text-align: center;
+}
+
+.sheet.dolmen .tab-content input:focus,
+.sheet.dolmen .tab-content select:focus,
+.sheet.dolmen .tab-content textarea:focus {
+	outline: none;
+	border-color: var(--dolmen-color-h2);
+}
+
+/* Ability Scores Section */
+.sheet.dolmen .tab-content .abilities-grid {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .ability {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 0.25rem;
+	background-color: var(--dolmen-color-inner-background);
+	border: 2px solid var(--dolmen-color-box-border);
+	margin-top: 0.25rem;
+}
+
+.sheet.dolmen .tab-content .ability h3 {
+	margin-bottom: 0.25rem;
+	margin-top: 0.1rem;
+	color: var(--dolmen-color-h1);
+}
+
+.sheet.dolmen .tab-content .ability .rollable {
+	font-size: 1.1rem;
+	color: var(--dolmen-color-h2);
+	margin-top: -0.25rem;
+	padding-bottom: 0.5rem;
+	position: relative;
+	z-index: 1;
+}
+
+.sheet.dolmen .tab-content .ability .rollable:hover {
+	color: var(--dolmen-color-h1);
+}
+
+.sheet.dolmen .tab-content .ability-values {
+	display: flex;
+	gap: 0.25rem;
+	width: 100%;
+}
+
+.sheet.dolmen .tab-content .ability-score,
+.sheet.dolmen .tab-content .ability-mod {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.sheet.dolmen .tab-content .ability-score input,
+.sheet.dolmen .tab-content .ability-mod input {
+	font-size: 1rem;
+	font-weight: bold;
+	padding: 0.125rem;
+}
+
+.sheet.dolmen .tab-content .ability-hint {
+	font-size: 0.6rem;
+	color: var(--dolmen-color-h3);
+	margin-top: 0.25rem;
+	font-style: italic;
+}
+
+/* Two-Column Layouts */
+.sheet.dolmen .tab-content .two-columns {
+	display: grid;
+	grid-template-columns: 3fr 1.5fr;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .two-columns-combat {
+	display: grid;
+	grid-template-columns: 3fr 2fr;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .two-columns-header {
+	display: grid;
+	grid-template-columns: auto max-content;
+	gap: 0.5rem;
+}
+
+/* Combat Section */
+.sheet.dolmen .tab-content .combat .combat-grid {
+	display: grid;
+	grid-template-columns: auto auto auto max-content;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.sheet.dolmen .tab-content .combat .rollable {
+	font-size: 1.6rem;
+	margin-top: 1rem;
+	font-weight: bold;
+	margin-left: 0.25rem;
+}
+
+.sheet.dolmen .tab-content .combat-stat input {
+	font-size: 1.25rem;
+	width: 4rem;
+}
+
+.sheet.dolmen .tab-content .hp-values {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen .tab-content .hp-values input {
+	width: 3rem;
+	background-color: var(--dolmen-color-background);
+}
+
+.sheet.dolmen .tab-content .hp-separator {
+	font-size: 1.25rem;
+	color: var(--dolmen-color-h3);
+}
+
+/* Save Targets Section */
+.sheet.dolmen .tab-content .saves-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 3rem 1rem) auto;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .saves-grid .rollable {
+	align-self: center;
+	font-size: 1.1rem;
+	margin-left: -0.5rem;
+	margin-top: -0.25rem;
+	font-weight: 300;
+}
+
+.sheet.dolmen .tab-content .save.accent {
+	border-left: solid 2px var(--dolmen-color-h1);
+	padding-left: 0.5rem;
+	padding-top: 0.25rem;
+	margin-top: -0.25rem;
+	margin-bottom: -0.5rem;
+	padding-right: 0.5rem;
+	margin-right: -0.5rem;
+	background-color: var(--dolmen-color-inner-background);
+}
+
+.sheet.dolmen .tab-content .save.accent label {
+	color: var(--dolmen-color-h1);
+}
+
+/* Movement Section */
+.sheet.dolmen .tab-content .movement-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .movement-stat input {
+	width: 4rem;
+}
+
+.sheet.dolmen .tab-content .movement-stat .unit {
+	font-size: 0.6rem;
+	margin-top: 0.25rem;
+	margin-bottom: -0.2rem;
+	color: var(--dolmen-color-h3);
+}
+
+/* Skills Section */
+.sheet.dolmen .tab-content .skills-grid {
+	display: grid;
+	grid-template-columns: repeat(9, 1fr);
+	column-gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .skill {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 3rem;
+}
+
+.sheet.dolmen .tab-content .skill label {
+	white-space: nowrap;
+	text-align: center;
+	text-overflow: ellipsis;
+	width: 3rem;
+	overflow: hidden;
+}
+
+.sheet.dolmen .tab-content .skill label:hover {
+	overflow: visible;
+	background-color: var(--dolmen-color-background);
+	width: auto;
+	position: relative;
+	z-index: 1;
+	padding: 0 0.5rem;
+}
+
+.sheet.dolmen .tab-content .skill input {
+	font-size: 1rem;
+	font-weight: bold;
+	width: 3rem;
+}
+
+.sheet.dolmen .tab-content .extra-skill {
+	position: relative;
+}
+
+.sheet.dolmen .tab-content .extra-skill .remove-skill-btn {
+	position: absolute;
+	top: 0.5rem;
+	right: -0.5rem;
+	width: 1rem;
+	height: 1rem;
+	min-height: unset;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background-color: var(--dolmen-color-h1);
+	color: var(--dolmen-color-background);
+	font-size: 0.5rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: opacity 0.2s;
+	z-index: 2;
+}
+
+.sheet.dolmen .tab-content .extra-skill input:hover+.remove-skill-btn {
+	opacity: 1;
+}
+
+.sheet.dolmen .tab-content .extra-skill .remove-skill-btn:hover {
+	background-color: #c00;
+	opacity: 1;
+}
+
+.sheet.dolmen .tab-content .add-skill-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.sheet.dolmen .tab-content .add-skill-btn {
+	width: 3rem;
+	height: 2rem;
+	min-height: unset;
+	padding: 0;
+	border: 2px dashed var(--dolmen-color-box-border);
+	border-radius: 4px;
+	background-color: transparent;
+	color: var(--dolmen-color-box-border);
+	font-size: 1rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+	margin-top: 0.85rem;
+}
+
+.sheet.dolmen .tab-content .add-skill-btn:hover {
+	border-color: var(--dolmen-color-h1);
+	color: var(--dolmen-color-h1);
+	background-color: var(--dolmen-color-inner-background);
+}
+
+/* Encumbrance Section */
+.sheet.dolmen .tab-content .encumbrance-header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .encumbrance-values {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .encumbrance-stat input {
+	width: 4rem;
+}
+
+/* Coins Section */
+.sheet.dolmen .tab-content .coins-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .coin input {
+	width: 4rem;
+}
+
+/* Notes Section */
+.sheet.dolmen .tab-content .notes {
+	flex: 1;
+	min-height: 150px;
+}
+
+.sheet.dolmen .tab-content .editor-container {
+	height: calc(100% - 2rem);
+}
+
+.sheet.dolmen .tab-content .editor-container .editor {
+	height: 100%;
+}

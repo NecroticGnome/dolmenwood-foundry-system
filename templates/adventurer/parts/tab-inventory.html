@@ -1,0 +1,53 @@
+<section class="tab-content tab-inventory {{tab.cssClass}}" data-group="primary" data-tab="inventory">
+	<!-- Encumbrance Section -->
+	<section class="encumbrance boxed-section">
+		<h2>{{localize "DOLMEN.Encumbrance.Title"}}</h2>
+		<div class="encumbrance-header">
+			<label>{{localize "DOLMEN.Encumbrance.Method"}}</label>
+			<select name="system.encumbrance.method">
+				{{selectOptions @root.encumbranceChoices selected=system.encumbrance.method}}
+			</select>
+		</div>
+		<div class="encumbrance-values">
+			<div class="encumbrance-stat">
+				<label>{{localize "DOLMEN.Encumbrance.Current"}}</label>
+				<input type="number" name="system.encumbrance.current" value="{{system.encumbrance.current}}" min="0">
+			</div>
+			<div class="encumbrance-stat">
+				<label>{{localize "DOLMEN.Encumbrance.Max"}}</label>
+				<input type="number" name="system.encumbrance.max" value="{{system.encumbrance.max}}" min="0">
+			</div>
+		</div>
+	</section>
+
+	<!-- Coins Section -->
+	<section class="coins boxed-section">
+		<h2>{{localize "DOLMEN.Coins.Title"}}</h2>
+		<div class="coins-grid">
+			<div class="coin">
+				<label>{{localize "DOLMEN.Coins.Copper"}}</label>
+				<input type="number" name="system.coins.copper" value="{{system.coins.copper}}" min="0">
+			</div>
+			<div class="coin">
+				<label>{{localize "DOLMEN.Coins.Silver"}}</label>
+				<input type="number" name="system.coins.silver" value="{{system.coins.silver}}" min="0">
+			</div>
+			<div class="coin">
+				<label>{{localize "DOLMEN.Coins.Gold"}}</label>
+				<input type="number" name="system.coins.gold" value="{{system.coins.gold}}" min="0">
+			</div>
+			<div class="coin">
+				<label>{{localize "DOLMEN.Coins.Pellucidium"}}</label>
+				<input type="number" name="system.coins.pellucidium" value="{{system.coins.pellucidium}}" min="0">
+			</div>
+		</div>
+	</section>
+
+	<!-- Items List Section (placeholder for future) -->
+	<section class="items-list boxed-section">
+		<h2>{{localize "DOLMEN.Items"}}</h2>
+		<div class="items-container">
+			<!-- Items will be listed here -->
+		</div>
+	</section>
+</section>

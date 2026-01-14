@@ -15,23 +15,8 @@
     }
   ],
   "esmodules": [
-    "module/dolmen.js"
+    "dolmenwood.mjs"
   ],
-  "flags": {
-    "hotReload": {
-      "extensions": [
-        "js",
-        "css",
-        "html",
-        "json"
-      ],
-      "paths": [
-        "lang",
-        "templates",
-        "styles"
-      ]
-    }
-  },
   "styles": [
     {
       "src": "styles/variables.css",
@@ -54,25 +39,32 @@
       "path": "lang/pl.json"
     }
   ],
-  "relationships": {
-    "systems": [],
-    "requires": [],
-    "conflicts": [],
-    "flags": {}
-  },
   "grid": {
     "distance": 5,
     "units": "ft"
   },
-  "background": "systems/dolmen/styles/images/dolmen-background.webp",
-  "primaryTokenAttribute": "attributes.hp",
-  "secondaryTokenAttribute": "abilities.lck.value",
-  "socket": true,
-  "initiative": "@attributes.init.die + @attributes.init.value",
+  "socket": false,
+  "initiative": "1d20",
+  "primaryTokenAttribute": "hp.value",
   "url": "https://github.com/blaze-sanecki/foundry-dolmenwood",
   "manifest": "https://github.com/blaze-sanecki/foundry-dolmenwood/releases/download/v0.1.0/system.json",
   "download": "https://github.com/blaze-sanecki/foundry-dolmenwood/releases/download/v0.1.0/dolmenwood.zip",
-  "protected": false,
-  "bugs": "https://github.com/blaze-sanecki/foundry-dolmenwood/issues",
-  "license": "LICENSE.txt"
+  "documentTypes": {
+    "Actor": {
+      "Adventurer": {
+        "htmlFields": [
+          "background.notes"
+        ]
+      },
+      "Creature": {
+        "htmlFields": [
+          "background.notes"
+        ]
+      }
+    },
+    "Item": {
+      "weapon": {},
+      "spell": {}
+    }
+  }
 }

@@ -1,0 +1,168 @@
+{
+	"TYPES": {
+		"Actor": {
+			"Adventurer": "Adventurer",
+			"Creature": "Creature"
+		}
+	},
+	"DOLMEN": {
+		"ConfigureSheet": "Dolmenwood Config",
+		"WelcomeMessage": "Welcome to the Dolmenwood RPG system!",
+		"SheetTitle": "Dolmenwood Sheet",
+		"Tabs": {
+			"Stats": "Stats",
+			"Inventory": "Inventory",
+			"Notes": "Notes",
+			"Magic": "Magic",
+			"Details": "Details"
+		},
+		"Details": "Details",
+		"Name": "Name",
+		"Kindred": "Kindred",
+		"Class": "Class",
+		"Background": "Background",
+		"Alignment": "Alignment",
+		"Affiliation": "Affiliation",
+		"MoonSign": "Moon Sign",
+		"MoonNames": {
+			"grinning": "Grinning",
+			"dead": "Dead",
+			"beast": "Beast",
+			"squamous": "Squamous",
+			"knights": "Knight's",
+			"rotting": "Rotting",
+			"maidens": "Maiden's",
+			"witch": "Witch's",
+			"robbers": "Robber's",
+			"goat": "Goat",
+			"narrow": "Narrow",
+			"black": "Black"
+		},
+		"MoonPhases": {
+			"waning": "Waning",
+			"full": "Full",
+			"waxing": "Waxing"
+		},
+		"AbilityScores": "Ability Scores",
+		"Score": "Score",
+		"Mod": "Mod",
+		"Abilities": {
+			"Strength": "Strength",
+			"Intelligence": "Intelligence",
+			"Wisdom": "Wisdom",
+			"Dexterity": "Dexterity",
+			"Constitution": "Constitution",
+			"Charisma": "Charisma",
+			"StrengthHint": "Melee attacks/damage",
+			"IntelligenceHint": "Extra languages",
+			"WisdomHint": "Magic Resistance",
+			"DexterityHint": "AC and missile attacks",
+			"ConstitutionHint": "Hit Points per Level",
+			"CharismaHint": "Reaction Rolls"
+		},
+		"Combat": {
+			"Title": "Combat",
+			"HP": "HP",
+			"AC": "AC",
+			"Attack": "Attack"
+		},
+		"MagicResistance": "Magic Res.",
+		"SaveTargets": "Save Targets",
+		"Saves": {
+			"Doom": "Doom",
+			"Ray": "Ray",
+			"Hold": "Hold",
+			"Blast": "Blast",
+			"Spell": "Spell"
+		},
+		"Movement": {
+			"Title": "Movement",
+			"Speed": "Speed",
+			"Exploring": "Exploring",
+			"Overland": "Overland",
+			"FeetPerRound": "Feet / Round",
+			"FeetPerTurn": "Feet / Turn",
+			"TravelPoints": "Travel Points / day"
+		},
+		"SkillTargets": "Skill Targets",
+		"Skills": {
+			"Listen": "Listen",
+			"Search": "Search",
+			"Survival": "Survival",
+			"detectMagic": "Detect Magic",
+			"alertness": "Alertness",
+			"stalking": "Stalking",
+			"tracking": "Tracking",
+			"pickLock": "Pick Lock",
+			"stealth": "Stealth",
+			"decipherDocument": "Decipher Document",
+			"climbWall": "Climb Wall",
+			"disarmMechanism": "Disarm Mechanism",
+			"legerdemain": "Legerdemain",
+			"monsterLore": "Monster Lore"
+		},
+		"AddSkill": "Add Skill",
+		"AddSkillTitle": "Add a Skill",
+		"SelectSkill": "Select a skill to add:",
+		"RemoveSkill": "Remove Skill",
+		"NoSkillsAvailable": "No more skills available to add.",
+		"Languages": "Languages",
+		"LanguagesPlaceholder": "Woldish + Kindred / Intelligence Mod",
+		"Experience": "Experience",
+		"XP": "XP",
+		"Level": "Level",
+		"LevelAbbrev": "Lvl.",
+		"NextLevel": "Next Level",
+		"XPModifier": "XP % Modifier",
+		"XPAdd": "Add XP",
+		"XPGained": "XP Gained",
+		"XPBonus": "Bonus",
+		"XPCurrent": "Current XP",
+		"XPTotal": "New Total",
+		"XPAddTitle": "Add Experience Points",
+		"XPAddButton": "Add",
+		"Cancel": "Cancel",
+		"Encumbrance": {
+			"Title": "Encumbrance",
+			"Method": "Method",
+			"Current": "Current",
+			"Max": "Max",
+			"Weight": "Weight",
+			"Slots": "Slots"
+		},
+		"Coins": {
+			"Title": "Coins",
+			"Copper": "Copper",
+			"Silver": "Silver",
+			"Gold": "Gold",
+			"Pellucidium": "Pellucidium"
+		},
+		"Items": "Items",
+		"Spells": "Spells",
+		"CharacterDetails": "Character Details",
+		"Kindreds": {
+			"breggle": "Breggle",
+			"elf": "Elf",
+			"grimalkin": "Grimalkin",
+			"human": "Human",
+			"mossling": "Mossling",
+			"woodgrue": "Woodgrue"
+		},
+		"Classes": {
+			"bard": "Bard",
+			"cleric": "Cleric",
+			"enchanter": "Enchanter",
+			"fighter": "Fighter",
+			"friar": "Friar",
+			"hunter": "Hunter",
+			"knight": "Knight",
+			"magician": "Magician",
+			"thief": "Thief"
+		},
+		"Alignments": {
+			"lawful": "Lawful",
+			"neutral": "Neutral",
+			"chaotic": "Chaotic"
+		}
+	}
+}
