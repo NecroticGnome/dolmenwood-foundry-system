@@ -252,6 +252,7 @@
 				{{#each system.extraSkills}}
 				<div class="skill extra-skill" data-skill-index="{{@index}}">
 					<label>{{localize (concat "DOLMEN.Skills." this.id)}}</label>
+					<input type="hidden" name="system.extraSkills.{{@index}}.id" value="{{this.id}}">
 					<input type="number" name="system.extraSkills.{{@index}}.target" value="{{this.target}}" min="2" max="6">
 					<button type="button" class="remove-skill-btn" data-skill-index="{{@index}}" title="{{localize 'DOLMEN.RemoveSkill'}}">
 						<i class="fas fa-times"></i>
