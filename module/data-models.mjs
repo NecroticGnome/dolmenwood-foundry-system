@@ -62,6 +62,29 @@ class ActorDataModel extends foundry.abstract.TypeDataModel {
  * Data model for Adventurer (player character) actors.
  */
 export class AdventurerDataModel extends ActorDataModel {
+	/**
+	 * Calculate ability score modifier using Dolmenwood rules.
+	 * @param {number} score - The ability score (3-18)
+	 * @returns {number} The modifier (-3 to +3)
+	 */
+	static computeModifier(score) {
+		if (score <= 3) return -3
+		if (score <= 5) return -2
+		if (score <= 8) return -1
+		if (score <= 12) return 0
+		if (score <= 15) return 1
+		if (score <= 17) return 2
+		return 3
+	}
+
+	/** @override */
+	prepareDerivedData() {
+		// Calculate ability modifiers from scores
+		for (const ability of Object.values(this.abilities)) {
+			ability.mod = AdventurerDataModel.computeModifier(ability.score)
+		}
+	}
+
 	static defineSchema() {
 		return {
 			...super.defineSchema(),
@@ -253,9 +276,13 @@ export class CreatureDataModel extends ActorDataModel {
 class ItemDataModel extends foundry.abstract.TypeDataModel {
 	static defineSchema() {
 		return {
-			price: new NumberField({ 
+			cost: new NumberField({ 
 				required: true, 
 				integer: true, 
+				min: 0, 
+				initial: 0 }),
+			weight: new NumberField({ 
+				required: true, 
 				min: 0, 
 				initial: 0 })
 		}
@@ -270,6 +297,93 @@ export class WeaponDataModel extends ItemDataModel {
 				required: true, 
 				blank: false, 
 				initial: "1d6" 
+			}),
+			size: new StringField({
+				required: true,
+				blank: false,
+				initial: "medium",
+				choices: ["small", "medium", "large"]
+			}),
+			qualities: new ArrayField(
+				new StringField({ 
+					blank: false, 
+					choices: ["armor-piercing", "brace", "charge", "melee", "missile", "reach", "reload", "splash", "two-handed"]
+				}), 
+				{ initial: ["melee"] }),
+			rangeShort: new NumberField({ 
+				required: false, 
+				integer: true,
+				min: 0,
+				initial: 0
+			}),
+			rangeMedium: new NumberField({ 
+				required: false, 
+				integer: true,
+				min: 0,
+				initial: 0
+			}),
+			rangeLong: new NumberField({ 
+				required: false, 
+				integer: true,
+				min: 0,
+				initial: 0
+			}),
+			materialType: new StringField({ 
+				required: true, 
+				blank: false, 
+				initial: "normal",
+				choices: ["normal", "cold-iron", "silver"]
+			})
+		}
+	}
+}
+
+export class ArmorDataModel extends ItemDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
+			bulk: new StringField({
+				required: true,
+				blank: false,
+				initial: "light",
+				choices: ["none", "light", "medium", "heavy"]
+			}),
+			ac: new NumberField({ 
+				required: true, 
+				integer: true,
+				initial: 10
+			}),
+			fit: new StringField({
+				required: true,
+				blank: false,
+				initial: "medium",
+				choices: ["small", "medium", "large"]
+			}),
+		}
+	}
+}
+
+export class ForagedDataModel extends ItemDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
+			type: new StringField({
+				required: true,
+				blank: false,
+				initial: "plant",
+				choices: ["plant", "fungus", "pipeleaf"]
+			}),
+			availability: new NumberField({
+				required: true,
+				integer: true,
+				initial: 6,
+				min: 1,
+				max: 6
+			}),
+			effect: new HTMLField({
+				required: true,
+				blank: false,
+				initial: ""
 			})
 		}
 	}
