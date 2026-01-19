@@ -1,53 +1,364 @@
 <section class="tab-content tab-inventory {{tab.cssClass}}" data-group="primary" data-tab="inventory">
-	<!-- Encumbrance Section -->
-	<section class="encumbrance boxed-section">
-		<h2>{{localize "DOLMEN.Encumbrance.Title"}}</h2>
-		<div class="encumbrance-header">
-			<label>{{localize "DOLMEN.Encumbrance.Method"}}</label>
-			<select name="system.encumbrance.method">
-				{{selectOptions @root.encumbranceChoices selected=system.encumbrance.method}}
-			</select>
-		</div>
-		<div class="encumbrance-values">
-			<div class="encumbrance-stat">
-				<label>{{localize "DOLMEN.Encumbrance.Current"}}</label>
-				<input type="number" name="system.encumbrance.current" value="{{system.encumbrance.current}}" min="0">
+	<section class="two-columns">
+		<!-- Encumbrance Section -->
+		<section class="encumbrance boxed-section">
+			<h2><i class="fas fa-weight-hanging"></i> {{localize "DOLMEN.Encumbrance.Title"}}</h2>
+			<div class="encumbrance-grid">
+				<div class="encumbrance-stat">
+					<label>{{localize "DOLMEN.Encumbrance.Method"}}</label>
+					<select name="system.encumbrance.method">
+						{{selectOptions @root.encumbranceChoices selected=system.encumbrance.method}}
+					</select>
+				</div>
+				<div class="encumbrance-stat">
+					<label>{{localize "DOLMEN.Encumbrance.Current"}}</label>
+					<input type="number" name="system.encumbrance.current" value="{{system.encumbrance.current}}" min="0">
+				</div>
+				<div class="encumbrance-stat">
+					<label>{{localize "DOLMEN.Encumbrance.Max"}}</label>
+					<input type="number" name="system.encumbrance.max" value="{{system.encumbrance.max}}" min="0">
+				</div>
 			</div>
-			<div class="encumbrance-stat">
-				<label>{{localize "DOLMEN.Encumbrance.Max"}}</label>
-				<input type="number" name="system.encumbrance.max" value="{{system.encumbrance.max}}" min="0">
-			</div>
-		</div>
-	</section>
+		</section>
 
-	<!-- Coins Section -->
-	<section class="coins boxed-section">
-		<h2>{{localize "DOLMEN.Coins.Title"}}</h2>
-		<div class="coins-grid">
-			<div class="coin">
-				<label>{{localize "DOLMEN.Coins.Copper"}}</label>
-				<input type="number" name="system.coins.copper" value="{{system.coins.copper}}" min="0">
+		<!-- Coins Section -->
+		<section class="coins boxed-section">
+			<h2><i class="fas fa-coins"></i> {{localize "DOLMEN.Coins.Title"}}</h2>
+			<div class="coins-grid">
+				<div class="coin">
+					<label>{{localize "DOLMEN.Coins.Copper"}}</label>
+					<input type="number" name="system.coins.copper" value="{{system.coins.copper}}" min="0">
+				</div>
+				<div class="coin">
+					<label>{{localize "DOLMEN.Coins.Silver"}}</label>
+					<input type="number" name="system.coins.silver" value="{{system.coins.silver}}" min="0">
+				</div>
+				<div class="coin">
+					<label>{{localize "DOLMEN.Coins.Gold"}}</label>
+					<input type="number" name="system.coins.gold" value="{{system.coins.gold}}" min="0">
+				</div>
+				<div class="coin">
+					<label>{{localize "DOLMEN.Coins.Pellucidium"}}</label>
+					<input type="number" name="system.coins.pellucidium" value="{{system.coins.pellucidium}}" min="0">
+				</div>
 			</div>
-			<div class="coin">
-				<label>{{localize "DOLMEN.Coins.Silver"}}</label>
-				<input type="number" name="system.coins.silver" value="{{system.coins.silver}}" min="0">
-			</div>
-			<div class="coin">
-				<label>{{localize "DOLMEN.Coins.Gold"}}</label>
-				<input type="number" name="system.coins.gold" value="{{system.coins.gold}}" min="0">
-			</div>
-			<div class="coin">
-				<label>{{localize "DOLMEN.Coins.Pellucidium"}}</label>
-				<input type="number" name="system.coins.pellucidium" value="{{system.coins.pellucidium}}" min="0">
-			</div>
-		</div>
+		</section>
 	</section>
+	<section class="inventory two-columns">
+		<!-- Equipped Items Section -->
+		<section class="equipped-items boxed-section">
+			<h2><i class="fas fa-person"></i> {{localize "DOLMEN.Inventory.Equipped"}}</h2>
+			<div class="item-list equipped-list" data-item-list="equipped">
+				{{#if hasEquippedItems}}
+				{{#each equippedByType}}
+				<div class="item-type-group {{this.typeLower}}">
+					{{#if this.isWeapon}}
+					<div class="item-list-header weapon-header">
+						<i class="fas fa-swords"></i>
+						<span class="type-label">{{this.label}}</span>
+						<span class="item-qualities">{{localize "DOLMEN.Item.Qualities"}}</span>
+						<span class="item-damage">{{localize "DOLMEN.Item.Damage"}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row weapon" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{#if (eq this.system.materialType "cold-iron")}}<i class="fas fa-snowflake"></i> {{/if}}{{#if (eq this.system.materialType "silver")}}<i class="fas fa-star-christmas"></i> {{/if}}{{this.name}}</span>
+						<span class="item-qualities">{{{this.qualitiesDisplay}}}</span>
+						<span class="item-damage">{{this.system.damage}}</span>
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="stowItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Stow'}}">
+								<i class="fas fa-box"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+					{{#if this.isArmor}}
+					<div class="item-list-header armor-header">
+						<i class="fas fa-helmet-battle"></i>
+						<span class="type-label">{{this.label}}</span>
+						<span class="item-bulk">{{localize "DOLMEN.Item.Bulk.label"}}</span>
+						<span class="item-ac">{{localize "DOLMEN.Item.AC"}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row armor" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						<span class="item-bulk">{{this.bulkDisplay}}</span>
+						<span class="item-ac">{{this.system.ac}}</span>
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="stowItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Stow'}}">
+								<i class="fas fa-box"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+					{{#if this.isItem}}
+					<div class="item-list-header item-header">
+						<i class="fas fa-shovel"></i>
+						<span class="type-label">{{this.label}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row item" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="stowItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Stow'}}">
+								<i class="fas fa-box"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+					{{#if this.isTreasure}}
+					<div class="item-list-header treasure-header">
+						<i class="fas fa-gem"></i>
+						<span class="type-label">{{this.label}}
+						</span><span class="item-notes">{{localize "DOLMEN.Item.Notes"}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row treasure" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						{{#if this.hasNotes}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.notes}}</span></i></span>
+						{{else}}<span class="item-notes">-</span>
+						{{/if}}
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="stowItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Stow'}}">
+								<i class="fas fa-box"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+					{{#if this.isForaged}}
+					<div class="item-list-header foraged-header">
+						<i class="fas fa-mushroom"></i>
+						<span class="type-label">{{this.label}}</span>
+						<span class="item-notes">{{localize "DOLMEN.Item.Notes"}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row foraged" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						{{#if this.hasNotes}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.notes}}</span></i></span>
+						{{else}}<span class="item-notes">-</span>
+						{{/if}}
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="stowItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Stow'}}">
+								<i class="fas fa-box"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+				</div>
+				{{/each}}
+				{{else}}
+				<div class="item-list-empty">
+					<span>{{localize "DOLMEN.Inventory.NoEquipped"}}</span>
+				</div>
+				{{/if}}
+			</div>
+		</section>
 
-	<!-- Items List Section (placeholder for future) -->
-	<section class="items-list boxed-section">
-		<h2>{{localize "DOLMEN.Items"}}</h2>
-		<div class="items-container">
-			<!-- Items will be listed here -->
-		</div>
+		<!-- Stowed Items Section -->
+		<section class="stowed-items boxed-section">
+			<h2><i class="fas fa-box"></i> {{localize "DOLMEN.Inventory.Stowed"}}</h2>
+			<div class="item-list stowed-list" data-item-list="stowed">
+				{{#if hasStowedItems}}
+				{{#each stowedByType}}
+				<div class="item-type-group {{this.typeLower}}">
+					{{#if this.isWeapon}}
+					<div class="item-list-header weapon-header">
+						<i class="fas fa-swords"></i>
+						<span class="type-label">{{this.label}}</span>
+						<span class="item-qualities">{{localize "DOLMEN.Item.Qualities"}}</span>
+						<span class="item-damage">{{localize "DOLMEN.Item.Damage"}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row weapon" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						<span class="item-qualities">{{{this.qualitiesDisplay}}}</span>
+						<span class="item-damage">{{this.system.damage}}</span>
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="equipItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Equip'}}">
+								<i class="fas fa-person"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+					{{#if this.isArmor}}
+					<div class="item-list-header armor-header">
+						<i class="fas fa-helmet-battle"></i>
+						<span class="type-label">{{this.label}}</span>
+						<span class="item-bulk">{{localize "DOLMEN.Item.Bulk.label"}}</span>
+						<span class="item-ac">{{localize "DOLMEN.Item.AC"}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row armor" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						<span class="item-bulk">{{this.bulkDisplay}}</span>
+						<span class="item-ac">{{this.system.ac}}</span>
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="equipItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Equip'}}">
+								<i class="fas fa-person"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+					{{#if this.isItem}}
+					<div class="item-list-header item-header">
+						<i class="fas fa-shovel"></i>
+						<span class="type-label">{{this.label}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row item" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="equipItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Equip'}}">
+								<i class="fas fa-person"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+					{{#if this.isTreasure}}
+					<div class="item-list-header treasure-header">
+						<i class="fas fa-gem"></i>
+						<span class="type-label">{{this.label}}</span>
+						<span class="item-notes">{{localize "DOLMEN.Item.Notes"}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row treasure" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						{{#if this.hasNotes}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.notes}}</span></i></span>
+						{{else}}<span class="item-notes">-</span>
+						{{/if}}
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="equipItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Equip'}}">
+								<i class="fas fa-person"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+					{{#if this.isForaged}}
+					<div class="item-list-header foraged-header">
+						<i class="fas fa-mushroom"></i>
+						<span class="type-label">{{this.label}}</span>
+						<span class="item-notes">{{localize "DOLMEN.Item.Notes"}}</span>
+						<i class="fas fa-weight-hanging"></i>
+						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
+						<span class="item-controls"></span>
+					</div>
+					{{#each this.items}}
+					<div class="item-row foraged" data-item-id="{{this.id}}">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<span class="item-name clickable" data-action="openItem">{{this.name}}</span>
+						{{#if this.hasNotes}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.notes}}</span></i></span>
+						{{else}}<span class="item-notes">-</span>
+						{{/if}}
+						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
+						<span class="item-quantity">{{this.system.quantity}}</span>
+						<span class="item-controls">
+							<a class="item-control" data-action="equipItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Equip'}}">
+								<i class="fas fa-person"></i>
+							</a>
+							<a class="item-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Inventory.Delete'}}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{/if}}
+				</div>
+				{{/each}}
+				{{else}}
+				<div class="item-list-empty">
+					<span>{{localize "DOLMEN.Inventory.NoStowed"}}</span>
+				</div>
+				{{/if}}
+			</div>
+		</section>
 	</section>
 </section>

@@ -1,0 +1,142 @@
+<section class="item-body">
+	<!-- Common fields for all items -->
+	<section class="item-common">
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Cost"}}</label>
+				<input type="number" name="system.cost" value="{{system.cost}}" min="0">
+				<span class="unit">{{localize "DOLMEN.Item.CostUnit"}}</span>
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.WeightCoins"}}</label>
+				<input type="number" name="system.weightCoins" value="{{system.weightCoins}}" min="0" step="0.1">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.WeightSlots"}}</label>
+				<input type="number" name="system.weightSlots" value="{{system.weightSlots}}" min="0" step="0.1">
+			</div>
+		</div>
+	</section>
+
+	{{#if isWeapon}}
+	<!-- Weapon-specific fields -->
+	<section class="item-weapon">
+		<h2>{{localize "DOLMEN.Item.WeaponDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Damage"}}</label>
+				<input type="text" name="system.damage" value="{{system.damage}}" placeholder="1d6">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Size.label"}}</label>
+				<select name="system.size">
+					{{selectOptions @root.weaponSizeChoices selected=system.size}}
+				</select>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Range.short"}}</label>
+				<input type="number" name="system.rangeShort" value="{{system.rangeShort}}" min="0">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Range.medium"}}</label>
+				<input type="number" name="system.rangeMedium" value="{{system.rangeMedium}}" min="0">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Range.long"}}</label>
+				<input type="number" name="system.rangeLong" value="{{system.rangeLong}}" min="0">
+			</div>
+		</div>
+		<div class="form-group qualities-group">
+			<label>{{localize "DOLMEN.Item.Qualities"}}</label>
+			<div class="qualities-grid">
+				{{#each qualityOptions}}
+				<label class="quality-option">
+					<input type="checkbox" class="quality-checkbox" data-quality="{{this.id}}" {{#if this.checked}}checked{{/if}}>
+					<span>{{this.label}}</span>
+				</label>
+				{{/each}}
+			</div>
+		</div>
+	</section>
+	{{/if}}
+
+	{{#if isArmor}}
+	<!-- Armor-specific fields -->
+	<section class="item-armor">
+		<h2>{{localize "DOLMEN.Item.ArmorDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.AC"}}</label>
+				<input type="number" name="system.ac" value="{{system.ac}}" min="0">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Bulk.label"}}</label>
+				<select name="system.bulk">
+					{{selectOptions @root.armorBulkChoices selected=system.bulk}}
+				</select>
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Fit.label"}}</label>
+				<select name="system.fit">
+					{{selectOptions @root.armorFitChoices selected=system.fit}}
+				</select>
+			</div>
+		</div>
+	</section>
+	{{/if}}
+
+	{{#if isForaged}}
+	<!-- Foraged-specific fields -->
+	<section class="item-foraged">
+		<h2>{{localize "DOLMEN.Item.ForagedDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.ForagedType.label"}}</label>
+				<select name="system.type">
+					{{selectOptions @root.foragedTypeChoices selected=system.type}}
+				</select>
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Availability"}}</label>
+				<input type="number" name="system.availability" value="{{system.availability}}" min="1" max="6">
+			</div>
+		</div>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Item.Notes"}}</label>
+			<div class="editor-container">
+				<input type="text" name="system.notes" value="{{system.notes}}" placeholder="Enter notes here">
+			</div>
+		</div>
+	</section>
+	{{/if}}
+
+	{{#if isTreasure}}
+	<!-- Treasure-specific fields -->
+	<section class="item-treasure">
+		<h2>{{localize "DOLMEN.Item.TreasureDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Notes"}}</label>
+				<input type="text" name="system.notes" value="{{system.notes}}" placeholder="Enter notes here">
+			</div>
+		</div>
+	</section>
+	{{/if}}
+
+	{{#if isSpell}}
+	<!-- Spell-specific fields -->
+	<section class="item-spell">
+		<h2>{{localize "DOLMEN.Item.SpellDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.SpellType.label"}}</label>
+				<select name="system.type">
+					{{selectOptions @root.spellTypeChoices selected=system.type}}
+				</select>
+			</div>
+		</div>
+	</section>
+	{{/if}}
+</section>

@@ -45,6 +45,45 @@
 	font-size: 0.8rem;
 }
 
+/* Tooltips */
+.tooltip {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	background-color: var(--dolmen-color-h3);
+	color: var(--dolmen-color-background);
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	position: fixed;
+	z-index: 1;
+	margin-left: -65px;
+	margin-top: -30px;
+	font-family: var(--dolmen-font-body);
+	letter-spacing: unset;
+	font-weight: normal;
+}
+
+.tooltiptext::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: var(--dolmen-color-h3) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+}
+
 /* Rollable Icons */
 .sheet.dolmen .rollable {
 	text-align: center;
@@ -333,20 +372,26 @@
 /* Two-Column Layouts */
 .sheet.dolmen .tab-content .two-columns {
 	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .two-columns.inventory {
+	height: fill-available;
+	height: -webkit-fill-available;
+	padding-bottom: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .two-columns.skills-movement {
 	grid-template-columns: 3fr 1.5fr;
-	gap: 0.5rem;
 }
 
-.sheet.dolmen .tab-content .two-columns-combat {
-	display: grid;
+.sheet.dolmen .tab-content .two-columns.combat {
 	grid-template-columns: 3fr 2fr;
-	gap: 0.5rem;
 }
 
-.sheet.dolmen .tab-content .two-columns-header {
-	display: grid;
+.sheet.dolmen .tab-content .two-columns.header {
 	grid-template-columns: auto max-content;
-	gap: 0.5rem;
 }
 
 /* Combat Section */
@@ -536,16 +581,9 @@
 }
 
 /* Encumbrance Section */
-.sheet.dolmen .tab-content .encumbrance-header {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	margin-bottom: 0.5rem;
-}
-
-.sheet.dolmen .tab-content .encumbrance-values {
+.sheet.dolmen .tab-content .encumbrance-grid {
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+	grid-template-columns: repeat(3, 1fr);
 	gap: 0.5rem;
 }
 
@@ -576,4 +614,599 @@
 
 .sheet.dolmen .tab-content .editor-container .editor {
 	height: 100%;
+}
+
+/* -------------------------------------------- */
+/*  Item List Styles (Inventory)                */
+/* -------------------------------------------- */
+
+/*
+.sheet.dolmen .tab-content .equipped-items,
+.sheet.dolmen .tab-content .stowed-items {
+	width: calc(50% - 0.25rem);
+	transition: width 0.5s;
+	display: inline-block;
+}
+
+.sheet.dolmen .tab-content .equipped-items:hover,
+.sheet.dolmen .tab-content .stowed-items:hover,
+.sheet.dolmen .tab-content .equipped-items:hover,
+.sheet.dolmen .tab-content .stowed-items:hover,
+.sheet.dolmen .tab-content .equipped-items:active,
+.sheet.dolmen .tab-content .stowed-items:active {
+	width: 33rem;
+	transition: width 0.5s;
+}
+
+.sheet.dolmen .tab-content .equipped-items:hover+.stowed-items,
+.sheet.dolmen .tab-content .equipped-items:active+.stowed-items {
+	width: calc(100% - 33.5rem);
+	transition: width 0.5s;
+}
+
+.sheet.dolmen .tab-content .equipped-items:has(+.stowed-items:hover),
+.sheet.dolmen .tab-content .equipped-items:has(+.stowed-items:active) {
+	width: calc(100% - 33.5rem);
+	transition: width 0.5s;
+}*/
+
+.sheet.dolmen .tab-content .inventory h2 {
+	margin-bottom: 0;
+}
+
+.sheet.dolmen .tab-content .item-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+/* Item Type Group */
+.sheet.dolmen .tab-content .item-type-group {
+	width: calc(100% + 1rem);
+	margin-left: -0.5rem;
+}
+
+/* Item List Headers - Base */
+.sheet.dolmen .tab-content .item-list-header {
+	display: grid;
+	gap: 0.25rem;
+	padding: 0.25rem;
+	font-size: 0.65rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h3);
+	text-transform: uppercase;
+	text-align: center;
+	line-height: 1rem;
+	align-items: center;
+}
+
+
+.sheet.dolmen .tab-content .item-list-header .item-qualities,
+.sheet.dolmen .tab-content .item-list-header .item-bulk,
+.sheet.dolmen .tab-content .item-list-header .type-label {
+	text-align: left;
+}
+
+/* Pastel header backgrounds by type */
+.sheet.dolmen .tab-content .weapon-header {
+	background-color: #f5d0d0;
+}
+
+.sheet.dolmen .tab-content .armor-header {
+	background-color: #d0e4f0;
+}
+
+.sheet.dolmen .tab-content .foraged-header {
+	background-color: #d0f0d0;
+}
+
+.sheet.dolmen .tab-content .treasure-header {
+	background-color: #f0e7d0;
+}
+
+.sheet.dolmen .tab-content .item-header {
+	background-color: #e0e0e0;
+}
+
+/* Weapon row: icon | name | qualities | damage | weight | controls */
+.sheet.dolmen .tab-content .weapon-header,
+.sheet.dolmen .tab-content .item-row.weapon {
+	grid-template-columns: 20px 1fr 1fr 3rem 2rem 2rem 2rem;
+}
+
+/* Armor row: icon | name | bulk | AC | weight | controls */
+.sheet.dolmen .tab-content .armor-header,
+.sheet.dolmen .tab-content .item-row.armor {
+	grid-template-columns: 20px 1fr 1fr 3rem 2rem 2rem 2rem;
+}
+
+/* Foraged row: icon | name | notes | weight | controls */
+.sheet.dolmen .tab-content .foraged-header,
+.sheet.dolmen .tab-content .item-row.foraged {
+	grid-template-columns: 20px 1fr 3rem 2rem 2rem 2rem;
+}
+
+/* Treasure row: icon | name | notes | weight | controls */
+.sheet.dolmen .tab-content .treasure-header,
+.sheet.dolmen .tab-content .item-row.treasure {
+	grid-template-columns: 20px 1fr 3rem 2rem 2rem 2rem;
+}
+
+/* Generic item row: icon | name | weight | controls */
+.sheet.dolmen .tab-content .item-header,
+.sheet.dolmen .tab-content .item-row.item {
+	grid-template-columns: 20px 1fr 2rem 2rem 2rem;
+}
+
+/* Item Rows - Base */
+.sheet.dolmen .tab-content .item-row {
+	display: grid;
+	gap: 0.25rem;
+	padding: 0.2rem;
+	align-items: center;
+	border-bottom: 1px solid var(--dolmen-color-table-row-odd);
+	transition: background-color 0.1s;
+	line-height: 1rem;
+}
+
+.sheet.dolmen .tab-content .item-row:hover {
+	background-color: var(--dolmen-color-box-background);
+}
+
+.sheet.dolmen .tab-content .item-row:last-child {
+	border-bottom: none;
+}
+
+/* Item Image */
+.sheet.dolmen .tab-content .item-row .item-image {
+	width: 16px;
+	height: 16px;
+	mask-size: contain;
+	background-color: var(--dolmen-color-h3);
+	margin: auto;
+}
+
+/* Item Name */
+.sheet.dolmen .tab-content .item-row .item-name {
+	font-weight: 500;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sheet.dolmen .tab-content .item-row .item-name.clickable {
+	cursor: pointer;
+	color: var(--dolmen-color-h2);
+}
+
+.sheet.dolmen .tab-content .item-row .item-name.clickable:hover {
+	color: var(--dolmen-color-h1);
+	text-decoration: underline;
+}
+
+/* Item Stats */
+.sheet.dolmen .tab-content .item-row .item-damage,
+.sheet.dolmen .tab-content .item-row .item-ac,
+.sheet.dolmen .tab-content .item-row .item-cost,
+.sheet.dolmen .tab-content .item-row .item-quantity,
+.sheet.dolmen .tab-content .item-row .item-notes {
+	text-align: center;
+	font-weight: bold;
+	font-size: 0.85rem;
+}
+
+.sheet.dolmen .tab-content .item-row .item-qualities,
+.sheet.dolmen .tab-content .item-row .item-bulk {
+	font-size: 0.75rem;
+	overflow: hidden;
+	white-space: nowrap;
+	text-align: left;
+}
+
+.sheet.dolmen .tab-content .item-row .item-bulk,
+.sheet.dolmen .tab-content .item-row .item-weight {
+	font-weight: bold;
+}
+
+.sheet.dolmen .tab-content .item-row .item-weight {
+	text-align: center;
+	font-size: 0.85rem;
+}
+
+/* Item Controls */
+.sheet.dolmen .tab-content .item-row .item-controls {
+	display: flex;
+	gap: 0;
+	justify-content: flex-end;
+}
+
+.sheet.dolmen .tab-content .item-row .item-control {
+	width: 1.25rem;
+	height: 1.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--dolmen-color-h2);
+	cursor: pointer;
+	border-radius: 2px;
+	transition: color 0.1s;
+	font-size: 0.75rem;
+}
+
+.sheet.dolmen .tab-content .item-row .item-control:hover {
+	color: var(--dolmen-color-h1);
+	text-shadow: none;
+}
+
+.sheet.dolmen .tab-content .item-list-empty {
+	padding: 1rem;
+	text-align: center;
+	color: var(--dolmen-color-h3);
+	font-style: italic;
+	font-size: 0.85rem;
+}
+
+/* -------------------------------------------- */
+/*  Item Sheet Styles                           */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .window-content {
+	padding: 0;
+}
+
+.sheet.dolmen.item .item-header {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-h1);
+	color: var(--dolmen-color-background);
+}
+
+.sheet.dolmen.item .item-header .item-image {
+	width: 48px;
+	height: 48px;
+	border: 2px solid var(--dolmen-color-background);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.sheet.dolmen.item .item-header .item-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	cursor: pointer;
+	transition: opacity 0.1s;
+}
+
+.sheet.dolmen.item .item-header .item-image img:hover {
+	opacity: 0.8;
+}
+
+.sheet.dolmen.item .item-header .item-title {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.sheet.dolmen.item .item-header .item-title input {
+	background: transparent;
+	border: none;
+	color: var(--dolmen-color-background);
+	font-size: 1.25rem;
+	font-family: var(--dolmen-font-header);
+	font-weight: normal;
+	padding: 0;
+	margin: 0;
+}
+
+.sheet.dolmen.item .item-header .item-title input:focus {
+	outline: none;
+	border-bottom: 1px solid var(--dolmen-color-background);
+}
+
+.sheet.dolmen.item .item-header .item-type {
+	font-size: 0.75rem;
+	opacity: 0.8;
+	text-transform: uppercase;
+}
+
+.sheet.dolmen.item .item-body {
+	padding: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	overflow-y: auto;
+}
+
+.sheet.dolmen.item .item-body section {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-h1);
+	padding: 0.5rem;
+}
+
+.sheet.dolmen.item .item-body h2 {
+	font-size: 0.8rem;
+	border-bottom: 1px solid var(--dolmen-color-box-border);
+	padding-bottom: 0.25rem;
+	margin-bottom: 0.5rem;
+	margin-top: -0.5rem;
+	margin-left: -0.5rem;
+	padding-top: 0.25rem;
+	padding-left: 0.5rem;
+	width: calc(100% + 1rem);
+	background-color: var(--dolmen-color-h1);
+	color: var(--dolmen-color-background);
+}
+
+.sheet.dolmen.item .item-body .form-row {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen.item .item-body .form-field {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.sheet.dolmen.item .item-body .form-field label {
+	font-size: 0.7rem;
+	color: var(--dolmen-color-h3);
+	margin-bottom: 0.125rem;
+}
+
+.sheet.dolmen.item .item-body .form-field input,
+.sheet.dolmen.item .item-body .form-field select {
+	padding: 0.25rem;
+	border: 1px solid var(--dolmen-color-table-border);
+	border-radius: 2px;
+	font-size: 0.85rem;
+}
+
+.sheet.dolmen.item .item-body .form-field input[type="number"] {
+	width: 4rem;
+}
+
+.sheet.dolmen.item .item-body .form-field .unit {
+	font-size: 0.65rem;
+	color: var(--dolmen-color-h3);
+	margin-top: 0.125rem;
+}
+
+.sheet.dolmen.item .item-body .form-group {
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen.item .item-body .form-group>label {
+	font-size: 0.7rem;
+	color: var(--dolmen-color-h3);
+	margin-bottom: 0.25rem;
+	display: block;
+}
+
+.sheet.dolmen.item .item-body .qualities-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.25rem;
+}
+
+.sheet.dolmen.item .item-body .quality-option {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	font-size: 0.8rem;
+	cursor: pointer;
+}
+
+.sheet.dolmen.item .item-body .quality-option input {
+	margin: 0;
+}
+
+.sheet.dolmen.item .item-body .editor-container {
+	min-height: 100px;
+}
+
+/* Item type specific row styling
+.sheet.dolmen .tab-content .item-row {
+	border-left: 3px solid #000000;
+}
+
+.sheet.dolmen .tab-content .item-row.weapon {
+	border-left: 3px solid #ce2f2f;
+}
+
+.sheet.dolmen .tab-content .item-row.armor {
+	border-left: 3px solid #4682b4;
+}
+
+.sheet.dolmen .tab-content .item-row.foraged {
+	border-left: 3px solid #228b22;
+}
+
+.sheet.dolmen .tab-content .item-row.spell {
+	border-left: 3px solid #9932cc;
+}*/
+
+/* -------------------------------------------- */
+/*  Attack Roll Chat Message Styles             */
+/* -------------------------------------------- */
+
+.dolmen.attack-roll {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-h1);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.dolmen.attack-roll .attack-header {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-h1);
+	color: var(--dolmen-color-background);
+	align-items: center;
+}
+
+.dolmen.attack-roll .attack-header .weapon-icon {
+	width: 32px;
+	height: 32px;
+	border: 2px solid var(--dolmen-color-background);
+	border-radius: 4px;
+	object-fit: cover;
+}
+
+.dolmen.attack-roll .attack-header .attack-info h3 {
+	margin: 0;
+	font-size: 0.8rem;
+	font-family: var(--dolmen-font-header);
+	color: var(--dolmen-color-background);
+	text-transform: uppercase;
+}
+
+.dolmen.attack-roll .attack-header .attack-type {
+	font-size: 0.7rem;
+	opacity: 0.8;
+	text-transform: uppercase;
+}
+
+.dolmen.attack-roll .roll-results {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+}
+
+.dolmen.attack-roll .roll-section {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-inner-background);
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 4px;
+}
+
+.dolmen.attack-roll .roll-section label {
+	font-size: 0.7rem;
+	color: var(--dolmen-color-h3);
+	text-transform: uppercase;
+	margin-bottom: 0.25rem;
+}
+
+.dolmen.attack-roll .roll-result {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* Foundry inline roll styling */
+.dolmen.attack-roll .roll-result .inline-roll {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h1);
+	background: none;
+	border: none;
+	padding: 0;
+}
+
+.dolmen.attack-roll .roll-result .inline-roll .inline-result {
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+/* Critical hit styling */
+.dolmen.attack-roll .roll-section.critical .inline-roll,
+.dolmen.attack-roll .roll-section.critical .inline-result {
+	color: #228b22;
+}
+
+/* Fumble styling */
+.dolmen.attack-roll .roll-section.fumble .inline-roll,
+.dolmen.attack-roll .roll-section.fumble .inline-result {
+	color: #c00;
+}
+
+.dolmen.attack-roll .roll-result .roll-label {
+	font-size: 0.7rem;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.dolmen.attack-roll .roll-section.critical .roll-label {
+	color: #228b22;
+}
+
+.dolmen.attack-roll .roll-section.fumble .roll-label {
+	color: #c00;
+}
+
+.dolmen.attack-roll .roll-breakdown {
+	font-size: 0.65rem;
+	color: var(--dolmen-color-h3);
+	margin-top: 0.25rem;
+}
+
+.dolmen .inline-result i.fa-solid {
+	color: var(--dolmen-color-h3)
+}
+
+.dolmen .inline-result .dice-icon-hidden i.fa-dice-d20 {
+	display: none;
+}
+
+/* -------------------------------------------- */
+/*  Weapon Context Menu                         */
+/* -------------------------------------------- */
+
+.dolmen-weapon-context-menu {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-h1);
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	z-index: 1000;
+	min-width: 150px;
+	overflow: hidden;
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.4rem 0.5rem;
+	cursor: pointer;
+	transition: background-color 0.1s;
+	border-bottom: 1px solid var(--dolmen-color-box-background);
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item:last-child {
+	border-bottom: none;
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item:hover {
+	background-color: var(--dolmen-color-h1);
+	color: var(--dolmen-color-background);
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item .weapon-icon {
+	width: 20px;
+	height: 20px;
+	border-radius: 2px;
+	object-fit: cover;
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item .weapon-name {
+	flex: 1;
+	font-size: 0.85rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item .weapon-damage {
+	font-size: 0.75rem;
+	font-weight: bold;
+	opacity: 0.8;
 }

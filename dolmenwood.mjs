@@ -2,11 +2,12 @@
 
 import DOLMENWOOD from './module/config.js'
 import DolmenSheet from './module/dolmen-sheet.js'
+import DolmenItemSheet from './module/dolmen-item-sheet.js'
 import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
-import { AdventurerDataModel, CreatureDataModel, WeaponDataModel, SpellDataModel } from './module/data-models.mjs'
+import { AdventurerDataModel, CreatureDataModel, ItemDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, ArmorDataModel, ForagedDataModel } from './module/data-models.mjs'
 
-const { Actors } = foundry.documents.collections
+const { Actors, Items } = foundry.documents.collections
 
 Hooks.once('init', async function () {
 	CONFIG.DOLMENWOOD = DOLMENWOOD
@@ -20,13 +21,23 @@ Hooks.once('init', async function () {
 		Creature: CreatureDataModel
 	}
 	CONFIG.Item.dataModels = {
-		weapon: WeaponDataModel,
-		spell: SpellDataModel
+		Item: ItemDataModel,
+		Treasure: TreasureDataModel,
+		Weapon: WeaponDataModel,
+		Armor: ArmorDataModel,
+		Foraged: ForagedDataModel,
+		Spell: SpellDataModel
 	}
 
 	Actors.registerSheet('dolmen', DolmenSheet, {
 		types: ['Adventurer', 'Creature'],
 		label: 'DOLMEN.SheetTitle',
+		makeDefault: true
+	})
+
+	Items.registerSheet('dolmen', DolmenItemSheet, {
+		types: ['Item', 'Treasure', 'Weapon', 'Armor', 'Foraged', 'Spell'],
+		label: 'DOLMEN.ItemSheetTitle',
 		makeDefault: true
 	})
 })

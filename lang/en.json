@@ -3,6 +3,14 @@
 		"Actor": {
 			"Adventurer": "Adventurer",
 			"Creature": "Creature"
+		},
+		"Item": {
+			"Item": "Gear",
+			"Treasure": "Treasure",
+			"Weapon": "Weapon",
+			"Armor": "Armor",
+			"Foraged": "Foraged",
+			"Spell": "Spell"
 		}
 	},
 	"DOLMEN": {
@@ -58,13 +66,20 @@
 			"WisdomHint": "Magic Resistance",
 			"DexterityHint": "AC and missile attacks",
 			"ConstitutionHint": "Hit Points per Level",
-			"CharismaHint": "Reaction Rolls"
+			"CharismaHint": "Reaction Rolls",
+			"StrengthShort": "Str",
+			"IntelligenceShort": "Int",
+			"WisdomShort": "Wis",
+			"DexterityShort": "Dex",
+			"ConstitutionShort": "Con",
+			"CharismaShort": "Cha"
 		},
 		"Combat": {
 			"Title": "Combat",
 			"HP": "HP",
 			"AC": "AC",
-			"Attack": "Attack"
+			"Attack": "Attack",
+			"AttackShort": "Atk"
 		},
 		"MagicResistance": "Magic Res.",
 		"SaveTargets": "Save Targets",
@@ -127,7 +142,8 @@
 			"Method": "Method",
 			"Current": "Current",
 			"Max": "Max",
-			"Weight": "Weight",
+			"Weight": "Weight (Full)",
+			"Treasure": "Weight (Treasure)",
 			"Slots": "Slots"
 		},
 		"Coins": {
@@ -163,6 +179,101 @@
 			"lawful": "Lawful",
 			"neutral": "Neutral",
 			"chaotic": "Chaotic"
+		},
+		"ItemSheetTitle": "Dolmenwood Item Sheet",
+		"Item": {
+			"Name": "Name",
+			"Cost": "Cost",
+			"CostUnit": "gp",
+			"WeightCoins": "Weight (Coins)",
+			"WeightSlots": "Weight (Slots)",
+			"Details": "Details",
+			"Damage": "Dmg",
+			"AC": "AC",
+			"Qualities": "Qualities",
+			"WeaponDetails": "Weapon Details",
+			"ArmorDetails": "Armor Details",
+			"ForagedDetails": "Foraged Details",
+			"SpellDetails": "Spell Details",
+			"Size": {
+				"label": "Size",
+				"small": "Small",
+				"medium": "Medium",
+				"large": "Large"
+			},
+			"Quality": {
+				"armor-piercing": "Armor Piercing",
+				"brace": "Brace",
+				"charge": "Charge",
+				"melee": "Melee",
+				"missile": "Missile",
+				"reach": "Reach",
+				"reload": "Reload",
+				"splash": "Splash",
+				"two-handed": "Two-Handed",
+				"cold-iron": "Cold Iron",
+				"silver": "Silver"
+			},
+			"Range": {
+				"short": "Short Range",
+				"medium": "Medium Range",
+				"long": "Long Range"
+			},
+			"Bulk": {
+				"label": "Bulk",
+				"none": "None",
+				"light": "Light",
+				"medium": "Medium",
+				"heavy": "Heavy"
+			},
+			"Fit": {
+				"label": "Fit",
+				"small": "Small",
+				"medium": "Medium",
+				"large": "Large"
+			},
+			"ForagedType": {
+				"label": "Type",
+				"plant": "Plant",
+				"fungus": "Fungus",
+				"pipeleaf": "Pipeleaf"
+			},
+			"Availability": "Availability",
+			"Notes": "Notes",
+			"Value": "Val",
+			"Quantity": "Qty",
+			"BundleSize": "Bundle Size",
+			"SpellType": {
+				"label": "Spell Type",
+				"arcane": "Arcane",
+				"glamour": "Glamour",
+				"rune": "Rune",
+				"holy": "Holy",
+				"knack": "Knack"
+			}
+		},
+		"Inventory": {
+			"Equipped": "Equipped Items",
+			"Stowed": "Stowed Items",
+			"NoEquipped": "No items equipped. Drag items here or click the equip button.",
+			"NoStowed": "No items stowed. Drag items here to store them.",
+			"Equip": "Equip",
+			"Stow": "Stow",
+			"Delete": "Delete",
+			"DeleteConfirmTitle": "Delete Item",
+			"DeleteConfirmContent": "Are you sure you want to delete {name}?"
+		},
+		"Attack": {
+			"NoWeapon": "No equipped {type} weapon found.",
+			"SelectWeapon": "Select a weapon:",
+			"SelectWeaponTitle": "Choose Weapon",
+			"Roll": "Attack",
+			"AttackRoll": "Attack Roll",
+			"DamageRoll": "Damage",
+			"Critical": "Critical!",
+			"Fumble": "Fumble!",
+			"RollAttackOnly": "Roll attack only",
+			"RollDamageOnly": "Roll damage only"
 		}
 	}
 }

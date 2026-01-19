@@ -1,0 +1,9 @@
+<header class="item-header">
+	<div class="item-image">
+		<img src="{{item.img}}" alt="{{item.name}}">
+	</div>
+	<div class="item-title">
+		<input type="text" name="name" value="{{item.name}}" placeholder="{{localize 'DOLMEN.Item.Name'}}">
+		<span class="item-type">{{localize (concat "TYPES.Item." item.type)}}</span>
+	</div>
+</header>

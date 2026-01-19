@@ -194,7 +194,7 @@ export class AdventurerDataModel extends ActorDataModel {
 					required: true,
 					blank: false,
 					initial: "weight",
-					choices: ["weight", "slots"]
+					choices: ["weight","treasure", "slots"]
 				}),
 				current: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 				max: new NumberField({ required: true, integer: true, min: 0, initial: 40 })
@@ -273,21 +273,41 @@ export class CreatureDataModel extends ActorDataModel {
 /*  Item Models                                 */
 /* -------------------------------------------- */
 
-class ItemDataModel extends foundry.abstract.TypeDataModel {
+export class ItemDataModel extends foundry.abstract.TypeDataModel {
 	static defineSchema() {
 		return {
-			cost: new NumberField({ 
-				required: true, 
-				integer: true, 
-				min: 0, 
+			cost: new NumberField({
+				required: true,
+				integer: true,
+				min: 0,
 				initial: 0 }),
-			weight: new NumberField({ 
-				required: true, 
-				min: 0, 
-				initial: 0 })
+			weightSlots: new NumberField({
+				required: true,
+				min: 0,
+				initial: 0 }),
+			weightCoins: new NumberField({
+				required: true,
+				min: 0,
+				initial: 0 }),
+			equipped: new foundry.data.fields.BooleanField({
+				required: true,
+				initial: false
+			}),
+			quantity: new NumberField({
+				required: true,
+				integer: true,
+				min: 1,
+				initial: 1 }),
+			notes: new StringField({
+				required: true,
+				blank: true,
+				initial: ""
+			})
 		}
 	}
 }
+
+export class TreasureDataModel extends ItemDataModel {}
 
 export class WeaponDataModel extends ItemDataModel {
 	static defineSchema() {
@@ -307,7 +327,7 @@ export class WeaponDataModel extends ItemDataModel {
 			qualities: new ArrayField(
 				new StringField({ 
 					blank: false, 
-					choices: ["armor-piercing", "brace", "charge", "melee", "missile", "reach", "reload", "splash", "two-handed"]
+					choices: ["armor-piercing", "brace", "charge", "melee", "missile", "reach", "reload", "splash", "two-handed", "cold-iron", "silver"]
 				}), 
 				{ initial: ["melee"] }),
 			rangeShort: new NumberField({ 
@@ -327,12 +347,6 @@ export class WeaponDataModel extends ItemDataModel {
 				integer: true,
 				min: 0,
 				initial: 0
-			}),
-			materialType: new StringField({ 
-				required: true, 
-				blank: false, 
-				initial: "normal",
-				choices: ["normal", "cold-iron", "silver"]
 			})
 		}
 	}
@@ -379,11 +393,6 @@ export class ForagedDataModel extends ItemDataModel {
 				initial: 6,
 				min: 1,
 				max: 6
-			}),
-			effect: new HTMLField({
-				required: true,
-				blank: false,
-				initial: ""
 			})
 		}
 	}
