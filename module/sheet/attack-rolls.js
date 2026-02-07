@@ -90,15 +90,13 @@ export function getEquippedWeaponsByQuality(sheet, quality) {
  * @param {DolmenSheet} sheet - The sheet instance
  * @returns {object} Unarmed weapon-like object
  */
-export function createUnarmedWeapon(sheet) {
-	const strMod = computeAdjustedValues(sheet.actor).abilities.strength.mod
-	const modStr = strMod >= 0 ? ` + ${strMod}` : ` - ${Math.abs(strMod)}`
+export function createUnarmedWeapon() {
 	return {
 		id: 'unarmed',
 		name: game.i18n.localize('DOLMEN.Attack.Unarmed'),
 		img: 'icons/skills/melee/unarmed-punch-fist.webp',
 		system: {
-			damage: `1d2${modStr}`,
+			damage: '1d2',
 			size: 'small',
 			qualities: ['melee']
 		}
@@ -279,6 +277,8 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 		const formula = damageFormula || weapon.system.damage
 		const roll = new Roll(formula)
 		await roll.evaluate()
+		// Enforce minimum 1 damage
+		if (roll.total < 1) roll._total = 1
 		rolls.push(roll)
 
 		damageData = {
@@ -315,25 +315,6 @@ export async function rollAttack(sheet, weapon, attackType, traitBonus = 0, trai
 	return performAttackRoll(sheet, weapon, attackType, { traitBonus, traitName })
 }
 
-/**
- * Perform an attack roll only (no damage).
- * @param {DolmenSheet} sheet - The sheet instance
- * @param {Item} weapon - The weapon to attack with
- * @param {string} attackType - Either 'melee' or 'missile'
- */
-export async function rollAttackOnly(sheet, weapon, attackType) {
-	return performAttackRoll(sheet, weapon, attackType, { attackOnly: true })
-}
-
-/**
- * Perform a damage roll only (no attack).
- * @param {DolmenSheet} sheet - The sheet instance
- * @param {Item} weapon - The weapon to roll damage for
- * @param {string} attackType - Either 'melee' or 'missile'
- */
-export async function rollDamageOnly(sheet, weapon, attackType) {
-	return performAttackRoll(sheet, weapon, attackType, { damageOnly: true })
-}
 
 /* -------------------------------------------- */
 /*  Melee Attack Flow                           */
@@ -358,8 +339,9 @@ export function onMeleeAttackRoll(sheet, event) {
  * @param {DolmenSheet} sheet - The sheet instance
  * @param {Item[]} weapons - Equipped melee weapons
  * @param {object} position - Position {top, left}
+ * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
  */
-export function openAttackTypeMenu(sheet, weapons, position) {
+export function openAttackTypeMenu(sheet, weapons, position, rollType = null) {
 	const types = [
 		{ id: 'normal', icon: 'fa-swords', nameKey: 'DOLMEN.Attack.Type.Normal' },
 		{ id: 'charge', icon: 'fa-horse-head', nameKey: 'DOLMEN.Attack.Type.Charge' },
@@ -381,10 +363,10 @@ export function openAttackTypeMenu(sheet, weapons, position) {
 			menu.remove()
 
 			if (attackMode === 'push') {
-				const unarmed = createUnarmedWeapon(sheet)
-				setTimeout(() => openModifierPanel(sheet, unarmed, attackMode, position), 0)
+				const unarmed = createUnarmedWeapon()
+				setTimeout(() => openModifierPanel(sheet, unarmed, attackMode, position, true, rollType), 0)
 			} else {
-				setTimeout(() => openMeleeWeaponMenu(sheet, weapons, attackMode, position), 0)
+				setTimeout(() => openMeleeWeaponMenu(sheet, weapons, attackMode, position, rollType), 0)
 			}
 		}
 	})
@@ -396,8 +378,9 @@ export function openAttackTypeMenu(sheet, weapons, position) {
  * @param {Item[]} weapons - Equipped melee weapons
  * @param {string} attackMode - 'normal', 'charge', or 'push'
  * @param {object} position - Position {top, left}
+ * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
  */
-export function openMeleeWeaponMenu(sheet, weapons, attackMode, position) {
+export function openMeleeWeaponMenu(sheet, weapons, attackMode, position, rollType = null) {
 	let html = buildWeaponMenuHtml(sheet, weapons)
 
 	// Add unarmed option (always proficient)
@@ -420,12 +403,12 @@ export function openMeleeWeaponMenu(sheet, weapons, attackMode, position) {
 
 			let weapon
 			if (weaponId === 'unarmed') {
-				weapon = createUnarmedWeapon(sheet)
+				weapon = createUnarmedWeapon()
 			} else {
 				weapon = sheet.actor.items.get(weaponId)
 			}
 			if (weapon) {
-				setTimeout(() => openModifierPanel(sheet, weapon, attackMode, position, proficient), 0)
+				setTimeout(() => openModifierPanel(sheet, weapon, attackMode, position, proficient, rollType), 0)
 			}
 		}
 	})
@@ -571,12 +554,17 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
  * @param {string} attackMode - 'normal', 'charge', or 'push'
  * @param {object} position - Position {top, left}
  * @param {boolean} [proficient=true] - Whether the character is proficient with this weapon
+ * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
  */
-export function openModifierPanel(sheet, weapon, attackMode, position, proficient = true) {
+export function openModifierPanel(sheet, weapon, attackMode, position, proficient = true, rollType = null) {
 	// Remove any existing context menu
 	document.querySelector('.dolmen-weapon-context-menu')?.remove()
 
-	const modifiers = getApplicableMeleeModifiers(sheet, weapon)
+	const isDamageOnly = rollType === 'damage'
+	const allModifiers = getApplicableMeleeModifiers(sheet, weapon)
+	const modifiers = isDamageOnly
+		? allModifiers.filter(m => m.damageBonus || m.damageOverride)
+		: allModifiers
 	const rollLabel = game.i18n.localize('DOLMEN.Attack.Roll')
 
 	// Build HTML
@@ -586,7 +574,12 @@ export function openModifierPanel(sheet, weapon, attackMode, position, proficien
 	if (modifiers.length > 0) {
 		html += '<div class="menu-separator"></div>'
 		for (const mod of modifiers) {
-			const bonusStr = mod.attackBonus >= 0 ? `+${mod.attackBonus}` : `${mod.attackBonus}`
+			let bonusStr
+			if (isDamageOnly) {
+				bonusStr = mod.damageOverride || (mod.damageBonus >= 0 ? `+${mod.damageBonus}` : `${mod.damageBonus}`)
+			} else {
+				bonusStr = mod.attackBonus >= 0 ? `+${mod.attackBonus}` : `${mod.attackBonus}`
+			}
 			html += `
 				<div class="modifier-item" data-mod-id="${mod.id}">
 					<span class="mod-check"></span>
@@ -597,16 +590,18 @@ export function openModifierPanel(sheet, weapon, attackMode, position, proficien
 		}
 	}
 
-	// Numeric modifier grid
-	html += '<div class="menu-separator"></div>'
-	html += '<div class="numeric-grid">'
-	for (const val of [-4, -3, -2, -1]) {
-		html += `<div class="numeric-btn" data-num-mod="${val}">${val}</div>`
+	// Numeric modifier grid (not shown for damage-only)
+	if (!isDamageOnly) {
+		html += '<div class="menu-separator"></div>'
+		html += '<div class="numeric-grid">'
+		for (const val of [-4, -3, -2, -1]) {
+			html += `<div class="numeric-btn" data-num-mod="${val}">${val}</div>`
+		}
+		for (const val of [1, 2, 3, 4]) {
+			html += `<div class="numeric-btn" data-num-mod="${val}">+${val}</div>`
+		}
+		html += '</div>'
 	}
-	for (const val of [1, 2, 3, 4]) {
-		html += `<div class="numeric-btn" data-num-mod="${val}">+${val}</div>`
-	}
-	html += '</div>'
 
 	// Create panel element
 	const panel = document.createElement('div')
@@ -662,7 +657,7 @@ export function openModifierPanel(sheet, weapon, attackMode, position, proficien
 
 		panel.remove()
 		document.removeEventListener('click', closePanel)
-		executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, numericMod, proficient)
+		executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, numericMod, proficient, rollType)
 	})
 
 	setTimeout(() => document.addEventListener('click', closePanel), 0)
@@ -676,8 +671,9 @@ export function openModifierPanel(sheet, weapon, attackMode, position, proficien
  * @param {object[]} selectedModifiers - Array of selected modifier definitions
  * @param {number} numericMod - Manual numeric modifier (-4 to +4)
  * @param {boolean} [proficient=true] - Whether the character is proficient with this weapon
+ * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
  */
-export async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, numericMod, proficient = true) {
+export async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, numericMod, proficient = true, rollType = null) {
 	// Attack type bonuses
 	const attackModeBonus = attackMode === 'charge' ? 2 : attackMode === 'push' ? -4 : 0
 	const proficiencyPenalty = proficient ? 0 : -4
@@ -710,12 +706,18 @@ export async function executeMeleeAttack(sheet, weapon, attackMode, selectedModi
 	const { totalMod } = getAttackModifiers(sheet, 'melee')
 	const finalAttackMod = totalMod + attackModeBonus + modAttackBonus + numericMod + proficiencyPenalty
 
-	// Determine damage formula
+	// Determine damage formula (melee adds STR modifier; damageOverride already includes STR)
 	let damageFormula
 	if (damageOverride) {
 		damageFormula = damageOverride
 	} else {
 		damageFormula = weapon.system.damage
+		const strMod = computeAdjustedValues(sheet.actor).abilities.strength.mod
+		if (strMod !== 0) {
+			damageFormula = strMod > 0
+				? `${damageFormula} + ${strMod}`
+				: `${damageFormula} - ${Math.abs(strMod)}`
+		}
 		if (modDamageBonus !== 0) {
 			damageFormula = modDamageBonus > 0
 				? `${damageFormula} + ${modDamageBonus}`
@@ -727,7 +729,8 @@ export async function executeMeleeAttack(sheet, weapon, attackMode, selectedModi
 	const specialText = isPush ? game.i18n.localize('DOLMEN.Attack.PushEffect') : null
 
 	await performAttackRoll(sheet, weapon, 'melee', {
-		attackOnly: isPush,
+		attackOnly: isPush || rollType === 'attack',
+		damageOnly: !isPush && rollType === 'damage',
 		totalAttackMod: finalAttackMod,
 		damageFormula,
 		modifierNames,
@@ -759,11 +762,48 @@ export function onMissileAttackRoll(sheet, event) {
 		left: event.currentTarget.getBoundingClientRect().left
 	}
 
-	if (weapons.length === 1 && isWeaponProficient(sheet, weapons[0])) {
-		openMissileModifierPanel(sheet, weapons[0], position, true)
-	} else {
-		openMissileWeaponMenu(sheet, weapons, position)
-	}
+	openMissileRangeMenu(sheet, weapons, position)
+}
+
+/**
+ * Open range selection menu for missile attacks (Close / Medium / Long).
+ * @param {DolmenSheet} sheet - The sheet instance
+ * @param {Item[]} weapons - Equipped missile weapons
+ * @param {object} position - Position {top, left}
+ * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
+ */
+export function openMissileRangeMenu(sheet, weapons, position, rollType = null) {
+	const ranges = [
+		{ id: 'close', mod: 1, nameKey: 'DOLMEN.Attack.Range.Close' },
+		{ id: 'medium', mod: 0, nameKey: 'DOLMEN.Attack.Range.Medium' },
+		{ id: 'long', mod: -1, nameKey: 'DOLMEN.Attack.Range.Long' }
+	]
+
+	const html = ranges.map(r => {
+		const modStr = r.mod > 0 ? `(+${r.mod})` : r.mod === 0 ? '(0)' : `(${r.mod})`
+		return `
+		<div class="weapon-menu-item" data-range-mod="${r.mod}" data-range-name="${game.i18n.localize(r.nameKey)}">
+			<span class="weapon-name">${game.i18n.localize(r.nameKey)}</span>
+			<span class="weapon-damage">${modStr}</span>
+		</div>
+	`
+	}).join('')
+
+	createContextMenu(sheet, {
+		html,
+		position,
+		onItemClick: (item, menu) => {
+			const rangeMod = parseInt(item.dataset.rangeMod)
+			const rangeName = item.dataset.rangeName
+			menu.remove()
+
+			if (weapons.length === 1 && isWeaponProficient(sheet, weapons[0])) {
+				setTimeout(() => openMissileModifierPanel(sheet, weapons[0], position, true, rollType, rangeMod, rangeName), 0)
+			} else {
+				setTimeout(() => openMissileWeaponMenu(sheet, weapons, position, rollType, rangeMod, rangeName), 0)
+			}
+		}
+	})
 }
 
 /**
@@ -771,8 +811,11 @@ export function onMissileAttackRoll(sheet, event) {
  * @param {DolmenSheet} sheet - The sheet instance
  * @param {Item[]} weapons - Equipped missile weapons
  * @param {object} position - Position {top, left}
+ * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
+ * @param {number} [rangeMod=0] - Range modifier to attack
+ * @param {string|null} [rangeName=null] - Range name for chat badge
  */
-export function openMissileWeaponMenu(sheet, weapons, position) {
+export function openMissileWeaponMenu(sheet, weapons, position, rollType = null, rangeMod = 0, rangeName = null) {
 	createContextMenu(sheet, {
 		html: buildWeaponMenuHtml(sheet, weapons),
 		position,
@@ -781,7 +824,7 @@ export function openMissileWeaponMenu(sheet, weapons, position) {
 			const proficient = item.dataset.proficient !== 'false'
 			menu.remove()
 			if (weapon) {
-				setTimeout(() => openMissileModifierPanel(sheet, weapon, position, proficient), 0)
+				setTimeout(() => openMissileModifierPanel(sheet, weapon, position, proficient, rollType, rangeMod, rangeName), 0)
 			}
 		}
 	})
@@ -856,12 +899,19 @@ export function getApplicableMissileModifiers(sheet, weapon) {
  * @param {object} weapon - Selected missile weapon
  * @param {object} position - Position {top, left}
  * @param {boolean} proficient - Whether the character is proficient with this weapon
+ * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
+ * @param {number} [rangeMod=0] - Range modifier to attack
+ * @param {string|null} [rangeName=null] - Range name for chat badge
  */
-export function openMissileModifierPanel(sheet, weapon, position, proficient = true) {
+export function openMissileModifierPanel(sheet, weapon, position, proficient = true, rollType = null, rangeMod = 0, rangeName = null) {
 	// Remove any existing context menu
 	document.querySelector('.dolmen-weapon-context-menu')?.remove()
 
-	const modifiers = getApplicableMissileModifiers(sheet, weapon)
+	const isDamageOnly = rollType === 'damage'
+	const allModifiers = getApplicableMissileModifiers(sheet, weapon)
+	const modifiers = isDamageOnly
+		? allModifiers.filter(m => m.damageBonus || m.damageOverride)
+		: allModifiers
 	const rollLabel = game.i18n.localize('DOLMEN.Attack.Roll')
 
 	// Build HTML
@@ -871,7 +921,12 @@ export function openMissileModifierPanel(sheet, weapon, position, proficient = t
 	if (modifiers.length > 0) {
 		html += '<div class="menu-separator"></div>'
 		for (const mod of modifiers) {
-			const bonusStr = mod.attackBonus >= 0 ? `+${mod.attackBonus}` : `${mod.attackBonus}`
+			let bonusStr
+			if (isDamageOnly) {
+				bonusStr = mod.damageOverride || (mod.damageBonus >= 0 ? `+${mod.damageBonus}` : `${mod.damageBonus}`)
+			} else {
+				bonusStr = mod.attackBonus >= 0 ? `+${mod.attackBonus}` : `${mod.attackBonus}`
+			}
 			html += `
 				<div class="modifier-item" data-mod-id="${mod.id}">
 					<span class="mod-check"></span>
@@ -882,16 +937,18 @@ export function openMissileModifierPanel(sheet, weapon, position, proficient = t
 		}
 	}
 
-	// Numeric modifier grid
-	html += '<div class="menu-separator"></div>'
-	html += '<div class="numeric-grid">'
-	for (const val of [-4, -3, -2, -1]) {
-		html += `<div class="numeric-btn" data-num-mod="${val}">${val}</div>`
+	// Numeric modifier grid (not shown for damage-only)
+	if (!isDamageOnly) {
+		html += '<div class="menu-separator"></div>'
+		html += '<div class="numeric-grid">'
+		for (const val of [-4, -3, -2, -1]) {
+			html += `<div class="numeric-btn" data-num-mod="${val}">${val}</div>`
+		}
+		for (const val of [1, 2, 3, 4]) {
+			html += `<div class="numeric-btn" data-num-mod="${val}">+${val}</div>`
+		}
+		html += '</div>'
 	}
-	for (const val of [1, 2, 3, 4]) {
-		html += `<div class="numeric-btn" data-num-mod="${val}">+${val}</div>`
-	}
-	html += '</div>'
 
 	// Create panel element
 	const panel = document.createElement('div')
@@ -945,7 +1002,7 @@ export function openMissileModifierPanel(sheet, weapon, position, proficient = t
 
 		panel.remove()
 		document.removeEventListener('click', closePanel)
-		executeMissileAttack(sheet, weapon, selectedModifiers, numericMod, proficient)
+		executeMissileAttack(sheet, weapon, selectedModifiers, numericMod, proficient, rollType, rangeMod, rangeName)
 	})
 
 	setTimeout(() => document.addEventListener('click', closePanel), 0)
@@ -958,8 +1015,11 @@ export function openMissileModifierPanel(sheet, weapon, position, proficient = t
  * @param {object[]} selectedModifiers - Array of selected modifier definitions
  * @param {number} numericMod - Manual numeric modifier (-4 to +4)
  * @param {boolean} proficient - Whether the character is proficient with this weapon
+ * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
+ * @param {number} [rangeMod=0] - Range modifier to attack
+ * @param {string|null} [rangeName=null] - Range name for chat badge
  */
-export async function executeMissileAttack(sheet, weapon, selectedModifiers, numericMod, proficient = true) {
+export async function executeMissileAttack(sheet, weapon, selectedModifiers, numericMod, proficient = true, rollType = null, rangeMod = 0, rangeName = null) {
 	let modAttackBonus = 0
 	let modDamageBonus = 0
 	const modifierNames = []
@@ -979,9 +1039,9 @@ export async function executeMissileAttack(sheet, weapon, selectedModifiers, num
 		modifierNames.push(numericMod > 0 ? `+${numericMod}` : `${numericMod}`)
 	}
 
-	// Compute total attack modifier
+	// Compute total attack modifier (includes range modifier)
 	const { totalMod } = getAttackModifiers(sheet, 'missile')
-	const finalAttackMod = totalMod + modAttackBonus + numericMod
+	const finalAttackMod = totalMod + modAttackBonus + numericMod + rangeMod
 
 	// Determine damage formula
 	let damageFormula = weapon.system.damage
@@ -992,9 +1052,12 @@ export async function executeMissileAttack(sheet, weapon, selectedModifiers, num
 	}
 
 	await performAttackRoll(sheet, weapon, 'missile', {
+		attackOnly: rollType === 'attack',
+		damageOnly: rollType === 'damage',
 		totalAttackMod: finalAttackMod,
 		damageFormula,
-		modifierNames
+		modifierNames,
+		attackModeName: rangeName
 	})
 }
 
@@ -1011,7 +1074,8 @@ export async function executeMissileAttack(sheet, weapon, selectedModifiers, num
 export function onAttackRollContextMenu(sheet, attackType, event) {
 	const weapons = getEquippedWeaponsByQuality(sheet, attackType)
 
-	if (weapons.length === 0) {
+	// Only check for empty weapons on missile (melee always has unarmed)
+	if (attackType === 'missile' && weapons.length === 0) {
 		const typeName = game.i18n.localize(`DOLMEN.Item.Quality.${attackType}`)
 		ui.notifications.warn(game.i18n.format('DOLMEN.Attack.NoWeapon', { type: typeName }))
 		return
@@ -1024,7 +1088,8 @@ export function onAttackRollContextMenu(sheet, attackType, event) {
 }
 
 /**
- * Open a context menu to choose roll type (attack only or damage only).
+ * Open a context menu to choose roll type (attack only or damage only),
+ * then continue into the standard melee or missile attack flow.
  * @param {DolmenSheet} sheet - The sheet instance
  * @param {Item[]} weapons - Array of weapons to potentially roll with
  * @param {string} attackType - Either 'melee' or 'missile'
@@ -1052,41 +1117,26 @@ export function openRollTypeContextMenu(sheet, weapons, attackType, position) {
 			const rollType = item.dataset.rollType
 			menu.remove()
 
-			if (weapons.length === 1) {
-				if (rollType === 'attack') {
-					rollAttackOnly(sheet, weapons[0], attackType)
-				} else if (rollType === 'damage') {
-					rollDamageOnly(sheet, weapons[0], attackType)
+			if (attackType === 'melee') {
+				if (rollType === 'damage') {
+					// Damage-only skips attack type selection, uses 'normal'
+					setTimeout(() => openMeleeWeaponMenu(sheet, weapons, 'normal', position, rollType), 0)
+				} else {
+					setTimeout(() => openAttackTypeMenu(sheet, weapons, position, rollType), 0)
 				}
 			} else {
-				setTimeout(() => openWeaponSelectionMenu(sheet, weapons, attackType, rollType, position), 0)
-			}
-		}
-	})
-}
-
-/**
- * Open weapon selection menu after roll type has been chosen.
- * @param {DolmenSheet} sheet - The sheet instance
- * @param {Item[]} weapons - Array of available weapons
- * @param {string} attackType - Either 'melee' or 'missile'
- * @param {string} rollType - Either 'attack' or 'damage'
- * @param {object} position - Position object with top and left properties
- */
-export function openWeaponSelectionMenu(sheet, weapons, attackType, rollType, position) {
-	createContextMenu(sheet, {
-		html: buildWeaponMenuHtml(sheet, weapons),
-		position,
-		onItemClick: (item, menu) => {
-			const weapon = sheet.actor.items.get(item.dataset.weaponId)
-			if (weapon) {
-				if (rollType === 'attack') {
-					rollAttackOnly(sheet, weapon, attackType)
-				} else if (rollType === 'damage') {
-					rollDamageOnly(sheet, weapon, attackType)
+				if (rollType === 'damage') {
+					// Damage-only skips range selection (range only affects attack)
+					if (weapons.length === 1 && isWeaponProficient(sheet, weapons[0])) {
+						setTimeout(() => openMissileModifierPanel(sheet, weapons[0], position, true, rollType), 0)
+					} else {
+						setTimeout(() => openMissileWeaponMenu(sheet, weapons, position, rollType), 0)
+					}
+				} else {
+					// Attack-only goes through range selection
+					setTimeout(() => openMissileRangeMenu(sheet, weapons, position, rollType), 0)
 				}
 			}
-			menu.remove()
 		}
 	})
 }

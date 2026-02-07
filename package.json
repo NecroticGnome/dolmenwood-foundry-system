@@ -4,9 +4,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "clean-css": "^5.3.3",
     "globals": "^17.0.0"
   },
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build:css": "node scripts/build-css.js"
   }
 }

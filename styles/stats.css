@@ -1,5 +1,64 @@
 /* -------------------------------------------- */
-/*  Main Tab - Ability Scores Grid              */
+/*  Main Tab - Header Grid                      */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-content .details {
+	display: flex;
+	flex-direction: column;
+}
+
+.sheet.dolmen .tab-content .header-details {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-content .header-field {
+	display: flex;
+	flex-direction: column;
+}
+
+.sheet.dolmen .tab-content .dual-select {
+	display: flex;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen .tab-content .dual-select select {
+	flex: 1;
+}
+
+/* -------------------------------------------- */
+/*  Stats Tab - Header Portrait                  */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-content .portrait-section {
+	padding: 0;
+	overflow: hidden;
+}
+
+.sheet.dolmen .tab-content .portrait-section h2 {
+	width: 11.5rem;
+	padding: 0.25rem;
+	margin: 0;
+	position: absolute;
+	z-index: 1;
+}
+
+.sheet.dolmen .tab-content .portrait-container {
+	position: relative;
+	width: 11.5rem;
+	height: 100%;
+}
+
+.sheet.dolmen .tab-content .portrait-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	cursor: pointer;
+}
+
+/* -------------------------------------------- */
+/*  Stats Tab - Ability Scores Grid              */
 /* -------------------------------------------- */
 
 .sheet.dolmen .tab-content .abilities-grid {
@@ -66,7 +125,7 @@
 }
 
 /* -------------------------------------------- */
-/*  Main Tab - Combat Grid                      */
+/*  Stats Tab - Combat Grid                      */
 /* -------------------------------------------- */
 
 .sheet.dolmen .tab-content .combat .combat-grid {
@@ -105,7 +164,7 @@
 }
 
 /* -------------------------------------------- */
-/*  Main Tab - Save Targets Grid                */
+/*  Stats Tab - Save Targets Grid                */
 /* -------------------------------------------- */
 
 .sheet.dolmen .tab-content .saves-grid {
@@ -138,7 +197,7 @@
 }
 
 /* -------------------------------------------- */
-/*  Main Tab - Movement Grid                    */
+/*  Stats Tab - Movement Grid                    */
 /* -------------------------------------------- */
 
 .sheet.dolmen .tab-content .movement-grid {
@@ -159,7 +218,7 @@
 }
 
 /* -------------------------------------------- */
-/*  Main Tab - Skills Grid                      */
+/*  Stats Tab - Skills Grid                      */
 /* -------------------------------------------- */
 
 .sheet.dolmen .tab-content .skills-grid {
@@ -260,32 +319,4 @@
 	border-color: var(--dolmen-color-h1);
 	color: var(--dolmen-color-h1);
 	background-color: var(--dolmen-color-inner-background);
-}
-
-/* -------------------------------------------- */
-/*  Inventory Tab - Encumbrance Grid            */
-/* -------------------------------------------- */
-
-.sheet.dolmen .tab-content .encumbrance-grid {
-	display: grid;
-	grid-template-columns: auto 4rem 4rem;
-	gap: 0.5rem;
-}
-
-.sheet.dolmen .tab-content .encumbrance-stat input {
-	width: 4rem;
-}
-
-/* -------------------------------------------- */
-/*  Inventory Tab - Coins Grid                  */
-/* -------------------------------------------- */
-
-.sheet.dolmen .tab-content .coins-grid {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 0.5rem;
-}
-
-.sheet.dolmen .tab-content .coin input {
-	width: 4rem;
 }

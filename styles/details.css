@@ -1,21 +1,4 @@
 /* -------------------------------------------- */
-/*  Notes Tab                                   */
-/* -------------------------------------------- */
-
-.sheet.dolmen .tab-content .notes {
-	height: fill-available;
-	height: -webkit-fill-available;
-}
-
-.sheet.dolmen .tab-content .editor-container {
-	height: calc(100% - 2rem);
-}
-
-.sheet.dolmen .tab-content .editor-container .editor {
-	height: 100%;
-}
-
-/* -------------------------------------------- */
 /*  Details Tab - Extra Details                 */
 /* -------------------------------------------- */
 
@@ -199,17 +182,4 @@
 
 .sheet.dolmen .tab-adjustments .adj-grid-other {
 	grid-template-columns: repeat(9, 1fr);
-}
-
-/* -------------------------------------------- */
-/*  Settings Tab                                */
-/* -------------------------------------------- */
-
-.sheet.dolmen .tab-settings .boxed-section.unit-system {
-	min-height: 4.5rem;
-}
-
-.sheet.dolmen .tab-settings .boxed-section.unit-system input {
-	border: 0;
-	box-shadow: none;
 }

@@ -460,6 +460,11 @@
 				"Charge": "Charge",
 				"Push": "Push"
 			},
+			"Range": {
+				"Close": "Close",
+				"Medium": "Medium",
+				"Long": "Long"
+			},
 			"Mod": {
 				"Backstab": "Backstab",
 				"Trophy": "Trophy",

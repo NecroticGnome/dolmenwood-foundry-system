@@ -1,0 +1,16 @@
+/* -------------------------------------------- */
+/*  Notes Tab                                   */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-content .notes {
+	height: fill-available;
+	height: -webkit-fill-available;
+}
+
+.sheet.dolmen .tab-content .editor-container {
+	height: calc(100% - 2rem);
+}
+
+.sheet.dolmen .tab-content .editor-container .editor {
+	height: 100%;
+}

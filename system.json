@@ -61,6 +61,14 @@
     {
       "src": "styles/traits.css",
       "layer": "system"
+    },
+    {
+      "src": "styles/notes.css",
+      "layer": "system"
+    },
+    {
+      "src": "styles/settings.css",
+      "layer": "system"
     }
   ],
   "languages": [
