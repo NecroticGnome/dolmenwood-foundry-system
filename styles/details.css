@@ -1,0 +1,215 @@
+/* -------------------------------------------- */
+/*  Notes Tab                                   */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-content .notes {
+	height: fill-available;
+	height: -webkit-fill-available;
+}
+
+.sheet.dolmen .tab-content .editor-container {
+	height: calc(100% - 2rem);
+}
+
+.sheet.dolmen .tab-content .editor-container .editor {
+	height: 100%;
+}
+
+/* -------------------------------------------- */
+/*  Details Tab - Extra Details                 */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-details .extra-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+/* -------------------------------------------- */
+/*  Details Tab - Kindred Details               */
+/* -------------------------------------------- */
+.sheet.dolmen .tab-details .physical-grid {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-details .physical-grid .flexrow {
+	align-items: center;
+}
+
+.sheet.dolmen .tab-details .physical-grid .flexrow .rollable {
+	display: contents;
+	font-size: 1.1rem;
+	font-weight: 300;
+}
+
+.sheet.dolmen .tab-details .physical-grid .flexrow .rollable::before {
+	margin-left: -0.4rem;
+	margin-right: 0.4rem;
+}
+
+/* Hide metric inputs when imperial is selected */
+.sheet.dolmen .tab-details .physical-grid[data-unit-system="imperial"] .metric-unit {
+	display: none;
+}
+
+/* Hide imperial inputs when metric is selected */
+.sheet.dolmen .tab-details .physical-grid[data-unit-system="metric"] .imperial-unit {
+	display: none;
+}
+
+/* Unit toggle radio buttons */
+.sheet.dolmen .tab-details .header-field.unit-toggle {
+	flex-direction: row;
+	align-items: center;
+	align-self: end;
+	gap: 1rem;
+	margin-bottom: 0.25rem;
+	justify-content: center;
+}
+
+.sheet.dolmen .tab-details .header-field.unit-toggle .radio-label {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	font-size: 0.8rem;
+	cursor: pointer;
+}
+
+.sheet.dolmen .tab-details .header-field.unit-toggle input[type="radio"] {
+	margin: 0;
+	cursor: pointer;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+}
+
+/* -------------------------------------------- */
+/*  Details Tab - Class Details                 */
+/* -------------------------------------------- */
+.sheet.dolmen .tab-details .class-grid {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 0.5rem;
+}
+
+/* -------------------------------------------- */
+/*  Adjustments Tab - Custom Adjustments        */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-adjustments .three-columns {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adjustments-content h2 {
+	margin-bottom: 0.25rem;
+}
+
+.sheet.dolmen .tab-adjustments .adjustments-hint {
+	font-size: 0.75rem;
+	color: var(--dolmen-color-h3);
+	font-style: italic;
+	text-align: center;
+}
+
+.sheet.dolmen .tab-adjustments .adj-group {
+	border: 1px solid var(--dolmen-color-box-border);
+	padding: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-group legend {
+	font-weight: bold;
+	font-size: 0.85rem;
+	color: var(--dolmen-color-h2);
+	padding: 0 0.25rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid {
+	display: grid;
+	gap: 0.25rem 0.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-abilities {
+	grid-template-columns: repeat(6, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-header {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-header span:first-child {
+	min-width: 2.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-col-label {
+	width: 2.5rem;
+	text-align: center;
+	font-size: 0.7rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h3);
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-combat,
+.sheet.dolmen .tab-adjustments .adj-grid-movement {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-skills {
+	grid-template-columns: repeat(9, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-abilities .adj-row {
+	flex-direction: row;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-saves {
+	grid-template-columns: repeat(6, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-row {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	flex-direction: column;
+}
+
+.sheet.dolmen .tab-adjustments .adj-label {
+	font-size: 0.75rem;
+	min-width: 2.5rem;
+	color: var(--dolmen-color-h3);
+	text-align: center;
+}
+
+.sheet.dolmen .tab-adjustments .adj-row input[type="number"] {
+	width: 3rem;
+	padding: 0.125rem 0.25rem;
+	font-size: 0.85rem;
+	text-align: center;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-abilities .adj-row input[type="number"] {
+	width: 2.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-other {
+	grid-template-columns: repeat(9, 1fr);
+}
+
+/* -------------------------------------------- */
+/*  Settings Tab                                */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-settings .boxed-section.unit-system {
+	min-height: 4.5rem;
+}
+
+.sheet.dolmen .tab-settings .boxed-section.unit-system input {
+	border: 0;
+	box-shadow: none;
+}

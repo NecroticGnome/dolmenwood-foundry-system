@@ -63,6 +63,17 @@
 	--dolmen-color-header-magic: #2a1b39;
 
 	--dolmen-color-adjusted: #ff6b6b;
+
+	--dolmen-color-text-muted: #b0a8a0;
+	--dolmen-color-accent: #8b4513;
+	--dolmen-color-box-highlight: rgba(139, 69, 19, 0.15);
+
+	--dolmen-color-success: #228b22;
+	--dolmen-color-failure: #cc0000;
+	--dolmen-color-roll-ability: #4a6fa5;
+	--dolmen-color-roll-save: #6b4c9a;
+	--dolmen-color-roll-skill: #4a8f6f;
+	--dolmen-color-roll-trait: #7a5a8a;
 }
 
 .theme-light .dolmen {
@@ -90,4 +101,15 @@
 	--dolmen-color-header-magic: #e0d0f0;
 
 	--dolmen-color-adjusted: #c92a2a;
+
+	--dolmen-color-text-muted: #6b5e53;
+	--dolmen-color-accent: #8b4513;
+	--dolmen-color-box-highlight: rgba(139, 69, 19, 0.1);
+
+	--dolmen-color-success: #228b22;
+	--dolmen-color-failure: #cc0000;
+	--dolmen-color-roll-ability: #4a6fa5;
+	--dolmen-color-roll-save: #6b4c9a;
+	--dolmen-color-roll-skill: #4a8f6f;
+	--dolmen-color-roll-trait: #7a5a8a;
 }

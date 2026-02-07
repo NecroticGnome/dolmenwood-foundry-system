@@ -89,13 +89,13 @@
 /* Critical hit styling */
 .dolmen.attack-roll .roll-section.critical .inline-roll,
 .dolmen.attack-roll .roll-section.critical .inline-result {
-	color: #228b22;
+	color: var(--dolmen-color-success);
 }
 
 /* Fumble styling */
 .dolmen.attack-roll .roll-section.fumble .inline-roll,
 .dolmen.attack-roll .roll-section.fumble .inline-result {
-	color: #c00;
+	color: var(--dolmen-color-failure);
 }
 
 .dolmen.attack-roll .roll-result .roll-label {
@@ -105,11 +105,11 @@
 }
 
 .dolmen.attack-roll .roll-section.critical .roll-label {
-	color: #228b22;
+	color: var(--dolmen-color-success);
 }
 
 .dolmen.attack-roll .roll-section.fumble .roll-label {
-	color: #c00;
+	color: var(--dolmen-color-failure);
 }
 
 .dolmen.attack-roll .roll-breakdown {
@@ -148,15 +148,15 @@
 
 /* Different header colors for different roll types */
 .dolmen.ability-roll .roll-header.ability {
-	background-color: #4a6fa5;
+	background-color: var(--dolmen-color-roll-ability);
 }
 
 .dolmen.save-roll .roll-header.save {
-	background-color: #6b4c9a;
+	background-color: var(--dolmen-color-roll-save);
 }
 
 .dolmen.skill-roll .roll-header.skill {
-	background-color: #4a8f6f;
+	background-color: var(--dolmen-color-roll-skill);
 }
 
 .dolmen.ability-roll .roll-header i,
@@ -252,36 +252,36 @@
 .dolmen.ability-roll .roll-section.success,
 .dolmen.save-roll .roll-section.success,
 .dolmen.skill-roll .roll-section.success {
-	border-color: #228b22;
+	border-color: var(--dolmen-color-success);
 }
 
 .dolmen.ability-roll .roll-label.success,
 .dolmen.save-roll .roll-label.success,
 .dolmen.skill-roll .roll-label.success {
 	background-color: rgba(34, 139, 34, 0.15);
-	color: #228b22;
+	color: var(--dolmen-color-success);
 }
 
 /* Failure styling */
 .dolmen.ability-roll .roll-section.failure,
 .dolmen.save-roll .roll-section.failure,
 .dolmen.skill-roll .roll-section.failure {
-	border-color: #c00;
+	border-color: var(--dolmen-color-failure);
 }
 
 .dolmen.ability-roll .roll-label.failure,
 .dolmen.save-roll .roll-label.failure,
 .dolmen.skill-roll .roll-label.failure {
 	background-color: rgba(204, 0, 0, 0.15);
-	color: #c00;
+	color: var(--dolmen-color-failure);
 }
 
 /* Critical success styling */
 .dolmen.ability-roll .roll-section.critical,
 .dolmen.save-roll .roll-section.critical,
 .dolmen.skill-roll .roll-section.critical {
-	border-color: #228b22;
-	background-color: rgba(34, 139, 34, 0.1);
+	border-color: var(--dolmen-color-success);
+	background-color: rgba(34, 139, 34, 0.1); /* critical background */
 }
 
 .dolmen.ability-roll .roll-section.critical .inline-roll,
@@ -301,7 +301,7 @@
 .dolmen.ability-roll .roll-section.fumble,
 .dolmen.save-roll .roll-section.fumble,
 .dolmen.skill-roll .roll-section.fumble {
-	border-color: #c00;
+	border-color: var(--dolmen-color-failure);
 	background-color: rgba(204, 0, 0, 0.1);
 }
 
@@ -344,7 +344,7 @@
 
 .dolmen.trait-roll .trait-header {
 	padding: 0.5rem;
-	background-color: #7a5a8a;
+	background-color: var(--dolmen-color-roll-trait);
 	color: var(--dolmen-color-background);
 }
 
@@ -385,12 +385,12 @@
 
 .dolmen.trait-roll .roll-label.success {
 	background-color: rgba(34, 139, 34, 0.15);
-	color: #228b22;
+	color: var(--dolmen-color-success);
 }
 
 .dolmen.trait-roll .roll-label.failure {
 	background-color: rgba(204, 0, 0, 0.15);
-	color: #c00;
+	color: var(--dolmen-color-failure);
 }
 
 .dolmen.trait-roll .roll-breakdown {

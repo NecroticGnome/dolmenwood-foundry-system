@@ -2,13 +2,13 @@
 /*  Tooltips                                    */
 /* -------------------------------------------- */
 
-.tooltip {
+.dolmen .tooltip {
 	position: relative;
 	display: inline-block;
 	cursor: pointer;
 }
 
-.tooltiptext {
+.dolmen .tooltiptext {
 	visibility: hidden;
 	width: 120px;
 	background-color: var(--dolmen-color-h3);
@@ -26,7 +26,7 @@
 	align-self: end;
 }
 
-.tooltiptext::after {
+.dolmen .tooltiptext::after {
 	content: "";
 	position: absolute;
 	top: 100%;
@@ -37,7 +37,7 @@
 	border-color: var(--dolmen-color-h3) transparent transparent transparent;
 }
 
-.tooltip:hover .tooltiptext {
+.dolmen .tooltip:hover .tooltiptext {
 	visibility: visible;
 }
 
@@ -137,7 +137,7 @@
 }
 
 .dolmen-weapon-context-menu .weapon-menu-item.nonproficient .weapon-name {
-	color: #c00;
+	color: var(--dolmen-color-failure);
 }
 
 .dolmen-weapon-context-menu .weapon-menu-item.nonproficient .weapon-penalty {
@@ -145,7 +145,7 @@
 }
 
 .dolmen-weapon-context-menu .weapon-menu-item.nonproficient:hover .weapon-name {
-	color: #faa;
+	color: #ffaaaa;
 }
 
 /* -------------------------------------------- */

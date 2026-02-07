@@ -149,7 +149,7 @@
 	gap: 0.35rem;
 	margin-top: 0.5rem;
 	padding: 0.35rem 0.5rem;
-	background-color: rgba(var(--dolmen-color-accent-rgb, 139, 69, 19), 0.1);
+	background-color: var(--dolmen-color-accent);
 	border-left: 3px solid var(--dolmen-color-h2);
 	border-radius: 0.25rem;
 	font-size: 0.7rem;
@@ -197,28 +197,4 @@
 	padding: 0.5rem;
 	background-color: var(--dolmen-color-box-highlight);
 	border-radius: 0.25rem;
-}
-
-/* Trait Roll Chat Messages */
-.dolmen.trait-roll {
-	padding: 0.5rem;
-}
-
-.dolmen.trait-roll .trait-header h3 {
-	font-family: var(--dolmen-font-header);
-	font-size: 1rem;
-	margin: 0 0 0.5rem 0;
-	text-transform: uppercase;
-}
-
-.dolmen.trait-roll .roll-result {
-	text-align: center;
-	margin: 0.5rem 0;
-}
-
-.dolmen.trait-roll .roll-breakdown {
-	display: block;
-	text-align: center;
-	font-size: 0.75rem;
-	color: var(--dolmen-color-text-muted);
 }

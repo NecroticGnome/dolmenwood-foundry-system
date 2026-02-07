@@ -31,6 +31,14 @@
       "layer": "system"
     },
     {
+      "src": "styles/stats.css",
+      "layer": "system"
+    },
+    {
+      "src": "styles/details.css",
+      "layer": "system"
+    },
+    {
       "src": "styles/inventory.css",
       "layer": "system"
     },
