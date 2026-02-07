@@ -1,9 +1,292 @@
 <section class="tab-content tab-magic {{tab.cssClass}}" data-group="primary" data-tab="magic">
-	<!-- Magic Section (placeholder for future) -->
-	<section class="spells boxed-section">
-		<h2>{{localize "DOLMEN.Spells"}}</h2>
-		<div class="spells-container">
-			<!-- Spells will be listed here -->
+	<!-- Magic Sub-tabs Navigation -->
+	<nav class="magic-tabs sub-tabs" data-group="magic">
+		<a class="item {{#if system.arcaneMagic.enabled}}{{else}}disabled{{/if}}" data-tab="arcane" data-group="magic">
+			<i class="fa-solid fa-book-sparkles"></i>
+			<span>{{localize "DOLMEN.Magic.Tabs.Arcane"}}</span>
+		</a>
+		<a class="item {{#if system.fairyMagic.enabled}}{{else}}disabled{{/if}}" data-tab="fairy" data-group="magic">
+			<i class="fa-solid fa-sparkles"></i>
+			<span>{{localize "DOLMEN.Magic.Tabs.Fairy"}}</span>
+		</a>
+		<a class="item {{#if system.holyMagic.enabled}}{{else}}disabled{{/if}}" data-tab="holy" data-group="magic">
+			<i class="fa-solid fa-hands-praying"></i>
+			<span>{{localize "DOLMEN.Magic.Tabs.Holy"}}</span>
+		</a>
+		<a class="item {{#if system.knacks.enabled}}{{else}}disabled{{/if}}" data-tab="knacks" data-group="magic">
+			<i class="fa-solid fa-hand-sparkles"></i>
+			<span>{{localize "DOLMEN.Magic.Tabs.Knacks"}}</span>
+		</a>
+	</nav>
+
+	<!-- Arcane Magic Sub-tab -->
+	<section class="magic-tab-content sub-tab-content" data-group="magic" data-tab="arcane">
+		{{#if system.arcaneMagic.enabled}}
+		<div class="two-columns">
+			<section class="memorized-spells boxed-section">
+				<h2><i class="fas fa-brain-circuit"></i> {{localize "DOLMEN.Magic.Arcane.MemorizedSpells"}}</h2>
+				<div class="spell-list memorized-slots-list" data-spell-list="arcane-memorized">
+					{{#if hasMemorizedSlots}}
+					{{#each memorizedArcaneSlots}}
+					<div class="spell-rank-group">
+						<div class="spell-list-header">
+							<span class="rank-label">{{localize "DOLMEN.Magic.SpellRank"}}</span>
+							<i class="fas {{this.icon}}"></i>
+							<span class="spell-controls-header"></span>
+						</div>
+						{{#each this.slots}}
+						{{#if this.filled}}
+						<div class="spell-row memorized-slot filled" data-item-id="{{this.spell.id}}" data-action="openItem">
+							<div style="mask-image:url('{{this.spell.img}}'); -webkit-mask-image: url('{{this.spell.img}}');" class="spell-image"></div>
+							<span class="spell-name">{{this.spell.name}}</span>
+							<span class="spell-controls">
+								<a class="spell-control" data-action="castSpell" data-item-id="{{this.spell.id}}" title="{{localize 'DOLMEN.Magic.Cast'}}">
+									<i class="fas fa-wand-sparkles"></i>
+								</a>
+								<a class="spell-control" data-action="forgetSpell" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-spell-type="arcane" title="{{localize 'DOLMEN.Magic.Forget'}}">
+									<i class="fas fa-brain-arrow-curved-right"></i>
+								</a>
+							</span>
+						</div>
+						{{else}}
+						<div class="spell-row memorized-slot empty" data-action="memorizeToSlot" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-rank="{{../rank}}" data-spell-type="arcane">
+							<div class="spell-image empty-slot-icon"><i class="fas fa-plus"></i></div>
+							<span class="spell-name empty-slot-label">{{localize "DOLMEN.Magic.EmptySlot"}}</span>
+							<span class="spell-controls"></span>
+						</div>
+						{{/if}}
+						{{/each}}
+					</div>
+					{{/each}}
+					{{else}}
+					<div class="spell-list-empty">
+						<span>{{localize "DOLMEN.Magic.Arcane.NoSlots"}}</span>
+					</div>
+					{{/if}}
+				</div>
+			</section>
+			<section class="known-spells boxed-section">
+				<h2><i class="fa-solid fa-brain"></i> {{localize "DOLMEN.Magic.Arcane.KnownSpells"}}</h2>
+				<div class="spell-list" data-spell-list="arcane">
+					{{#if hasKnownArcaneSpells}}
+					{{#each knownArcaneSpellsByRank}}
+					<div class="spell-rank-group">
+						<div class="spell-list-header">
+							<span class="rank-label">{{localize "DOLMEN.Magic.SpellRank"}}</span>
+							<i class="fas {{this.icon}}"></i>
+							<span class="spell-controls-header"></span>
+						</div>
+						{{#each this.spells}}
+						<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
+							<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="spell-image"></div>
+							<span class="spell-name">{{this.name}}</span>
+							<span class="spell-controls">
+								<a class="spell-control" data-action="memorizeSpell" data-item-id="{{this.id}}" data-spell-type="arcane" title="{{localize 'DOLMEN.Magic.Memorize'}}">
+									<i class="fas fa-brain-arrow-curved-right" style="transform: scaleX(-1);"></i>
+								</a>
+								<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
+									<i class="fas fa-square-x"></i>
+								</a>
+							</span>
+						</div>
+						{{/each}}
+					</div>
+					{{/each}}
+					{{else}}
+					<div class="spell-list-empty">
+						<span>{{localize "DOLMEN.Magic.Arcane.NoKnownSpells"}}</span>
+					</div>
+					{{/if}}
+				</div>
+			</section>
 		</div>
+		{{else}}
+		<div class="magic-disabled">
+			<p>{{localize "DOLMEN.Magic.Disabled"}}</p>
+		</div>
+		{{/if}}
+	</section>
+
+	<!-- Fairy Magic Sub-tab -->
+	<section class="magic-tab-content sub-tab-content" data-group="magic" data-tab="fairy">
+		{{#if system.fairyMagic.enabled}}
+		<div class="two-columns">
+			<section class="glamours boxed-section">
+				<h2>{{localize "DOLMEN.Magic.Fairy.Glamours"}} ({{glamourSpells.length}} / {{system.fairyMagic.glamoursMax}})</h2>
+				<div class="spell-list" data-spell-list="glamour">
+					{{#if hasGlamourSpells}}
+					<div class="spell-rank-group">
+						{{#each glamourSpells}}
+						<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
+							<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="spell-image"></div>
+							<span class="spell-name">{{this.name}}</span>
+							<span class="spell-controls">
+								<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Use'}}">
+									<i class="fas fa-sparkles"></i>
+								</a>
+								<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
+									<i class="fas fa-square-x"></i>
+								</a>
+							</span>
+						</div>
+						{{/each}}
+					</div>
+					{{else}}
+					<div class="spell-list-empty">
+						<span>{{localize "DOLMEN.Magic.Fairy.NoGlamours"}}</span>
+					</div>
+					{{/if}}
+				</div>
+			</section>
+
+			<section class="runes boxed-section">
+				<h2>{{localize "DOLMEN.Magic.Fairy.Runes"}}</h2>
+				<div class="spell-list" data-spell-list="rune">
+					{{#if hasRuneSpells}}
+					{{#each runeSpellsByMagnitude}}
+					<div class="spell-rank-group">
+						<div class="spell-list-header">
+							<i class="fas {{this.icon}}"></i>
+							<span class="rank-label">{{this.label}}</span>
+							<span class="spell-controls-header"></span>
+						</div>
+						{{#each this.runes}}
+						<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
+							<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="spell-image"></div>
+							<span class="spell-name">{{this.name}}</span>
+							<span class="spell-controls">
+								<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Invoke'}}">
+									<i class="fas fa-moon-stars"></i>
+								</a>
+								<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
+									<i class="fas fa-square-x"></i>
+								</a>
+							</span>
+						</div>
+						{{/each}}
+					</div>
+					{{/each}}
+					{{else}}
+					<div class="spell-list-empty">
+						<span>{{localize "DOLMEN.Magic.Fairy.NoRunes"}}</span>
+					</div>
+					{{/if}}
+				</div>
+			</section>
+		</div>
+		{{else}}
+		<div class="magic-disabled">
+			<p>{{localize "DOLMEN.Magic.Disabled"}}</p>
+		</div>
+		{{/if}}
+	</section>
+
+	<!-- Holy Magic Sub-tab -->
+	<section class="magic-tab-content sub-tab-content" data-group="magic" data-tab="holy">
+		{{#if system.holyMagic.enabled}}
+		<section class="holy-spells boxed-section">
+			<h2>{{localize "DOLMEN.Magic.Holy.SpellSlots"}}</h2>
+			<div class="spell-slots-grid holy-grid">
+				{{#each holySpellSlots}}
+				<div class="spell-slot-group">
+					<label>{{this.label}}</label>
+					<div class="slot-tracker">
+						<input type="number" name="system.holyMagic.spellSlots.{{this.key}}.used" value="{{this.used}}" min="0" max="{{this.max}}" class="slot-used">
+						<span class="slot-separator">/</span>
+						<input type="number" name="system.holyMagic.spellSlots.{{this.key}}.max" value="{{this.max}}" min="0" class="slot-max">
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</section>
+
+		<section class="prepared-spells boxed-section">
+			<h2>{{localize "DOLMEN.Magic.Holy.PreparedSpells"}}</h2>
+			<div class="spell-list" data-spell-list="holy">
+				{{#if hasHolySpells}}
+				{{#each holySpellsByRank}}
+				<div class="spell-rank-group">
+					<div class="spell-list-header">
+						<i class="fas fa-sun"></i>
+						<span class="rank-label">{{this.label}}</span>
+						<span class="spell-controls-header"></span>
+					</div>
+					{{#each this.spells}}
+					<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
+						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="spell-image"></div>
+						<span class="spell-name">{{this.name}}</span>
+						<span class="spell-controls">
+							<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Cast'}}">
+								<i class="fas fa-sun"></i>
+							</a>
+							<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
+								<i class="fas fa-square-x"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+				</div>
+				{{/each}}
+				{{else}}
+				<div class="spell-list-empty">
+					<span>{{localize "DOLMEN.Magic.Holy.NoSpells"}}</span>
+				</div>
+				{{/if}}
+			</div>
+		</section>
+		{{else}}
+		<div class="magic-disabled">
+			<p>{{localize "DOLMEN.Magic.Disabled"}}</p>
+		</div>
+		{{/if}}
+	</section>
+
+	<!-- Mossling Knacks Sub-tab -->
+	<section class="magic-tab-content sub-tab-content" data-group="magic" data-tab="knacks">
+		{{#if system.knacks.enabled}}
+		<section class="knack-type boxed-section">
+			<h2>{{localize "DOLMEN.Magic.Knacks.Title"}}</h2>
+			<div class="knack-header">
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Magic.Knacks.Type"}}</label>
+					<select name="system.knacks.type">
+						<option value="">{{localize "DOLMEN.Magic.Knacks.SelectKnack"}}</option>
+						{{#each knackTypeChoices}}
+						<option value="{{@key}}" {{#if (eq @key ../system.knacks.type)}}selected{{/if}}>{{this}}</option>
+						{{/each}}
+					</select>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Magic.Knacks.UnlockedLevel"}}</label>
+					<input type="number" name="system.knacks.level" value="{{system.knacks.level}}" min="0" max="7" disabled>
+				</div>
+			</div>
+		</section>
+
+		{{#if system.knacks.type}}
+		<section class="knack-abilities boxed-section">
+			<h2>{{knackTypeLabel}}</h2>
+			<div class="knack-abilities-list">
+				{{#each knackAbilities}}
+				<div class="knack-ability {{#if this.unlocked}}unlocked{{else}}locked{{/if}}">
+					<div class="knack-level">{{localize "DOLMEN.Level"}} {{this.level}}</div>
+					<div class="knack-description">{{this.description}}</div>
+					{{#unless this.unlocked}}
+					<div class="knack-locked-overlay"><i class="fa-solid fa-lock"></i></div>
+					{{/unless}}
+				</div>
+				{{/each}}
+			</div>
+		</section>
+		{{else}}
+		<div class="knack-prompt">
+			<p>{{localize "DOLMEN.Magic.Knacks.SelectPrompt"}}</p>
+		</div>
+		{{/if}}
+		{{else}}
+		<div class="magic-disabled">
+			<p>{{localize "DOLMEN.Magic.Disabled"}}</p>
+		</div>
+		{{/if}}
 	</section>
 </section>

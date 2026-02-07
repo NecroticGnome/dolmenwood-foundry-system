@@ -38,11 +38,7 @@ export function buildChoicesWithBlank(namespace, keys, blankLabel = " ") {
  * @returns {Object[]} Array of quality option objects with checked state
  */
 export function buildQualityOptions(currentQualities = []) {
-	const qualityIds = [
-		'armor-piercing', 'brace', 'charge', 'melee', 'missile',
-		'reach', 'reload', 'splash', 'two-handed', 'cold-iron', 'silver'
-	]
-	return qualityIds.map(id => ({
+	return CHOICE_KEYS.weaponQualities.map(id => ({
 		id,
 		label: game.i18n.localize(`DOLMEN.Item.Quality.${id}`),
 		checked: currentQualities.includes(id)
@@ -53,15 +49,28 @@ export function buildQualityOptions(currentQualities = []) {
 export const CHOICE_KEYS = {
 	kindreds: ['breggle', 'elf', 'grimalkin', 'human', 'mossling', 'woodgrue'],
 	classes: ['bard', 'cleric', 'enchanter', 'fighter', 'friar', 'hunter', 'knight', 'magician', 'thief'],
-	// Classes that can also be kindreds (for the class dropdown)
 	kindredClasses: ['breggle', 'elf', 'grimalkin', 'mossling', 'woodgrue'],
 	alignments: ['lawful', 'neutral', 'chaotic'],
 	encumbranceMethods: ['weight', 'treasure', 'slots'],
 	moonNames: ['grinning', 'dead', 'beast', 'squamous', 'knights', 'rotting', 'maidens', 'witch', 'robbers', 'goat', 'narrow', 'black'],
 	moonPhases: ['waxing', 'full', 'waning'],
+	months: ['grimvold', 'lymewald', 'haggryme', 'symswald', 'harchment', 'iggwyld', 'chysting', 'lillipythe', 'haelhold', 'reedwryme', 'obthryme', 'braghold'],
 	creatureTypes: ['mortal', 'demi-fey', 'fairy'],
 	sizes: ['small', 'medium', 'large'],
 	armorBulks: ['none', 'light', 'medium', 'heavy'],
 	foragedTypes: ['plant', 'fungus', 'pipeleaf'],
-	spellTypes: ['arcane', 'glamour', 'rune', 'holy', 'knack']
+	spellTypes: ['arcane', 'glamour', 'rune', 'holy'],
+	runeMagnitudes: ['lesser', 'greater', 'mighty'],
+	knackTypes: ['birdFriend', 'lockSinger', 'rootFriend', 'threadWhistling', 'woodKenning', 'yeastMaster'],
+	spellRanks: ['rank1', 'rank2', 'rank3', 'rank4', 'rank5', 'rank6'],
+	combatTalents: ['battleRage', 'cleave', 'defender', 'lastStand', 'leader', 'mainGauche', 'slayer', 'weaponSpecialist'],
+	holyOrders: ['stFaxis', 'stSedge', 'stSignis'],
+	intelligenceTypes: ["mindless", "animal", "semi-intelligent", "sentient", "genius"],
+	weaponQualities: ["armor-piercing", "brace", "charge", "melee", "missile", "reach", "reload", "splash", "two-handed", "cold-iron", "silver"],
+	weaponTypes: [
+		"battleAxe", "club", "crossbow", "dagger", "flail", "handAxe",
+		"holyWater", "javelin", "lance", "longbow", "longsword", "mace",
+		"oil", "polearm", "shortbow", "shortsword", "sling", "spear",
+		"staff", "torch", "twoHandedSword", "warHammer"
+	]
 }

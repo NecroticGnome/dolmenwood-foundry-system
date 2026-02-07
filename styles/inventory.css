@@ -10,6 +10,14 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0;
+	padding-left: 1rem;
+	padding-right: 0.5rem;
+	margin-left: -1rem;
+	margin-right: -0.5rem;
+	margin-bottom: -0.5rem;
+	overflow: hidden;
+	overflow-y: auto;
+	scrollbar-color: var(--dolmen-color-title-background) var(--dolmen-color-background);
 }
 
 /* Item Type Group */
@@ -43,23 +51,23 @@
 
 /* Pastel header backgrounds by type */
 .sheet.dolmen .tab-content .weapon-header {
-	background-color: #f5d0d0;
+	background-color: var(--dolmen-color-header-weapon);
 }
 
 .sheet.dolmen .tab-content .armor-header {
-	background-color: #d0e4f0;
+	background-color: var(--dolmen-color-header-armor);
 }
 
 .sheet.dolmen .tab-content .foraged-header {
-	background-color: #d0f0d0;
+	background-color: var(--dolmen-color-header-foraged);
 }
 
 .sheet.dolmen .tab-content .treasure-header {
-	background-color: #f0e7d0;
+	background-color: var(--dolmen-color-header-treasure);
 }
 
 .sheet.dolmen .tab-content .item-header {
-	background-color: #e0e0e0;
+	background-color: var(--dolmen-color-header-item);
 }
 
 /* -------------------------------------------- */
@@ -105,9 +113,10 @@
 	gap: 0.25rem;
 	padding: 0.2rem;
 	align-items: center;
-	border-bottom: 1px solid var(--dolmen-color-table-row-odd);
+	border-bottom: 1px solid var(--dolmen-color-box-background);
 	transition: background-color 0.1s;
 	line-height: 1rem;
+	cursor: pointer;
 }
 
 .sheet.dolmen .tab-content .item-row:hover {
@@ -135,20 +144,13 @@
 	white-space: nowrap;
 }
 
-.sheet.dolmen .tab-content .item-row .item-name.clickable {
-	cursor: pointer;
-	color: var(--dolmen-color-h2);
-}
-
-.sheet.dolmen .tab-content .item-row .item-name.clickable:hover {
+.sheet.dolmen .tab-content .item-row:hover .item-name {
 	color: var(--dolmen-color-h1);
-	text-decoration: underline;
 }
 
 /* Item Stats */
 .sheet.dolmen .tab-content .item-row .item-damage,
 .sheet.dolmen .tab-content .item-row .item-ac,
-.sheet.dolmen .tab-content .item-row .item-cost,
 .sheet.dolmen .tab-content .item-row .item-quantity,
 .sheet.dolmen .tab-content .item-row .item-notes {
 	text-align: center;

@@ -1,0 +1,224 @@
+/* -------------------------------------------- */
+/*  Traits Tab Styles                           */
+/* -------------------------------------------- */
+
+/* Trait Actions Bar */
+.sheet.dolmen .trait-actions {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen .long-rest-btn {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	background-color: var(--dolmen-color-accent);
+	color: var(--dolmen-color-background);
+	border: none;
+	border-radius: 0.25rem;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.sheet.dolmen .long-rest-btn:hover {
+	background-color: var(--dolmen-color-h2);
+}
+
+/* Traits Grid - two column layout */
+.sheet.dolmen .traits-grid {
+	margin-top: 0.25rem;
+}
+
+/* Individual Trait Box */
+.sheet.dolmen .trait.boxed-section {
+	padding: 0.5rem;
+	margin: 0;
+	min-height: 4rem;
+	background-color: var(--dolmen-color-inner-background);
+}
+
+.sheet.dolmen .trait h3 {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 0.25rem;
+}
+
+.sheet.dolmen .trait h3 .trait-value {
+	font-family: var(--dolmen-font-body);
+	font-size: 0.75rem;
+	background-color: var(--dolmen-color-h2);
+	color: var(--dolmen-color-background);
+	padding: 0.1rem 0.35rem;
+	border-radius: 0.25rem;
+	margin-left: auto;
+}
+
+.sheet.dolmen .trait h3 .rollable {
+	margin-left: 0.25rem;
+	font-size: 0.9rem;
+	height: auto;
+	line-height: 1;
+}
+
+.sheet.dolmen .trait h3 .rollable:hover {
+	color: var(--dolmen-color-accent);
+}
+
+.sheet.dolmen .trait p {
+	font-size: 0.75rem;
+	margin: 0;
+	color: var(--dolmen-color-text-muted);
+	line-height: 1.3;
+}
+
+/* Locked traits (level requirement not met) */
+.sheet.dolmen .trait.locked {
+	opacity: 0.6;
+}
+
+.sheet.dolmen .trait.locked h3 {
+	color: var(--dolmen-color-text-muted);
+}
+
+.sheet.dolmen .trait .locked-message {
+	font-style: italic;
+	color: var(--dolmen-color-text-muted);
+}
+
+/* Trait Usage Tracking */
+.sheet.dolmen .trait-usage {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+	padding: 0.35rem 0.5rem;
+	background-color: var(--dolmen-color-box-highlight);
+	border-radius: 0.25rem;
+	font-size: 0.75rem;
+}
+
+.sheet.dolmen .trait-usage .usage-label {
+	font-weight: 600;
+	color: var(--dolmen-color-text);
+}
+
+.sheet.dolmen .trait-usage .usage-checkboxes {
+	display: flex;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen .trait-usage .trait-usage-checkbox {
+	width: 1rem;
+	height: 1rem;
+	cursor: pointer;
+	accent-color: var(--dolmen-color-accent);
+}
+
+.sheet.dolmen .trait-usage .uses-remaining {
+	color: var(--dolmen-color-text-muted);
+	font-size: 0.7rem;
+}
+
+/* Info Reminder Box */
+.sheet.dolmen .trait .info-reminder {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.35rem;
+	margin-top: 0.5rem;
+	padding: 0.35rem 0.5rem;
+	background-color: var(--dolmen-color-box-highlight);
+	border-left: 3px solid var(--dolmen-color-accent);
+	border-radius: 0.25rem;
+	font-size: 0.7rem;
+	color: var(--dolmen-color-text-muted);
+}
+
+.sheet.dolmen .trait .info-reminder i {
+	color: var(--dolmen-color-accent);
+	margin-top: 0.1rem;
+}
+
+/* Roll Option Reminder Box */
+.sheet.dolmen .trait .roll-option-reminder {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.35rem;
+	margin-top: 0.5rem;
+	padding: 0.35rem 0.5rem;
+	background-color: rgba(var(--dolmen-color-accent-rgb, 139, 69, 19), 0.1);
+	border-left: 3px solid var(--dolmen-color-h2);
+	border-radius: 0.25rem;
+	font-size: 0.7rem;
+	color: var(--dolmen-color-text-muted);
+}
+
+.sheet.dolmen .trait .roll-option-reminder i {
+	color: var(--dolmen-color-h2);
+	margin-top: 0.1rem;
+}
+
+/* Combat Talents Selection (Fighter) */
+.sheet.dolmen .combat-talents-selection {
+	margin-top: 0.5rem;
+}
+
+.sheet.dolmen .talents-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .talent-entry select {
+	width: 100%;
+}
+
+.sheet.dolmen .add-talent-hint {
+	color: var(--dolmen-color-text-muted);
+	font-style: italic;
+}
+
+/* Holy Order Selection (Cleric) */
+.sheet.dolmen .holy-order-selection {
+	margin-top: 0.5rem;
+}
+
+.sheet.dolmen .order-select select {
+	width: 100%;
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen .order-description {
+	font-size: 0.8rem;
+	color: var(--dolmen-color-text-muted);
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-box-highlight);
+	border-radius: 0.25rem;
+}
+
+/* Trait Roll Chat Messages */
+.dolmen.trait-roll {
+	padding: 0.5rem;
+}
+
+.dolmen.trait-roll .trait-header h3 {
+	font-family: var(--dolmen-font-header);
+	font-size: 1rem;
+	margin: 0 0 0.5rem 0;
+	text-transform: uppercase;
+}
+
+.dolmen.trait-roll .roll-result {
+	text-align: center;
+	margin: 0.5rem 0;
+}
+
+.dolmen.trait-roll .roll-breakdown {
+	display: block;
+	text-align: center;
+	font-size: 0.75rem;
+	color: var(--dolmen-color-text-muted);
+}

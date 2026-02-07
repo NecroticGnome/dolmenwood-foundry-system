@@ -5,8 +5,8 @@
 .sheet.dolmen .tabs {
 	display: flex;
 	gap: 0;
-	background-color: var(--dolmen-color-h1);
-	border-bottom: 2px solid var(--dolmen-color-h1);
+	background-color: var(--dolmen-color-title-background);
+	border-bottom: 2px solid var(--dolmen-color-title-background);
 	padding: 0 0.5rem;
 	justify-content: flex-start;
 }
@@ -16,7 +16,7 @@
 	cursor: pointer;
 	border-bottom: 2px solid transparent;
 	margin-bottom: -2px;
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	opacity: 0.7;
 	transition: opacity 0.2s, border-color 0.2s;
 	text-decoration: none;
@@ -34,10 +34,29 @@
 	color: var(--dolmen-color-h1);
 	background-color: var(--dolmen-color-box-background);
 	text-shadow: none;
+	border-top-color: 1px solid var(--dolmen-color-box-background);
 }
 
 .sheet.dolmen .tabs .item i {
 	margin-right: 0.25rem;
+}
+
+/* -------------------------------------------- */
+/*  Settings Tab                                */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tabs .item[data-tab="settings"] {
+	position: absolute;
+	right: 0;
+}
+
+.sheet.dolmen .tab-settings .boxed-section.unit-system {
+	min-height: 4.5rem;
+}
+
+.sheet.dolmen .tab-settings .boxed-section.unit-system input {
+	border: 0;
+	box-shadow: none;
 }
 
 /* -------------------------------------------- */
@@ -52,6 +71,7 @@
 	padding-top: 1.0rem;
 	flex: 1;
 	overflow-y: auto;
+	height: 100%;
 }
 
 .sheet.dolmen .tab-content:not(.active) {
@@ -60,9 +80,12 @@
 
 .sheet.dolmen .tab-content .boxed-section {
 	background-color: var(--dolmen-color-background);
-	border: 2px solid var(--dolmen-color-h1);
+	border: 2px solid var(--dolmen-color-title-background);
 	border-radius: 0;
 	padding: 0.5rem;
+	min-height: 5.25rem;
+	display: flex;
+	flex-direction: column;
 }
 
 /* -------------------------------------------- */
@@ -73,12 +96,12 @@
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
+	min-height: 5.25rem;
 }
 
 .sheet.dolmen .tab-content .two-columns.inventory {
 	height: fill-available;
 	height: -webkit-fill-available;
-	padding-bottom: 0.5rem;
 }
 
 .sheet.dolmen .tab-content .two-columns.skills-movement {
@@ -277,11 +300,11 @@
 }
 
 .sheet.dolmen .tab-content .save.accent {
-	border-left: solid 2px var(--dolmen-color-h1);
+	border-left: solid 2px var(--dolmen-color-title-background);
 	padding-left: 0.5rem;
 	padding-top: 0.25rem;
 	margin-top: -0.25rem;
-	margin-bottom: -0.5rem;
+	margin-bottom: -0.55rem;
 	padding-right: 0.5rem;
 	margin-right: -0.5rem;
 	background-color: var(--dolmen-color-inner-background);
@@ -365,10 +388,9 @@
 	min-height: unset;
 	padding: 0;
 	border: none;
-	border-radius: 50%;
-	background-color: var(--dolmen-color-h1);
-	color: var(--dolmen-color-background);
-	font-size: 0.5rem;
+	background-color: var(--dolmen-color-background);
+	color: var(--dolmen-color-h2);
+	font-size: 1rem;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
@@ -383,7 +405,7 @@
 }
 
 .sheet.dolmen .tab-content .extra-skill .remove-skill-btn:hover {
-	background-color: #c00;
+	color: var(--dolmen-color-h1);
 	opacity: 1;
 }
 
@@ -398,10 +420,10 @@
 	height: 2rem;
 	min-height: unset;
 	padding: 0;
-	border: 2px dashed var(--dolmen-color-box-border);
+	border: 2px dashed var(--dolmen-color-h2);
 	border-radius: 4px;
 	background-color: transparent;
-	color: var(--dolmen-color-box-border);
+	color: var(--dolmen-color-h2);
 	font-size: 1rem;
 	cursor: pointer;
 	display: flex;
@@ -450,8 +472,8 @@
 /* -------------------------------------------- */
 
 .sheet.dolmen .tab-content .notes {
-	flex: 1;
-	margin-bottom: 0.5rem;
+	height: fill-available;
+	height: -webkit-fill-available;
 }
 
 .sheet.dolmen .tab-content .editor-container {
@@ -473,35 +495,27 @@
 }
 
 /* -------------------------------------------- */
-/*  Details Tab - Physical Characteristics 		*/
+/*  Details Tab - Kindred Details 		*/
 /* -------------------------------------------- */
 .sheet.dolmen .tab-details .physical-grid {
 	display: grid;
-	grid-template-columns: 2fr 1fr 1fr 1fr 1fr max-content;
+	grid-template-columns: repeat(7, 1fr);
 	gap: 0.5rem;
 }
 
-.sheet.dolmen .tab-details .physical-field {
-	display: flex;
-	flex-direction: column;
-	gap: 0.25rem;
-}
-
-.sheet.dolmen .tab-details .physical-field .unit-inputs {
-	display: flex;
+.sheet.dolmen .tab-details .physical-grid .flexrow {
 	align-items: center;
-	gap: 0.25rem;
 }
 
-.sheet.dolmen .tab-details .physical-field .unit-inputs input {
-	text-align: center;
+.sheet.dolmen .tab-details .physical-grid .flexrow .rollable {
+	display: contents;
+	font-size: 1.1rem;
+	font-weight: 300;
 }
 
-.sheet.dolmen .tab-details .physical-field .unit-inputs .imperial-unit,
-.sheet.dolmen .tab-details .physical-field .unit-inputs .metric-unit {
-	display: flex;
-	align-items: center;
-	gap: 0.25rem;
+.sheet.dolmen .tab-details .physical-grid .flexrow .rollable::before {
+	margin-left: -0.4rem;
+	margin-right: 0.4rem;
 }
 
 /* Hide metric inputs when imperial is selected */
@@ -515,13 +529,16 @@
 }
 
 /* Unit toggle radio buttons */
-.sheet.dolmen .tab-details .physical-field.unit-toggle {
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 0.5rem;
+.sheet.dolmen .tab-details .header-field.unit-toggle {
+	flex-direction: row;
+	align-items: center;
+	align-self: end;
+	gap: 1rem;
+	margin-bottom: 0.25rem;
+	justify-content: center;
 }
 
-.sheet.dolmen .tab-details .physical-field.unit-toggle .radio-label {
+.sheet.dolmen .tab-details .header-field.unit-toggle .radio-label {
 	display: flex;
 	align-items: center;
 	gap: 0.25rem;
@@ -529,10 +546,126 @@
 	cursor: pointer;
 }
 
-.sheet.dolmen .tab-details .physical-field.unit-toggle input[type="radio"] {
+.sheet.dolmen .tab-details .header-field.unit-toggle input[type="radio"] {
 	margin: 0;
 	cursor: pointer;
 	border: none;
 	box-shadow: none;
 	padding: 0;
+}
+
+/* -------------------------------------------- */
+/*  Details Tab - Class Details 	           	*/
+/* -------------------------------------------- */
+.sheet.dolmen .tab-details .class-grid {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 0.5rem;
+}
+
+/* -------------------------------------------- */
+/*  Adjustments Tab - Custom Adjustments        */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-adjustments .three-columns {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr;
+	gap: 0.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adjustments-content h2 {
+	margin-bottom: 0.25rem;
+}
+
+.sheet.dolmen .tab-adjustments .adjustments-hint {
+	font-size: 0.75rem;
+	color: var(--dolmen-color-h3);
+	font-style: italic;
+	text-align: center;
+}
+
+.sheet.dolmen .tab-adjustments .adj-group {
+	border: 1px solid var(--dolmen-color-box-border);
+	padding: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-group legend {
+	font-weight: bold;
+	font-size: 0.85rem;
+	color: var(--dolmen-color-h2);
+	padding: 0 0.25rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid {
+	display: grid;
+	gap: 0.25rem 0.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-abilities {
+	grid-template-columns: repeat(6, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-header {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-header span:first-child {
+	min-width: 2.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-col-label {
+	width: 2.5rem;
+	text-align: center;
+	font-size: 0.7rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h3);
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-combat,
+.sheet.dolmen .tab-adjustments .adj-grid-movement {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-skills {
+	grid-template-columns: repeat(9, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-abilities .adj-row {
+	flex-direction: row;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-saves {
+	grid-template-columns: repeat(6, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-row {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	flex-direction: column;
+}
+
+.sheet.dolmen .tab-adjustments .adj-label {
+	font-size: 0.75rem;
+	min-width: 2.5rem;
+	color: var(--dolmen-color-h3);
+	text-align: center;
+}
+
+.sheet.dolmen .tab-adjustments .adj-row input[type="number"] {
+	width: 3rem;
+	padding: 0.125rem 0.25rem;
+	font-size: 0.85rem;
+	text-align: center;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-abilities .adj-row input[type="number"] {
+	width: 2.5rem;
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-other {
+	grid-template-columns: repeat(9, 1fr);
 }

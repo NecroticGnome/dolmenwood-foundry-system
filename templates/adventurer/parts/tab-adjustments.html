@@ -1,0 +1,179 @@
+<section class="tab-content tab-adjustments {{tab.cssClass}}" data-group="primary" data-tab="adjustments">
+	<section class="boxed-section adjustments-content">
+		<h2>{{localize "DOLMEN.Adjustments.Title"}}</h2>
+		<p class="adjustments-hint">{{localize "DOLMEN.Adjustments.Hint"}}</p>
+
+		<!-- Ability Score Adjustments -->
+		<fieldset class="adj-group">
+			<legend>{{localize "DOLMEN.AbilityScores"}}</legend>
+			<div class="adj-grid adj-grid-abilities">
+				<div class="adj-header">
+					<span></span>
+					<span class="adj-col-label">{{localize "DOLMEN.Score"}}</span>
+					<span class="adj-col-label">{{localize "DOLMEN.Mod"}}</span>
+				</div>
+				<div class="adj-header">
+					<span></span>
+					<span class="adj-col-label">{{localize "DOLMEN.Score"}}</span>
+					<span class="adj-col-label">{{localize "DOLMEN.Mod"}}</span>
+				</div>
+				<div class="adj-header">
+					<span></span>
+					<span class="adj-col-label">{{localize "DOLMEN.Score"}}</span>
+					<span class="adj-col-label">{{localize "DOLMEN.Mod"}}</span>
+				</div>
+				<div class="adj-header">
+					<span></span>
+					<span class="adj-col-label">{{localize "DOLMEN.Score"}}</span>
+					<span class="adj-col-label">{{localize "DOLMEN.Mod"}}</span>
+				</div>
+				<div class="adj-header">
+					<span></span>
+					<span class="adj-col-label">{{localize "DOLMEN.Score"}}</span>
+					<span class="adj-col-label">{{localize "DOLMEN.Mod"}}</span>
+				</div>
+				<div class="adj-header">
+					<span></span>
+					<span class="adj-col-label">{{localize "DOLMEN.Score"}}</span>
+					<span class="adj-col-label">{{localize "DOLMEN.Mod"}}</span>
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Abilities.StrengthShort"}}</span>
+					<input type="number" name="system.adjustments.abilities.strength.score" value="{{system.adjustments.abilities.strength.score}}" placeholder="0">
+					<input type="number" name="system.adjustments.abilities.strength.mod" value="{{system.adjustments.abilities.strength.mod}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Abilities.IntelligenceShort"}}</span>
+					<input type="number" name="system.adjustments.abilities.intelligence.score" value="{{system.adjustments.abilities.intelligence.score}}" placeholder="0">
+					<input type="number" name="system.adjustments.abilities.intelligence.mod" value="{{system.adjustments.abilities.intelligence.mod}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Abilities.WisdomShort"}}</span>
+					<input type="number" name="system.adjustments.abilities.wisdom.score" value="{{system.adjustments.abilities.wisdom.score}}" placeholder="0">
+					<input type="number" name="system.adjustments.abilities.wisdom.mod" value="{{system.adjustments.abilities.wisdom.mod}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Abilities.DexterityShort"}}</span>
+					<input type="number" name="system.adjustments.abilities.dexterity.score" value="{{system.adjustments.abilities.dexterity.score}}" placeholder="0">
+					<input type="number" name="system.adjustments.abilities.dexterity.mod" value="{{system.adjustments.abilities.dexterity.mod}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Abilities.ConstitutionShort"}}</span>
+					<input type="number" name="system.adjustments.abilities.constitution.score" value="{{system.adjustments.abilities.constitution.score}}" placeholder="0">
+					<input type="number" name="system.adjustments.abilities.constitution.mod" value="{{system.adjustments.abilities.constitution.mod}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Abilities.CharismaShort"}}</span>
+					<input type="number" name="system.adjustments.abilities.charisma.score" value="{{system.adjustments.abilities.charisma.score}}" placeholder="0">
+					<input type="number" name="system.adjustments.abilities.charisma.mod" value="{{system.adjustments.abilities.charisma.mod}}" placeholder="0">
+				</div>
+			</div>
+		</fieldset>
+		<div class="three-columns">
+			<!-- Save Target Adjustments -->
+			<fieldset class="adj-group">
+				<legend>{{localize "DOLMEN.SaveTargets"}}</legend>
+				<div class="adj-grid adj-grid-saves">
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Saves.Doom"}}</span>
+						<input type="number" name="system.adjustments.saves.doom" value="{{system.adjustments.saves.doom}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Saves.Ray"}}</span>
+						<input type="number" name="system.adjustments.saves.ray" value="{{system.adjustments.saves.ray}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Saves.Hold"}}</span>
+						<input type="number" name="system.adjustments.saves.hold" value="{{system.adjustments.saves.hold}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Saves.Blast"}}</span>
+						<input type="number" name="system.adjustments.saves.blast" value="{{system.adjustments.saves.blast}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Saves.Spell"}}</span>
+						<input type="number" name="system.adjustments.saves.spell" value="{{system.adjustments.saves.spell}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.MagicResistance"}}</span>
+						<input type="number" name="system.adjustments.magicResistance" value="{{system.adjustments.magicResistance}}" placeholder="0">
+					</div>
+				</div>
+			</fieldset>
+
+			<!-- Combat Adjustments -->
+			<fieldset class="adj-group">
+				<legend>{{localize "DOLMEN.Combat.Title"}}</legend>
+				<div class="adj-grid adj-grid-combat">
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Combat.HP"}} max</span>
+						<input type="number" name="system.adjustments.hp.max" value="{{system.adjustments.hp.max}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Combat.AC"}}</span>
+						<input type="number" name="system.adjustments.ac" value="{{system.adjustments.ac}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Combat.Attack"}}</span>
+						<input type="number" name="system.adjustments.attack" value="{{system.adjustments.attack}}" placeholder="0">
+					</div>
+				</div>
+			</fieldset>
+
+			<!-- Movement Adjustments -->
+			<fieldset class="adj-group">
+				<legend>{{localize "DOLMEN.Movement.Title"}}</legend>
+				<div class="adj-grid adj-grid-movement">
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Movement.Speed"}}</span>
+						<input type="number" name="system.adjustments.speed" value="{{system.adjustments.speed}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Movement.Exploring"}}</span>
+						<input type="number" name="system.adjustments.movement.exploring" value="{{system.adjustments.movement.exploring}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Movement.Overland"}}</span>
+						<input type="number" name="system.adjustments.movement.overland" value="{{system.adjustments.movement.overland}}" placeholder="0">
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<!-- Skill Adjustments -->
+		<fieldset class="adj-group">
+			<legend>{{localize "DOLMEN.SkillTargets"}}</legend>
+			<div class="adj-grid adj-grid-skills">
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Skills.Listen"}}</span>
+					<input type="number" name="system.adjustments.skills.listen" value="{{system.adjustments.skills.listen}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Skills.Search"}}</span>
+					<input type="number" name="system.adjustments.skills.search" value="{{system.adjustments.skills.search}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Skills.Survival"}}</span>
+					<input type="number" name="system.adjustments.skills.survival" value="{{system.adjustments.skills.survival}}" placeholder="0">
+				</div>
+				{{#each system.extraSkills}}
+				<div class="adj-row">
+					<span class="adj-label">{{localize (concat "DOLMEN.Skills." this.id)}}</span>
+					<input type="number" name="system.adjustments.skills.{{this.id}}" value="{{lookup @root.system.adjustments.skills this.id}}" placeholder="0">
+				</div>
+				{{/each}}
+			</div>
+		</fieldset>
+
+		<!-- XP Modifier -->
+		<fieldset class="adj-group">
+			<legend>{{localize "DOLMEN.Adjustments.Other"}}</legend>
+			<div class="adj-grid adj-grid-other">
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.XPModifier"}}</span>
+					<input type="number" name="system.adjustments.xpModifier" value="{{system.adjustments.xpModifier}}" placeholder="0">
+				</div>
+			</div>
+		</fieldset>
+	</section>
+</section>

@@ -1,5 +1,5 @@
 /* global foundry, game, FilePicker */
-import { buildChoices, buildQualityOptions, CHOICE_KEYS } from './utils/choices.js'
+import { buildChoices, buildChoicesWithBlank, buildQualityOptions, CHOICE_KEYS } from './utils/choices.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
@@ -43,6 +43,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.isGenericItem = this.item.type === 'Item'
 
 		// Weapon choices
+		context.weaponTypeChoices = buildChoicesWithBlank('DOLMEN.Item.WeaponType', CHOICE_KEYS.weaponTypes)
 		context.weaponSizeChoices = buildChoices('DOLMEN.Item.Size', CHOICE_KEYS.sizes)
 		context.qualityOptions = buildQualityOptions(this.item.system.qualities)
 
@@ -55,6 +56,9 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 		// Spell choices
 		context.spellTypeChoices = buildChoices('DOLMEN.Item.SpellType', CHOICE_KEYS.spellTypes)
+		context.runeMagnitudeChoices = buildChoices('DOLMEN.Magic.Fairy.Magnitudes', CHOICE_KEYS.runeMagnitudes)
+		context.isRuneSpell = this.item.type === 'Spell' && this.item.system.type === 'rune'
+		context.isRankedSpell = this.item.type === 'Spell' && ['arcane', 'holy'].includes(this.item.system.type)
 
 		return context
 	}

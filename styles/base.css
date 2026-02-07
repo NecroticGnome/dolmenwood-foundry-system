@@ -5,6 +5,15 @@
 .sheet.dolmen,
 .sheet.dolmen textarea {
 	font-family: var(--dolmen-font-body);
+	text-rendering: optimizeLegibility;
+}
+
+.sheet.dolmen nav.tabs {
+	border-top: none;
+}
+
+.sheet.dolmen .window-header {
+	border-bottom: none;
 }
 
 .sheet.dolmen .window-content {
@@ -13,6 +22,12 @@
 	padding: 0;
 	display: flex;
 	flex-direction: column;
+}
+
+.sheet.dolmen .flexrow {
+	display: flex;
+	flex-direction: row;
+	gap: 0.5rem;
 }
 
 .sheet.dolmen .window-content h1,
@@ -31,16 +46,15 @@
 
 .sheet.dolmen .window-content h2 {
 	font-size: 0.8rem;
-	border-bottom: 1px solid var(--dolmen-color-box-border);
-	padding-bottom: 0.25rem;
+	padding-bottom: 0.3rem;
 	margin-bottom: 0.25rem;
 	margin-top: -0.5rem;
 	margin-left: -0.5rem;
 	padding-top: 0.25rem;
 	padding-left: 0.5rem;
 	width: calc(100% + 1rem);
-	background-color: var(--dolmen-color-h1);
-	color: var(--dolmen-color-background);
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-title);
 }
 
 .sheet.dolmen .window-content h3 {
@@ -48,7 +62,14 @@
 	font-size: 0.8rem;
 }
 
+span.proficiency-value {
+	line-height: 2rem;
+	margin-left: 0.2rem;
+}
+
 /* Rollable Icons */
+.xp-add-btn,
+.xp-edit-btn,
 .sheet.dolmen .rollable {
 	text-align: center;
 	cursor: pointer;
@@ -59,8 +80,21 @@
 	font-weight: normal;
 }
 
+.xp-add-btn:hover,
+.xp-edit-btn:hover,
 .sheet.dolmen .rollable:hover {
 	color: var(--dolmen-color-h1);
+	text-shadow: 0 0 5px var(--dolmen-color-h2);
+}
+
+.xp-add-btn,
+.xp-edit-btn {
+	background: none;
+	border: none;
+	font-size: 1rem;
+	height: 2rem;
+	padding: 0 0.5rem;
+	float: right;
 }
 
 /* -------------------------------------------- */
@@ -72,7 +106,7 @@
 .sheet.dolmen .tab-content textarea {
 	background-color: var(--dolmen-color-background);
 	color: var(--dolmen-color-text);
-	border: 1px solid var(--dolmen-color-table-border);
+	border: 1px solid var(--dolmen-color-input-border);
 	border-radius: 2px;
 	padding: 0.25rem;
 	font-size: 0.85rem;
@@ -87,7 +121,12 @@
 .sheet.dolmen .tab-content select:focus,
 .sheet.dolmen .tab-content textarea:focus {
 	outline: none;
-	border-color: var(--dolmen-color-h2);
+	border-color: var(--dolmen-color-input-border-focus);
+}
+
+/* Adjusted values indicator (not when focused, as it shows base value) */
+.sheet.dolmen .tab-content input.has-adjustment:not(:focus) {
+	color: var(--dolmen-color-adjusted);
 }
 
 .sheet.dolmen .tab-content label {
@@ -96,7 +135,6 @@
 }
 
 /* Generic Stat Container - used by combat-stat, movement-stat, encumbrance-stat, save, coin */
-.sheet.dolmen .tab-content .stat-block,
 .sheet.dolmen .tab-content .combat-stat,
 .sheet.dolmen .tab-content .movement-stat,
 .sheet.dolmen .tab-content .encumbrance-stat,
@@ -109,7 +147,6 @@
 }
 
 /* Generic Stat Input - bold centered inputs */
-.sheet.dolmen .tab-content .stat-block input,
 .sheet.dolmen .tab-content .combat-stat input,
 .sheet.dolmen .tab-content .movement-stat input,
 .sheet.dolmen .tab-content .encumbrance-stat input,

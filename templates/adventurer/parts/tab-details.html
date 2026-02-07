@@ -45,51 +45,106 @@
 	</div>
 
 	<section class="physical-characteristics boxed-section">
-		<h2>{{localize "DOLMEN.Physical.Title"}}</h2>
+		<h2>{{localize "DOLMEN.KindredDetails.Title"}}</h2>
 		<div class="physical-grid" data-unit-system="{{system.physical.unitSystem}}">
-			<div class="physical-field">
-				<label>{{localize "DOLMEN.Physical.KindredType"}}</label>
-				<input type="text" value="{{creatureTypeLabel}}" disabled>
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.Background"}}</label>
+				<input type="text" name="system.background.profession" value="{{system.background.profession}}">
 			</div>
-			<div class="physical-field">
-				<label>{{localize "DOLMEN.Physical.Age"}}</label>
-				<input type="number" name="system.physical.age" value="{{system.physical.age}}" min="0">
+			<div class="header-field" style="grid-column-end: span 3;">
+				<label>{{localize "DOLMEN.Languages"}}</label>
+				<input type="text" name="system.languages" value="{{system.languages}}">
 			</div>
-			<div class="physical-field">
-				<label>{{localize "DOLMEN.Physical.Lifespan"}}</label>
-				<input type="number" name="system.physical.lifespan" value="{{system.physical.lifespan}}" min="0">
-			</div>
-			<div class="physical-field">
-				<label>{{localize "DOLMEN.Physical.Height"}} {{#if (eq system.physical.unitSystem "imperial" )}}{{localize "DOLMEN.Physical.Feet"}}{{else}}{{localize "DOLMEN.Physical.Cm"}}{{/if}}</label>
-				<div class="unit-inputs">
-					<span class="imperial-unit">
-						<input type="text" name="system.physical.heightFeet" value="{{system.physical.heightFeet}}" data-convert="height-feet">
-					</span>
-					<span class="metric-unit">
-						<input type="number" name="system.physical.heightCm" value="{{system.physical.heightCm}}" min="0" step="1" data-convert="height-cm">
-					</span>
+			<div class="header-field">
+				<label>{{localize "DOLMEN.KindredDetails.Height"}} {{#if (eq system.physical.unitSystem "imperial" )}}{{localize "DOLMEN.KindredDetails.Feet"}}{{else}}{{localize "DOLMEN.KindredDetails.Cm"}}{{/if}}</label>
+				<div class="flexrow">
+					<div class="unit-inputs">
+						<span class="imperial-unit">
+							<input type="text" name="system.physical.heightFeet" value="{{system.physical.heightFeet}}" data-convert="height-feet">
+						</span>
+						<span class="metric-unit">
+							<input type="number" name="system.physical.heightCm" value="{{system.physical.heightCm}}" min="0" step="1" data-convert="height-cm">
+						</span>
+					</div>
+					<i class="fa fa-dice-d20 rollable roll-height" title="{{heightTitle}}"></i>
 				</div>
 			</div>
-			<div class="physical-field">
-				<label>{{localize "DOLMEN.Physical.Weight"}} {{#if (eq system.physical.unitSystem "imperial" )}}{{localize "DOLMEN.Physical.Lbs"}}{{else}}{{localize "DOLMEN.Physical.Kg"}}{{/if}}</label>
-				<div class="unit-inputs">
-					<span class="imperial-unit">
-						<input type="number" name="system.physical.weightLbs" value="{{system.physical.weightLbs}}" min="0" step="1" data-convert="weight-lbs">
-					</span>
-					<span class="metric-unit">
-						<input type="number" name="system.physical.weightKg" value="{{system.physical.weightKg}}" min="0" step="1" data-convert="weight-kg">
-					</span>
+			<div class="header-field">
+				<label>{{localize "DOLMEN.KindredDetails.Weight"}} {{#if (eq system.physical.unitSystem "imperial" )}}{{localize "DOLMEN.KindredDetails.Lbs"}}{{else}}{{localize "DOLMEN.KindredDetails.Kg"}}{{/if}}</label>
+				<div class="flexrow">
+					<div class="unit-inputs">
+						<span class="imperial-unit">
+							<input type="number" name="system.physical.weightLbs" value="{{system.physical.weightLbs}}" min="0" step="1" data-convert="weight-lbs">
+						</span>
+						<span class="metric-unit">
+							<input type="number" name="system.physical.weightKg" value="{{system.physical.weightKg}}" min="0" step="1" data-convert="weight-kg">
+						</span>
+					</div>
+					<i class="fa fa-dice-d20 rollable roll-weight" title="{{weightTitle}}"></i>
 				</div>
 			</div>
-			<div class="physical-field unit-toggle">
-				<label class="radio-label">
-					<input type="radio" name="system.physical.unitSystem" value="imperial" {{#if (eq system.physical.unitSystem "imperial" )}}checked{{/if}}>
-					{{localize "DOLMEN.Physical.Imperial"}}
-				</label>
-				<label class="radio-label">
-					<input type="radio" name="system.physical.unitSystem" value="metric" {{#if (eq system.physical.unitSystem "metric" )}}checked{{/if}}>
-					{{localize "DOLMEN.Physical.Metric"}}
-				</label>
+			<div class="header-field">
+				<label>{{localize "DOLMEN.KindredDetails.KindredType"}}</label>
+				<span class="proficiency-value">{{creatureTypeLabel}}</span>
+			</div>
+			<div class="header-field" style="grid-column-end: span 1;">
+				<label>{{localize "DOLMEN.KindredDetails.CurrentAge"}}</label>
+				<div class="flexrow">
+					<input type="number" name="system.physical.age" value="{{system.physical.age}}" min="0">
+					<i class="fa fa-dice-d20 rollable roll-age" title="{{ageTitle}}"></i>
+				</div>
+			</div>
+			<div class="header-field" style="grid-column-end: span 1;">
+				<label>{{localize "DOLMEN.KindredDetails.Lifespan"}}</label>
+				{{#if isFairy}}
+				<input type="text" value="{{localize 'DOLMEN.Immortal'}}" disabled>
+				{{else}}
+				<div class="flexrow">
+					<input type="number" name="system.physical.lifespan" value="{{system.physical.lifespan}}" min="0">
+					<i class="fa fa-dice-d20 rollable roll-lifespan" title="{{lifespanTitle}}"></i>
+				</div>
+				{{/if}}
+			</div>
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.Birthday"}}</label>
+				<div class="flexrow">
+					<select name="system.birthMonth" value="{{system.birthMonth}}">
+						{{selectOptions @root.monthNameChoices selected=system.birthMonth}}
+					</select>
+					<select name="system.birthDay" value="{{system.birthDay}}" style="max-width: 50px;">
+						{{selectOptions @root.dayChoices selected=system.birthDay}}
+					</select>
+					<i class="fa fa-dice-d20 rollable roll-birthday"></i>
+				</div>
+			</div>
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.MoonSign"}}</label>
+				<span class="proficiency-value">{{moonSignLabel}}</span>
+			</div>
+		</div>
+	</section>
+	<section class="class-details boxed-section">
+		<h2>{{localize "DOLMEN.ClassDetails.Title"}}</h2>
+		<div class="class-grid">
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.ClassDetails.PrimeAbilities"}}</label>
+				<span class="proficiency-value">{{primeAbilities}}</span>
+			</div>
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.ClassDetails.HitPoints"}}</label>
+				<span class="proficiency-value">{{hitPointsClass}}</span>
+			</div>
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.ClassDetails.CombatAptitude"}}</label>
+				<span class="proficiency-value">{{combatAptitude}}</span>
+			</div>
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.ClassDetails.ArmorProficiency"}}</label>
+				<span class="proficiency-value">{{armorProficiency}}</span>
+			</div>
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.ClassDetails.WeaponsProficiency"}}</label>
+				<span class="proficiency-value">{{weaponsProficiency}}</span>
 			</div>
 		</div>
 	</section>

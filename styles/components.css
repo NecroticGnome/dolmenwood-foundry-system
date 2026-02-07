@@ -88,7 +88,7 @@
 
 .dolmen-weapon-context-menu {
 	background-color: var(--dolmen-color-background);
-	border: 2px solid var(--dolmen-color-h1);
+	border: 2px solid var(--dolmen-color-title-background);
 	border-radius: 4px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 	z-index: 1000;
@@ -111,7 +111,7 @@
 }
 
 .dolmen-weapon-context-menu .weapon-menu-item:hover {
-	background-color: var(--dolmen-color-h1);
+	background-color: var(--dolmen-color-title-background);
 	color: var(--dolmen-color-background);
 }
 
@@ -134,4 +134,126 @@
 	font-size: 0.75rem;
 	font-weight: bold;
 	opacity: 0.8;
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item.nonproficient .weapon-name {
+	color: #c00;
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item.nonproficient .weapon-penalty {
+	font-weight: bold;
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item.nonproficient:hover .weapon-name {
+	color: #faa;
+}
+
+/* -------------------------------------------- */
+/*  Modifier Panel                              */
+/* -------------------------------------------- */
+
+.dolmen-weapon-context-menu.modifier-panel {
+	min-width: 220px;
+}
+
+.modifier-panel .roll-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	padding: 0.5rem;
+	cursor: pointer;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	font-weight: bold;
+	font-size: 0.9rem;
+	letter-spacing: 0.05em;
+	transition: opacity 0.1s;
+	border: none;
+}
+
+.modifier-panel .roll-btn:hover {
+	opacity: 0.85;
+}
+
+.modifier-panel .menu-separator {
+	height: 1px;
+	background-color: var(--dolmen-color-box-border);
+	margin: 0;
+}
+
+.modifier-panel .modifier-item {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.3rem 0.5rem;
+	cursor: pointer;
+	transition: background-color 0.1s;
+	font-size: 0.8rem;
+	border-bottom: 1px solid var(--dolmen-color-box-background);
+	user-select: none;
+}
+
+.modifier-panel .modifier-item:last-child {
+	border-bottom: none;
+}
+
+.modifier-panel .modifier-item:hover {
+	background-color: var(--dolmen-color-inner-background);
+}
+
+.modifier-panel .modifier-item.selected {
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+}
+
+.modifier-panel .modifier-item .mod-check {
+	width: 12px;
+	text-align: center;
+	font-size: 0.7rem;
+}
+
+.modifier-panel .modifier-item .mod-name {
+	flex: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.modifier-panel .modifier-item .mod-bonus {
+	font-size: 0.75rem;
+	font-weight: bold;
+	opacity: 0.8;
+}
+
+.modifier-panel .numeric-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 2px;
+	padding: 0.3rem;
+}
+
+.modifier-panel .numeric-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.25rem 0;
+	cursor: pointer;
+	font-size: 0.75rem;
+	font-weight: bold;
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 2px;
+	background-color: var(--dolmen-color-inner-background);
+	transition: background-color 0.1s;
+	user-select: none;
+}
+
+.modifier-panel .numeric-btn:hover {
+	background-color: var(--dolmen-color-box-background);
+}
+
+.modifier-panel .numeric-btn.selected {
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	border-color: var(--dolmen-color-title-background);
 }

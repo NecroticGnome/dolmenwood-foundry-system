@@ -28,6 +28,12 @@
 				<input type="text" name="system.damage" value="{{system.damage}}" placeholder="1d6">
 			</div>
 			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.WeaponType.label"}}</label>
+				<select name="system.weaponType">
+					{{selectOptions @root.weaponTypeChoices selected=system.weaponType}}
+				</select>
+			</div>
+			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.Size.label"}}</label>
 				<select name="system.size">
 					{{selectOptions @root.weaponSizeChoices selected=system.size}}
@@ -136,6 +142,20 @@
 					{{selectOptions @root.spellTypeChoices selected=system.type}}
 				</select>
 			</div>
+			{{#if @root.isRuneSpell}}
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Magic.Fairy.Magnitude"}}</label>
+				<select name="system.magnitude">
+					{{selectOptions @root.runeMagnitudeChoices selected=system.magnitude}}
+				</select>
+			</div>
+			{{/if}}
+			{{#if @root.isRankedSpell}}
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Magic.SpellRank"}}</label>
+				<input type="number" name="system.rank" value="{{system.rank}}" min="1" max="6">
+			</div>
+			{{/if}}
 		</div>
 	</section>
 	{{/if}}

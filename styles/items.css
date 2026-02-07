@@ -10,7 +10,7 @@
 	display: flex;
 	gap: 0.5rem;
 	padding: 0.5rem;
-	background-color: var(--dolmen-color-h1);
+	background-color: var(--dolmen-color-title-background);
 	color: var(--dolmen-color-background);
 }
 
@@ -73,22 +73,12 @@
 
 .sheet.dolmen.item .item-body section {
 	background-color: var(--dolmen-color-background);
-	border: 2px solid var(--dolmen-color-h1);
+	border: 2px solid var(--dolmen-color-title-background);
 	padding: 0.5rem;
 }
 
 .sheet.dolmen.item .item-body h2 {
-	font-size: 0.8rem;
-	border-bottom: 1px solid var(--dolmen-color-box-border);
-	padding-bottom: 0.25rem;
 	margin-bottom: 0.5rem;
-	margin-top: -0.5rem;
-	margin-left: -0.5rem;
-	padding-top: 0.25rem;
-	padding-left: 0.5rem;
-	width: calc(100% + 1rem);
-	background-color: var(--dolmen-color-h1);
-	color: var(--dolmen-color-background);
 }
 
 .sheet.dolmen.item .item-body .form-row {
@@ -112,7 +102,7 @@
 .sheet.dolmen.item .item-body .form-field input,
 .sheet.dolmen.item .item-body .form-field select {
 	padding: 0.25rem;
-	border: 1px solid var(--dolmen-color-table-border);
+	border: 1px solid var(--dolmen-color-input-border);
 	border-radius: 2px;
 	font-size: 0.85rem;
 }

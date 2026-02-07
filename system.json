@@ -45,6 +45,14 @@
     {
       "src": "styles/components.css",
       "layer": "system"
+    },
+    {
+      "src": "styles/magic.css",
+      "layer": "system"
+    },
+    {
+      "src": "styles/traits.css",
+      "layer": "system"
     }
   ],
   "languages": [
@@ -57,6 +65,32 @@
       "lang": "pl",
       "name": "Polski",
       "path": "lang/pl.json"
+    }
+  ],
+  "packs": [
+    {
+      "label": "TestNPCs",
+      "type": "Actor",
+      "name": "test2",
+      "path": "packs/test2",
+      "system": "dolmenwood",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Traits",
+      "type": "Actor",
+      "name": "traits",
+      "path": "packs/traits",
+      "system": "dolmenwood",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
     }
   ],
   "grid": {
@@ -79,6 +113,11 @@
       "Creature": {
         "htmlFields": [
           "background.notes"
+        ]
+      },
+      "Trait": {
+        "htmlFields": [
+          "description"
         ]
       }
     },

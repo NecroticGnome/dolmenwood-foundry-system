@@ -1,0 +1,204 @@
+<section class="tab-content tab-traits {{tab.cssClass}}" data-group="primary" data-tab="traits">
+	<!-- Long Rest Button -->
+	<div class="trait-actions">
+		<button type="button" class="long-rest-btn">
+			<i class="fas fa-bed"></i> {{localize "DOLMEN.Traits.LongRest"}}
+		</button>
+	</div>
+
+	{{#if isKindredClass}}
+		<!-- Kindred-Class Traits (replaces both kindred and class traits) -->
+		<section class="kindred-class-traits boxed-section">
+			<h2>{{kindredClassName}} {{localize "DOLMEN.Traits.Title"}}</h2>
+			<section class="two-columns traits-grid">
+				{{#each kindredClassTraits}}
+					{{#unless this.hideFromTraitTab}}
+					<section class="trait boxed-section {{#if this.locked}}locked{{/if}} {{this.traitType}}" data-trait-id="{{this.id}}">
+						<h3>
+							{{this.name}}
+							{{#if this.value}}<span class="trait-value">{{this.value}}{{#if this.valueLabel}} {{this.valueLabel}}{{/if}}</span>{{/if}}
+							{{#if this.rollable}}
+								<i class="fa fa-dice-d20 rollable" data-trait-id="{{this.id}}" data-roll-formula="{{this.rollFormula}}" data-trait-name="{{this.name}}" data-roll-target="{{this.rollTarget}}"></i>
+							{{/if}}
+						</h3>
+						{{#if this.locked}}
+							<p class="locked-message">{{localize "DOLMEN.Traits.UnlocksAtLevel"}} {{this.minLevel}}</p>
+						{{else}}
+							<p>{{this.description}}</p>
+							{{#if this.hasUsageTracking}}
+								<div class="trait-usage">
+									<span class="usage-label">{{this.usageFrequency}}:</span>
+									<div class="usage-checkboxes">
+										{{#each this.usageCheckboxes}}
+											<input type="checkbox" class="trait-usage-checkbox"
+												data-trait-id="{{../id}}"
+												data-usage-index="{{this.index}}"
+												data-max-uses="{{../maxUses}}"
+												{{#if this.checked}}checked{{/if}}>
+										{{/each}}
+									</div>
+									<span class="uses-remaining">({{this.usesRemaining}} {{localize "DOLMEN.Traits.Remaining"}})</span>
+								</div>
+							{{/if}}
+							{{#if this.isInfoReminder}}
+								<div class="info-reminder">
+									<i class="fas fa-info-circle"></i>
+									<span>{{this.adjustmentCondition}}</span>
+								</div>
+							{{/if}}
+							{{#if this.isRollOption}}
+								<div class="roll-option-reminder">
+									<i class="fas fa-dice"></i>
+									<span>{{this.adjustmentCondition}}</span>
+								</div>
+							{{/if}}
+						{{/if}}
+					</section>
+					{{/unless}}
+				{{/each}}
+			</section>
+		</section>
+	{{else}}
+		<!-- Kindred Traits -->
+		<section class="kindred-traits boxed-section">
+			<h2>{{kindredName}} {{localize "DOLMEN.Traits.Title"}}</h2>
+			<section class="two-columns traits-grid">
+				{{#each kindredTraits}}
+					{{#unless this.hideFromTraitTab}}
+					<section class="trait boxed-section {{#if this.locked}}locked{{/if}} {{this.traitType}}" data-trait-id="{{this.id}}">
+						<h3>
+							{{this.name}}
+							{{#if this.value}}<span class="trait-value">{{this.value}}{{#if this.valueLabel}} {{this.valueLabel}}{{/if}}</span>{{/if}}
+							{{#if this.rollable}}
+								<i class="fa fa-dice-d20 rollable" data-trait-id="{{this.id}}" data-roll-formula="{{this.rollFormula}}" data-trait-name="{{this.name}}" data-roll-target="{{this.rollTarget}}"></i>
+							{{/if}}
+						</h3>
+						{{#if this.locked}}
+							<p class="locked-message">{{localize "DOLMEN.Traits.UnlocksAtLevel"}} {{this.minLevel}}</p>
+						{{else}}
+							<p>{{this.description}}</p>
+							{{#if this.hasUsageTracking}}
+								<div class="trait-usage">
+									<span class="usage-label">{{this.usageFrequency}}:</span>
+									<div class="usage-checkboxes">
+										{{#each this.usageCheckboxes}}
+											<input type="checkbox" class="trait-usage-checkbox"
+												data-trait-id="{{../id}}"
+												data-usage-index="{{this.index}}"
+												data-max-uses="{{../maxUses}}"
+												{{#if this.checked}}checked{{/if}}>
+										{{/each}}
+									</div>
+									<span class="uses-remaining">({{this.usesRemaining}} {{localize "DOLMEN.Traits.Remaining"}})</span>
+								</div>
+							{{/if}}
+							{{#if this.isInfoReminder}}
+								<div class="info-reminder">
+									<i class="fas fa-info-circle"></i>
+									<span>{{this.adjustmentCondition}}</span>
+								</div>
+							{{/if}}
+							{{#if this.isRollOption}}
+								<div class="roll-option-reminder">
+									<i class="fas fa-dice"></i>
+									<span>{{this.adjustmentCondition}}</span>
+								</div>
+							{{/if}}
+						{{/if}}
+					</section>
+					{{/unless}}
+				{{/each}}
+			</section>
+		</section>
+
+		<!-- Class Traits -->
+		<section class="class-traits boxed-section">
+			<h2>{{className}} {{localize "DOLMEN.Traits.Title"}}</h2>
+			<section class="two-columns traits-grid">
+				{{#each classTraits}}
+					{{#unless this.hideFromTraitTab}}
+					<section class="trait boxed-section {{#if this.locked}}locked{{/if}} {{this.traitType}}" data-trait-id="{{this.id}}">
+						<h3>
+							{{this.name}}
+							{{#if this.value}}<span class="trait-value">{{this.value}}{{#if this.valueLabel}} {{this.valueLabel}}{{/if}}</span>{{/if}}
+							{{#if this.rollable}}
+								<i class="fa fa-dice-d20 rollable" data-trait-id="{{this.id}}" data-roll-formula="{{this.rollFormula}}" data-trait-name="{{this.name}}" data-roll-target="{{this.rollTarget}}"></i>
+							{{/if}}
+						</h3>
+						{{#if this.locked}}
+							<p class="locked-message">{{localize "DOLMEN.Traits.UnlocksAtLevel"}} {{this.minLevel}}</p>
+						{{else}}
+							<p>{{this.description}}</p>
+							{{#if this.hasUsageTracking}}
+								<div class="trait-usage">
+									<span class="usage-label">{{this.usageFrequency}}:</span>
+									<div class="usage-checkboxes">
+										{{#each this.usageCheckboxes}}
+											<input type="checkbox" class="trait-usage-checkbox"
+												data-trait-id="{{../id}}"
+												data-usage-index="{{this.index}}"
+												data-max-uses="{{../maxUses}}"
+												{{#if this.checked}}checked{{/if}}>
+										{{/each}}
+									</div>
+									<span class="uses-remaining">({{this.usesRemaining}} {{localize "DOLMEN.Traits.Remaining"}})</span>
+								</div>
+							{{/if}}
+							{{#if this.isInfoReminder}}
+								<div class="info-reminder">
+									<i class="fas fa-info-circle"></i>
+									<span>{{this.adjustmentCondition}}</span>
+								</div>
+							{{/if}}
+							{{#if this.isRollOption}}
+								<div class="roll-option-reminder">
+									<i class="fas fa-dice"></i>
+									<span>{{this.adjustmentCondition}}</span>
+								</div>
+							{{/if}}
+						{{/if}}
+					</section>
+					{{/unless}}
+				{{/each}}
+			</section>
+		</section>
+
+		<!-- Fighter Combat Talents Selection (if fighter class) -->
+		{{#if (eq system.class "fighter")}}
+		<section class="combat-talents-selection boxed-section">
+			<h2>{{localize "DOLMEN.Traits.CombatTalents"}}</h2>
+			<div class="talents-list">
+				{{#each system.combatTalents}}
+					<div class="talent-entry">
+						<select name="system.combatTalents.{{@index}}">
+							{{selectOptions @root.combatTalentChoices selected=this}}
+						</select>
+					</div>
+				{{/each}}
+				{{#if (lt system.combatTalents.length 4)}}
+					<div class="add-talent-hint">
+						<small>{{localize "DOLMEN.Traits.TalentsGainedHint"}}</small>
+					</div>
+				{{/if}}
+			</div>
+		</section>
+		{{/if}}
+
+		<!-- Cleric Holy Order Selection (if cleric class) -->
+		{{#if (eq system.class "cleric")}}
+		<section class="holy-order-selection boxed-section">
+			<h2>{{localize "DOLMEN.Traits.OrderPower"}}</h2>
+			<div class="order-select">
+				<select name="system.holyOrder">
+					{{selectOptions @root.holyOrderChoices selected=system.holyOrder}}
+				</select>
+				{{#if system.holyOrder}}
+					<p class="order-description">
+						{{localize (concat "DOLMEN.Traits.Orders." system.holyOrder "Desc")}}
+					</p>
+				{{/if}}
+			</div>
+		</section>
+		{{/if}}
+	{{/if}}
+</section>
