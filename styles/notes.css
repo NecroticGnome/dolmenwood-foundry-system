@@ -11,6 +11,7 @@
 	height: calc(100% - 2rem);
 }
 
-.sheet.dolmen .tab-content .editor-container .editor {
+.sheet.dolmen .tab-content .editor-container .editor,
+.sheet.dolmen .tab-content .editor-container prose-mirror {
 	height: 100%;
 }

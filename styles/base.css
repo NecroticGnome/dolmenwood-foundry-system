@@ -101,7 +101,7 @@ span.proficiency-value {
 /*  Form Inputs                                 */
 /* -------------------------------------------- */
 
-.sheet.dolmen .tab-content input,
+.sheet.dolmen .tab-content input:not([type="checkbox"]):not([type="radio"]),
 .sheet.dolmen .tab-content select,
 .sheet.dolmen .tab-content textarea {
 	background-color: var(--dolmen-color-background);

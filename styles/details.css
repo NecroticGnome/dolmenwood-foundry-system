@@ -8,12 +8,27 @@
 	gap: 0.5rem;
 }
 
+.sheet.dolmen .tab-details .extra-grid .flexrow {
+	align-items: center;
+}
+
+.sheet.dolmen .tab-details .extra-grid .flexrow .rollable {
+	display: contents;
+	font-size: 1.1rem;
+	font-weight: 300;
+}
+
+.sheet.dolmen .tab-details .extra-grid .flexrow .rollable::before {
+	margin-left: -0.4rem;
+	margin-right: 0.4rem;
+}
+
 /* -------------------------------------------- */
 /*  Details Tab - Kindred Details               */
 /* -------------------------------------------- */
 .sheet.dolmen .tab-details .physical-grid {
 	display: grid;
-	grid-template-columns: repeat(7, 1fr);
+	grid-template-columns: 1fr 0.75fr 0.75fr 0.75fr 1fr 1fr 1fr 1fr 1fr;
 	gap: 0.5rem;
 }
 

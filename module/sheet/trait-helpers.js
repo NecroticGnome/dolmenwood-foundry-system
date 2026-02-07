@@ -205,10 +205,7 @@ export function prepareTrait(actor, trait, level) {
 
 	// Compute level-based value if function provided
 	if (trait.getValue && typeof trait.getValue === 'function') {
-		prepared.value = trait.getValue(level)
-		if (trait.valueLabel) {
-			prepared.valueLabel = game.i18n.localize(trait.valueLabel)
-		}
+		prepared.value = trait.getValue(actor, level)
 	} else if (trait.value) {
 		prepared.value = trait.value
 	}

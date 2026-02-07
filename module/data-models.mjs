@@ -592,10 +592,7 @@ export class TraitDataModel extends foundry.abstract.TypeDataModel {
 
 			// Static value to display (e.g., "+2", "+1")
 			value: new StringField({ required: true, blank: true, initial: "" }),
-
-			// Value label for computed values (e.g., "uses/day")
-			valueLabel: new StringField({ required: true, blank: true, initial: "" }),
-
+			
 			// Minimum level required to use this trait (0 = no requirement)
 			minLevel: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 

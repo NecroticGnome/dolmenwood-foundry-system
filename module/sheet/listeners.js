@@ -8,6 +8,7 @@
 import { onMeleeAttackRoll, onMissileAttackRoll, onAttackRollContextMenu } from './attack-rolls.js'
 import { onAbilityRoll, onSaveRoll, onSkillRoll, rollTrait } from './roll-handlers.js'
 import { openXPDialog, openXPEditDialog, openAddSkillDialog, removeSkill } from './dialogs.js'
+import { createContextMenu } from './context-menu.js'
 
 /**
  * Setup listeners for adjustable inputs.
@@ -419,6 +420,240 @@ export function setupDetailsRollListeners(sheet) {
 			rolls: [roll],
 			type: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
+	})
+}
+
+/**
+ * Find a RollTable by name, checking world tables first, then compendium packs.
+ * @param {string} name - The table name to search for
+ * @returns {Promise<RollTable|null>}
+ */
+async function findRollTable(name) {
+	const table = game.tables.getName(name)
+	if (table) return table
+	for (const pack of game.packs.filter(p => p.documentName === 'RollTable')) {
+		const index = await pack.getIndex()
+		const entry = index.find(e => e.name === name)
+		if (entry) return pack.getDocument(entry._id)
+	}
+	return null
+}
+
+/**
+ * Draw from a named RollTable and return the result text.
+ * Posts the draw to chat via Foundry's standard table draw message.
+ * @param {string} tableName - The table name to find and draw from
+ * @returns {Promise<string|null>} The result text, or null if table not found
+ */
+async function drawFromTable(tableName) {
+	const table = await findRollTable(tableName)
+	if (!table) return null
+	const draw = await table.draw({ displayChat: true })
+	return draw.results[0]?.text || null
+}
+
+/**
+ * Map of detail field keys to their RollTable name suffixes.
+ * Breggle/grimalkin use "Fur" instead of "Body".
+ */
+const DETAIL_TABLE_NAMES = {
+	head: 'Head',
+	face: 'Face',
+	dress: 'Dress',
+	body: 'Body',
+	demeanour: 'Demeanour',
+	desires: 'Desires',
+	beliefs: 'Beliefs',
+	speech: 'Speech'
+}
+const FUR_KINDREDS = ['breggle', 'grimalkin']
+
+/**
+ * Build a RollTable name from kindred and field.
+ * Table names follow "{Kindred} {Field}" format from the Dolmenwood Player's Book codex.
+ * @param {string} kindred - The kindred key (e.g. 'breggle')
+ * @param {string} field - The field key (e.g. 'face', 'body')
+ * @returns {string} Table name (e.g. 'Breggle Face', 'Breggle Fur')
+ */
+function buildTableName(kindred, field) {
+	const kindredLabel = kindred.charAt(0).toUpperCase() + kindred.slice(1)
+	let fieldLabel = DETAIL_TABLE_NAMES[field] || field.charAt(0).toUpperCase() + field.slice(1)
+	if (field === 'body' && FUR_KINDREDS.includes(kindred)) {
+		fieldLabel = 'Fur'
+	}
+	return `${kindredLabel} ${fieldLabel}`
+}
+
+/**
+ * Setup rollable icon listeners for extra detail fields (appearance and mannerisms).
+ * Draws from Foundry RollTables named "{Kindred} {Field}" (e.g. "Breggle Face").
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupExtraDetailsRollListeners(sheet) {
+	const kindred = sheet.actor.system.kindred
+
+	sheet.element.querySelectorAll('.roll-detail').forEach(btn => {
+		btn.addEventListener('click', async (event) => {
+			event.preventDefault()
+			const field = event.currentTarget.dataset.detail
+			const tableName = buildTableName(kindred, field)
+			const result = await drawFromTable(tableName)
+			if (result) {
+				await sheet.actor.update({ [`system.details.${field}`]: result })
+			}
+		})
+	})
+}
+
+/**
+ * Setup rollable icon listener for background field.
+ * Draws from Foundry RollTable named "{Kindred} Background" (e.g. "Human Background").
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupBackgroundRollListener(sheet) {
+	const kindred = sheet.actor.system.kindred
+
+	sheet.element.querySelector('.roll-background')?.addEventListener('click', async (event) => {
+		event.preventDefault()
+		const kindredLabel = kindred.charAt(0).toUpperCase() + kindred.slice(1)
+		const tableName = `${kindredLabel} Backgrounds`
+		const result = await drawFromTable(tableName)
+		if (result) {
+			await sheet.actor.update({ 'system.background.profession': result })
+		}
+	})
+}
+
+/**
+ * Draw from a named RollTable silently (no chat message).
+ * Returns both the result object and the Roll for custom chat messages.
+ * @param {string} tableName - The table name to find and draw from
+ * @returns {Promise<{result: object, roll: Roll}|null>}
+ */
+async function drawFromTableRaw(tableName) {
+	const table = await findRollTable(tableName)
+	if (!table) return null
+	const draw = await table.draw({ displayChat: false })
+	const result = draw.results[0]
+	if (!result) return null
+	return { result, roll: draw.roll }
+}
+
+/**
+ * Parse a column value from a RollTable result's HTML description.
+ * Description format: <table><tbody><tr><th>Column</th><td>Value</td></tr>...</tbody></table>
+ * @param {string} html - The result description HTML
+ * @param {string} column - The column header to extract (e.g. "Male", "Surname", "Rustic")
+ * @returns {string|null} The extracted value, or null if not found
+ */
+function parseNameColumn(html, column) {
+	const parser = new DOMParser()
+	const doc = parser.parseFromString(html, 'text/html')
+	for (const row of doc.querySelectorAll('tr')) {
+		const th = row.querySelector('th')
+		const td = row.querySelector('td')
+		if (th && td && th.textContent.trim() === column) {
+			return td.textContent.trim()
+		}
+	}
+	return null
+}
+
+/**
+ * Setup rollable icon listener for name field.
+ * Opens a context menu based on kindred:
+ * - Elf: Rustic / Courtly (no surname)
+ * - Grimalkin: rolls directly for First Name + Surname (no context menu)
+ * - Others: Male / Female / Unisex, then appends Surname
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupNameRollListener(sheet) {
+	const kindred = sheet.actor.system.kindred
+	const kindredLabel = kindred ? kindred.charAt(0).toUpperCase() + kindred.slice(1) : ''
+	const tableName = `${kindredLabel} Names`
+
+	sheet.element.querySelector('.roll-name')?.addEventListener('click', async (event) => {
+		event.preventDefault()
+		// Use click coordinates for positioning (the icon has display:contents so getBoundingClientRect returns zeros)
+		const position = { top: event.clientY, left: event.clientX }
+
+		if (kindred === 'elf') {
+			// Elf: context menu with Rustic / Courtly (no surname)
+			const menuHtml = ['Rustic', 'Courtly'].map(opt =>
+				`<div class="weapon-menu-item" data-name-type="${opt}">${opt}</div>`
+			).join('')
+			createContextMenu(sheet, {
+				html: menuHtml,
+				position,
+				excludeFromClose: event.currentTarget,
+				onItemClick: async (item, menu) => {
+					menu.remove()
+					const nameType = item.dataset.nameType
+					const draw = await drawFromTableRaw(tableName)
+					if (!draw) return
+					const name = parseNameColumn(draw.result.description, nameType)
+					if (!name) return
+					await sheet.actor.update({ name })
+					const rollAnchor = (await draw.roll.toAnchor()).outerHTML
+					await ChatMessage.create({
+						speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
+						content: `<strong>${tableName}</strong> (${nameType})<br>${rollAnchor}: ${name}`,
+						rolls: [draw.roll],
+						type: CONST.CHAT_MESSAGE_STYLES.OTHER
+					})
+				}
+			})
+		} else if (kindred === 'grimalkin') {
+			// Grimalkin: roll twice - one for First Name, one for Surname
+			const nameDraw = await drawFromTableRaw(tableName)
+			if (!nameDraw) return
+			const firstName = parseNameColumn(nameDraw.result.description, 'First Name')
+			const surnameDraw = await drawFromTableRaw(tableName)
+			if (!surnameDraw) return
+			const surname = parseNameColumn(surnameDraw.result.description, 'Surname')
+			if (firstName && surname) {
+				await sheet.actor.update({ name: `${firstName} ${surname}` })
+				const nameAnchor = (await nameDraw.roll.toAnchor()).outerHTML
+				const surnameAnchor = (await surnameDraw.roll.toAnchor()).outerHTML
+				await ChatMessage.create({
+					speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
+					content: `<strong>${tableName}</strong><br>${nameAnchor}: ${firstName}<br>${surnameAnchor}: ${surname}`,
+					rolls: [nameDraw.roll, surnameDraw.roll],
+					type: CONST.CHAT_MESSAGE_STYLES.OTHER
+				})
+			}
+		} else {
+			// Others: context menu with Male / Female / Unisex, then roll twice for name + surname
+			const menuHtml = ['Male', 'Female', 'Unisex'].map(opt =>
+				`<div class="weapon-menu-item" data-name-type="${opt}">${opt}</div>`
+			).join('')
+			createContextMenu(sheet, {
+				html: menuHtml,
+				position,
+				excludeFromClose: event.currentTarget,
+				onItemClick: async (item, menu) => {
+					menu.remove()
+					const nameType = item.dataset.nameType
+					const nameDraw = await drawFromTableRaw(tableName)
+					if (!nameDraw) return
+					const firstName = parseNameColumn(nameDraw.result.description, nameType)
+					const surnameDraw = await drawFromTableRaw(tableName)
+					if (!surnameDraw) return
+					const surname = parseNameColumn(surnameDraw.result.description, 'Surname')
+					if (firstName && surname) {
+						await sheet.actor.update({ name: `${firstName} ${surname}` })
+						const nameAnchor = (await nameDraw.roll.toAnchor()).outerHTML
+						const surnameAnchor = (await surnameDraw.roll.toAnchor()).outerHTML
+						await ChatMessage.create({
+							speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
+							content: `<strong>${tableName}</strong> (${nameType})<br>${nameAnchor}: ${firstName}<br>${surnameAnchor}: ${surname}`,
+							rolls: [nameDraw.roll, surnameDraw.roll],
+							type: CONST.CHAT_MESSAGE_STYLES.OTHER
+						})
+					}
+				}
+			})
+		}
 	})
 }
 

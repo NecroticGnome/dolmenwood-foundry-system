@@ -67,10 +67,8 @@ export const KINDRED_TRAITS = {
 				descKey: 'DOLMEN.Traits.LonghornGazeDesc',
 				traitType: 'active',
 				minLevel: 4,
-				getValue: (level) => level >= 10 ? 4 : level >= 8 ? 3 : level >= 6 ? 2 : 1,
 				getMaxUses: (level) => level >= 10 ? 4 : level >= 8 ? 3 : level >= 6 ? 2 : 1,
-				usageFrequency: 'DOLMEN.Traits.UsesPerDay',
-				valueLabel: 'DOLMEN.Traits.UsesPerDay'
+				usageFrequency: 'DOLMEN.Traits.UsesPerDay'
 			},
 			{
 				id: 'hornAttack',
@@ -90,10 +88,8 @@ export const KINDRED_TRAITS = {
 				adjustmentType: 'static',
 				adjustmentTarget: 'ac',
 				adjustmentValue: 1,
-				adjustmentCondition: 'DOLMEN.Traits.FurDefenseCondition',
 				// Only applies when not wearing medium/heavy armor (bulk >= 2)
 				requiresNoHeavyArmor: true,
-				value: '+1',
 				hideFromTraitTab: false
 			}
 		],
@@ -102,7 +98,18 @@ export const KINDRED_TRAITS = {
 				id: 'hornLength',
 				nameKey: 'DOLMEN.Traits.HornLength',
 				descKey: 'DOLMEN.Traits.HornLengthDesc',
-				traitType: 'info'
+				traitType: 'info',
+				getValue: (actor, level) => {
+					const hornLengths = [1, 2, 3, 4, 6, 8, 10, 12, 14, 16]
+					const index = Math.min(level - 1, 9)
+					const inches = hornLengths[index]
+					const isMetric = actor.system?.physical?.unitSystem === 'metric'
+					if (isMetric) {
+						const cm = inches * 2.5
+						return cm + ' cm'
+					}
+					return inches + '"'
+				}
 			}
 		]
 	},
@@ -116,18 +123,14 @@ export const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'abilities.charisma',
-				adjustmentValue: 2,
-				adjustmentCondition: 'DOLMEN.Traits.UnearthlyBeautyCondition',
-				value: '+2'
+				adjustmentValue: 2
 			},
 			{
 				id: 'coldIronVuln',
 				nameKey: 'DOLMEN.Traits.ColdIronVuln',
 				descKey: 'DOLMEN.Traits.ColdIronVulnDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ColdIronVulnCondition',
-				value: '+1'
+				adjustmentType: 'info'
 			},
 			{
 				id: 'keenSenses',
@@ -136,8 +139,7 @@ export const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'skillOverride',
 				adjustmentTargets: ['skills.listen', 'skills.search'],
-				adjustmentValue: 5,
-				value: '5'
+				adjustmentValue: 5
 			}
 		],
 		info: [
@@ -154,8 +156,7 @@ export const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'static',
 				adjustmentTarget: 'magicResistance',
-				adjustmentValue: 2,
-				value: '+2'
+				adjustmentValue: 2
 			}
 		]
 	},
@@ -191,18 +192,14 @@ export const KINDRED_TRAITS = {
 				nameKey: 'DOLMEN.Traits.ACVsLarge',
 				descKey: 'DOLMEN.Traits.ACVsLargeDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ACVsLargeCondition',
-				value: '+2'
+				adjustmentType: 'info'
 			},
 			{
 				id: 'coldIronVuln',
 				nameKey: 'DOLMEN.Traits.ColdIronVuln',
 				descKey: 'DOLMEN.Traits.ColdIronVulnDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ColdIronVulnCondition',
-				value: '+1'
+				adjustmentType: 'info'
 			}
 		],
 		info: [
@@ -227,8 +224,7 @@ export const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'skillOverride',
 				adjustmentTargets: ['skills.listen'],
-				adjustmentValue: 5,
-				value: '5'
+				adjustmentValue: 5
 			},
 			{
 				id: 'magicResistance',
@@ -237,8 +233,7 @@ export const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'static',
 				adjustmentTarget: 'magicResistance',
-				adjustmentValue: 2,
-				value: '+2'
+				adjustmentValue: 2
 			}
 		]
 	},
@@ -255,8 +250,7 @@ export const KINDRED_TRAITS = {
 				id: 'leadership',
 				nameKey: 'DOLMEN.Traits.Leadership',
 				descKey: 'DOLMEN.Traits.LeadershipDesc',
-				traitType: 'info',
-				value: '+1'
+				traitType: 'info'
 			}
 		],
 		info: [
@@ -264,8 +258,7 @@ export const KINDRED_TRAITS = {
 				id: 'spirited',
 				nameKey: 'DOLMEN.Traits.Spirited',
 				descKey: 'DOLMEN.Traits.SpiritedDesc',
-				traitType: 'info',
-				value: '+10%'
+				traitType: 'info'
 			}
 		]
 	},
@@ -279,9 +272,7 @@ export const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'saves.all',
-				adjustmentValue: 1,
-				adjustmentCondition: 'DOLMEN.Traits.ResilienceCondition',
-				value: '+1'
+				adjustmentValue: 1
 			},
 			{
 				id: 'keenSurvival',
@@ -290,8 +281,7 @@ export const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'skillOverride',
 				adjustmentTargets: ['skills.survival'],
-				adjustmentValue: 5,
-				value: '5'
+				adjustmentValue: 5
 			}
 		],
 		info: [
@@ -331,24 +321,20 @@ export const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'skillOverride',
 				adjustmentTargets: ['skills.listen'],
-				adjustmentValue: 5,
-				value: '5'
+				adjustmentValue: 5
 			},
 			{
 				id: 'coldIronVuln',
 				nameKey: 'DOLMEN.Traits.ColdIronVuln',
 				descKey: 'DOLMEN.Traits.ColdIronVulnDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ColdIronVulnCondition',
-				value: '+1'
+				adjustmentType: 'info'
 			},
 			{
 				id: 'fairyResistance',
 				nameKey: 'DOLMEN.Traits.FairyResistance',
 				descKey: 'DOLMEN.Traits.FairyResistanceDesc',
-				traitType: 'info',
-				value: '+2'
+				traitType: 'info'
 			}
 		],
 		info: [
@@ -394,10 +380,8 @@ export const CLASS_TRAITS = {
 				nameKey: 'DOLMEN.Traits.Enchantment',
 				descKey: 'DOLMEN.Traits.EnchantmentDesc',
 				traitType: 'active',
-				getValue: (level) => level,
 				getMaxUses: (level) => level,
-				usageFrequency: 'DOLMEN.Traits.UsesPerDay',
-				valueLabel: 'DOLMEN.Traits.UsesPerDay'
+				usageFrequency: 'DOLMEN.Traits.UsesPerDay'
 			}
 		],
 		info: [
@@ -460,8 +444,7 @@ export const CLASS_TRAITS = {
 				traitType: 'active',
 				rollable: true,
 				rollFormula: '1d6',
-				rollTarget: 2,
-				value: '2-in-6'
+				rollTarget: 2
 			}
 		]
 	},
@@ -498,8 +481,7 @@ export const CLASS_TRAITS = {
 				adjustmentType: 'static',
 				adjustmentTarget: 'ac',
 				adjustmentValue: (level) => level >= 13 ? 5 : level >= 9 ? 4 : level >= 5 ? 3 : 2,
-				getValue: (level) => level >= 13 ? 5 : level >= 9 ? 4 : level >= 5 ? 3 : 2,
-				valueLabel: 'DOLMEN.Traits.ACBonus'
+				getValue: (actor, level) => level >= 13 ? "+5" : level >= 9 ? "+4" : level >= 5 ? "+3" : "+2"
 			},
 			{
 				id: 'herbalism',
@@ -561,8 +543,7 @@ export const CLASS_TRAITS = {
 				traitType: 'active',
 				rollable: true,
 				rollFormula: '1d6',
-				rollTarget: 3,
-				value: '3-in-6'
+				rollTarget: 3
 			},
 			{
 				id: 'missileBonus',
@@ -571,8 +552,7 @@ export const CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'static',
 				adjustmentTarget: 'attack.missile',
-				adjustmentValue: 1,
-				value: '+1'
+				adjustmentValue: 1
 			}
 		],
 		info: [
@@ -612,9 +592,7 @@ export const CLASS_TRAITS = {
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'attack',
 				adjustmentValue: 2,
-				adjustmentCondition: 'DOLMEN.Traits.MonsterSlayerCondition',
-				minLevel: 5,
-				value: '+2'
+				minLevel: 5
 			},
 			{
 				id: 'mountedCombat',
@@ -623,9 +601,7 @@ export const CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'attack',
-				adjustmentValue: 1,
-				adjustmentCondition: 'DOLMEN.Traits.MountedCombatCondition',
-				value: '+1'
+				adjustmentValue: 1
 			},
 			{
 				id: 'strengthOfWill',
@@ -634,9 +610,7 @@ export const CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'saves.all',
-				adjustmentValue: 2,
-				adjustmentCondition: 'DOLMEN.Traits.StrengthOfWillCondition',
-				value: '+2'
+				adjustmentValue: 2
 			}
 		],
 		info: [
@@ -721,10 +695,8 @@ export const KINDRED_CLASS_TRAITS = {
 				descKey: 'DOLMEN.Traits.LonghornGazeDesc',
 				traitType: 'active',
 				minLevel: 4,
-				getValue: (level) => level >= 10 ? 4 : level >= 8 ? 3 : level >= 6 ? 2 : 1,
 				getMaxUses: (level) => level >= 10 ? 4 : level >= 8 ? 3 : level >= 6 ? 2 : 1,
-				usageFrequency: 'DOLMEN.Traits.UsesPerDay',
-				valueLabel: 'DOLMEN.Traits.UsesPerDay'
+				usageFrequency: 'DOLMEN.Traits.UsesPerDay'
 			},
 			{
 				id: 'hornAttack',
@@ -744,10 +716,8 @@ export const KINDRED_CLASS_TRAITS = {
 				adjustmentType: 'static',
 				adjustmentTarget: 'ac',
 				adjustmentValue: 1,
-				adjustmentCondition: 'DOLMEN.Traits.FurDefenseCondition',
 				// Only applies when not wearing medium/heavy armor (bulk >= 2)
 				requiresNoHeavyArmor: true,
-				value: '+1',
 				hideFromTraitTab: false
 			}
 		],
@@ -756,7 +726,18 @@ export const KINDRED_CLASS_TRAITS = {
 				id: 'hornLength',
 				nameKey: 'DOLMEN.Traits.HornLength',
 				descKey: 'DOLMEN.Traits.HornLengthDesc',
-				traitType: 'info'
+				traitType: 'info',
+				getValue: (actor, level) => {
+					const hornLengths = [1, 2, 3, 4, 6, 8, 10, 12, 14, 16]
+					const index = Math.min(level - 1, 9)
+					const inches = hornLengths[index]
+					const isMetric = actor.system?.physical?.unitSystem === 'metric'
+					if (isMetric) {
+						const cm = Math.round(inches * 2.54)
+						return cm + ' cm'
+					}
+					return inches + '"'
+				}
 			}
 		]
 	},
@@ -770,18 +751,14 @@ export const KINDRED_CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'abilities.charisma',
-				adjustmentValue: 2,
-				adjustmentCondition: 'DOLMEN.Traits.UnearthlyBeautyCondition',
-				value: '+2'
+				adjustmentValue: 2
 			},
 			{
 				id: 'coldIronVuln',
 				nameKey: 'DOLMEN.Traits.ColdIronVuln',
 				descKey: 'DOLMEN.Traits.ColdIronVulnDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ColdIronVulnCondition',
-				value: '+1'
+				adjustmentType: 'info'
 			},
 			{
 				id: 'holySpellFailure',
@@ -790,8 +767,7 @@ export const KINDRED_CLASS_TRAITS = {
 				traitType: 'active',
 				rollable: true,
 				rollFormula: '1d6',
-				rollTarget: 2,
-				value: '2-in-6'
+				rollTarget: 2
 			},
 			{
 				id: 'keenSenses',
@@ -800,8 +776,7 @@ export const KINDRED_CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'skillOverride',
 				adjustmentTargets: ['skills.listen', 'skills.search'],
-				adjustmentValue: 5,
-				value: '5'
+				adjustmentValue: 5
 			}
 		],
 		info: [
@@ -849,18 +824,14 @@ export const KINDRED_CLASS_TRAITS = {
 				nameKey: 'DOLMEN.Traits.ACVsLarge',
 				descKey: 'DOLMEN.Traits.ACVsLargeDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ACVsLargeCondition',
-				value: '+2'
+				adjustmentType: 'info'
 			},
 			{
 				id: 'coldIronVuln',
 				nameKey: 'DOLMEN.Traits.ColdIronVuln',
 				descKey: 'DOLMEN.Traits.ColdIronVulnDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ColdIronVulnCondition',
-				value: '+1'
+				adjustmentType: 'info'
 			},
 			{
 				id: 'keenSensesListen',
@@ -869,8 +840,7 @@ export const KINDRED_CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'skillOverride',
 				adjustmentTargets: ['skills.listen'],
-				adjustmentValue: 5,
-				value: '5'
+				adjustmentValue: 5
 			}
 		],
 		info: [
@@ -906,9 +876,7 @@ export const KINDRED_CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'saves.all',
-				adjustmentValue: 1,
-				adjustmentCondition: 'DOLMEN.Traits.ResilienceCondition',
-				value: '+1'
+				adjustmentValue: 1
 			},
 			{
 				id: 'keenSurvival',
@@ -917,8 +885,7 @@ export const KINDRED_CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'skillOverride',
 				adjustmentTargets: ['skills.survival'],
-				adjustmentValue: 5,
-				value: '5'
+				adjustmentValue: 5
 			}
 		],
 		info: [
@@ -958,33 +925,27 @@ export const KINDRED_CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'skillOverride',
 				adjustmentTargets: ['skills.listen'],
-				adjustmentValue: 5,
-				value: '5'
+				adjustmentValue: 5
 			},
 			{
 				id: 'acVsLarge',
 				nameKey: 'DOLMEN.Traits.ACVsLarge',
 				descKey: 'DOLMEN.Traits.ACVsLargeDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ACVsLargeCondition',
-				value: '+2'
+				adjustmentType: 'info'
 			},
 			{
 				id: 'coldIronVuln',
 				nameKey: 'DOLMEN.Traits.ColdIronVuln',
 				descKey: 'DOLMEN.Traits.ColdIronVulnDesc',
 				traitType: 'adjustment',
-				adjustmentType: 'info',
-				adjustmentCondition: 'DOLMEN.Traits.ColdIronVulnCondition',
-				value: '+1'
+				adjustmentType: 'info'
 			},
 			{
 				id: 'fairyResistance',
 				nameKey: 'DOLMEN.Traits.FairyResistance',
 				descKey: 'DOLMEN.Traits.FairyResistanceDesc',
-				traitType: 'info',
-				value: '+2'
+				traitType: 'info'
 			}
 		],
 		info: [

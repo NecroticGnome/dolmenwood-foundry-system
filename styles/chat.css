@@ -2,6 +2,11 @@
 /*  Attack Roll Chat Message Styles             */
 /* -------------------------------------------- */
 
+/* Make sure inline results don't overlap between lines in the chat */
+.message-content .inline-result {
+	line-height: 1.25rem;
+}
+
 .dolmen.attack-roll {
 	background-color: var(--dolmen-color-background);
 	border: 2px solid var(--dolmen-color-title-background);
@@ -281,7 +286,8 @@
 .dolmen.save-roll .roll-section.critical,
 .dolmen.skill-roll .roll-section.critical {
 	border-color: var(--dolmen-color-success);
-	background-color: rgba(34, 139, 34, 0.1); /* critical background */
+	background-color: rgba(34, 139, 34, 0.1);
+	/* critical background */
 }
 
 .dolmen.ability-roll .roll-section.critical .inline-roll,

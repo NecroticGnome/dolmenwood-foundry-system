@@ -17,8 +17,9 @@ import {
 	setupPortraitPicker, setupSkillListeners, setupAttackListeners,
 	setupAbilityRollListeners, setupSaveRollListeners,
 	setupSkillRollListeners, setupUnitConversionListeners,
-	setupDetailsRollListeners, setupTraitListeners,
-	setupAdjustableInputListeners
+	setupDetailsRollListeners, setupExtraDetailsRollListeners,
+	setupBackgroundRollListener, setupNameRollListener,
+	setupTraitListeners, setupAdjustableInputListeners
 } from './sheet/listeners.js'
 import { openAddSkillDialog, removeSkill } from './sheet/dialogs.js'
 
@@ -320,6 +321,27 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			? `+${context.xpModifier}%`
 			: `${context.xpModifier}%`
 		context.xpModifierLabel+= ` ${game.i18n.localize('DOLMEN.Modifier')}`
+
+		// Enrich notes HTML for editor
+		context.enrichedNotes = await TextEditor.enrichHTML(actor.system.background.notes || '', {
+			relativeTo: actor,
+			async: true
+		})
+
+		// Prepare detail roll tooltips (show RollTable name)
+		const kindredLabel = kindred ? kindred.charAt(0).toUpperCase() + kindred.slice(1) : ''
+		const detailFields = ['head', 'face', 'dress', 'body', 'demeanour', 'desires', 'beliefs', 'speech']
+		context.detailTitles = {}
+		for (const field of detailFields) {
+			let fieldLabel = field.charAt(0).toUpperCase() + field.slice(1)
+			if (field === 'body' && furKindreds.includes(kindred)) fieldLabel = 'Fur'
+			context.detailTitles[field] = kindredLabel ? `${kindredLabel} ${fieldLabel}` : ''
+		}
+
+		// Prepare background and name roll tooltips
+		context.backgroundTitle = kindredLabel ? `${kindredLabel} Backgrounds` : ''
+		context.nameTitle = kindredLabel ? `${kindredLabel} Names` : ''
+
 		return context
 	}
 
@@ -360,6 +382,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		setupSkillRollListeners(this)
 		setupUnitConversionListeners(this)
 		setupDetailsRollListeners(this)
+		setupExtraDetailsRollListeners(this)
+		setupBackgroundRollListener(this)
+		setupNameRollListener(this)
 		setupTraitListeners(this)
 		setupAdjustableInputListeners(this)
 	}

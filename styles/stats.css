@@ -13,6 +13,21 @@
 	gap: 0.5rem;
 }
 
+.sheet.dolmen .tab-content .header-details .flexrow {
+	align-items: center;
+}
+
+.sheet.dolmen .tab-content .header-details .flexrow .rollable {
+	display: contents;
+	font-size: 1.1rem;
+	font-weight: 300;
+}
+
+.sheet.dolmen .tab-content .header-details .flexrow .rollable::before {
+	margin-left: -0.4rem;
+	margin-right: 0.4rem;
+}
+
 .sheet.dolmen .tab-content .header-field {
 	display: flex;
 	flex-direction: column;
@@ -128,6 +143,11 @@
 /*  Stats Tab - Combat Grid                      */
 /* -------------------------------------------- */
 
+.sheet.dolmen .tab-content .combat .hp-block {
+	margin-right: 2rem;
+}
+
+
 .sheet.dolmen .tab-content .combat .combat-grid {
 	display: grid;
 	grid-template-columns: auto auto auto max-content;
@@ -142,15 +162,22 @@
 	margin-left: 0.25rem;
 }
 
+.sheet.dolmen .tab-content .combat .hp-values .rollable {
+	height: auto;
+	margin: 0;
+	width: 0;
+}
+
 .sheet.dolmen .tab-content .combat-stat input {
 	font-size: 1.25rem;
-	width: 4rem;
+	width: 3rem;
 }
 
 .sheet.dolmen .tab-content .hp-values {
 	display: flex;
 	align-items: center;
 	gap: 0.25rem;
+
 }
 
 .sheet.dolmen .tab-content .hp-values input {

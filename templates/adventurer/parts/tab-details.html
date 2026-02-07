@@ -5,19 +5,31 @@
 			<div class="extra-grid">
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Head"}}</label>
-					<input type="text" name="system.details.head" value="{{system.details.head}}">
+					<div class="flexrow">
+						<input type="text" name="system.details.head" value="{{system.details.head}}">
+						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="head" title="{{detailTitles.head}}"></i>
+					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Face"}}</label>
-					<input type="text" name="system.details.face" value="{{system.details.face}}">
+					<div class="flexrow">
+						<input type="text" name="system.details.face" value="{{system.details.face}}">
+						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="face" title="{{detailTitles.face}}"></i>
+					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Dress"}}</label>
-					<input type="text" name="system.details.dress" value="{{system.details.dress}}">
+					<div class="flexrow">
+						<input type="text" name="system.details.dress" value="{{system.details.dress}}">
+						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="dress" title="{{detailTitles.dress}}"></i>
+					</div>
 				</div>
 				<div class="header-field">
 					<label>{{bodyLabel}}</label>
-					<input type="text" name="system.details.body" value="{{system.details.body}}">
+					<div class="flexrow">
+						<input type="text" name="system.details.body" value="{{system.details.body}}">
+						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="body" title="{{detailTitles.body}}"></i>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -26,19 +38,31 @@
 			<div class="extra-grid">
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Demeanour"}}</label>
-					<input type="text" name="system.details.demeanour" value="{{system.details.demeanour}}">
+					<div class="flexrow">
+						<input type="text" name="system.details.demeanour" value="{{system.details.demeanour}}">
+						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="demeanour" title="{{detailTitles.demeanour}}"></i>
+					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Desires"}}</label>
-					<input type="text" name="system.details.desires" value="{{system.details.desires}}">
+					<div class="flexrow">
+						<input type="text" name="system.details.desires" value="{{system.details.desires}}">
+						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="desires" title="{{detailTitles.desires}}"></i>
+					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Beliefs"}}</label>
-					<input type="text" name="system.details.beliefs" value="{{system.details.beliefs}}">
+					<div class="flexrow">
+						<input type="text" name="system.details.beliefs" value="{{system.details.beliefs}}">
+						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="beliefs" title="{{detailTitles.beliefs}}"></i>
+					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Speech"}}</label>
-					<input type="text" name="system.details.speech" value="{{system.details.speech}}">
+					<div class="flexrow">
+						<input type="text" name="system.details.speech" value="{{system.details.speech}}">
+						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="speech" title="{{detailTitles.speech}}"></i>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -47,13 +71,9 @@
 	<section class="physical-characteristics boxed-section">
 		<h2>{{localize "DOLMEN.KindredDetails.Title"}}</h2>
 		<div class="physical-grid" data-unit-system="{{system.physical.unitSystem}}">
-			<div class="header-field" style="grid-column-end: span 2;">
-				<label>{{localize "DOLMEN.Background"}}</label>
-				<input type="text" name="system.background.profession" value="{{system.background.profession}}">
-			</div>
-			<div class="header-field" style="grid-column-end: span 3;">
-				<label>{{localize "DOLMEN.Languages"}}</label>
-				<input type="text" name="system.languages" value="{{system.languages}}">
+			<div class="header-field">
+				<label>{{localize "DOLMEN.KindredDetails.KindredType"}}</label>
+				<span class="proficiency-value">{{creatureTypeLabel}}</span>
 			</div>
 			<div class="header-field">
 				<label>{{localize "DOLMEN.KindredDetails.Height"}} {{#if (eq system.physical.unitSystem "imperial" )}}{{localize "DOLMEN.KindredDetails.Feet"}}{{else}}{{localize "DOLMEN.KindredDetails.Cm"}}{{/if}}</label>
@@ -82,10 +102,6 @@
 					</div>
 					<i class="fa fa-dice-d20 rollable roll-weight" title="{{weightTitle}}"></i>
 				</div>
-			</div>
-			<div class="header-field">
-				<label>{{localize "DOLMEN.KindredDetails.KindredType"}}</label>
-				<span class="proficiency-value">{{creatureTypeLabel}}</span>
 			</div>
 			<div class="header-field" style="grid-column-end: span 1;">
 				<label>{{localize "DOLMEN.KindredDetails.CurrentAge"}}</label>

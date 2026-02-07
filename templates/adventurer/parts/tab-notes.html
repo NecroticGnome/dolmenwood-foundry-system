@@ -3,7 +3,11 @@
 	<section class="notes boxed-section">
 		<h2>{{localize "DOLMEN.Tabs.Notes"}}</h2>
 		<div class="editor-container">
-			{{editor system.background.notes target="system.background.notes" button=true editable=true}}
+			{{#if editable}}
+			<prose-mirror name="system.background.notes" button="true" editable="{{editable}}" toggled="true" value="{{system.background.notes}}">{{{enrichedNotes}}}</prose-mirror>
+			{{else}}
+			<div class="editor-content">{{{enrichedNotes}}}</div>
+			{{/if}}
 		</div>
 	</section>
 </section>

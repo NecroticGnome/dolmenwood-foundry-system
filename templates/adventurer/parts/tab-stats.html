@@ -6,7 +6,10 @@
 			<div class="header-details">
 				<div class="header-field" style="grid-column-end: span 2;">
 					<label>{{localize "DOLMEN.Name"}}</label>
-					<input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'DOLMEN.Name'}}">
+					<div class="flexrow">
+						<input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'DOLMEN.Name'}}">
+						<i class="fa fa-dice-d20 rollable roll-name" title="{{nameTitle}}"></i>
+					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.Kindred"}}</label>
@@ -20,15 +23,26 @@
 						{{selectOptions @root.classChoices selected=system.class}}
 					</select>
 				</div>
+				<div class="header-field" style="grid-column-end:span 2;">
+					<label>{{localize "DOLMEN.Affiliation"}}</label>
+					<input type="text" name="system.affiliation" value="{{system.affiliation}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Background"}}</label>
+					<div class="flexrow">
+						<input type="text" name="system.background.profession" value="{{system.background.profession}}">
+						<i class="fa fa-dice-d20 rollable roll-background" title="{{backgroundTitle}}"></i>
+					</div>
+				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.Alignment"}}</label>
 					<select name="system.alignment">
 						{{selectOptions @root.alignmentChoices selected=system.alignment}}
 					</select>
 				</div>
-				<div class="header-field">
-					<label>{{localize "DOLMEN.Affiliation"}}</label>
-					<input type="text" name="system.affiliation" value="{{system.affiliation}}">
+				<div class="header-field" style="grid-column-end: span 2;">
+					<label>{{localize "DOLMEN.Languages"}}</label>
+					<input type="text" name="system.languages" value="{{system.languages}}">
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.Level"}}</label>
@@ -201,6 +215,7 @@
 						<span class="hp-separator">/</span>
 						<input type="hidden" name="system.hp.max" value="{{system.hp.max}}">
 						<input type="number" class="hp-max adjustable" value="{{adjusted.hp.max}}" data-base="{{system.hp.max}}" data-adjusted="{{adjusted.hp.max}}" data-target="system.hp.max" min="1">
+						<i class="fa fa-bed-front fa-duotone rollable long-rest-btn" title="{{localize 'DOLMEN.Traits.LongRest'}}"></i>
 					</div>
 				</div>
 				<div class="combat-stat">

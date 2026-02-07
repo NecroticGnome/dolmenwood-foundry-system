@@ -2,34 +2,29 @@
 /*  Traits Tab Styles                           */
 /* -------------------------------------------- */
 
-/* Trait Actions Bar */
-.sheet.dolmen .trait-actions {
-	display: flex;
-	justify-content: flex-end;
-	margin-bottom: 0.5rem;
-}
-
-.sheet.dolmen .long-rest-btn {
-	display: flex;
-	align-items: center;
-	gap: 0.35rem;
-	padding: 0.25rem 0.5rem;
-	font-size: 0.75rem;
-	background-color: var(--dolmen-color-accent);
-	color: var(--dolmen-color-background);
-	border: none;
-	border-radius: 0.25rem;
-	cursor: pointer;
-	transition: background-color 0.2s;
-}
-
-.sheet.dolmen .long-rest-btn:hover {
-	background-color: var(--dolmen-color-h2);
+/* Trait Sections - scrollable when content overflows */
+.sheet.dolmen .tab-content .kindred-traits,
+.sheet.dolmen .tab-content .class-traits,
+.sheet.dolmen .tab-content .kindred-class-traits {
+	flex: 1;
+	min-height: unset;
+	padding-bottom: 0;
 }
 
 /* Traits Grid - two column layout */
-.sheet.dolmen .traits-grid {
-	margin-top: 0.25rem;
+.sheet.dolmen .tab-content .two-columns.traits-grid {
+	margin-top: 0;
+	padding-top: 0.5rem;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding-bottom: 0.5rem;
+	display: block;
+	column-count: 2;
+	column-gap: 0.5rem;
+}
+
+.sheet.dolmen .window-content .tab-traits \h2 {
+	margin-bottom: 0;
 }
 
 /* Individual Trait Box */
@@ -38,6 +33,9 @@
 	margin: 0;
 	min-height: 4rem;
 	background-color: var(--dolmen-color-inner-background);
+	break-inside: avoid;
+	page-break-inside: avoid;
+	margin-bottom: 0.5rem;
 }
 
 .sheet.dolmen .trait h3 {
@@ -55,13 +53,15 @@
 	padding: 0.1rem 0.35rem;
 	border-radius: 0.25rem;
 	margin-left: auto;
+	text-transform: lowercase;
 }
 
 .sheet.dolmen .trait h3 .rollable {
-	margin-left: 0.25rem;
-	font-size: 0.9rem;
+	font-size: 1.1rem;
 	height: auto;
 	line-height: 1;
+	font-weight: 300;
+	margin-top: -0.25rem;
 }
 
 .sheet.dolmen .trait h3 .rollable:hover {
@@ -112,8 +112,9 @@
 }
 
 .sheet.dolmen .trait-usage .trait-usage-checkbox {
-	width: 1rem;
-	height: 1rem;
+	background: none;
+	border: none;
+	box-shadow: none;
 	cursor: pointer;
 	accent-color: var(--dolmen-color-accent);
 }
@@ -139,25 +140,6 @@
 
 .sheet.dolmen .trait .info-reminder i {
 	color: var(--dolmen-color-accent);
-	margin-top: 0.1rem;
-}
-
-/* Roll Option Reminder Box */
-.sheet.dolmen .trait .roll-option-reminder {
-	display: flex;
-	align-items: flex-start;
-	gap: 0.35rem;
-	margin-top: 0.5rem;
-	padding: 0.35rem 0.5rem;
-	background-color: var(--dolmen-color-accent);
-	border-left: 3px solid var(--dolmen-color-h2);
-	border-radius: 0.25rem;
-	font-size: 0.7rem;
-	color: var(--dolmen-color-text-muted);
-}
-
-.sheet.dolmen .trait .roll-option-reminder i {
-	color: var(--dolmen-color-h2);
 	margin-top: 0.1rem;
 }
 
