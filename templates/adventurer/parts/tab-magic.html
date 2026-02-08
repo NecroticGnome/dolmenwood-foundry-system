@@ -184,56 +184,84 @@
 	<!-- Holy Magic Sub-tab -->
 	<section class="magic-tab-content sub-tab-content" data-group="magic" data-tab="holy">
 		{{#if system.holyMagic.enabled}}
-		<section class="holy-spells boxed-section">
-			<h2>{{localize "DOLMEN.Magic.Holy.SpellSlots"}}</h2>
-			<div class="spell-slots-grid holy-grid">
-				{{#each holySpellSlots}}
-				<div class="spell-slot-group">
-					<label>{{this.label}}</label>
-					<div class="slot-tracker">
-						<input type="number" name="system.holyMagic.spellSlots.{{this.key}}.used" value="{{this.used}}" min="0" max="{{this.max}}" class="slot-used">
-						<span class="slot-separator">/</span>
-						<input type="number" name="system.holyMagic.spellSlots.{{this.key}}.max" value="{{this.max}}" min="0" class="slot-max">
-					</div>
-				</div>
-				{{/each}}
-			</div>
-		</section>
-
-		<section class="prepared-spells boxed-section">
-			<h2>{{localize "DOLMEN.Magic.Holy.PreparedSpells"}}</h2>
-			<div class="spell-list" data-spell-list="holy">
-				{{#if hasHolySpells}}
-				{{#each holySpellsByRank}}
-				<div class="spell-rank-group">
-					<div class="spell-list-header">
-						<i class="fas fa-sun"></i>
-						<span class="rank-label">{{this.label}}</span>
-						<span class="spell-controls-header"></span>
-					</div>
-					{{#each this.spells}}
-					<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="spell-image"></div>
-						<span class="spell-name">{{this.name}}</span>
-						<span class="spell-controls">
-							<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Cast'}}">
-								<i class="fas fa-sun"></i>
-							</a>
-							<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
-								<i class="fas fa-square-x"></i>
-							</a>
-						</span>
+		<div class="two-columns">
+			<section class="memorized-spells boxed-section">
+				<h2><i class="fas fa-hands-praying"></i> {{localize "DOLMEN.Magic.Holy.PreparedSpells"}}</h2>
+				<div class="spell-list memorized-slots-list" data-spell-list="holy-memorized">
+					{{#if hasMemorizedHolySlots}}
+					{{#each memorizedHolySlots}}
+					<div class="spell-rank-group">
+						<div class="spell-list-header">
+							<span class="rank-label">{{localize "DOLMEN.Magic.SpellRank"}}</span>
+							<i class="fas {{this.icon}}"></i>
+							<span class="spell-controls-header"></span>
+						</div>
+						{{#each this.slots}}
+						{{#if this.filled}}
+						<div class="spell-row memorized-slot filled" data-item-id="{{this.spell.id}}" data-action="openItem">
+							<div style="mask-image:url('{{this.spell.img}}'); -webkit-mask-image: url('{{this.spell.img}}');" class="spell-image"></div>
+							<span class="spell-name">{{this.spell.name}}</span>
+							<span class="spell-controls">
+								<a class="spell-control" data-action="castSpell" data-item-id="{{this.spell.id}}" title="{{localize 'DOLMEN.Magic.Cast'}}">
+									<i class="fas fa-sun"></i>
+								</a>
+								<a class="spell-control" data-action="forgetSpell" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-spell-type="holy" title="{{localize 'DOLMEN.Magic.Forget'}}">
+									<i class="fas fa-brain-arrow-curved-right"></i>
+								</a>
+							</span>
+						</div>
+						{{else}}
+						<div class="spell-row memorized-slot empty" data-action="memorizeToSlot" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-rank="{{../rank}}" data-spell-type="holy">
+							<div class="spell-image empty-slot-icon"><i class="fas fa-plus"></i></div>
+							<span class="spell-name empty-slot-label">{{localize "DOLMEN.Magic.EmptySlot"}}</span>
+							<span class="spell-controls"></span>
+						</div>
+						{{/if}}
+						{{/each}}
 					</div>
 					{{/each}}
+					{{else}}
+					<div class="spell-list-empty">
+						<span>{{localize "DOLMEN.Magic.Holy.NoSlots"}}</span>
+					</div>
+					{{/if}}
 				</div>
-				{{/each}}
-				{{else}}
-				<div class="spell-list-empty">
-					<span>{{localize "DOLMEN.Magic.Holy.NoSpells"}}</span>
+			</section>
+			<section class="known-spells boxed-section">
+				<h2><i class="fa-solid fa-book-open"></i> {{localize "DOLMEN.Magic.Holy.KnownSpells"}}</h2>
+				<div class="spell-list" data-spell-list="holy">
+					{{#if hasKnownHolySpells}}
+					{{#each knownHolySpellsByRank}}
+					<div class="spell-rank-group">
+						<div class="spell-list-header">
+							<span class="rank-label">{{localize "DOLMEN.Magic.SpellRank"}}</span>
+							<i class="fas {{this.icon}}"></i>
+							<span class="spell-controls-header"></span>
+						</div>
+						{{#each this.spells}}
+						<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
+							<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="spell-image"></div>
+							<span class="spell-name">{{this.name}}</span>
+							<span class="spell-controls">
+								<a class="spell-control" data-action="memorizeSpell" data-item-id="{{this.id}}" data-spell-type="holy" title="{{localize 'DOLMEN.Magic.Memorize'}}">
+									<i class="fas fa-brain-arrow-curved-right" style="transform: scaleX(-1);"></i>
+								</a>
+								<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
+									<i class="fas fa-square-x"></i>
+								</a>
+							</span>
+						</div>
+						{{/each}}
+					</div>
+					{{/each}}
+					{{else}}
+					<div class="spell-list-empty">
+						<span>{{localize "DOLMEN.Magic.Holy.NoKnownSpells"}}</span>
+					</div>
+					{{/if}}
 				</div>
-				{{/if}}
-			</div>
-		</section>
+			</section>
+		</div>
 		{{else}}
 		<div class="magic-disabled">
 			<p>{{localize "DOLMEN.Magic.Disabled"}}</p>

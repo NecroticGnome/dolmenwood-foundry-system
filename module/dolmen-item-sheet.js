@@ -1,4 +1,4 @@
-/* global foundry, game, FilePicker */
+/* global foundry, game, FilePicker, fromUuid */
 import { buildChoices, buildChoicesWithBlank, buildQualityOptions, CHOICE_KEYS } from './utils/choices.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -40,7 +40,13 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.isTreasure = this.item.type === 'Treasure'
 		context.isForaged = this.item.type === 'Foraged'
 		context.isSpell = this.item.type === 'Spell'
+		context.isHolySpell = this.item.type === 'HolySpell'
+		context.isGlamour = this.item.type === 'Glamour'
+		context.isRune = this.item.type === 'Rune'
 		context.isGenericItem = this.item.type === 'Item'
+		context.isGear = !context.isSpell && !context.isHolySpell && !context.isGlamour && !context.isRune
+		context.isRankedSpell = context.isSpell || context.isHolySpell
+		context.hasCodexLink = !!this.item.system.codexUuid
 
 		// Weapon choices
 		context.weaponTypeChoices = buildChoicesWithBlank('DOLMEN.Item.WeaponType', CHOICE_KEYS.weaponTypes)
@@ -54,11 +60,8 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		// Foraged choices
 		context.foragedTypeChoices = buildChoices('DOLMEN.Item.ForagedType', CHOICE_KEYS.foragedTypes)
 
-		// Spell choices
-		context.spellTypeChoices = buildChoices('DOLMEN.Item.SpellType', CHOICE_KEYS.spellTypes)
+		// Rune choices
 		context.runeMagnitudeChoices = buildChoices('DOLMEN.Magic.Fairy.Magnitudes', CHOICE_KEYS.runeMagnitudes)
-		context.isRuneSpell = this.item.type === 'Spell' && this.item.system.type === 'rune'
-		context.isRankedSpell = this.item.type === 'Spell' && ['arcane', 'holy'].includes(this.item.system.type)
 
 		return context
 	}
@@ -78,6 +81,18 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 					}
 				})
 				fp.browse()
+			})
+		}
+
+		// Handle codex link button click
+		const codexBtn = this.element.querySelector('.codex-link-btn')
+		if (codexBtn) {
+			codexBtn.addEventListener('click', async () => {
+				const uuid = this.item.system.codexUuid
+				if (uuid) {
+					const doc = await fromUuid(uuid)
+					doc?.sheet?.render(true)
+				}
 			})
 		}
 

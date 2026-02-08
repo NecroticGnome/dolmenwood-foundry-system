@@ -83,6 +83,52 @@
 }
 
 /* -------------------------------------------- */
+/*  Coin Adjust Modal                           */
+/* -------------------------------------------- */
+
+.coin-modal-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.coin-modal-content .coin-adjust-header {
+	display: grid;
+	grid-template-columns: 1fr 3rem 4rem;
+	gap: 0.5rem;
+	align-items: center;
+	font-weight: bold;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	color: var(--dolmen-color-h3);
+	text-align: center;
+}
+
+.coin-modal-content .coin-adjust-row {
+	display: grid;
+	grid-template-columns: 1fr 3rem 4rem;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.coin-modal-content .coin-adjust-row label {
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+
+.coin-modal-content .coin-adjust-row .coin-current {
+	text-align: center;
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+.coin-modal-content .coin-adjust-row input {
+	padding: 0.3rem;
+	font-size: 0.9rem;
+	text-align: center;
+}
+
+/* -------------------------------------------- */
 /*  Weapon Context Menu                         */
 /* -------------------------------------------- */
 

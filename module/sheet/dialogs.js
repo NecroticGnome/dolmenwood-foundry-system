@@ -111,6 +111,81 @@ export function openXPEditDialog(sheet) {
 }
 
 /**
+ * Open the coin adjustment dialog.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function openCoinDialog(sheet) {
+	const coins = sheet.actor.system.coins
+	const denominations = ['copper', 'silver', 'gold', 'pellucidium']
+
+	const rows = denominations.map(denom => {
+		const label = game.i18n.localize(`DOLMEN.Coins.${denom.charAt(0).toUpperCase() + denom.slice(1)}`)
+		return `
+			<div class="coin-adjust-row">
+				<label>${label}</label>
+				<span class="coin-current">${coins[denom] || 0}</span>
+				<input type="number" id="coin-${denom}" value="0" min="0">
+			</div>
+		`
+	}).join('')
+
+	const content = `
+		<div class="coin-modal-content">
+			<div class="coin-adjust-header">
+				<span></span>
+				<span>${game.i18n.localize('DOLMEN.Coins.Title')}</span>
+				<span>${game.i18n.localize('DOLMEN.Amount')}</span>
+			</div>
+			${rows}
+		</div>
+	`
+
+	new Dialog({
+		title: game.i18n.localize('DOLMEN.Coins.AdjustTitle'),
+		content: content,
+		buttons: {
+			add: {
+				icon: '<i class="fas fa-plus"></i>',
+				label: game.i18n.localize('DOLMEN.Coins.AdjustAdd'),
+				callback: (html) => {
+					const update = {}
+					for (const denom of denominations) {
+						const amount = parseInt(html.find(`#coin-${denom}`).val()) || 0
+						if (amount > 0) {
+							update[`system.coins.${denom}`] = (coins[denom] || 0) + amount
+						}
+					}
+					if (Object.keys(update).length > 0) {
+						sheet.actor.update(update)
+					}
+				}
+			},
+			subtract: {
+				icon: '<i class="fas fa-minus"></i>',
+				label: game.i18n.localize('DOLMEN.Coins.AdjustSubtract'),
+				callback: (html) => {
+					const update = {}
+					for (const denom of denominations) {
+						const amount = parseInt(html.find(`#coin-${denom}`).val()) || 0
+						if (amount > 0) {
+							update[`system.coins.${denom}`] = Math.max(0, (coins[denom] || 0) - amount)
+						}
+					}
+					if (Object.keys(update).length > 0) {
+						sheet.actor.update(update)
+					}
+				}
+			},
+			cancel: {
+				icon: '<i class="fas fa-times"></i>',
+				label: game.i18n.localize('DOLMEN.Cancel')
+			}
+		},
+		default: 'add'
+	}).render(true)
+}
+
+/**
  * Open the add skill dialog.
  * @param {DolmenSheet} sheet - The sheet instance
  */

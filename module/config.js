@@ -145,4 +145,66 @@ DOLMENWOOD.primeAbilities = {
 	woodgrue: ['charisma', 'dexterity']
 }
 
+// Spell slot progression tables by class and level (index = level, value = slots per rank)
+// From Dolmenwood SRD class tables. No ability modifier bonuses — slots depend only on class + level.
+DOLMENWOOD.spellProgression = {
+	// Arcane spells, ranks 1-6
+	magician: [
+		null,              // level 0 (unused)
+		[1, 0, 0, 0, 0, 0], // level 1
+		[2, 0, 0, 0, 0, 0], // level 2
+		[2, 1, 0, 0, 0, 0], // level 3
+		[2, 2, 0, 0, 0, 0], // level 4
+		[2, 2, 1, 0, 0, 0], // level 5
+		[3, 2, 2, 0, 0, 0], // level 6
+		[3, 2, 2, 1, 0, 0], // level 7
+		[3, 3, 2, 2, 0, 0], // level 8
+		[3, 3, 2, 2, 1, 0], // level 9
+		[4, 3, 3, 2, 2, 0], // level 10
+		[4, 3, 3, 2, 2, 1], // level 11
+		[4, 4, 3, 3, 2, 2], // level 12
+		[4, 4, 3, 3, 3, 2], // level 13
+		[5, 4, 4, 3, 3, 2], // level 14
+		[5, 4, 4, 3, 3, 3]  // level 15
+	],
+	// Holy spells, ranks 1-5 (no spells at level 1)
+	cleric: [
+		null,              // level 0 (unused)
+		[0, 0, 0, 0, 0],    // level 1
+		[1, 0, 0, 0, 0],    // level 2
+		[2, 0, 0, 0, 0],    // level 3
+		[2, 1, 0, 0, 0],    // level 4
+		[2, 2, 0, 0, 0],    // level 5
+		[2, 2, 1, 0, 0],    // level 6
+		[3, 2, 2, 0, 0],    // level 7
+		[3, 2, 2, 0, 0],    // level 8
+		[3, 3, 2, 1, 0],    // level 9
+		[3, 3, 2, 2, 0],    // level 10
+		[4, 3, 3, 2, 0],    // level 11
+		[4, 3, 3, 2, 1],    // level 12
+		[4, 4, 3, 2, 2],    // level 13
+		[4, 4, 3, 3, 2],    // level 14
+		[5, 4, 4, 3, 2]     // level 15
+	],
+	// Holy spells, ranks 1-5 (starts casting at level 1)
+	friar: [
+		null,              // level 0 (unused)
+		[1, 0, 0, 0, 0],    // level 1
+		[2, 0, 0, 0, 0],    // level 2
+		[2, 1, 0, 0, 0],    // level 3
+		[2, 2, 0, 0, 0],    // level 4
+		[3, 2, 1, 0, 0],    // level 5
+		[3, 2, 2, 0, 0],    // level 6
+		[3, 3, 2, 1, 0],    // level 7
+		[4, 3, 2, 2, 0],    // level 8
+		[4, 3, 3, 2, 1],    // level 9
+		[4, 4, 3, 2, 2],    // level 10
+		[5, 4, 3, 3, 2],    // level 11
+		[5, 4, 4, 3, 2],    // level 12
+		[5, 5, 4, 3, 3],    // level 13
+		[6, 5, 4, 4, 3],    // level 14
+		[6, 5, 5, 4, 3]     // level 15
+	]
+}
+
 export default DOLMENWOOD

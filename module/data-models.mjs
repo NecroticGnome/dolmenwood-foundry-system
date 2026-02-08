@@ -1,6 +1,6 @@
 import { CHOICE_KEYS } from './utils/choices.js'
 
-/* global foundry */
+/* global foundry, CONFIG */
 const { ArrayField, BooleanField, HTMLField, NumberField, SchemaField, StringField } = foundry.data.fields
 
 /* -------------------------------------------- */
@@ -155,12 +155,13 @@ function createAdjustmentsSchema() {
 
 /**
  * Create a spell slot field for a single rank.
+ * Max is computed in prepareDerivedData() from class + level progression tables.
  * @returns {SchemaField} Spell slot schema with max, used, and memorized values
  */
-function createSpellSlotField(rank) {
+function createSpellSlotField() {
 	return new SchemaField({
-		max: new NumberField({ required: true, integer: true, min: 0, initial: rank }),
-		used: new NumberField({ required: true, integer: true, min: 0, initial: rank }),
+		max: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+		used: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 		// Array of spell item IDs that are memorized in these slots
 		memorized: new ArrayField(new StringField({ blank: false }), { initial: [] })
 	})
@@ -172,12 +173,12 @@ function createSpellSlotField(rank) {
  */
 function createArcaneSpellSlotsSchema() {
 	return new SchemaField({
-		rank1: createSpellSlotField(5),
-		rank2: createSpellSlotField(4),
-		rank3: createSpellSlotField(4),
-		rank4: createSpellSlotField(3),
-		rank5: createSpellSlotField(3),
-		rank6: createSpellSlotField(3)
+		rank1: createSpellSlotField(),
+		rank2: createSpellSlotField(),
+		rank3: createSpellSlotField(),
+		rank4: createSpellSlotField(),
+		rank5: createSpellSlotField(),
+		rank6: createSpellSlotField()
 	})
 }
 
@@ -289,15 +290,32 @@ export class AdventurerDataModel extends ActorDataModel {
 		this.creatureType = AdventurerDataModel.getCreatureTypeForKindred(this.kindred)
 
 		// Enable/disable magic types based on class and kindred
-		const arcaneCasters = ['magician', 'enchanter']
+		const arcaneCasters = ['magician', 'breggle']
 		const holyCasters = ['cleric', 'friar']
-		const fairyCasters = ['enchanter']
+		const fairyCasters = ['enchanter', 'grimalkin']
 		const fairyKindreds = ['elf', 'grimalkin']
 
 		this.arcaneMagic.enabled = arcaneCasters.includes(this.class)
 		this.holyMagic.enabled = holyCasters.includes(this.class)
 		this.fairyMagic.enabled = fairyCasters.includes(this.class) || fairyKindreds.includes(this.kindred)
 		this.knacks.enabled = this.kindred === 'mossling'
+
+		// Compute spell slot max values from class + level progression tables
+		const spellTable = CONFIG.DOLMENWOOD.spellProgression[this.class]
+		if (spellTable) {
+			const level = Math.min(this.level, 15)
+			const slots = spellTable[level]
+			if (this.arcaneMagic.enabled && slots?.length === 6) {
+				for (let i = 0; i < 6; i++) {
+					this.arcaneMagic.spellSlots[`rank${i + 1}`].max = slots[i]
+				}
+			}
+			if (this.holyMagic.enabled && slots?.length === 5) {
+				for (let i = 0; i < 5; i++) {
+					this.holyMagic.spellSlots[`rank${i + 1}`].max = slots[i]
+				}
+			}
+		}
 
 		// Derive knack level from character level (abilities unlock at 1, 3, 5, 7)
 		if (this.knacks.enabled) {
@@ -615,6 +633,19 @@ export class TraitDataModel extends foundry.abstract.TypeDataModel {
 export class ItemDataModel extends foundry.abstract.TypeDataModel {
 	static defineSchema() {
 		return {
+			codexUuid: new StringField({
+				required: false,
+				blank: true,
+				initial: ""
+			})
+		}
+	}
+}
+
+export class GearDataModel extends ItemDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
 			cost: new NumberField({
 				required: true,
 				integer: true,
@@ -646,9 +677,9 @@ export class ItemDataModel extends foundry.abstract.TypeDataModel {
 	}
 }
 
-export class TreasureDataModel extends ItemDataModel {}
+export class TreasureDataModel extends GearDataModel {}
 
-export class WeaponDataModel extends ItemDataModel {
+export class WeaponDataModel extends GearDataModel {
 	static defineSchema() {
 		return {
 			...super.defineSchema(),
@@ -697,7 +728,7 @@ export class WeaponDataModel extends ItemDataModel {
 	}
 }
 
-export class ArmorDataModel extends ItemDataModel {
+export class ArmorDataModel extends GearDataModel {
 	static defineSchema() {
 		return {
 			...super.defineSchema(),
@@ -722,7 +753,7 @@ export class ArmorDataModel extends ItemDataModel {
 	}
 }
 
-export class ForagedDataModel extends ItemDataModel {
+export class ForagedDataModel extends GearDataModel {
 	static defineSchema() {
 		return {
 			...super.defineSchema(),
@@ -747,13 +778,7 @@ export class SpellDataModel extends ItemDataModel {
 	static defineSchema() {
 		return {
 			...super.defineSchema(),
-			type: new StringField({
-				required: true,
-				blank: false,
-				initial: "glamour",
-				choices: CHOICE_KEYS.spellTypes
-			}),
-			// Spell rank (1-6 for arcane, 1-5 for holy)
+			// Spell rank (1-6 for arcane spells)
 			rank: new NumberField({
 				required: true,
 				integer: true,
@@ -761,15 +786,53 @@ export class SpellDataModel extends ItemDataModel {
 				max: 6,
 				initial: 1
 			}),
-			// Rune magnitude (for fairy runes)
+			range: new StringField({ required: true, blank: true, initial: "" }),
+			duration: new StringField({ required: true, blank: true, initial: "" }),
+			description: new StringField({ required: true, blank: true, initial: "" })
+		}
+	}
+}
+
+export class HolySpellDataModel extends SpellDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
+			// Holy spell rank (1-5)
+			rank: new NumberField({
+				required: true,
+				integer: true,
+				min: 1,
+				max: 5,
+				initial: 1
+			}),
+			prayerName: new StringField({ required: true, blank: true, initial: "" })
+		}
+	}
+}
+
+export class GlamourDataModel extends ItemDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
+			range: new StringField({ required: true, blank: true, initial: "" }),
+			duration: new StringField({ required: true, blank: true, initial: "" }),
+			usageFrequency: new StringField({ required: true, blank: true, initial: "" }),
+			description: new StringField({ required: true, blank: true, initial: "" })
+		}
+	}
+}
+
+export class RuneDataModel extends ItemDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
 			magnitude: new StringField({
 				required: true,
 				blank: false,
 				initial: "lesser",
 				choices: CHOICE_KEYS.runeMagnitudes
 			}),
-			// Spell description/effect
-			description: new HTMLField({ required: true, blank: true })
+			description: new StringField({ required: true, blank: true, initial: "" })
 		}
 	}
 }

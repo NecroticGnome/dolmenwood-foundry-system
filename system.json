@@ -143,7 +143,10 @@
       "Armor": {},
       "Weapon": {},
       "Foraged": {},
-      "Spell": {}
+      "Spell": {},
+      "HolySpell": {},
+      "Glamour": {},
+      "Rune": {}
     }
   }
 }

@@ -149,3 +149,40 @@
 .sheet.dolmen.item .item-body .editor-container {
 	min-height: 100px;
 }
+
+/* Codex link row */
+.sheet.dolmen.item .item-body .codex-input-group {
+	display: flex;
+	gap: 0.25rem;
+	align-items: center;
+}
+
+.sheet.dolmen.item .item-body .codex-input-group input {
+	flex: 1;
+}
+
+.sheet.dolmen.item .item-body .codex-link-btn {
+	padding: 0.25rem 0.5rem;
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 2px;
+	background: var(--dolmen-color-background);
+	cursor: pointer;
+	font-size: 0.85rem;
+}
+
+.sheet.dolmen.item .item-body .codex-link-btn:hover {
+	background: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+}
+
+/* Spell description textarea */
+.sheet.dolmen.item .item-body .spell-description {
+	width: 100%;
+	min-height: 80px;
+	padding: 0.25rem;
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 2px;
+	font-size: 0.85rem;
+	font-family: inherit;
+	resize: vertical;
+}

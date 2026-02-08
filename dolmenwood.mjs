@@ -5,7 +5,7 @@ import DolmenSheet from './module/dolmen-sheet.js'
 import DolmenItemSheet from './module/dolmen-item-sheet.js'
 import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
-import { AdventurerDataModel, CreatureDataModel, TraitDataModel, ItemDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, ArmorDataModel, ForagedDataModel } from './module/data-models.mjs'
+import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel } from './module/data-models.mjs'
 import { KINDRED_TRAITS, CLASS_TRAITS, KINDRED_CLASS_TRAITS, COMBAT_TALENTS, HOLY_ORDERS, KINDRED_CLASS_NAMES, ADJUSTMENT_TARGETS } from './module/config/traits.js'
 
 const { Actors, Items } = foundry.documents.collections
@@ -37,12 +37,15 @@ Hooks.once('init', async function () {
 		Trait: TraitDataModel
 	}
 	CONFIG.Item.dataModels = {
-		Item: ItemDataModel,
+		Item: GearDataModel,
 		Treasure: TreasureDataModel,
 		Weapon: WeaponDataModel,
 		Armor: ArmorDataModel,
 		Foraged: ForagedDataModel,
-		Spell: SpellDataModel
+		Spell: SpellDataModel,
+		HolySpell: HolySpellDataModel,
+		Glamour: GlamourDataModel,
+		Rune: RuneDataModel
 	}
 
 	Actors.registerSheet('dolmen', DolmenSheet, {
@@ -52,7 +55,7 @@ Hooks.once('init', async function () {
 	})
 
 	Items.registerSheet('dolmen', DolmenItemSheet, {
-		types: ['Item', 'Treasure', 'Weapon', 'Armor', 'Foraged', 'Spell'],
+		types: ['Item', 'Treasure', 'Weapon', 'Armor', 'Foraged', 'Spell', 'HolySpell', 'Glamour', 'Rune'],
 		label: 'DOLMEN.ItemSheetTitle',
 		makeDefault: true
 	})

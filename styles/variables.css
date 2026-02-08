@@ -74,6 +74,11 @@
 	--dolmen-color-roll-save: #6b4c9a;
 	--dolmen-color-roll-skill: #4a8f6f;
 	--dolmen-color-roll-trait: #7a5a8a;
+
+	--dolmen-color-coin-copper: #b87333;
+	--dolmen-color-coin-silver: #c0c0c0;
+	--dolmen-color-coin-gold: #ffd700;
+	--dolmen-color-coin-pellucidium: #7fdbff;
 }
 
 .theme-light .dolmen {
@@ -112,4 +117,9 @@
 	--dolmen-color-roll-save: #6b4c9a;
 	--dolmen-color-roll-skill: #4a8f6f;
 	--dolmen-color-roll-trait: #7a5a8a;
+
+	--dolmen-color-coin-copper: #b87333;
+	--dolmen-color-coin-silver: #c0c0c0;
+	--dolmen-color-coin-gold: #ffd700;
+	--dolmen-color-coin-pellucidium: #7fdbff;
 }

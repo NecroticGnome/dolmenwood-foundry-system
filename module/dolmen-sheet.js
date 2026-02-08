@@ -13,7 +13,7 @@ import {
 	prepareKindredTraits, prepareClassTraits, prepareKindredClassTraits
 } from './sheet/trait-helpers.js'
 import {
-	setupTabListeners, setupXPListener,
+	setupTabListeners, setupXPListener, setupCoinListener,
 	setupPortraitPicker, setupSkillListeners, setupAttackListeners,
 	setupAbilityRollListeners, setupSaveRollListeners,
 	setupSkillRollListeners, setupUnitConversionListeners,
@@ -239,7 +239,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			: '—'
 
 		// Prepare inventory items grouped by type
-		const items = actor.items.contents.filter(i => i.type !== 'Spell')
+		const spellTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune']
+		const items = actor.items.contents.filter(i => !spellTypes.includes(i.type))
 		const equippedItems = items.filter(i => i.system.equipped).map(i => prepareItemData(i))
 		const stowedItems = items.filter(i => !i.system.equipped).map(i => prepareItemData(i))
 
@@ -259,11 +260,10 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.holySpellSlots = prepareSpellSlots(actor.system.holyMagic.spellSlots, 5)
 
 		// Prepare spells by type, grouped by rank
-		const spells = actor.items.contents.filter(i => i.type === 'Spell')
-		const arcaneSpells = spells.filter(s => s.system.type === 'arcane')
-		const holySpells = spells.filter(s => s.system.type === 'holy')
-		const glamourSpells = spells.filter(s => s.system.type === 'glamour')
-		const runeSpells = spells.filter(s => s.system.type === 'rune')
+		const arcaneSpells = actor.items.contents.filter(i => i.type === 'Spell')
+		const holySpells = actor.items.contents.filter(i => i.type === 'HolySpell')
+		const glamourSpells = actor.items.contents.filter(i => i.type === 'Glamour')
+		const runeSpells = actor.items.contents.filter(i => i.type === 'Rune')
 
 		// Arcane magic: known spells and memorized slots
 		context.knownArcaneSpellsByRank = groupSpellsByRank(arcaneSpells, 6)
@@ -275,9 +275,15 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.hasKnownArcaneSpells = arcaneSpells.length > 0
 		context.hasMemorizedSlots = context.memorizedArcaneSlots.some(r => r.slots.length > 0)
 
-		// Holy magic
-		context.holySpellsByRank = groupSpellsByRank(holySpells, 5)
-		context.hasHolySpells = holySpells.length > 0
+		// Holy magic: known spells and memorized slots
+		context.knownHolySpellsByRank = groupSpellsByRank(holySpells, 5)
+		context.memorizedHolySlots = prepareMemorizedSlots(
+			actor.system.holyMagic.spellSlots,
+			holySpells,
+			5
+		)
+		context.hasKnownHolySpells = holySpells.length > 0
+		context.hasMemorizedHolySlots = context.memorizedHolySlots.some(r => r.slots.length > 0)
 
 		// Fairy magic
 		context.glamourSpells = glamourSpells.map(s => prepareSpellData(s))
@@ -374,6 +380,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		setupTabListeners(this)
 		setupXPListener(this)
+		setupCoinListener(this)
 		setupPortraitPicker(this)
 		setupSkillListeners(this)
 		setupAttackListeners(this)
@@ -533,8 +540,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		if (isNaN(slotIndex) || !rankKey || isNaN(rank)) return
 
+		const itemType = spellType === 'holy' ? 'HolySpell' : 'Spell'
 		const knownSpells = this.actor.items.filter(
-			i => i.type === 'Spell' && i.system.type === spellType && i.system.rank === rank
+			i => i.type === itemType && i.system.rank === rank
 		)
 
 		if (knownSpells.length === 0) {

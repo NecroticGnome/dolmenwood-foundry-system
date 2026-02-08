@@ -7,7 +7,7 @@
 
 import { onMeleeAttackRoll, onMissileAttackRoll, onAttackRollContextMenu } from './attack-rolls.js'
 import { onAbilityRoll, onSaveRoll, onSkillRoll, rollTrait } from './roll-handlers.js'
-import { openXPDialog, openXPEditDialog, openAddSkillDialog, removeSkill } from './dialogs.js'
+import { openXPDialog, openXPEditDialog, openAddSkillDialog, openCoinDialog, removeSkill } from './dialogs.js'
 import { createContextMenu } from './context-menu.js'
 
 /**
@@ -125,6 +125,20 @@ export function setupXPListener(sheet) {
 		xpEditBtn.addEventListener('click', (event) => {
 			event.preventDefault()
 			openXPEditDialog(sheet)
+		})
+	}
+}
+
+/**
+ * Setup coin adjustment button listener.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupCoinListener(sheet) {
+	const coinBtn = sheet.element.querySelector('.coins-adjust-btn')
+	if (coinBtn) {
+		coinBtn.addEventListener('click', (event) => {
+			event.preventDefault()
+			openCoinDialog(sheet)
 		})
 	}
 }

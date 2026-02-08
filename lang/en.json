@@ -11,7 +11,10 @@
 			"Weapon": "Weapon",
 			"Armor": "Armor",
 			"Foraged": "Foraged",
-			"Spell": "Spell"
+			"Spell": "Arcane Spell",
+			"HolySpell": "Holy Spell",
+			"Glamour": "Glamour",
+			"Rune": "Rune"
 		}
 	},
 	"DOLMEN": {
@@ -162,6 +165,7 @@
 		"XPAddButton": "Add",
 		"Cancel": "Cancel",
 		"Save": "Save",
+		"Amount": "Amount",
 		"None": "None",
 		"Immortal": "Immortal",
 		"Encumbrance": {
@@ -178,7 +182,10 @@
 			"Copper": "Copper",
 			"Silver": "Silver",
 			"Gold": "Gold",
-			"Pellucidium": "Pellucidium"
+			"Pellucidium": "Pellucidium",
+			"AdjustTitle": "Add / Subtract Coins",
+			"AdjustAdd": "Add",
+			"AdjustSubtract": "Subtract"
 		},
 		"ExtraDetails": {
 			"Title": "Extra Details",
@@ -349,7 +356,17 @@
 			"WeaponDetails": "Weapon Details",
 			"ArmorDetails": "Armor Details",
 			"ForagedDetails": "Foraged Details",
-			"SpellDetails": "Spell Details",
+			"SpellDetails": "Arcane Spell Details",
+			"HolySpellDetails": "Holy Spell Details",
+			"GlamourDetails": "Glamour Details",
+			"RuneDetails": "Rune Details",
+			"SpellRange": "Range",
+			"SpellDuration": "Duration",
+			"PrayerName": "Prayer Name",
+			"UsageFrequency": "Usage",
+			"Description": "Description",
+			"CodexLink": "Codex Entry",
+			"CodexOpen": "Open",
 			"Size": {
 				"label": "Size",
 				"small": "Small",
@@ -423,13 +440,7 @@
 			"Value": "Val",
 			"Quantity": "Qty",
 			"BundleSize": "Bundle Size",
-			"SpellType": {
-				"label": "Spell Type",
-				"arcane": "Arcane",
-				"glamour": "Glamour",
-				"rune": "Rune",
-				"holy": "Holy"
-			}
+			"TreasureDetails": "Treasure Details"
 		},
 		"Inventory": {
 			"Equipped": "Equipped Items",
@@ -542,7 +553,10 @@
 				"SpellSlots": "Spell Slots",
 				"HolySymbol": "Holy Symbol",
 				"PreparedSpells": "Prepared Spells",
-				"NoSpells": "No spells prepared. Drag holy spells here."
+				"KnownSpells": "Known Spells",
+				"NoSpells": "No spells prepared. Drag holy spells here.",
+				"NoKnownSpells": "No spells known. Drag holy spells here to learn them.",
+				"NoSlots": "No spell slots available. Increase max spell slots to prepare spells."
 			},
 			"Knacks": {
 				"Title": "Mossling Knack",

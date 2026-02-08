@@ -13,17 +13,55 @@
 }
 
 /* -------------------------------------------- */
-/*  Inventory Tab - Coins Grid                  */
+/*  Inventory Tab - Coins Section               */
 /* -------------------------------------------- */
+
+.sheet.dolmen .tab-content .coins h2 .coins-adjust-btn {
+	float: right;
+	margin-right: 0.25rem;
+}
+
+.sheet.dolmen .tab-content .coin label {
+	margin-right: -1.2rem;
+}
 
 .sheet.dolmen .tab-content .coins-grid {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 0.5rem;
+	grid-template-columns: repeat(4, 1fr) 0.25fr;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen .tab-content .coins-grid .fa-right-left-large {
+	font-size: 1.5rem;
+	margin-top: 1.25rem;
+}
+
+.sheet.dolmen .tab-content .coin .fa-coin {
+	vertical-align: middle;
 }
 
 .sheet.dolmen .tab-content .coin input {
 	width: 4rem;
+}
+
+.sheet.dolmen .tab-content .coin .coin-icon {
+	font-size: 1.1rem;
+}
+
+.sheet.dolmen .tab-content .coin .coin-copper {
+	color: var(--dolmen-color-coin-copper);
+}
+
+.sheet.dolmen .tab-content .coin .coin-silver {
+	color: var(--dolmen-color-coin-silver);
+}
+
+.sheet.dolmen .tab-content .coin .coin-gold {
+	color: var(--dolmen-color-coin-gold);
+}
+
+.sheet.dolmen .tab-content .coin .coin-pellucidium {
+	color: var(--dolmen-color-coin-pellucidium);
 }
 
 /* -------------------------------------------- */

@@ -59,7 +59,6 @@ export const CHOICE_KEYS = {
 	sizes: ['small', 'medium', 'large'],
 	armorBulks: ['none', 'light', 'medium', 'heavy'],
 	foragedTypes: ['plant', 'fungus', 'pipeleaf'],
-	spellTypes: ['arcane', 'glamour', 'rune', 'holy'],
 	runeMagnitudes: ['lesser', 'greater', 'mighty'],
 	knackTypes: ['birdFriend', 'lockSinger', 'rootFriend', 'threadWhistling', 'woodKenning', 'yeastMaster'],
 	spellRanks: ['rank1', 'rank2', 'rank3', 'rank4', 'rank5', 'rank6'],

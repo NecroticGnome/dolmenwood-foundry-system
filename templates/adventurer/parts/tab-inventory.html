@@ -23,24 +23,41 @@
 
 		<!-- Coins Section -->
 		<section class="coins boxed-section">
-			<h2><i class="fas fa-coins"></i> {{localize "DOLMEN.Coins.Title"}}</h2>
+			<h2><i class="fas fa-coins"></i>{{localize "DOLMEN.Coins.Title"}}</h2>
 			<div class="coins-grid">
 				<div class="coin">
 					<label>{{localize "DOLMEN.Coins.Copper"}}</label>
-					<input type="number" name="system.coins.copper" value="{{system.coins.copper}}" min="0">
+					<div>
+						<i class="fa-duotone fa-light fa-coin coin-icon coin-copper"></i>
+						<input type="number" name="system.coins.copper" value="{{system.coins.copper}}" min="0">
+					</div>
 				</div>
+
 				<div class="coin">
 					<label>{{localize "DOLMEN.Coins.Silver"}}</label>
-					<input type="number" name="system.coins.silver" value="{{system.coins.silver}}" min="0">
+					<div>
+						<i class="fa-duotone fa-light fa-coin coin-icon coin-silver"></i>
+						<input type="number" name="system.coins.silver" value="{{system.coins.silver}}" min="0">
+					</div>
 				</div>
+
 				<div class="coin">
 					<label>{{localize "DOLMEN.Coins.Gold"}}</label>
-					<input type="number" name="system.coins.gold" value="{{system.coins.gold}}" min="0">
+					<div>
+						<i class="fa-duotone fa-light fa-coin coin-icon coin-gold"></i>
+						<input type="number" name="system.coins.gold" value="{{system.coins.gold}}" min="0">
+					</div>
 				</div>
+
 				<div class="coin">
 					<label>{{localize "DOLMEN.Coins.Pellucidium"}}</label>
-					<input type="number" name="system.coins.pellucidium" value="{{system.coins.pellucidium}}" min="0">
+					<div>
+						<i class="fa-duotone fa-light fa-coin coin-icon coin-pellucidium"></i>
+						<input type="number" name="system.coins.pellucidium" value="{{system.coins.pellucidium}}" min="0">
+					</div>
 				</div>
+
+				<i class="fa-duotone fa-light fa-right-left-large rollable coins-adjust-btn" title="{{localize 'DOLMEN.Coins.AdjustTitle'}}"></i>
 			</div>
 		</section>
 	</section>
