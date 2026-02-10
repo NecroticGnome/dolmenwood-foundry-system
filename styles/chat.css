@@ -7,6 +7,31 @@
 	line-height: 1.25rem;
 }
 
+.dolmen .force-d4-icon .fa-dice-d20 {
+	--fa: "\f6d0";
+	--fa--fa: "\f6d0\f6d0";
+}
+
+.dolmen .force-d6-icon .fa-dice-d20 {
+	--fa: "\f6d1";
+	--fa--fa: "\f6d1\f6d1";
+}
+
+.dolmen .force-d8-icon .fa-dice-d20 {
+	--fa: "\f6d2";
+	--fa--fa: "\f6d2\f6d2";
+}
+
+.dolmen .force-d10-icon .fa-dice-d20 {
+	--fa: "\f6cd";
+	--fa--fa: "\f6cd\f6cd";
+}
+
+.dolmen .force-d12-icon .fa-dice-d20 {
+	--fa: "\f6ce";
+	--fa--fa: "\f6ce\f6ce";
+}
+
 .dolmen.attack-roll {
 	background-color: var(--dolmen-color-background);
 	border: 2px solid var(--dolmen-color-title-background);
@@ -46,7 +71,8 @@
 }
 
 .dolmen.attack-roll .roll-results {
-	display: flex;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
 	padding: 0.5rem;
 }
@@ -61,6 +87,13 @@
 	background-color: var(--dolmen-color-inner-background);
 	border: 1px solid var(--dolmen-color-box-border);
 	border-radius: 4px;
+}
+
+.dolmen.attack-roll .roll-section.special-section .roll-breakdown {
+	font-size: 0.85rem;
+	width: 100%;
+	text-align: left;
+	margin-top: 0;
 }
 
 .dolmen.attack-roll .roll-section label {
@@ -149,19 +182,6 @@
 	background-color: var(--dolmen-color-title-background);
 	color: var(--dolmen-color-background);
 	align-items: center;
-}
-
-/* Different header colors for different roll types */
-.dolmen.ability-roll .roll-header.ability {
-	background-color: var(--dolmen-color-roll-ability);
-}
-
-.dolmen.save-roll .roll-header.save {
-	background-color: var(--dolmen-color-roll-save);
-}
-
-.dolmen.skill-roll .roll-header.skill {
-	background-color: var(--dolmen-color-roll-skill);
 }
 
 .dolmen.ability-roll .roll-header i,
@@ -350,7 +370,7 @@
 
 .dolmen.trait-roll .trait-header {
 	padding: 0.5rem;
-	background-color: var(--dolmen-color-roll-trait);
+	background-color: var(--dolmen-color-title-background);
 	color: var(--dolmen-color-background);
 }
 
@@ -405,4 +425,207 @@
 	color: var(--dolmen-color-h3);
 	padding: 0.25rem 0.5rem;
 	text-align: center;
+}
+
+/* -------------------------------------------- */
+/*  Rest Chat Card Styles                       */
+/* -------------------------------------------- */
+
+.dolmen.rest-card {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-title-background);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.dolmen.rest-card .rest-header {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	align-items: center;
+}
+
+.dolmen.rest-card .rest-header i {
+	font-size: 1.25rem;
+}
+
+.dolmen.rest-card .rest-header h3 {
+	margin: 0;
+	font-size: 0.8rem;
+	font-family: var(--dolmen-font-header);
+	color: var(--dolmen-color-background);
+	text-transform: uppercase;
+}
+
+.dolmen.rest-card .rest-details {
+	list-style: none;
+	margin: 0;
+	padding: 0.5rem;
+	font-size: 0.8rem;
+}
+
+.dolmen.rest-card .rest-details li {
+	padding: 0.2rem 0;
+}
+
+.dolmen.rest-card .rest-details li::before {
+	content: "\2022";
+	margin-right: 0.4rem;
+	color: var(--dolmen-color-h3);
+}
+
+/* -------------------------------------------- */
+/*  Spell Cast Chat Card Styles                 */
+/* -------------------------------------------- */
+
+.dolmen.spell-card {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-title-background);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.dolmen.spell-card .spell-header {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	align-items: center;
+}
+
+.dolmen.spell-card .spell-card-image {
+	width: 32px;
+	height: 32px;
+	flex-shrink: 0;
+	background-color: var(--dolmen-color-background);
+	-webkit-mask-size: cover;
+	mask-size: cover;
+}
+
+.dolmen.spell-card .spell-info h3 {
+	margin: 0;
+	font-size: 0.8rem;
+	font-family: var(--dolmen-font-header);
+	color: var(--dolmen-color-background);
+	text-transform: uppercase;
+}
+
+.dolmen.spell-card .spell-type-label {
+	font-size: 0.7rem;
+	opacity: 0.8;
+	text-transform: uppercase;
+}
+
+.dolmen.spell-card .spell-body {
+	padding: 0.5rem;
+}
+
+.dolmen.spell-card .spell-field {
+	font-size: 0.8rem;
+	padding: 0.15rem 0;
+}
+
+.dolmen.spell-card .spell-field strong {
+	color: var(--dolmen-color-h3);
+}
+
+.dolmen.spell-card .spell-description {
+	font-size: 0.8rem;
+	margin-top: 0.4rem;
+	padding-top: 0.4rem;
+	border-top: 1px solid var(--dolmen-color-box-border);
+}
+
+.dolmen.spell-card .spell-codex-link {
+	font-size: 0.85rem;
+	margin-top: 0.4rem;
+	padding-top: 0.4rem;
+	border-top: 1px solid var(--dolmen-color-box-border);
+	color: var(--dolmen-color-h3);
+	text-align: center;
+}
+
+/* -------------------------------------------- */
+/*  Level Up/Down Chat Card Styles              */
+/* -------------------------------------------- */
+
+.dolmen.level-card {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-title-background);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.dolmen.level-card .level-header {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	align-items: center;
+}
+
+.dolmen.level-card .level-header i {
+	font-size: 1.25rem;
+}
+
+.dolmen.level-card .level-header .level-info h3 {
+	margin: 0;
+	font-size: 0.8rem;
+	font-family: var(--dolmen-font-header);
+	color: var(--dolmen-color-background);
+	text-transform: uppercase;
+}
+
+.dolmen.level-card .level-header .level-label {
+	font-size: 0.7rem;
+	opacity: 0.8;
+	text-transform: uppercase;
+}
+
+.dolmen.level-card .level-body {
+	padding: 0.5rem;
+}
+
+.dolmen.level-card .roll-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-inner-background);
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 4px;
+}
+
+.dolmen.level-card .roll-result .inline-roll {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h1);
+	background: none;
+	border: none;
+	padding: 0;
+}
+
+.dolmen.level-card .roll-result .flat-hp {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h1);
+}
+
+.dolmen.level-card .roll-breakdown {
+	font-size: 0.65rem;
+	color: var(--dolmen-color-h3);
+	margin-top: 0.25rem;
+}
+
+.dolmen.level-card .level-summary {
+	font-size: 0.8rem;
+	font-weight: bold;
+	text-align: center;
+	margin-top: 0.5rem;
+	color: var(--dolmen-color-success);
 }

@@ -2,6 +2,7 @@
 
 import DOLMENWOOD from './module/config.js'
 import DolmenSheet from './module/dolmen-sheet.js'
+import DolmenCreatureSheet from './module/dolmen-creature-sheet.js'
 import DolmenItemSheet from './module/dolmen-item-sheet.js'
 import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
@@ -48,9 +49,29 @@ Hooks.once('init', async function () {
 		Rune: RuneDataModel
 	}
 
+	game.settings.register('dolmenwood', 'significantLoad', {
+		name: 'DOLMEN.Encumbrance.SignificantLoad',
+		hint: 'DOLMEN.Encumbrance.SignificantLoadHint',
+		scope: 'world',
+		config: true,
+		type: Number,
+		default: 50,
+		range: {
+			min: 0,
+			max: 100,
+			step: 1
+		}
+	})
+
 	Actors.registerSheet('dolmen', DolmenSheet, {
-		types: ['Adventurer', 'Creature'],
+		types: ['Adventurer'],
 		label: 'DOLMEN.SheetTitle',
+		makeDefault: true
+	})
+
+	Actors.registerSheet('dolmen', DolmenCreatureSheet, {
+		types: ['Creature'],
+		label: 'DOLMEN.CreatureSheetTitle',
 		makeDefault: true
 	})
 

@@ -47,11 +47,112 @@ export function computeMoonSign(month, day) {
 }
 
 /**
+ * Compute encumbrance from inventory items and coins.
+ * @param {Actor} actor - The actor
+ * @returns {object} Encumbrance data with current/max values and computed speed
+ */
+export function computeEncumbrance(actor) {
+	const system = actor.system
+	const method = system.encumbrance.method
+	const spellTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune']
+	const items = actor.items.contents.filter(i => !spellTypes.includes(i.type))
+	const equipped = items.filter(i => i.system.equipped)
+	const stowed = items.filter(i => !i.system.equipped)
+	const totalCoins = (system.coins.copper || 0) + (system.coins.silver || 0)
+		+ (system.coins.gold || 0) + (system.coins.pellucidium || 0)
+
+	switch (method) {
+	case 'weight': return computeWeightFull(equipped, stowed, totalCoins)
+	case 'treasure': return computeWeightTreasure(equipped, stowed, totalCoins, game.settings.get('dolmenwood', 'significantLoad'))
+	case 'slots': return computeSlots(equipped, stowed, totalCoins)
+	default: return { current: 0, max: 1600, speed: 40 }
+	}
+}
+
+function computeWeightFull(equipped, stowed, totalCoins) {
+	const itemWeight = [...equipped, ...stowed].reduce(
+		(sum, i) => sum + (i.system.weightCoins || 0) * (i.system.quantity || 1), 0
+	)
+	const current = itemWeight + totalCoins
+	let speed = 40
+	if (current > 1600) speed = 0
+	else if (current > 800) speed = 10
+	else if (current > 600) speed = 20
+	else if (current > 400) speed = 30
+	return { current, max: 1600, speed }
+}
+
+function computeWeightTreasure(equipped, stowed, totalCoins, significantLoad) {
+	const treasureWeight = [...equipped, ...stowed]
+		.filter(i => i.type === 'Treasure')
+		.reduce((sum, i) => sum + (i.system.weightCoins || 0) * (i.system.quantity || 1), 0)
+	const current = treasureWeight + totalCoins
+	const threshold = 1600 * (significantLoad || 50) / 100
+	const hasTreasure = current >= threshold
+
+	// Find heaviest equipped armor bulk
+	const bulkOrder = { none: 0, light: 1, medium: 2, heavy: 3 }
+	let heaviestBulk = 'none'
+	for (const item of equipped) {
+		if (item.type === 'Armor' && bulkOrder[item.system.bulk] > bulkOrder[heaviestBulk]) {
+			heaviestBulk = item.system.bulk
+		}
+	}
+
+	// Speed lookup: armor × treasure
+	let speed
+	if (heaviestBulk === 'none') {
+		speed = hasTreasure ? 30 : 40
+	} else if (heaviestBulk === 'light') {
+		speed = hasTreasure ? 20 : 30
+	} else {
+		// medium or heavy
+		speed = hasTreasure ? 10 : 20
+	}
+
+	if (current > 1600) speed = 0
+	return { current, max: 1600, speed }
+}
+
+function computeSlots(equipped, stowed, totalCoins) {
+	const equippedSlots = equipped.reduce(
+		(sum, i) => sum + (i.system.weightSlots || 0) * (i.system.quantity || 1), 0
+	)
+	const coinSlots = Math.ceil(totalCoins / 100)
+	const stowedSlots = stowed.reduce(
+		(sum, i) => sum + (i.system.weightSlots || 0) * (i.system.quantity || 1), 0
+	) + coinSlots
+
+	// Speed from equipped tier
+	let equippedSpeed
+	if (equippedSlots <= 3) equippedSpeed = 40
+	else if (equippedSlots <= 5) equippedSpeed = 30
+	else if (equippedSlots <= 7) equippedSpeed = 20
+	else equippedSpeed = 10
+
+	// Speed from stowed tier
+	let stowedSpeed
+	if (stowedSlots <= 10) stowedSpeed = 40
+	else if (stowedSlots <= 12) stowedSpeed = 30
+	else if (stowedSlots <= 14) stowedSpeed = 20
+	else stowedSpeed = 10
+
+	const speed = Math.min(equippedSpeed, stowedSpeed)
+
+	return {
+		equipped: { current: equippedSlots, max: 10 },
+		stowed: { current: stowedSlots, max: 16 },
+		speed
+	}
+}
+
+/**
  * Compute adjusted values by adding manual adjustments and trait adjustments to base values.
  * @param {Actor} actor - The actor
+ * @param {number|null} encumbranceSpeed - Speed derived from encumbrance, or null to use stored speed
  * @returns {object} Object containing all adjusted values
  */
-export function computeAdjustedValues(actor) {
+export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 	const system = actor.system
 	const adj = system.adjustments
 	const traitAdj = computeTraitAdjustments(actor)
@@ -84,6 +185,8 @@ export function computeAdjustedValues(actor) {
 		return { score: adjustedScore, mod: adjustedMod }
 	}
 
+	const baseSpeed = encumbranceSpeed ?? system.speed
+
 	return {
 		abilities: {
 			strength: abilityAdjusted('strength'),
@@ -113,10 +216,10 @@ export function computeAdjustedValues(actor) {
 			search: skillAdjusted('search'),
 			survival: skillAdjusted('survival')
 		},
-		speed: system.speed + (adj.speed || 0) + getTraitAdj('speed'),
+		speed: baseSpeed + (adj.speed || 0) + getTraitAdj('speed'),
 		movement: {
-			exploring: system.movement.exploring + (adj.movement.exploring || 0),
-			overland: system.movement.overland + (adj.movement.overland || 0)
+			exploring: (baseSpeed * 3) + (adj.movement.exploring || 0),
+			overland: (baseSpeed * 3 / 5) + (adj.movement.overland || 0)
 		}
 	}
 }
@@ -142,20 +245,44 @@ export function prepareSpellSlots(slots, maxRanks) {
 }
 
 /**
+ * Knack abilities with daily usage limits.
+ * Keyed by knackType, each entry lists which levels have daily usage.
+ */
+const DAILY_KNACK_ABILITIES = {
+	birdFriend: [5, 7],
+	rootFriend: [1, 3, 5, 7],
+	woodKenning: [7],
+	yeastMaster: [5, 7]
+}
+
+/**
  * Prepare knack abilities based on knack type and character level.
  * @param {string} knackType - The selected knack type
  * @param {number} level - Character level
+ * @param {object} knackUsage - Usage tracking data from actor
  * @returns {object[]} Array of knack abilities with unlock status
  */
-export function prepareKnackAbilities(knackType, level) {
+export function prepareKnackAbilities(knackType, level, knackUsage = {}) {
 	if (!knackType) return []
 
+	const dailyLevels = DAILY_KNACK_ABILITIES[knackType] || []
 	const knackLevels = [1, 3, 5, 7]
-	return knackLevels.map(knackLevel => ({
-		level: knackLevel,
-		description: game.i18n.localize(`DOLMEN.Magic.Knacks.Abilities.${knackType}.level${knackLevel}`),
-		unlocked: level >= knackLevel
-	}))
+	return knackLevels.map(knackLevel => {
+		const unlocked = level >= knackLevel
+		const isDaily = dailyLevels.includes(knackLevel)
+		const usageKey = `${knackType}_level${knackLevel}`
+		const used = knackUsage[usageKey]?.used || 0
+
+		return {
+			level: knackLevel,
+			description: game.i18n.localize(`DOLMEN.Magic.Knacks.Abilities.${knackType}.level${knackLevel}`),
+			unlocked,
+			isDaily: isDaily && unlocked,
+			usageKey,
+			used: Math.min(used, 1),
+			usageLabel: game.i18n.localize('DOLMEN.Traits.OncePerDay')
+		}
+	})
 }
 
 /**
@@ -259,19 +386,60 @@ export function prepareMemorizedSlots(slotsData, knownSpells, maxRank) {
 }
 
 /**
- * Group runes by magnitude for display.
+ * Compute rune usage limits based on magnitude and character level.
+ * @param {string} magnitude - 'lesser', 'greater', or 'mighty'
+ * @param {number} level - Character level
+ * @returns {object} { max, frequency, resetsOnRest, deleteOnUse }
+ */
+export function getRuneUsage(magnitude, level) {
+	if (magnitude === 'lesser') {
+		if (level >= 10) return { max: 3, frequency: 'DOLMEN.Magic.Fairy.ThricePerDay', resetsOnRest: true }
+		if (level >= 5) return { max: 2, frequency: 'DOLMEN.Magic.Fairy.TwicePerDay', resetsOnRest: true }
+		return { max: 1, frequency: 'DOLMEN.Magic.Fairy.OncePerDay', resetsOnRest: true }
+	}
+	if (magnitude === 'greater') {
+		if (level >= 10) return { max: 1, frequency: 'DOLMEN.Magic.Fairy.OncePerDay', resetsOnRest: true }
+		if (level >= 5) return { max: 1, frequency: 'DOLMEN.Magic.Fairy.OncePerWeek', resetsOnRest: false }
+		return { max: 1, frequency: 'DOLMEN.Magic.Fairy.OncePerLevel', resetsOnRest: false }
+	}
+	// mighty
+	if (level >= 10) return { max: 1, frequency: 'DOLMEN.Magic.Fairy.OncePerYear', resetsOnRest: false }
+	return { max: 1, frequency: 'DOLMEN.Magic.Fairy.OnceEver', resetsOnRest: false, deleteOnUse: true }
+}
+
+/**
+ * Group runes by magnitude for display, with usage tracking.
  * @param {Item[]} runes - Array of rune items
+ * @param {Actor} actor - The actor owning these runes
  * @returns {object[]} Array of magnitude groups with runes
  */
-export function groupRunesByMagnitude(runes) {
+export function groupRunesByMagnitude(runes, actor) {
 	const magnitudeOrder = ['lesser', 'greater', 'mighty']
+	const level = actor.system.level
+	const runeUsage = actor.system.runeUsage || {}
 	const groups = []
 
 	for (const magnitude of magnitudeOrder) {
-		// Include runes with matching magnitude, or unset magnitude defaults to 'lesser'
 		const magnitudeRunes = runes
 			.filter(r => r.system.magnitude === magnitude || (magnitude === 'lesser' && !r.system.magnitude))
-			.map(r => prepareSpellData(r))
+			.map(r => {
+				const data = prepareSpellData(r)
+				const usage = getRuneUsage(magnitude, level)
+				const stored = runeUsage[r.id] || { used: 0 }
+				const usedCount = Math.min(stored.used || 0, usage.max)
+
+				data.usageFrequency = game.i18n.localize(usage.frequency)
+				data.maxUses = usage.max
+				data.usedCount = usedCount
+				data.usesRemaining = usage.max - usedCount
+				data.deleteOnUse = !!usage.deleteOnUse
+				data.resetsOnRest = usage.resetsOnRest
+				data.usageCheckboxes = []
+				for (let i = 0; i < usage.max; i++) {
+					data.usageCheckboxes.push({ index: i, checked: i < usedCount })
+				}
+				return data
+			})
 			.sort((a, b) => a.name.localeCompare(b.name))
 
 		if (magnitudeRunes.length > 0) {
@@ -357,7 +525,7 @@ export function prepareItemData(item) {
 		isWeapon: item.type === 'Weapon',
 		isArmor: item.type === 'Armor',
 		cssClass: item.type.toLowerCase(),
-		hasNotes: (item.system?.notes || "") === "" ? false : true
+		hasEffects: ['Treasure', 'Foraged'].includes(item.type) && !!(item.system?.effects)
 	}
 
 	// Add weapon qualities display

@@ -37,22 +37,22 @@
 
 /* Color variables for Dark and Light themes (Dark is WIP) */
 .theme-dark .dolmen {
-	--dolmen-color-background: #120606;
+	--dolmen-color-background: #1e0e0e;
 	--dolmen-color-text: #f2eee9;
 
 	--dolmen-color-h1: #d9383e;
-	--dolmen-color-h2: #902524;
-	--dolmen-color-h3: #eda68f;
+	--dolmen-color-h2: #bf4040;
+	--dolmen-color-h3: #efa790;
 
-	--dolmen-color-title: #eda68f;
+	--dolmen-color-title: #efa790;
 	--dolmen-color-title-background: #902524;
 
-	--dolmen-color-inner-background: #241212;
+	--dolmen-color-inner-background: #300e0e;
 
-	--dolmen-color-box-background: #060303;
+	--dolmen-color-box-background: #110808;
 	--dolmen-color-box-border: #d9383e;
 
-	--dolmen-color-input-border: #902524aa;
+	--dolmen-color-input-border: #bf404066;
 	--dolmen-color-input-border-focus: #d9383e;
 
 	--dolmen-color-header-weapon: #490c0c;
@@ -64,9 +64,9 @@
 
 	--dolmen-color-adjusted: #ff6b6b;
 
-	--dolmen-color-text-muted: #b0a8a0;
+	--dolmen-color-text-muted: #c4b8b0;
 	--dolmen-color-accent: #8b4513;
-	--dolmen-color-box-highlight: rgba(139, 69, 19, 0.15);
+	--dolmen-color-box-highlight: rgb(255 64 64 / 15%);
 
 	--dolmen-color-success: #228b22;
 	--dolmen-color-failure: #cc0000;
@@ -75,10 +75,10 @@
 	--dolmen-color-roll-skill: #4a8f6f;
 	--dolmen-color-roll-trait: #7a5a8a;
 
-	--dolmen-color-coin-copper: #b87333;
-	--dolmen-color-coin-silver: #c0c0c0;
-	--dolmen-color-coin-gold: #ffd700;
-	--dolmen-color-coin-pellucidium: #7fdbff;
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
 }
 
 .theme-light .dolmen {
@@ -118,8 +118,8 @@
 	--dolmen-color-roll-skill: #4a8f6f;
 	--dolmen-color-roll-trait: #7a5a8a;
 
-	--dolmen-color-coin-copper: #b87333;
-	--dolmen-color-coin-silver: #c0c0c0;
-	--dolmen-color-coin-gold: #ffd700;
-	--dolmen-color-coin-pellucidium: #7fdbff;
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
 }

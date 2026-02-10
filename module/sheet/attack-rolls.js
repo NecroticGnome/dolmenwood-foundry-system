@@ -140,25 +140,13 @@ export function buildAttackFormula(totalMod) {
 	return totalMod >= 0 ? `1d20 + ${totalMod}` : `1d20 - ${Math.abs(totalMod)}`
 }
 
-/**
- * Get critical/fumble state from an attack roll.
- * @param {Roll} attackRoll - The evaluated attack roll
- * @returns {object} Object with resultClass and resultLabel
- */
-export function getAttackResultState(attackRoll) {
-	const d20Result = attackRoll.dice[0].results[0].result
-	if (d20Result === 20) {
-		return {
-			resultClass: 'critical',
-			resultLabel: `<span class="roll-label">${game.i18n.localize('DOLMEN.Attack.Critical')}</span>`
-		}
-	} else if (d20Result === 1) {
-		return {
-			resultClass: 'fumble',
-			resultLabel: `<span class="roll-label">${game.i18n.localize('DOLMEN.Attack.Fumble')}</span>`
-		}
+export function getDieIconFromFormula(formula) {
+	const dieMatch = formula.match(/(\d*)d(\d+)/)
+	if (dieMatch) {
+		const dieSize = dieMatch[2]
+		return `force-d${dieSize}-icon`
 	}
-	return { resultClass: '', resultLabel: '' }
+	return ''
 }
 
 /**
@@ -181,6 +169,8 @@ export function buildAttackChatHtml({ weapon, attackType, attack, damage }) {
 		badges = `<span class="trait-badge">${attack.traitName}</span>`
 	}
 
+	const iconClass = getDieIconFromFormula(damage?.formula || weapon.system.damage)
+
 	// Attack mode name badge (Charge, Push)
 	const attackModeBadge = attack?.attackModeName
 		? `<span class="trait-badge">${attack.attackModeName}</span>`
@@ -189,11 +179,10 @@ export function buildAttackChatHtml({ weapon, attackType, attack, damage }) {
 	let rollSections = ''
 	if (attack) {
 		rollSections += `
-			<div class="roll-section attack-section ${attack.resultClass}">
+			<div class="roll-section attack-section">
 				<label>${game.i18n.localize('DOLMEN.Attack.AttackRoll')}</label>
 				<div class="roll-result">
 					${attack.anchor.outerHTML}
-					${attack.resultLabel}
 				</div>
 				<span class="roll-breakdown">${attack.formula}</span>
 			</div>`
@@ -202,7 +191,7 @@ export function buildAttackChatHtml({ weapon, attackType, attack, damage }) {
 		rollSections += `
 			<div class="roll-section damage-section">
 				<label>${game.i18n.localize('DOLMEN.Attack.DamageRoll')}</label>
-				<div class="roll-result">
+				<div class="roll-result ${iconClass}">
 					${damage.anchor.outerHTML}
 				</div>
 				<span class="roll-breakdown">${damage.formula}</span>
@@ -259,12 +248,9 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 		await roll.evaluate()
 		rolls.push(roll)
 
-		const { resultClass, resultLabel } = getAttackResultState(roll)
 		attackData = {
 			anchor: await roll.toAnchor({ classes: ['attack-inline-roll'] }),
 			formula,
-			resultClass,
-			resultLabel,
 			traitName,
 			modifierNames,
 			attackModeName,
@@ -343,9 +329,9 @@ export function onMeleeAttackRoll(sheet, event) {
  */
 export function openAttackTypeMenu(sheet, weapons, position, rollType = null) {
 	const types = [
-		{ id: 'normal', icon: 'fa-swords', nameKey: 'DOLMEN.Attack.Type.Normal' },
-		{ id: 'charge', icon: 'fa-horse-head', nameKey: 'DOLMEN.Attack.Type.Charge' },
-		{ id: 'push', icon: 'fa-hand-fist', nameKey: 'DOLMEN.Attack.Type.Push' }
+		{ id: 'normal', icon: 'fa-sword', nameKey: 'DOLMEN.Attack.Type.Normal' },
+		{ id: 'charge', icon: 'fa-person-running-fast', nameKey: 'DOLMEN.Attack.Type.Charge' },
+		{ id: 'push', icon: 'fa-hand-wave', nameKey: 'DOLMEN.Attack.Type.Push' }
 	]
 
 	const html = types.map(t => `
@@ -774,15 +760,16 @@ export function onMissileAttackRoll(sheet, event) {
  */
 export function openMissileRangeMenu(sheet, weapons, position, rollType = null) {
 	const ranges = [
-		{ id: 'close', mod: 1, nameKey: 'DOLMEN.Attack.Range.Close' },
-		{ id: 'medium', mod: 0, nameKey: 'DOLMEN.Attack.Range.Medium' },
-		{ id: 'long', mod: -1, nameKey: 'DOLMEN.Attack.Range.Long' }
+		{ id: 'close', mod: 1, nameKey: 'DOLMEN.Attack.Range.Close', icon: 'fa-grid-2' },
+		{ id: 'medium', mod: 0, nameKey: 'DOLMEN.Attack.Range.Medium', icon: 'fa-grid' },
+		{ id: 'long', mod: -1, nameKey: 'DOLMEN.Attack.Range.Long', icon: 'fa-grid-4' }
 	]
 
 	const html = ranges.map(r => {
 		const modStr = r.mod > 0 ? `(+${r.mod})` : r.mod === 0 ? '(0)' : `(${r.mod})`
 		return `
 		<div class="weapon-menu-item" data-range-mod="${r.mod}" data-range-name="${game.i18n.localize(r.nameKey)}">
+			<i class="fas ${r.icon}"></i>
 			<span class="weapon-name">${game.i18n.localize(r.nameKey)}</span>
 			<span class="weapon-damage">${modStr}</span>
 		</div>

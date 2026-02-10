@@ -1,12 +1,17 @@
-<section class="item-body">
-	<!-- Common fields for all items -->
+<section class="tab-content item-body {{tab.cssClass}}" data-group="primary" data-tab="body">
+	{{#if isGear}}
+	<!-- Common gear fields -->
 	<section class="item-common">
-		{{#if isGear}}
+		<h2>{{localize "DOLMEN.Item.CommonDetails"}}</h2>
 		<div class="form-row">
-			<div class="form-field">
+			<div class="form-field cost-field">
 				<label>{{localize "DOLMEN.Item.Cost"}}</label>
-				<input type="number" name="system.cost" value="{{system.cost}}" min="0">
-				<span class="unit">{{localize "DOLMEN.Item.CostUnit"}}</span>
+				<div class="flexrow">
+					<input type="number" name="system.cost" value="{{system.cost}}" min="0">
+					<select name="system.costDenomination" class="cost-denomination">
+						{{selectOptions @root.costDenominationChoices selected=system.costDenomination}}
+					</select>
+				</div>
 			</div>
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.WeightCoins"}}</label>
@@ -16,20 +21,13 @@
 				<label>{{localize "DOLMEN.Item.WeightSlots"}}</label>
 				<input type="number" name="system.weightSlots" value="{{system.weightSlots}}" min="0" step="0.1">
 			</div>
-		</div>
-		{{/if}}
-		<div class="form-row codex-link-row">
-			<div class="form-field codex-field">
-				<label>{{localize "DOLMEN.Item.CodexLink"}}</label>
-				<div class="codex-input-group">
-					<input type="text" name="system.codexUuid" value="{{system.codexUuid}}" placeholder="UUID">
-					<button type="button" class="codex-link-btn" title="{{localize "DOLMEN.Item.CodexOpen"}}">
-						<i class="fas fa-book-open"></i>
-					</button>
-				</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.StackSize"}}</label>
+				<input type="number" name="system.stackSize" value="{{system.stackSize}}" min="1">
 			</div>
 		</div>
 	</section>
+	{{/if}}
 
 	{{#if isWeapon}}
 	<!-- Weapon-specific fields -->
@@ -56,15 +54,15 @@
 		<div class="form-row">
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.Range.short"}}</label>
-				<input type="number" name="system.rangeShort" value="{{system.rangeShort}}" min="0">
+				<input type="number" name="system.rangeShort" value="{{system.rangeShort}}" min="0" {{#unless hasMissile}}class="no-missile" disabled="true" {{/unless}}>
 			</div>
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.Range.medium"}}</label>
-				<input type="number" name="system.rangeMedium" value="{{system.rangeMedium}}" min="0">
+				<input type="number" name="system.rangeMedium" value="{{system.rangeMedium}}" min="0" {{#unless hasMissile}}class="no-missile" disabled="true" {{/unless}}>
 			</div>
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.Range.long"}}</label>
-				<input type="number" name="system.rangeLong" value="{{system.rangeLong}}" min="0">
+				<input type="number" name="system.rangeLong" value="{{system.rangeLong}}" min="0" {{#unless hasMissile}}class="no-missile" disabled="true" {{/unless}}>
 			</div>
 		</div>
 		<div class="form-group qualities-group">
@@ -106,6 +104,17 @@
 	</section>
 	{{/if}}
 
+	{{#if isTreasure}}
+	<!-- Treasure-specific fields -->
+	<section class="item-treasure">
+		<h2>{{localize "DOLMEN.Item.TreasureDetails"}}</h2>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Item.Effects"}}</label>
+			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
+		</div>
+	</section>
+	{{/if}}
+
 	{{#if isForaged}}
 	<!-- Foraged-specific fields -->
 	<section class="item-foraged">
@@ -123,23 +132,8 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label>{{localize "DOLMEN.Item.Notes"}}</label>
-			<div class="editor-container">
-				<input type="text" name="system.notes" value="{{system.notes}}" placeholder="Enter notes here">
-			</div>
-		</div>
-	</section>
-	{{/if}}
-
-	{{#if isTreasure}}
-	<!-- Treasure-specific fields -->
-	<section class="item-treasure">
-		<h2>{{localize "DOLMEN.Item.TreasureDetails"}}</h2>
-		<div class="form-row">
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.Notes"}}</label>
-				<input type="text" name="system.notes" value="{{system.notes}}" placeholder="Enter notes here">
-			</div>
+			<label>{{localize "DOLMEN.Item.Effects"}}</label>
+			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
 		</div>
 	</section>
 	{{/if}}
@@ -149,12 +143,10 @@
 	<section class="item-spell">
 		<h2>{{localize "DOLMEN.Item.SpellDetails"}}</h2>
 		<div class="form-row">
-			<div class="form-field">
+			<div class="form-field" style="flex: 0.5;">
 				<label>{{localize "DOLMEN.Magic.SpellRank"}}</label>
 				<input type="number" name="system.rank" value="{{system.rank}}" min="1" max="6">
 			</div>
-		</div>
-		<div class="form-row">
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.SpellRange"}}</label>
 				<input type="text" name="system.range" value="{{system.range}}">
@@ -163,10 +155,6 @@
 				<label>{{localize "DOLMEN.Item.SpellDuration"}}</label>
 				<input type="text" name="system.duration" value="{{system.duration}}">
 			</div>
-		</div>
-		<div class="form-group">
-			<label>{{localize "DOLMEN.Item.Description"}}</label>
-			<textarea name="system.description" class="spell-description">{{system.description}}</textarea>
 		</div>
 	</section>
 	{{/if}}
@@ -176,16 +164,10 @@
 	<section class="item-spell">
 		<h2>{{localize "DOLMEN.Item.HolySpellDetails"}}</h2>
 		<div class="form-row">
-			<div class="form-field">
+			<div class="form-field" style="flex: 0.5;">
 				<label>{{localize "DOLMEN.Magic.SpellRank"}}</label>
 				<input type="number" name="system.rank" value="{{system.rank}}" min="1" max="5">
 			</div>
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.PrayerName"}}</label>
-				<input type="text" name="system.prayerName" value="{{system.prayerName}}">
-			</div>
-		</div>
-		<div class="form-row">
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.SpellRange"}}</label>
 				<input type="text" name="system.range" value="{{system.range}}">
@@ -195,9 +177,11 @@
 				<input type="text" name="system.duration" value="{{system.duration}}">
 			</div>
 		</div>
-		<div class="form-group">
-			<label>{{localize "DOLMEN.Item.Description"}}</label>
-			<textarea name="system.description" class="spell-description">{{system.description}}</textarea>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.PrayerName"}}</label>
+				<input type="text" name="system.prayerName" value="{{system.prayerName}}">
+			</div>
 		</div>
 	</section>
 	{{/if}}
@@ -222,10 +206,6 @@
 				<input type="text" name="system.usageFrequency" value="{{system.usageFrequency}}">
 			</div>
 		</div>
-		<div class="form-group">
-			<label>{{localize "DOLMEN.Item.Description"}}</label>
-			<textarea name="system.description" class="spell-description">{{system.description}}</textarea>
-		</div>
 	</section>
 	{{/if}}
 
@@ -240,10 +220,6 @@
 					{{selectOptions @root.runeMagnitudeChoices selected=system.magnitude}}
 				</select>
 			</div>
-		</div>
-		<div class="form-group">
-			<label>{{localize "DOLMEN.Item.Description"}}</label>
-			<textarea name="system.description" class="spell-description">{{system.description}}</textarea>
 		</div>
 	</section>
 	{{/if}}

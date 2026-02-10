@@ -139,39 +139,97 @@
 				</div>
 			</fieldset>
 		</div>
+		<div class="flexrow">
+			<!-- Skill Adjustments -->
+			<fieldset class="adj-group">
+				<legend>{{localize "DOLMEN.SkillTargets"}}</legend>
+				<div class="adj-grid adj-grid-skills">
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Skills.Listen"}}</span>
+						<input type="number" name="system.adjustments.skills.listen" value="{{system.adjustments.skills.listen}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Skills.Search"}}</span>
+						<input type="number" name="system.adjustments.skills.search" value="{{system.adjustments.skills.search}}" placeholder="0">
+					</div>
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.Skills.Survival"}}</span>
+						<input type="number" name="system.adjustments.skills.survival" value="{{system.adjustments.skills.survival}}" placeholder="0">
+					</div>
+					{{#each system.extraSkills}}
+					<div class="adj-row">
+						<span class="adj-label">{{localize (concat "DOLMEN.Skills." this.id)}}</span>
+						<input type="number" name="system.adjustments.skills.{{this.id}}" value="{{lookup @root.system.adjustments.skills this.id}}" placeholder="0">
+					</div>
+					{{/each}}
+				</div>
+			</fieldset>
+			<!-- XP Modifier -->
+			<fieldset class="adj-group" style="max-width: 6rem;">
+				<legend>{{localize "DOLMEN.XP"}}</legend>
+				<div class="adj-grid">
+					<div class="adj-row">
+						<span class="adj-label">{{localize "DOLMEN.XPModifier"}}</span>
+						<input type="number" name="system.adjustments.xpModifier" value="{{system.adjustments.xpModifier}}" placeholder="0">
+					</div>
+				</div>
+			</fieldset>
+		</div>
 
-		<!-- Skill Adjustments -->
+		<!-- Magic Adjustments -->
 		<fieldset class="adj-group">
-			<legend>{{localize "DOLMEN.SkillTargets"}}</legend>
-			<div class="adj-grid adj-grid-skills">
-				<div class="adj-row">
-					<span class="adj-label">{{localize "DOLMEN.Skills.Listen"}}</span>
-					<input type="number" name="system.adjustments.skills.listen" value="{{system.adjustments.skills.listen}}" placeholder="0">
+			<legend>{{localize "DOLMEN.Tabs.Magic"}}</legend>
+			<div class="flexrow">
+				<div class="adj-grid adj-grid-magic-enable">
+					<label class="adj-checkbox">
+						<input type="checkbox" name="system.adjustments.magic.arcane" {{#if system.adjustments.magic.arcane}}checked{{/if}}>
+						{{localize "DOLMEN.Magic.Arcane.ForceTitle"}}
+					</label>
+					<label class="adj-checkbox">
+						<input type="checkbox" name="system.adjustments.magic.holy" {{#if system.adjustments.magic.holy}}checked{{/if}}>
+						{{localize "DOLMEN.Magic.Holy.ForceTitle"}}
+					</label>
+					<label class="adj-checkbox">
+						<input type="checkbox" name="system.adjustments.magic.fairy" {{#if system.adjustments.magic.fairy}}checked{{/if}}>
+						{{localize "DOLMEN.Magic.Fairy.ForceTitle"}}
+					</label>
+					<label class="adj-checkbox">
+						<input type="checkbox" name="system.adjustments.magic.knacks" {{#if system.adjustments.magic.knacks}}checked{{/if}}>
+						{{localize "DOLMEN.Magic.Knacks.ForceTitle"}}
+					</label>
 				</div>
-				<div class="adj-row">
-					<span class="adj-label">{{localize "DOLMEN.Skills.Search"}}</span>
-					<input type="number" name="system.adjustments.skills.search" value="{{system.adjustments.skills.search}}" placeholder="0">
-				</div>
-				<div class="adj-row">
-					<span class="adj-label">{{localize "DOLMEN.Skills.Survival"}}</span>
-					<input type="number" name="system.adjustments.skills.survival" value="{{system.adjustments.skills.survival}}" placeholder="0">
-				</div>
-				{{#each system.extraSkills}}
-				<div class="adj-row">
-					<span class="adj-label">{{localize (concat "DOLMEN.Skills." this.id)}}</span>
-					<input type="number" name="system.adjustments.skills.{{this.id}}" value="{{lookup @root.system.adjustments.skills this.id}}" placeholder="0">
-				</div>
-				{{/each}}
-			</div>
-		</fieldset>
-
-		<!-- XP Modifier -->
-		<fieldset class="adj-group">
-			<legend>{{localize "DOLMEN.Adjustments.Other"}}</legend>
-			<div class="adj-grid adj-grid-other">
-				<div class="adj-row">
-					<span class="adj-label">{{localize "DOLMEN.XPModifier"}}</span>
-					<input type="number" name="system.adjustments.xpModifier" value="{{system.adjustments.xpModifier}}" placeholder="0">
+				<div class="adj-grid adj-grid-magic-slots">
+					<div class="adj-subgroup">
+						<span class="adj-subgroup-label">{{localize "DOLMEN.Magic.Arcane.SpellSlots"}}</span>
+						<div class="adj-subgroup-row">
+							{{#each system.adjustments.magic.arcaneSlots}}
+							<div class="adj-row">
+								<span class="adj-label">{{add @index 1}}</span>
+								<input type="number" name="system.adjustments.magic.arcaneSlots.{{@key}}" value="{{this}}" placeholder="0">
+							</div>
+							{{/each}}
+						</div>
+					</div>
+					<div class="adj-subgroup">
+						<span class="adj-subgroup-label">{{localize "DOLMEN.Magic.Holy.SpellSlots"}}</span>
+						<div class="adj-subgroup-row">
+							{{#each system.adjustments.magic.holySlots}}
+							<div class="adj-row">
+								<span class="adj-label">{{add @index 1}}</span>
+								<input type="number" name="system.adjustments.magic.holySlots.{{@key}}" value="{{this}}" placeholder="0">
+							</div>
+							{{/each}}
+						</div>
+					</div>
+					<div class="adj-subgroup">
+						<span class="adj-subgroup-label">{{localize "DOLMEN.Magic.Fairy.Title"}}</span>
+						<div class="adj-subgroup-row">
+							<div class="adj-row">
+								<span class="adj-label">{{localize "DOLMEN.Adjustments.MaxGlamours"}}</span>
+								<input type="number" name="system.adjustments.magic.glamoursMax" value="{{system.adjustments.magic.glamoursMax}}" placeholder="0">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</fieldset>

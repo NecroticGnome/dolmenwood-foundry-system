@@ -33,6 +33,42 @@
 	flex-direction: column;
 }
 
+/* -------------------------------------------- */
+/*  Stats Tab - Level Controls                   */
+/* -------------------------------------------- */
+
+.sheet.dolmen .level-controls {
+	display: flex;
+	align-items: center;
+	gap: 0.15rem;
+	justify-content: center;
+	height: 100%;
+	border-radius: 0.2rem;
+	background-color: var(--dolmen-color-inner-background)
+}
+
+.sheet.dolmen .level-controls .level-value {
+	flex: 0.25;
+	min-width: 0;
+	text-align: center;
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+.sheet.dolmen .level-controls .level-up,
+.sheet.dolmen .level-controls .level-down {
+	cursor: pointer;
+	color: var(--dolmen-color-h2);
+	font-size: 1rem;
+	transition: color 0.2s;
+	line-height: 1;
+}
+
+.sheet.dolmen .level-controls .level-up:hover,
+.sheet.dolmen .level-controls .level-down:hover {
+	color: var(--dolmen-color-h1);
+}
+
 .sheet.dolmen .tab-content .dual-select {
 	display: flex;
 	gap: 0.25rem;
@@ -40,6 +76,20 @@
 
 .sheet.dolmen .tab-content .dual-select select {
 	flex: 1;
+}
+
+.sheet.dolmen .tab-content .xp-stat {
+	background-color: var(--dolmen-color-inner-background);
+	border-radius: 0.2rem;
+	display: flex;
+	place-content: center;
+	gap: 0.5rem;
+	padding: 0 0.5rem;
+}
+
+.sheet.dolmen .tab-content .xp-stat .proficiency-value {
+	margin-left: 0;
+	margin-right: auto;
 }
 
 /* -------------------------------------------- */
@@ -61,14 +111,14 @@
 
 .sheet.dolmen .tab-content .portrait-container {
 	position: relative;
-	width: 11.5rem;
-	height: 100%;
+	width: 11.75rem;
+	height: 11.75rem;
 }
 
 .sheet.dolmen .tab-content .portrait-image {
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
+	object-fit: contain;
 	cursor: pointer;
 }
 
@@ -197,7 +247,7 @@
 .sheet.dolmen .tab-content .saves-grid {
 	display: grid;
 	grid-template-columns: repeat(5, 3rem 1rem) auto;
-	gap: 0.5rem;
+	gap: 0.25rem;
 }
 
 .sheet.dolmen .tab-content .saves-grid .rollable {
@@ -281,7 +331,7 @@
 .sheet.dolmen .tab-content .skill input {
 	font-size: 1rem;
 	font-weight: bold;
-	width: 3rem;
+	width: 2.5rem;
 }
 
 .sheet.dolmen .tab-content .extra-skill {

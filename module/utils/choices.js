@@ -64,7 +64,9 @@ export const CHOICE_KEYS = {
 	spellRanks: ['rank1', 'rank2', 'rank3', 'rank4', 'rank5', 'rank6'],
 	combatTalents: ['battleRage', 'cleave', 'defender', 'lastStand', 'leader', 'mainGauche', 'slayer', 'weaponSpecialist'],
 	holyOrders: ['stFaxis', 'stSedge', 'stSignis'],
+	monsterTypes: ['animal', 'bug', 'construct', 'demi-fey', 'dragon', 'fairy', 'fungus', 'monstrosity', 'mortal', 'ooze', 'plant', 'undead'],
 	intelligenceTypes: ["mindless", "animal", "semi-intelligent", "sentient", "genius"],
+	costDenominations: ['gp', 'sp', 'cp', 'pp'],
 	weaponQualities: ["armor-piercing", "brace", "charge", "melee", "missile", "reach", "reload", "splash", "two-handed", "cold-iron", "silver"],
 	weaponTypes: [
 		"battleAxe", "club", "crossbow", "dagger", "flail", "handAxe",

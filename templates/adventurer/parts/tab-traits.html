@@ -5,8 +5,7 @@
 		<h2>{{kindredClassName}} {{localize "DOLMEN.Traits.Title"}}</h2>
 		<section class="two-columns traits-grid">
 			{{#each kindredClassTraits}}
-			{{#unless this.hideFromTraitTab}}
-			<section class="trait boxed-section {{#if this.locked}}locked{{/if}} {{this.traitType}}" data-trait-id="{{this.id}}">
+			<section class="trait boxed-section {{this.traitType}}" data-trait-id="{{this.id}}">
 				<h3>
 					{{this.name}}
 					{{#if this.value}}
@@ -16,9 +15,6 @@
 					<i class="fa fa-dice-d20 rollable" data-trait-id="{{this.id}}" data-roll-formula="{{this.rollFormula}}" data-trait-name="{{this.name}}" data-roll-target="{{this.rollTarget}}"></i>
 					{{/if}}
 				</h3>
-				{{#if this.locked}}
-				<p class="locked-message">{{localize "DOLMEN.Traits.UnlocksAtLevel"}} {{this.minLevel}}</p>
-				{{else}}
 				<p>{{this.description}}</p>
 				{{#if this.hasUsageTracking}}
 				<div class="trait-usage">
@@ -31,9 +27,7 @@
 					<span class="uses-remaining">({{this.usesRemaining}} {{localize "DOLMEN.Traits.Remaining"}})</span>
 				</div>
 				{{/if}}
-				{{/if}}
 			</section>
-			{{/unless}}
 			{{/each}}
 		</section>
 	</section>
@@ -43,8 +37,7 @@
 		<h2>{{kindredName}} {{localize "DOLMEN.Traits.Title"}}</h2>
 		<section class="two-columns traits-grid">
 			{{#each kindredTraits}}
-			{{#unless this.hideFromTraitTab}}
-			<section class="trait boxed-section {{#if this.locked}}locked{{/if}} {{this.traitType}}" data-trait-id="{{this.id}}">
+			<section class="trait boxed-section {{this.traitType}}" data-trait-id="{{this.id}}">
 				<h3>
 					{{this.name}}
 					{{#if this.value}}
@@ -54,9 +47,6 @@
 					<i class="fa fa-dice-d20 rollable" data-trait-id="{{this.id}}" data-roll-formula="{{this.rollFormula}}" data-trait-name="{{this.name}}" data-roll-target="{{this.rollTarget}}"></i>
 					{{/if}}
 				</h3>
-				{{#if this.locked}}
-				<p class="locked-message">{{localize "DOLMEN.Traits.UnlocksAtLevel"}} {{this.minLevel}}</p>
-				{{else}}
 				<p>{{this.description}}</p>
 				{{#if this.hasUsageTracking}}
 				<div class="trait-usage">
@@ -69,9 +59,7 @@
 					<span class="uses-remaining">({{this.usesRemaining}} {{localize "DOLMEN.Traits.Remaining"}})</span>
 				</div>
 				{{/if}}
-				{{/if}}
 			</section>
-			{{/unless}}
 			{{/each}}
 		</section>
 	</section>
@@ -81,8 +69,7 @@
 		<h2>{{className}} {{localize "DOLMEN.Traits.Title"}}</h2>
 		<section class="two-columns traits-grid">
 			{{#each classTraits}}
-			{{#unless this.hideFromTraitTab}}
-			<section class="trait boxed-section {{#if this.locked}}locked{{/if}} {{this.traitType}}" data-trait-id="{{this.id}}">
+			<section class="trait boxed-section {{this.traitType}}" data-trait-id="{{this.id}}">
 				<h3>
 					{{this.name}}
 					{{#if this.value}}
@@ -92,10 +79,18 @@
 					<i class="fa fa-dice-d20 rollable" data-trait-id="{{this.id}}" data-roll-formula="{{this.rollFormula}}" data-trait-name="{{this.name}}" data-roll-target="{{this.rollTarget}}"></i>
 					{{/if}}
 				</h3>
-				{{#if this.locked}}
-				<p class="locked-message">{{localize "DOLMEN.Traits.UnlocksAtLevel"}} {{this.minLevel}}</p>
+				{{#if this.requiresHolyOrder}}
+				<div class="order-select">
+					<select name="system.holyOrder">
+						{{selectOptions @root.holyOrderChoices selected=@root.system.holyOrder}}
+					</select>
+					{{#if this.holyOrderDesc}}
+					<p class="order-description">{{this.holyOrderDesc}}</p>
+					{{/if}}
+				</div>
 				{{else}}
 				<p>{{this.description}}</p>
+				{{/if}}
 				{{#if this.hasUsageTracking}}
 				<div class="trait-usage">
 					<span class="usage-label">{{this.usageFrequency}}:</span>
@@ -107,9 +102,7 @@
 					<span class="uses-remaining">({{this.usesRemaining}} {{localize "DOLMEN.Traits.Remaining"}})</span>
 				</div>
 				{{/if}}
-				{{/if}}
 			</section>
-			{{/unless}}
 			{{/each}}
 		</section>
 	</section>
@@ -130,23 +123,6 @@
 			<div class="add-talent-hint">
 				<small>{{localize "DOLMEN.Traits.TalentsGainedHint"}}</small>
 			</div>
-			{{/if}}
-		</div>
-	</section>
-	{{/if}}
-
-	<!-- Cleric Holy Order Selection (if cleric class) -->
-	{{#if (eq system.class "cleric")}}
-	<section class="holy-order-selection boxed-section">
-		<h2>{{localize "DOLMEN.Traits.OrderPower"}}</h2>
-		<div class="order-select">
-			<select name="system.holyOrder">
-				{{selectOptions @root.holyOrderChoices selected=system.holyOrder}}
-			</select>
-			{{#if system.holyOrder}}
-			<p class="order-description">
-				{{localize (concat "DOLMEN.Traits.Orders." system.holyOrder "Desc")}}
-			</p>
 			{{/if}}
 		</div>
 	</section>

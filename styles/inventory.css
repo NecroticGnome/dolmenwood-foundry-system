@@ -4,12 +4,21 @@
 
 .sheet.dolmen .tab-content .encumbrance-grid {
 	display: grid;
-	grid-template-columns: auto 4rem 4rem;
+	grid-template-columns: 1fr auto auto;
 	gap: 0.5rem;
+	align-items: end;
 }
 
-.sheet.dolmen .tab-content .encumbrance-stat input {
-	width: 4rem;
+.sheet.dolmen .tab-content .encumbrance-stat .encumbrance-value {
+	font-weight: bold;
+	font-size: 0.9rem;
+	text-align: center;
+	display: block;
+}
+
+.sheet.dolmen .tab-content .encumbrance-stat.encumbrance-load {
+	grid-column: span 2;
+	text-align: center;
 }
 
 /* -------------------------------------------- */

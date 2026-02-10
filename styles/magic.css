@@ -326,6 +326,28 @@
 	color: var(--dolmen-color-h3);
 }
 
+.sheet.dolmen .tab-magic .knack-usage {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+	margin-left: auto;
+	white-space: nowrap;
+}
+
+.sheet.dolmen .tab-magic .knack-usage .usage-label {
+	font-size: 0.65rem;
+	color: var(--dolmen-color-text-muted);
+}
+
+.sheet.dolmen .tab-magic .knack-usage .knack-usage-checkbox {
+	background: none;
+	border: none;
+	box-shadow: none;
+	cursor: pointer;
+	accent-color: var(--dolmen-color-accent);
+	margin: 0;
+}
+
 .sheet.dolmen .tab-magic .knack-prompt {
 	text-align: center;
 	padding: 2rem;
@@ -345,4 +367,55 @@
 	text-align: center;
 	color: var(--dolmen-color-h3);
 	font-style: italic;
+}
+
+/* -------------------------------------------- */
+/*  Glamour Usage                               */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-magic .spell-row.glamour-row {
+	grid-template-columns: 20px 2fr 1fr 2.5rem;
+}
+
+.sheet.dolmen .tab-magic .glamour-usage {
+	font-size: 0.65rem;
+	color: var(--dolmen-color-text-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: right;
+}
+
+/* -------------------------------------------- */
+/*  Rune Usage Tracking                         */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-magic .spell-row.rune-row {
+	grid-template-columns: 20px 1fr auto 2.5rem;
+}
+
+.sheet.dolmen .tab-magic .rune-usage {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.sheet.dolmen .tab-magic .rune-usage .usage-label {
+	font-size: 0.65rem;
+	color: var(--dolmen-color-text-muted);
+	white-space: nowrap;
+}
+
+.sheet.dolmen .tab-magic .rune-usage .usage-checkboxes {
+	display: flex;
+	gap: 0.15rem;
+}
+
+.sheet.dolmen .tab-magic .rune-usage .rune-usage-checkbox {
+	background: none;
+	border: none;
+	box-shadow: none;
+	cursor: pointer;
+	accent-color: var(--dolmen-color-accent);
+	margin: 0;
 }

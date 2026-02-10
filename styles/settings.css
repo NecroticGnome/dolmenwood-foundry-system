@@ -2,11 +2,12 @@
 /*  Settings Tab                                */
 /* -------------------------------------------- */
 
-.sheet.dolmen .tab-settings .boxed-section.unit-system {
-	min-height: 4.5rem;
+.sheet.dolmen .tab-settings .boxed-section .unit-toggle {
+	margin: auto;
 }
 
 .sheet.dolmen .tab-settings .boxed-section.unit-system input {
 	border: 0;
 	box-shadow: none;
 }
+

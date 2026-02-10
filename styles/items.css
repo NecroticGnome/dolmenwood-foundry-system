@@ -4,6 +4,8 @@
 
 .sheet.dolmen.item .window-content {
 	padding: 0;
+	display: flex;
+	flex-direction: column;
 }
 
 .sheet.dolmen.item .item-header {
@@ -42,14 +44,14 @@
 }
 
 .sheet.dolmen.item .item-header .item-title input {
-	background: transparent;
 	border: none;
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	font-size: 1.25rem;
 	font-family: var(--dolmen-font-header);
 	font-weight: normal;
-	padding: 0;
+	padding: 0 0.25rem;
 	margin: 0;
+	background-color: rgba(0, 0, 0, 0.25);
 }
 
 .sheet.dolmen.item .item-header .item-title input:focus {
@@ -61,107 +63,155 @@
 	font-size: 0.75rem;
 	opacity: 0.8;
 	text-transform: uppercase;
+	color: var(--dolmen-color-title);
 }
 
-.sheet.dolmen.item .item-body {
-	padding: 0.5rem;
+/* -------------------------------------------- */
+/*  Item Tabs                                   */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .item-tabs {
 	display: flex;
+	flex-shrink: 0;
+	background-color: var(--dolmen-color-title-background);
+}
+
+.sheet.dolmen.item .item-tabs .item {
+	flex: 1;
+	padding: 0.35rem 0.5rem;
+	text-align: center;
+	cursor: pointer;
+	color: var(--dolmen-color-title);
+	font-size: 0.75rem;
+	line-height: 1;
+	opacity: 0.7;
+	transition: opacity 0.1s;
+}
+
+.sheet.dolmen.item .item-tabs .item:hover {
+	opacity: 1;
+}
+
+.sheet.dolmen.item .item-tabs .item.active {
+	background-color: var(--dolmen-color-box-background);
+	color: var(--dolmen-color-h1);
+	opacity: 1;
+}
+
+.sheet.dolmen.item .item-tabs .item i {
+	margin-right: 0.25rem;
+}
+
+/* -------------------------------------------- */
+/*  Tab Content                                 */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .tab-content {
+	display: none;
 	flex-direction: column;
 	gap: 0.5rem;
+	padding: 0.5rem;
 	overflow-y: auto;
+	flex: 1;
+	min-height: 0;
 }
 
-.sheet.dolmen.item .item-body section {
+.sheet.dolmen.item .tab-content.active {
+	display: flex;
+}
+
+.sheet.dolmen.item .tab-content section {
 	background-color: var(--dolmen-color-background);
 	border: 2px solid var(--dolmen-color-title-background);
 	padding: 0.5rem;
 }
 
-.sheet.dolmen.item .item-body h2 {
+.sheet.dolmen.item .tab-content h2 {
 	margin-bottom: 0.5rem;
 }
 
-.sheet.dolmen.item .item-body .form-row {
+/* -------------------------------------------- */
+/*  Form Layout                                 */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .form-row {
 	display: flex;
-	gap: 0.5rem;
+	gap: 0.25rem;
 	margin-bottom: 0.5rem;
+	align-items: flex-end;
 }
 
-.sheet.dolmen.item .item-body .form-field {
+.sheet.dolmen.item .form-field {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
+	min-width: 0;
 }
 
-.sheet.dolmen.item .item-body .form-field label {
+.sheet.dolmen.item .form-field label {
 	font-size: 0.7rem;
 	color: var(--dolmen-color-h3);
 	margin-bottom: 0.125rem;
 }
 
-.sheet.dolmen.item .item-body .form-field input,
-.sheet.dolmen.item .item-body .form-field select {
+.sheet.dolmen.item .form-field input,
+.sheet.dolmen.item .form-field select {
+	width: 100%;
 	padding: 0.25rem;
 	border: 1px solid var(--dolmen-color-input-border);
 	border-radius: 2px;
 	font-size: 0.85rem;
+	box-sizing: border-box;
 }
 
-.sheet.dolmen.item .item-body .form-field input[type="number"] {
-	width: 4rem;
+.sheet.dolmen.item .form-field input[type="number"] {
+	text-align: center;
 }
 
-.sheet.dolmen.item .item-body .form-field .unit {
-	font-size: 0.65rem;
-	color: var(--dolmen-color-h3);
-	margin-top: 0.125rem;
+.sheet.dolmen.item .no-missile {
+	opacity: 0.5;
 }
 
-.sheet.dolmen.item .item-body .form-group {
+/* -------------------------------------------- */
+/*  Cost Field                                  */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .cost-field .flexrow {
+	display: flex;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen.item .cost-field .flexrow input {
+	flex: 1;
+	min-width: 0;
+}
+
+.sheet.dolmen.item .cost-field .cost-denomination {
+	width: auto;
+	flex: 0 0 auto;
+	padding: 0.25rem;
+	font-size: 0.8rem;
+}
+
+/* -------------------------------------------- */
+/*  Codex Link                                  */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .codex-link-row {
 	margin-bottom: 0.5rem;
 }
 
-.sheet.dolmen.item .item-body .form-group>label {
-	font-size: 0.7rem;
-	color: var(--dolmen-color-h3);
-	margin-bottom: 0.25rem;
-	display: block;
-}
-
-.sheet.dolmen.item .item-body .qualities-grid {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 0.25rem;
-}
-
-.sheet.dolmen.item .item-body .quality-option {
-	display: flex;
-	align-items: center;
-	gap: 0.25rem;
-	font-size: 0.8rem;
-	cursor: pointer;
-}
-
-.sheet.dolmen.item .item-body .quality-option input {
-	margin: 0;
-}
-
-.sheet.dolmen.item .item-body .editor-container {
-	min-height: 100px;
-}
-
-/* Codex link row */
-.sheet.dolmen.item .item-body .codex-input-group {
+.sheet.dolmen.item .codex-input-group {
 	display: flex;
 	gap: 0.25rem;
 	align-items: center;
 }
 
-.sheet.dolmen.item .item-body .codex-input-group input {
+.sheet.dolmen.item .codex-input-group input {
 	flex: 1;
 }
 
-.sheet.dolmen.item .item-body .codex-link-btn {
+.sheet.dolmen.item .codex-link-btn {
 	padding: 0.25rem 0.5rem;
 	border: 1px solid var(--dolmen-color-input-border);
 	border-radius: 2px;
@@ -170,13 +220,85 @@
 	font-size: 0.85rem;
 }
 
-.sheet.dolmen.item .item-body .codex-link-btn:hover {
+.sheet.dolmen.item .codex-link-btn:hover {
 	background: var(--dolmen-color-title-background);
 	color: var(--dolmen-color-background);
 }
 
-/* Spell description textarea */
-.sheet.dolmen.item .item-body .spell-description {
+/* -------------------------------------------- */
+/*  Form Groups & Qualities                     */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .form-group {
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen.item .form-group>label {
+	font-size: 0.7rem;
+	color: var(--dolmen-color-h3);
+	margin-bottom: 0.25rem;
+	display: block;
+}
+
+.sheet.dolmen.item .qualities-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.25rem;
+}
+
+.sheet.dolmen.item .quality-option {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	font-size: 0.8rem;
+	cursor: pointer;
+}
+
+.sheet.dolmen.item .quality-option input {
+	margin: 0;
+}
+
+.sheet.dolmen.item .effects-input {
+	width: 100%;
+	min-height: 3rem;
+	padding: 0.25rem;
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 2px;
+	font-size: 0.85rem;
+	font-family: inherit;
+	box-sizing: border-box;
+	resize: vertical;
+}
+
+/* -------------------------------------------- */
+/*  Description Tab                             */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .item-description .notes-group {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.sheet.dolmen.item .item-description .item-notes {
+	flex: 1;
+	width: 100%;
+	min-height: 100px;
+	padding: 0.5rem;
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 2px;
+	font-size: 0.85rem;
+	font-family: inherit;
+	resize: vertical;
+	box-sizing: border-box;
+}
+
+/* -------------------------------------------- */
+/*  Spell Description                           */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .spell-description {
 	width: 100%;
 	min-height: 80px;
 	padding: 0.25rem;

@@ -93,8 +93,7 @@ span.proficiency-value {
 	border: none;
 	font-size: 1rem;
 	height: 2rem;
-	padding: 0 0.5rem;
-	float: right;
+	padding: 0;
 }
 
 /* -------------------------------------------- */
@@ -154,5 +153,5 @@ span.proficiency-value {
 .sheet.dolmen .tab-content .coin input {
 	font-size: 1rem;
 	font-weight: bold;
-	width: 3rem;
+	width: 2.5rem;
 }

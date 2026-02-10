@@ -44,13 +44,17 @@
 					<label>{{localize "DOLMEN.Languages"}}</label>
 					<input type="text" name="system.languages" value="{{system.languages}}">
 				</div>
-				<div class="header-field">
+				<div class="header-field level-field">
 					<label>{{localize "DOLMEN.Level"}}</label>
-					<input type="text" name="system.level" value="{{system.level}}">
+					<div class="level-controls">
+						<a class="level-down" title="{{localize 'DOLMEN.LevelDown'}}"><i class="fas fa-caret-down"></i></a>
+						<span class="level-value">{{system.level}}</span>
+						<a class="level-up" title="{{localize 'DOLMEN.LevelUp'}}"><i class="fas fa-caret-up"></i></a>
+					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.XP"}} ({{xpModifierLabel}})</label>
-					<div>
+					<div class="xp-stat">
 						<span class="proficiency-value">{{system.xp.value}} / {{system.xp.nextLevel}}</span>
 						<button type="button" class="xp-edit-btn" title="{{localize 'DOLMEN.Edit'}}"><i class="fas fa-pen-to-square"></i></button><button type="button" class="xp-add-btn" title="{{localize 'DOLMEN.XPAdd'}}"><i class="fas fa-plus"></i></button>
 					</div>

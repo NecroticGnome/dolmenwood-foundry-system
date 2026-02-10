@@ -21,6 +21,7 @@
 		"ConfigureSheet": "Dolmenwood Config",
 		"WelcomeMessage": "Welcome to the Dolmenwood RPG system!",
 		"SheetTitle": "Dolmenwood Sheet",
+		"CreatureSheetTitle": "Dolmenwood Creature Sheet",
 		"Tabs": {
 			"Stats": "Stats",
 			"Inventory": "Inventory",
@@ -34,6 +35,7 @@
 		"Adjustments": {
 			"Title": "Custom Adjustments",
 			"Hint": "Add custom bonuses/penalties to base values (e.g., from magic equipment, custom traits, or other effects).",
+			"MaxGlamours": "Max Glamours",
 			"Other": "Other"
 		},
 		"Details": "Details",
@@ -154,12 +156,23 @@
 		"XP": "XP",
 		"Level": "Level",
 		"LevelAbbrev": "Lvl.",
+		"LevelUp": "Level Up",
+		"LevelDown": "Level Down",
+		"LevelUpTitle": "Level Up",
+		"LevelUpConfirm": "Not enough XP to level up. Proceed anyway?",
+		"LevelUpTo": "Level {level}",
+		"LevelUpHP": "+{total} HP",
+		"LevelUpFlat": "Flat bonus (level 11+)",
+		"LevelDownNoRecord": "No HP record for this level. HP will not be adjusted.",
+		"LevelMaxReached": "Already at maximum level.",
+		"LevelMinReached": "Already at minimum level.",
 		"NextLevel": "Next Level",
 		"XPModifier": "XP % Modifier",
 		"Modifier": "modifier",
 		"XPAdd": "Add XP",
 		"XPGained": "XP Gained",
 		"XPCurrent": "Current XP",
+		"XPAdjustedGain": "Adjusted Gain",
 		"XPTotal": "New Total",
 		"XPAddTitle": "Add Experience Points",
 		"XPAddButton": "Add",
@@ -173,6 +186,9 @@
 			"Method": "Method",
 			"Current": "Current",
 			"Max": "Max",
+			"Load": "Load",
+			"SignificantLoad": "Significant Load",
+			"SignificantLoadHint": "Percentage of max load at which treasure counts as significant (Weight Treasure method).",
 			"weight": "Weight (Full)",
 			"treasure": "Weight (Treasure)",
 			"slots": "Slots"
@@ -253,6 +269,64 @@
 			"demi-fey": "Demi-fey",
 			"fairy": "Fairy"
 		},
+		"Sizes": {
+			"small": "Small",
+			"medium": "Medium",
+			"large": "Large"
+		},
+		"MonsterTypes": {
+			"animal": "Animal",
+			"bug": "Bug",
+			"construct": "Construct",
+			"demi-fey": "Demi-Fey",
+			"dragon": "Dragon",
+			"fairy": "Fairy",
+			"fungus": "Fungus",
+			"monstrosity": "Monstrosity",
+			"mortal": "Mortal",
+			"ooze": "Ooze",
+			"plant": "Plant",
+			"undead": "Undead"
+		},
+		"IntelligenceTypes": {
+			"mindless": "Mindless",
+			"animal": "Animal Intelligence",
+			"semi-intelligent": "Semi-Intelligent",
+			"sentient": "Sentient",
+			"genius": "Genius"
+		},
+		"Creature": {
+			"Size": "Size",
+			"Type": "Type",
+			"Intelligence": "Intelligence",
+			"HPDice": "HP Dice",
+			"Morale": "Morale",
+			"XPAward": "XP Award",
+			"Attacks": "Attacks",
+			"AddAttack": "Add Attack...",
+			"RemoveAttack": "Remove Attack",
+			"NumAttacks": "Number of Attacks",
+			"AttackName": "Name",
+			"AttackBonus": "Attack Bonus",
+			"AttackDamage": "Damage",
+			"AttackEffect": "Effect",
+			"AttacksPerRound": "/round",
+			"SpecialAbilities": "Special Abilities",
+			"EditAttack": "Edit Attack",
+			"AttackTypeLabel": "Type",
+			"AttackTypeAttack": "Attack Roll",
+			"AttackTypeSave": "Saving Throw",
+			"SaveEffect": "Effect",
+			"RangeShort": "Short",
+			"RangeMedium": "Medium",
+			"RangeLong": "Long",
+			"Movement": {
+				"swim": "Swim",
+				"fly": "Fly",
+				"climb": "Climb",
+				"burrow": "Burrow"
+			}
+		},
 		"Kindreds": {
 			"breggle": "Breggle",
 			"elf": "Elf",
@@ -289,7 +363,12 @@
 					"hunter": "Constitution and Dexterity",
 					"bard": "Charisma and Dexterity",
 					"friar": "Intelligence and Wisdom",
-					"enchanter": "Charisma and Intelligence"
+					"enchanter": "Charisma and Intelligence",
+					"breggle": "Intelligence and Strength",
+					"elf": "Charisma and Strength",
+					"grimalkin": "Dexterity",
+					"mossling": "Constitution and Wisdom",
+					"woodgrue": "Charisma and Dexterity"
 				},
 				"HitPoints": {
 					"fighter": "1d8 per level, +2 after level 10",
@@ -300,7 +379,12 @@
 					"hunter": "1d8 per level, +2 after level 10",
 					"bard": "1d6 per level, +1 after level 10",
 					"friar": "1d4 per level, +1 after level 10",
-					"enchanter": "1d6 per level, +1 after level 10"
+					"enchanter": "1d6 per level, +1 after level 10",
+					"breggle": "1d6 per level, +2 after level 10",
+					"elf": "1d6 per level, +1 after level 10",
+					"grimalkin": "1d6 per level, +1 after level 10",
+					"mossling": "1d6 per level, +2 after level 10",
+					"woodgrue": "1d6 per level, +1 after level 10"
 				},
 				"CombatAptitude": {
 					"fighter": "Martial",
@@ -311,7 +395,12 @@
 					"hunter": "Martial",
 					"bard": "Semi-martial",
 					"friar": "Non-martial",
-					"enchanter": "Semi-martial"
+					"enchanter": "Semi-martial",
+					"breggle": "Martial",
+					"elf": "Martial",
+					"grimalkin": "Semi-martial",
+					"mossling": "Semi-martial",
+					"woodgrue": "Semi-martial"
 				},
 				"Weapons": {
 					"fighter": "Any",
@@ -322,7 +411,12 @@
 					"hunter": "Any",
 					"bard": "Small and Medium",
 					"friar": "Club, dagger, holy water, oil, sling, staff, torch",
-					"enchanter": "Small and Medium"
+					"enchanter": "Small and Medium",
+					"breggle": "Any",
+					"elf": "Any",
+					"grimalkin": "Small and Medium",
+					"mossling": "Small and Medium",
+					"woodgrue": "Small and Medium"
 				},
 				"Armor": {
 					"fighter": "Any, including shields",
@@ -333,7 +427,12 @@
 					"hunter": "Light, shields",
 					"bard": "Light and Medium, no shields",
 					"friar": "None",
-					"enchanter": "Light and Medium, no shields"
+					"enchanter": "Light and Medium, no shields",
+					"breggle": "Any, including shields",
+					"elf": "Any, including shields",
+					"grimalkin": "Any, including shields",
+					"mossling": "Any, including shields",
+					"woodgrue": "Any, including shields"
 				}
 			}
 		},
@@ -347,12 +446,20 @@
 			"Name": "Name",
 			"Cost": "Cost",
 			"CostUnit": "gp",
+			"StackSize": "Stack Size",
+			"Denomination": {
+				"gp": "gp",
+				"sp": "sp",
+				"cp": "cp",
+				"pp": "pp"
+			},
 			"WeightCoins": "Weight (Coins)",
 			"WeightSlots": "Weight (Slots)",
 			"Details": "Details",
 			"Damage": "Dmg",
 			"AC": "AC",
 			"Qualities": "Qualities",
+			"CommonDetails": "Item Details",
 			"WeaponDetails": "Weapon Details",
 			"ArmorDetails": "Armor Details",
 			"ForagedDetails": "Foraged Details",
@@ -365,6 +472,9 @@
 			"PrayerName": "Prayer Name",
 			"UsageFrequency": "Usage",
 			"Description": "Description",
+			"Effects": "Effects",
+			"TabStats": "Stats",
+			"TabDescription": "Description",
 			"CodexLink": "Codex Entry",
 			"CodexOpen": "Open",
 			"Size": {
@@ -512,6 +622,10 @@
 			"Cast": "Cast Spell",
 			"Use": "Use Glamour",
 			"Invoke": "Invoke Rune",
+			"Range": "Range",
+			"Duration": "Duration",
+			"Prayer": "Prayer",
+			"CodexLink": "View in Codex",
 			"Memorize": "Memorize",
 			"Forget": "Forget Spell",
 			"EmptySlot": "Empty Slot (click to memorize)",
@@ -523,7 +637,8 @@
 			"SpellRank": "Rank",
 			"Arcane": {
 				"Title": "Arcane Magic",
-				"SpellSlots": "Spell Slots",
+				"ForceTitle": "Enable Arcane",
+				"SpellSlots": "Arcane Spell Slots",
 				"DetectMagic": "Detect Magic",
 				"MemorizedSpells": "Memorized Spells",
 				"KnownSpells": "Known Spells",
@@ -533,6 +648,7 @@
 			},
 			"Fairy": {
 				"Title": "Fairy Magic",
+				"ForceTitle": "Enable Fairy",
 				"Glamours": "Glamours",
 				"GlamoursKnown": "Glamours Known",
 				"NoGlamours": "No glamours known. Drag glamours here.",
@@ -546,11 +662,19 @@
 					"lesser": "Lesser",
 					"greater": "Greater",
 					"mighty": "Mighty"
-				}
+				},
+				"OncePerDay": "1/day",
+				"TwicePerDay": "2/day",
+				"ThricePerDay": "3/day",
+				"OncePerWeek": "1/week",
+				"OncePerLevel": "1/level",
+				"OncePerYear": "1/year",
+				"OnceEver": "once ever"
 			},
 			"Holy": {
 				"Title": "Holy Magic",
-				"SpellSlots": "Spell Slots",
+				"ForceTitle": "Enable Holy",
+				"SpellSlots": "Holy Spell Slots",
 				"HolySymbol": "Holy Symbol",
 				"PreparedSpells": "Prepared Spells",
 				"KnownSpells": "Known Spells",
@@ -560,6 +684,7 @@
 			},
 			"Knacks": {
 				"Title": "Mossling Knack",
+				"ForceTitle": "Enable Knack",
 				"Type": "Knack Type",
 				"SelectKnack": "Select a knack...",
 				"UnlockedLevel": "Unlocked Level",
@@ -618,11 +743,10 @@
 			"OncePerDay": "1/day",
 			"ThreePerDay": "3/day",
 			"ACBonus": "AC",
-			"LongRest": "Long Rest",
+			"LongRest": "Rest",
 			"UsageReset": "Trait uses have been reset.",
 			"NoUsesRemaining": "No uses remaining for this trait.",
 			"Remaining": "remaining",
-			"UnlocksAtLevel": "Unlocks at level",
 			"TalentsGainedHint": "Talents gained at levels 2, 6, 10, 14",
 			"SizeIncompatible": "{itemName} ({itemSize}) may not fit properly - your size is {actorSize}.",
 			"KeenSenses": "Keen Senses",
@@ -702,7 +826,6 @@
 			"HolySpells": "Holy Spells",
 			"HolySpellsDesc": "Receive blessed spells from the host of saints. Requires carrying a holy symbol.",
 			"OrderPower": "Holy Order Power",
-			"OrderPowerDesc": "At Level 2, choose a holy order to gain its special power: St Faxis (+2 saves vs arcane), St Sedge (heal 1 HP/level daily), or St Signis (+1 attack vs undead).",
 			"LiturgicLanguage": "Liturgic Language",
 			"LiturgicLanguageDesc": "Fluent in the Liturgic language of the Church.",
 			"AlignmentLawNeu": "Alignment Restriction",
@@ -804,13 +927,22 @@
 				"WeaponSpecialistDesc": "+1 bonus to Attack and Damage with a chosen weapon type. Can be selected multiple times."
 			},
 			"Orders": {
-				"StFaxis": "Order of St Faxis",
-				"StFaxisDesc": "+2 bonus to Saving Throws against arcane magic. Arcane opponents suffer -2 to saves against your holy spells.",
-				"StSedge": "Order of St Sedge",
-				"StSedgeDesc": "Heal up to 1 HP per level total, once daily, by laying on hands.",
-				"StSignis": "Order of St Signis",
-				"StSignisDesc": "+1 Attack bonus against undead. Can harm undead that normally require magical weapons."
+				"stFaxis": "Order of St Faxis",
+				"stFaxisDesc": "+2 bonus to Saving Throws against arcane magic. Arcane opponents suffer -2 to saves against your holy spells.",
+				"stSedge": "Order of St Sedge",
+				"stSedgeDesc": "Heal up to 1 HP per level total, once daily, by laying on hands.",
+				"stSignis": "Order of St Signis",
+				"stSignisDesc": "+1 Attack bonus against undead. Can harm undead that normally require magical weapons."
 			}
+		},
+		"Rest": {
+			"Overnight": "Overnight Rest",
+			"OvernightHint": "1 HP",
+			"FullDay": "Full Day of Rest",
+			"FullDayHint": "1d3 HP",
+			"HPRestored": "{hp} HP restored",
+			"TraitsReset": "Trait uses reset",
+			"SpellsReminder": "You can memorize your spells now."
 		}
 	}
 }

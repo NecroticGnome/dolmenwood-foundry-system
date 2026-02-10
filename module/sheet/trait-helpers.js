@@ -258,6 +258,19 @@ export function prepareTrait(actor, trait, level) {
 			: null
 	}
 
+	// Handle holy order selection (embedded in trait)
+	if (trait.requiresSelection === 'holyOrder') {
+		prepared.requiresHolyOrder = true
+		const order = actor.system.holyOrder
+		if (order) {
+			const orderDef = CONFIG.DOLMENWOOD.traits.holyOrders[order]
+			if (orderDef) {
+				prepared.holyOrderName = game.i18n.localize(orderDef.nameKey)
+				prepared.holyOrderDesc = game.i18n.localize(orderDef.descKey)
+			}
+		}
+	}
+
 	return prepared
 }
 
@@ -280,6 +293,8 @@ export function flattenTraits(actor, traitDef, level) {
 				if (trait.hideFromTraitTab === true) continue
 
 				const prepared = prepareTrait(actor, trait, level)
+				// Skip traits locked behind a higher level
+				if (prepared.locked) continue
 				prepared.category = category
 				traits.push(prepared)
 			}

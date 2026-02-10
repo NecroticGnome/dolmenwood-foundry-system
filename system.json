@@ -69,6 +69,10 @@
     {
       "src": "styles/settings.css",
       "layer": "system"
+    },
+    {
+      "src": "styles/creature.css",
+      "layer": "system"
     }
   ],
   "languages": [
@@ -128,7 +132,7 @@
       },
       "Creature": {
         "htmlFields": [
-          "background.notes"
+          "description"
         ]
       },
       "Trait": {

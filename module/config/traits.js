@@ -413,7 +413,7 @@ export const CLASS_TRAITS = {
 			{
 				id: 'orderPower',
 				nameKey: 'DOLMEN.Traits.OrderPower',
-				descKey: 'DOLMEN.Traits.OrderPowerDesc',
+				descKey: '',
 				traitType: 'active',
 				requiresSelection: 'holyOrder',
 				minLevel: 2
@@ -1016,16 +1016,16 @@ export const COMBAT_TALENTS = {
  */
 export const HOLY_ORDERS = {
 	stFaxis: {
-		nameKey: 'DOLMEN.Traits.Orders.StFaxis',
-		descKey: 'DOLMEN.Traits.Orders.StFaxisDesc'
+		nameKey: 'DOLMEN.Traits.Orders.stFaxis',
+		descKey: 'DOLMEN.Traits.Orders.stFaxisDesc'
 	},
 	stSedge: {
-		nameKey: 'DOLMEN.Traits.Orders.StSedge',
-		descKey: 'DOLMEN.Traits.Orders.StSedgeDesc'
+		nameKey: 'DOLMEN.Traits.Orders.stSedge',
+		descKey: 'DOLMEN.Traits.Orders.stSedgeDesc'
 	},
 	stSignis: {
-		nameKey: 'DOLMEN.Traits.Orders.StSignis',
-		descKey: 'DOLMEN.Traits.Orders.StSignisDesc'
+		nameKey: 'DOLMEN.Traits.Orders.stSignis',
+		descKey: 'DOLMEN.Traits.Orders.stSignisDesc'
 	}
 }
 

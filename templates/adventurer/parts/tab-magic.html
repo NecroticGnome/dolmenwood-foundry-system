@@ -6,7 +6,7 @@
 			<span>{{localize "DOLMEN.Magic.Tabs.Arcane"}}</span>
 		</a>
 		<a class="item {{#if system.fairyMagic.enabled}}{{else}}disabled{{/if}}" data-tab="fairy" data-group="magic">
-			<i class="fa-solid fa-sparkles"></i>
+			<i class="fa-solid fa-hand-sparkles"></i>
 			<span>{{localize "DOLMEN.Magic.Tabs.Fairy"}}</span>
 		</a>
 		<a class="item {{#if system.holyMagic.enabled}}{{else}}disabled{{/if}}" data-tab="holy" data-group="magic">
@@ -14,7 +14,7 @@
 			<span>{{localize "DOLMEN.Magic.Tabs.Holy"}}</span>
 		</a>
 		<a class="item {{#if system.knacks.enabled}}{{else}}disabled{{/if}}" data-tab="knacks" data-group="magic">
-			<i class="fa-solid fa-hand-sparkles"></i>
+			<i class="fa-solid fa-hand-holding-seedling"></i>
 			<span>{{localize "DOLMEN.Magic.Tabs.Knacks"}}</span>
 		</a>
 	</nav>
@@ -40,8 +40,8 @@
 							<div style="mask-image:url('{{this.spell.img}}'); -webkit-mask-image: url('{{this.spell.img}}');" class="spell-image"></div>
 							<span class="spell-name">{{this.spell.name}}</span>
 							<span class="spell-controls">
-								<a class="spell-control" data-action="castSpell" data-item-id="{{this.spell.id}}" title="{{localize 'DOLMEN.Magic.Cast'}}">
-									<i class="fas fa-wand-sparkles"></i>
+								<a class="spell-control" data-action="castSpell" data-item-id="{{this.spell.id}}" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-spell-type="arcane" title="{{localize 'DOLMEN.Magic.Cast'}}">
+									<i class="fas fa-sparkles"></i>
 								</a>
 								<a class="spell-control" data-action="forgetSpell" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-spell-type="arcane" title="{{localize 'DOLMEN.Magic.Forget'}}">
 									<i class="fas fa-brain-arrow-curved-right"></i>
@@ -117,9 +117,10 @@
 					{{#if hasGlamourSpells}}
 					<div class="spell-rank-group">
 						{{#each glamourSpells}}
-						<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
+						<div class="spell-row glamour-row" data-item-id="{{this.id}}" data-action="openItem">
 							<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="spell-image"></div>
 							<span class="spell-name">{{this.name}}</span>
+							<span class="glamour-usage">{{this.system.usageFrequency}}</span>
 							<span class="spell-controls">
 								<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Use'}}">
 									<i class="fas fa-sparkles"></i>
@@ -151,12 +152,20 @@
 							<span class="spell-controls-header"></span>
 						</div>
 						{{#each this.runes}}
-						<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
+						<div class="spell-row rune-row" data-item-id="{{this.id}}" data-action="openItem">
 							<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="spell-image"></div>
 							<span class="spell-name">{{this.name}}</span>
+							<div class="rune-usage">
+								<span class="usage-label">{{this.usageFrequency}}</span>
+								<div class="usage-checkboxes">
+									{{#each this.usageCheckboxes}}
+									<input type="checkbox" class="rune-usage-checkbox" data-rune-id="{{../id}}" data-usage-index="{{this.index}}" data-max-uses="{{../maxUses}}" data-delete-on-use="{{../deleteOnUse}}" {{#if this.checked}}checked{{/if}}>
+									{{/each}}
+								</div>
+							</div>
 							<span class="spell-controls">
-								<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Invoke'}}">
-									<i class="fas fa-moon-stars"></i>
+								<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" data-delete-on-use="{{this.deleteOnUse}}" title="{{localize 'DOLMEN.Magic.Invoke'}}">
+									<i class="fas fa-sparkles"></i>
 								</a>
 								<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
 									<i class="fas fa-square-x"></i>
@@ -202,8 +211,8 @@
 							<div style="mask-image:url('{{this.spell.img}}'); -webkit-mask-image: url('{{this.spell.img}}');" class="spell-image"></div>
 							<span class="spell-name">{{this.spell.name}}</span>
 							<span class="spell-controls">
-								<a class="spell-control" data-action="castSpell" data-item-id="{{this.spell.id}}" title="{{localize 'DOLMEN.Magic.Cast'}}">
-									<i class="fas fa-sun"></i>
+								<a class="spell-control" data-action="castSpell" data-item-id="{{this.spell.id}}" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-spell-type="holy" title="{{localize 'DOLMEN.Magic.Cast'}}">
+									<i class="fas fa-sparkles"></i>
 								</a>
 								<a class="spell-control" data-action="forgetSpell" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-spell-type="holy" title="{{localize 'DOLMEN.Magic.Forget'}}">
 									<i class="fas fa-brain-arrow-curved-right"></i>
@@ -299,6 +308,12 @@
 				<div class="knack-ability {{#if this.unlocked}}unlocked{{else}}locked{{/if}}">
 					<div class="knack-level">{{localize "DOLMEN.Level"}} {{this.level}}</div>
 					<div class="knack-description">{{this.description}}</div>
+					{{#if this.isDaily}}
+					<div class="knack-usage">
+						<span class="usage-label">{{this.usageLabel}}</span>
+						<input type="checkbox" class="knack-usage-checkbox" data-usage-key="{{this.usageKey}}" {{#if this.used}}checked{{/if}}>
+					</div>
+					{{/if}}
 					{{#unless this.unlocked}}
 					<div class="knack-locked-overlay"><i class="fa-solid fa-lock"></i></div>
 					{{/unless}}

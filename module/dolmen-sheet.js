@@ -1,25 +1,26 @@
-/* global foundry, game, Dialog, CONFIG, ui, Item */
+/* global foundry, game, Dialog, CONFIG, ui, Item, ChatMessage, CONST */
 import { buildChoices, buildChoicesWithBlank, CHOICE_KEYS } from './utils/choices.js'
 
 // Sheet module imports
 import {
-	computeXPModifier, computeMoonSign, computeAdjustedValues,
+	computeXPModifier, computeMoonSign, computeEncumbrance, computeAdjustedValues,
 	prepareSpellSlots, prepareKnackAbilities, prepareSpellData,
 	groupSpellsByRank, prepareMemorizedSlots, groupRunesByMagnitude,
-	groupItemsByType, prepareItemData
+	groupItemsByType, prepareItemData, getRuneUsage
 } from './sheet/data-context.js'
 import {
 	isKindredClass, getAlignmentRestrictions,
 	prepareKindredTraits, prepareClassTraits, prepareKindredClassTraits
 } from './sheet/trait-helpers.js'
 import {
-	setupTabListeners, setupXPListener, setupCoinListener,
+	setupTabListeners, setupXPListener, setupLevelListeners, setupCoinListener,
 	setupPortraitPicker, setupSkillListeners, setupAttackListeners,
 	setupAbilityRollListeners, setupSaveRollListeners,
 	setupSkillRollListeners, setupUnitConversionListeners,
 	setupDetailsRollListeners, setupExtraDetailsRollListeners,
 	setupBackgroundRollListener, setupNameRollListener,
-	setupTraitListeners, setupAdjustableInputListeners
+	setupTraitListeners, setupAdjustableInputListeners,
+	setupRuneUsageListeners, setupKnackUsageListeners
 } from './sheet/listeners.js'
 import { openAddSkillDialog, removeSkill } from './sheet/dialogs.js'
 
@@ -60,7 +61,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			decreaseQty: DolmenSheet._onDecreaseQty,
 			memorizeSpell: DolmenSheet._onMemorizeSpell,
 			forgetSpell: DolmenSheet._onForgetSpell,
-			memorizeToSlot: DolmenSheet._onMemorizeToSlot
+			memorizeToSlot: DolmenSheet._onMemorizeToSlot,
+			castSpell: DolmenSheet._onCastSpell
 		},
 		dragDrop: [{ dropSelector: '.item-list' }]
 	}
@@ -108,7 +110,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			tabs: [
 				{ id: 'stats', icon: 'fas fa-user', label: 'DOLMEN.Tabs.Stats' },
 				{ id: 'inventory', icon: 'fas fa-backpack', label: 'DOLMEN.Tabs.Inventory' },
-				{ id: 'magic', icon: 'fas fa-hand-holding-magic', label: 'DOLMEN.Tabs.Magic' },
+				{ id: 'magic', icon: 'fas fa-sparkles', label: 'DOLMEN.Tabs.Magic' },
 				{ id: 'traits', icon: 'fas fa-person-rays', label: 'DOLMEN.Tabs.Traits' },
 				{ id: 'details', icon: 'fas fa-eye', label: 'DOLMEN.Tabs.Details' },
 				{ id: 'notes', icon: 'fas fa-note-sticky', label: 'DOLMEN.Tabs.Notes' },
@@ -287,7 +289,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		// Fairy magic
 		context.glamourSpells = glamourSpells.map(s => prepareSpellData(s))
-		context.runeSpellsByMagnitude = groupRunesByMagnitude(runeSpells)
+		context.runeSpellsByMagnitude = groupRunesByMagnitude(runeSpells, actor)
 		context.hasGlamourSpells = glamourSpells.length > 0
 		context.hasRuneSpells = runeSpells.length > 0
 
@@ -297,7 +299,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			: ''
 		context.knackAbilities = prepareKnackAbilities(
 			actor.system.knacks.type,
-			actor.system.level
+			actor.system.level,
+			actor.system.knackUsage
 		)
 
 		// Prepare traits
@@ -316,8 +319,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.combatTalentChoices = buildChoicesWithBlank('DOLMEN.Traits.Talents', CHOICE_KEYS.combatTalents)
 		context.holyOrderChoices = buildChoicesWithBlank('DOLMEN.Traits.Orders', CHOICE_KEYS.holyOrders)
 
-		// Compute adjusted values (base + adjustment)
-		context.adjusted = computeAdjustedValues(actor)
+		// Compute encumbrance and adjusted values (base + adjustment)
+		context.encumbrance = computeEncumbrance(actor)
+		context.adjusted = computeAdjustedValues(actor, context.encumbrance.speed)
 
 		// Compute XP modifier from prime abilities + custom adjustment
 		const baseXPMod = computeXPModifier(actor, context.adjusted.abilities)
@@ -380,6 +384,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		setupTabListeners(this)
 		setupXPListener(this)
+		setupLevelListeners(this)
 		setupCoinListener(this)
 		setupPortraitPicker(this)
 		setupSkillListeners(this)
@@ -393,6 +398,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		setupBackgroundRollListener(this)
 		setupNameRollListener(this)
 		setupTraitListeners(this)
+		setupRuneUsageListeners(this)
+		setupKnackUsageListeners(this)
 		setupAdjustableInputListeners(this)
 	}
 
@@ -590,6 +597,95 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		})
 
 		dialog.render(true)
+	}
+
+	static async _onCastSpell(_event, target) {
+		const itemId = target.dataset.itemId
+		const item = this.actor.items.get(itemId)
+		if (!item) return
+
+		const spellType = target.dataset.spellType
+		const slotIndex = parseInt(target.dataset.slotIndex)
+		const rankKey = target.dataset.rankKey
+
+		// For arcane/holy memorized spells: remove from slot and increment used
+		if (spellType && !isNaN(slotIndex) && rankKey) {
+			const magicPath = spellType === 'holy' ? 'holyMagic' : 'arcaneMagic'
+			const slotData = this.actor.system[magicPath].spellSlots[rankKey]
+			const memorized = [...(slotData.memorized || [])]
+			memorized[slotIndex] = null
+			await this.actor.update({
+				[`system.${magicPath}.spellSlots.${rankKey}.memorized`]: memorized,
+				[`system.${magicPath}.spellSlots.${rankKey}.used`]: slotData.used + 1
+			})
+		}
+
+		// For runes: increment usage and delete "once ever" runes
+		if (item.type === 'Rune') {
+			const magnitude = item.system.magnitude || 'lesser'
+			const usage = getRuneUsage(magnitude, this.actor.system.level)
+			const runeUsage = foundry.utils.deepClone(this.actor.system.runeUsage || {})
+			const runeData = runeUsage[itemId] || { used: 0, max: usage.max }
+			runeData.used = Math.min(runeData.used + 1, usage.max)
+			runeData.max = usage.max
+			runeUsage[itemId] = runeData
+			await this.actor.update({ 'system.runeUsage': runeUsage })
+
+			if (usage.deleteOnUse && runeData.used >= usage.max) {
+				await item.delete()
+			}
+		}
+
+		// Build chat message
+		const sys = item.system
+		const typeLabels = {
+			Spell: 'DOLMEN.Magic.Arcane.Title',
+			HolySpell: 'DOLMEN.Magic.Holy.Title',
+			Glamour: 'DOLMEN.Magic.Fairy.Glamours',
+			Rune: 'DOLMEN.Magic.Fairy.Runes'
+		}
+		const typeLabel = game.i18n.localize(typeLabels[item.type] || typeLabels.Spell)
+
+		let fields = ''
+		if (sys.rank !== undefined) {
+			fields += `<div class="spell-field"><strong>${game.i18n.localize('DOLMEN.Magic.SpellRank')}:</strong> ${sys.rank}</div>`
+		}
+		if (sys.prayerName) {
+			fields += `<div class="spell-field"><strong>${game.i18n.localize('DOLMEN.Magic.Prayer')}:</strong> ${sys.prayerName}</div>`
+		}
+		if (sys.magnitude) {
+			fields += `<div class="spell-field"><strong>${game.i18n.localize('DOLMEN.Magic.Fairy.Magnitude')}:</strong> ${game.i18n.localize(`DOLMEN.Magic.Fairy.Magnitudes.${sys.magnitude}`)}</div>`
+		}
+		if (sys.range) {
+			fields += `<div class="spell-field"><strong>${game.i18n.localize('DOLMEN.Magic.Range')}:</strong> ${sys.range}</div>`
+		}
+		if (sys.duration) {
+			fields += `<div class="spell-field"><strong>${game.i18n.localize('DOLMEN.Magic.Duration')}:</strong> ${sys.duration}</div>`
+		}
+		if (sys.description) {
+			fields += `<div class="spell-description">${sys.description}</div>`
+		}
+		if (sys.codexUuid) {
+			fields += `<div class="spell-codex-link">@UUID[${sys.codexUuid}]{${game.i18n.localize('DOLMEN.Magic.CodexLink')}}</div>`
+		}
+
+		const content = `
+			<div class="dolmen spell-card">
+				<div class="spell-header">
+					<div style="mask-image:url('${item.img}'); -webkit-mask-image: url('${item.img}');" class="spell-card-image"></div>
+					<div class="spell-info">
+						<h3>${item.name}</h3>
+						<span class="spell-type-label">${typeLabel}</span>
+					</div>
+				</div>
+				<div class="spell-body">${fields}</div>
+			</div>`
+
+		await ChatMessage.create({
+			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+			content,
+			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+		})
 	}
 
 	async _onDrop(event) {

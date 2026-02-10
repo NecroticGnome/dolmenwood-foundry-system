@@ -133,6 +133,32 @@ function createMovementAdjustmentsSchema() {
 }
 
 /**
+ * Create magic adjustment fields for manually enabling magic types and adjusting slot counts.
+ * The enable booleans are manual overrides; magic is also auto-enabled from class/kindred
+ * in prepareDerivedData() (OR logic: class/kindred default OR manual override).
+ * @returns {SchemaField} Schema field containing magic adjustments
+ */
+function createMagicAdjustmentsSchema() {
+	const arcaneSlots = {}
+	for (let i = 1; i <= 6; i++) {
+		arcaneSlots[`rank${i}`] = createAdjustmentField()
+	}
+	const holySlots = {}
+	for (let i = 1; i <= 5; i++) {
+		holySlots[`rank${i}`] = createAdjustmentField()
+	}
+	return new SchemaField({
+		arcane: new BooleanField({ required: true, initial: false }),
+		holy: new BooleanField({ required: true, initial: false }),
+		fairy: new BooleanField({ required: true, initial: false }),
+		knacks: new BooleanField({ required: true, initial: false }),
+		arcaneSlots: new SchemaField(arcaneSlots),
+		holySlots: new SchemaField(holySlots),
+		glamoursMax: createAdjustmentField()
+	})
+}
+
+/**
  * Create the full adjustments schema for custom bonuses/penalties.
  * @returns {SchemaField} Schema field containing all adjustments
  */
@@ -149,6 +175,7 @@ function createAdjustmentsSchema() {
 		skills: createSkillAdjustmentsSchema(),
 		speed: createAdjustmentField(),
 		movement: createMovementAdjustmentsSchema(),
+		magic: createMagicAdjustmentsSchema(),
 		xpModifier: createAdjustmentField()
 	})
 }
@@ -219,9 +246,6 @@ class ActorDataModel extends foundry.abstract.TypeDataModel {
 			// Armour Class (base 10 unarmoured)
 			ac: new NumberField({ required: true, integer: true, min: 0, initial: 10 }),
 
-			// Attack bonus
-			attack: new NumberField({ required: true, integer: true, initial: 0 }),
-
 			// Save Targets (lower is better)
 			saves: createSavesSchema(),
 
@@ -289,16 +313,17 @@ export class AdventurerDataModel extends ActorDataModel {
 		// Derive creature type from kindred
 		this.creatureType = AdventurerDataModel.getCreatureTypeForKindred(this.kindred)
 
-		// Enable/disable magic types based on class and kindred
+		// Enable magic types: auto-detect from class/kindred OR manual override
+		const magicAdj = this.adjustments.magic
 		const arcaneCasters = ['magician', 'breggle']
 		const holyCasters = ['cleric', 'friar']
 		const fairyCasters = ['enchanter', 'grimalkin']
 		const fairyKindreds = ['elf', 'grimalkin']
 
-		this.arcaneMagic.enabled = arcaneCasters.includes(this.class)
-		this.holyMagic.enabled = holyCasters.includes(this.class)
-		this.fairyMagic.enabled = fairyCasters.includes(this.class) || fairyKindreds.includes(this.kindred)
-		this.knacks.enabled = this.kindred === 'mossling'
+		this.arcaneMagic.enabled = arcaneCasters.includes(this.class) || magicAdj.arcane
+		this.holyMagic.enabled = holyCasters.includes(this.class) || magicAdj.holy
+		this.fairyMagic.enabled = fairyCasters.includes(this.class) || fairyKindreds.includes(this.kindred) || magicAdj.fairy
+		this.knacks.enabled = this.kindred === 'mossling' || magicAdj.knacks
 
 		// Compute spell slot max values from class + level progression tables
 		const spellTable = CONFIG.DOLMENWOOD.spellProgression[this.class]
@@ -317,6 +342,26 @@ export class AdventurerDataModel extends ActorDataModel {
 			}
 		}
 
+		// Apply magic slot adjustments
+		if (this.arcaneMagic.enabled) {
+			for (let i = 1; i <= 6; i++) {
+				const key = `rank${i}`
+				this.arcaneMagic.spellSlots[key].max = Math.max(0,
+					this.arcaneMagic.spellSlots[key].max + (magicAdj.arcaneSlots[key] || 0))
+			}
+		}
+		if (this.holyMagic.enabled) {
+			for (let i = 1; i <= 5; i++) {
+				const key = `rank${i}`
+				this.holyMagic.spellSlots[key].max = Math.max(0,
+					this.holyMagic.spellSlots[key].max + (magicAdj.holySlots[key] || 0))
+			}
+		}
+		if (this.fairyMagic.enabled) {
+			this.fairyMagic.glamoursMax = Math.max(0,
+				this.fairyMagic.glamoursMax + (magicAdj.glamoursMax || 0))
+		}
+
 		// Derive knack level from character level (abilities unlock at 1, 3, 5, 7)
 		if (this.knacks.enabled) {
 			if (this.level >= 7) this.knacks.level = 7
@@ -330,6 +375,9 @@ export class AdventurerDataModel extends ActorDataModel {
 		return {
 			...super.defineSchema(),
 			
+			// Attack bonus
+			attack: new NumberField({ required: true, integer: true, initial: 0 }),
+
 			// Ability Scores (3-18, with modifiers)
 			abilities: createAbilitiesSchema(),
 
@@ -515,9 +563,25 @@ export class AdventurerDataModel extends ActorDataModel {
 			// Custom adjustments for bonuses/penalties from equipment, traits, etc.
 			adjustments: createAdjustmentsSchema(),
 
+			// HP rolled per level (stores dice results for level up/down tracking)
+			// Stored as: { '2': 5, '3': 3, '4': 6 } — key is level string, value is HP gained
+			hpPerLevel: new foundry.data.fields.ObjectField({ initial: {} }),
+
 			// Trait usage tracking for active traits with limited uses
 			// Stored as: { 'longhornGaze': { used: 2, max: 3 }, 'shapeShiftWilder': { used: 1, max: 1 }, ... }
 			traitUsage: new foundry.data.fields.ObjectField({
+				initial: {}
+			}),
+
+			// Rune usage tracking keyed by item ID
+			// Stored as: { 'itemId123': { used: 1, max: 2 }, ... }
+			runeUsage: new foundry.data.fields.ObjectField({
+				initial: {}
+			}),
+
+			// Knack ability usage tracking keyed by 'knackType_levelN'
+			// Stored as: { 'birdFriend_level5': { used: 1 }, ... }
+			knackUsage: new foundry.data.fields.ObjectField({
 				initial: {}
 			})
 		}
@@ -532,6 +596,14 @@ export class CreatureDataModel extends ActorDataModel {
 		return {
 			...super.defineSchema(),
 
+			// Monster type descriptor (Animal, Undead, Fairy, etc.)
+			monsterType: new StringField({
+				required: true,
+				blank: false,
+				initial: "mortal",
+				choices: CHOICE_KEYS.monsterTypes
+			}),
+
 			// Intelligence level
 			intelligence: new StringField({
 				required: true,
@@ -542,6 +614,24 @@ export class CreatureDataModel extends ActorDataModel {
 
 			// HP dice (e.g., "2d8")
 			hpDice: new StringField({ required: true, blank: false, initial: "1d8" }),
+
+			// Structured attacks array
+			attacks: new ArrayField(new SchemaField({
+				numAttacks: new NumberField({ required: true, integer: true, min: 1, initial: 1 }),
+				attackName: new StringField({ required: true, blank: false, initial: "Attack" }),
+				attackBonus: new NumberField({ required: true, integer: true, initial: 0 }),
+				attackDamage: new StringField({ required: true, blank: false, initial: "1d6" }),
+				attackEffect: new StringField({ required: true, blank: true, initial: "" }),
+				attackType: new StringField({
+					required: true,
+					blank: false,
+					initial: "attack",
+					choices: ["attack", "save"]
+				}),
+				rangeShort: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+				rangeMedium: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+				rangeLong: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
+			}), { initial: [] }),
 
 			// Morale (2-12, checked with 2d6)
 			morale: new NumberField({ required: true, integer: true, min: 2, max: 12, initial: 7 }),
@@ -651,6 +741,16 @@ export class GearDataModel extends ItemDataModel {
 				integer: true,
 				min: 0,
 				initial: 0 }),
+			costDenomination: new StringField({
+				required: true,
+				initial: 'gp',
+				choices: ['gp', 'sp', 'cp', 'pp']
+			}),
+			stackSize: new NumberField({
+				required: true,
+				integer: true,
+				min: 1,
+				initial: 1 }),
 			weightSlots: new NumberField({
 				required: true,
 				min: 0,
@@ -677,7 +777,18 @@ export class GearDataModel extends ItemDataModel {
 	}
 }
 
-export class TreasureDataModel extends GearDataModel {}
+export class TreasureDataModel extends GearDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
+			effects: new StringField({
+				required: true,
+				blank: true,
+				initial: ""
+			})
+		}
+	}
+}
 
 export class WeaponDataModel extends GearDataModel {
 	static defineSchema() {
@@ -769,6 +880,11 @@ export class ForagedDataModel extends GearDataModel {
 				initial: 6,
 				min: 1,
 				max: 6
+			}),
+			effects: new StringField({
+				required: true,
+				blank: true,
+				initial: ""
 			})
 		}
 	}

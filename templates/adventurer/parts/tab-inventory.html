@@ -10,14 +10,21 @@
 						{{selectOptions @root.encumbranceChoices selected=system.encumbrance.method}}
 					</select>
 				</div>
+				{{#if (eq system.encumbrance.method "slots")}}
 				<div class="encumbrance-stat">
-					<label>{{localize "DOLMEN.Encumbrance.Current"}}</label>
-					<input type="number" name="system.encumbrance.current" value="{{system.encumbrance.current}}" min="0">
+					<label>{{localize "DOLMEN.Inventory.Equipped"}}</label>
+					<span class="encumbrance-value">{{encumbrance.equipped.current}} / {{encumbrance.equipped.max}}</span>
 				</div>
 				<div class="encumbrance-stat">
-					<label>{{localize "DOLMEN.Encumbrance.Max"}}</label>
-					<input type="number" name="system.encumbrance.max" value="{{system.encumbrance.max}}" min="0">
+					<label>{{localize "DOLMEN.Inventory.Stowed"}}</label>
+					<span class="encumbrance-value">{{encumbrance.stowed.current}} / {{encumbrance.stowed.max}}</span>
 				</div>
+				{{else}}
+				<div class="encumbrance-stat encumbrance-load">
+					<label>{{localize "DOLMEN.Encumbrance.Load"}}</label>
+					<span class="encumbrance-value">{{encumbrance.current}} / {{encumbrance.max}}</span>
+				</div>
+				{{/if}}
 			</div>
 		</section>
 
@@ -174,7 +181,7 @@
 					<div class="item-list-header treasure-header">
 						<i class="fas fa-gem"></i>
 						<span class="type-label">{{this.label}}
-						</span><span class="item-notes">{{localize "DOLMEN.Item.Notes"}}</span>
+						</span><span class="item-notes">{{localize "DOLMEN.Item.Effects"}}</span>
 						<i class="fas fa-weight-hanging"></i>
 						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
 						<span class="item-controls"></span>
@@ -183,7 +190,7 @@
 					<div class="item-row treasure" data-item-id="{{this.id}}" data-action="openItem">
 						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
 						<span class="item-name">{{this.name}}</span>
-						{{#if this.hasNotes}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.notes}}</span></i></span>
+						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
 						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
@@ -209,7 +216,7 @@
 					<div class="item-list-header foraged-header">
 						<i class="fas fa-mushroom"></i>
 						<span class="type-label">{{this.label}}</span>
-						<span class="item-notes">{{localize "DOLMEN.Item.Notes"}}</span>
+						<span class="item-notes">{{localize "DOLMEN.Item.Effects"}}</span>
 						<i class="fas fa-weight-hanging"></i>
 						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
 						<span class="item-controls"></span>
@@ -218,7 +225,7 @@
 					<div class="item-row foraged" data-item-id="{{this.id}}" data-action="openItem">
 						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
 						<span class="item-name">{{this.name}}</span>
-						{{#if this.hasNotes}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.notes}}</span></i></span>
+						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
 						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
@@ -362,7 +369,7 @@
 					<div class="item-list-header treasure-header">
 						<i class="fas fa-gem"></i>
 						<span class="type-label">{{this.label}}</span>
-						<span class="item-notes">{{localize "DOLMEN.Item.Notes"}}</span>
+						<span class="item-notes">{{localize "DOLMEN.Item.Effects"}}</span>
 						<i class="fas fa-weight-hanging"></i>
 						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
 						<span class="item-controls"></span>
@@ -371,7 +378,7 @@
 					<div class="item-row treasure" data-item-id="{{this.id}}" data-action="openItem">
 						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
 						<span class="item-name">{{this.name}}</span>
-						{{#if this.hasNotes}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.notes}}</span></i></span>
+						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
 						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>
@@ -397,7 +404,7 @@
 					<div class="item-list-header foraged-header">
 						<i class="fas fa-mushroom"></i>
 						<span class="type-label">{{this.label}}</span>
-						<span class="item-notes">{{localize "DOLMEN.Item.Notes"}}</span>
+						<span class="item-notes">{{localize "DOLMEN.Item.Effects"}}</span>
 						<i class="fas fa-weight-hanging"></i>
 						<span class="item-quantity">{{localize "DOLMEN.Item.Quantity"}}</span>
 						<span class="item-controls"></span>
@@ -406,7 +413,7 @@
 					<div class="item-row foraged" data-item-id="{{this.id}}" data-action="openItem">
 						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
 						<span class="item-name">{{this.name}}</span>
-						{{#if this.hasNotes}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.notes}}</span></i></span>
+						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
 						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{this.system.weightSlots}}{{else}}{{this.system.weightCoins}}{{/if}}</span>

@@ -1,11 +1,12 @@
-/* global game, Dialog, CONFIG, ui, foundry */
+/* global game, Dialog, CONFIG, ui, foundry, Roll, ChatMessage, CONST */
 /**
  * Dialog Handlers
- * XP dialogs and add/remove skill dialogs.
+ * XP dialogs, add/remove skill dialogs, and level up/down.
  * All functions receive the sheet instance as the first parameter.
  */
 
 import { computeAdjustedValues, computeXPModifier } from './data-context.js'
+import { getDieIconFromFormula } from './attack-rolls.js'
 
 /**
  * Open the XP add dialog.
@@ -26,12 +27,14 @@ export function openXPDialog(sheet) {
 			</div>
 			<div class="form-group">
 				<label>${game.i18n.localize('DOLMEN.XPModifier')}</label>
-				<input type="number" id="xp-bonus" value="${modifier}" disabled>
-				<span class="unit">%</span>
+				<div class="flexrow">
+					<input type="number" id="xp-bonus" value="${modifier}" disabled>
+					<span class="unit">%</span>
+				</div>
 			</div>
 			<div class="xp-calculation">
-				<div>${game.i18n.localize('DOLMEN.XPCurrent')}: <strong>${currentXP}</strong></div>
-				<div class="xp-total">${game.i18n.localize('DOLMEN.XPTotal')}: <span id="xp-total">${currentXP}</span></div>
+				<div>${game.i18n.localize('DOLMEN.XPAdjustedGain')}: <strong id="xp-adjusted">0</strong></div>
+				<div>${game.i18n.localize('DOLMEN.XPTotal')}: <strong id="xp-total">${currentXP}</strong></div>
 			</div>
 		</div>
 	`
@@ -60,11 +63,13 @@ export function openXPDialog(sheet) {
 		default: 'add',
 		render: (html) => {
 			const gainedInput = html.find('#xp-gained')
+			const adjustedSpan = html.find('#xp-adjusted')
 			const totalSpan = html.find('#xp-total')
 
 			const updateTotal = () => {
 				const gained = parseInt(gainedInput.val()) || 0
 				const adjustedXP = Math.floor(gained * (1 + modifier / 100))
+				adjustedSpan.text(adjustedXP)
 				totalSpan.text(currentXP + adjustedXP)
 			}
 
@@ -83,7 +88,7 @@ export function openXPEditDialog(sheet) {
 	const currentXP = sheet.actor.system.xp.value || 0
 	const content = `
 		<div class="xp-modal-content">
-			<div class="form-group">
+			<div class="form-group" style="grid-column: span 2;">
 				<label>${game.i18n.localize('DOLMEN.XPCurrent')}</label>
 				<input type="number" id="xp-edit-value" value="${currentXP}" min="0" autofocus>
 			</div>
@@ -256,4 +261,140 @@ export function removeSkill(sheet, index) {
 	const currentSkills = foundry.utils.deepClone(sheet.actor.system.extraSkills || [])
 	currentSkills.splice(index, 1)
 	sheet.actor.update({ 'system.extraSkills': currentSkills })
+}
+
+/**
+ * Level up the character: increment level, roll HP, update XP threshold.
+ * If XP is insufficient, prompts for confirmation before proceeding.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export async function levelUp(sheet) {
+	const actor = sheet.actor
+	const sys = actor.system
+	const level = sys.level
+	const cls = sys.class
+
+	if (level >= 15) {
+		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelMaxReached'))
+		return
+	}
+
+	const newLevel = level + 1
+	const thresholds = CONFIG.DOLMENWOOD.xpThresholds[cls]
+	const hitDice = CONFIG.DOLMENWOOD.hitDice[cls]
+	if (!thresholds || !hitDice) return
+
+	const requiredXP = thresholds[newLevel] || 0
+
+	const doLevelUp = async () => {
+		let hpGain
+		let formula = ''
+		const conMod = sys.abilities.constitution.mod
+		let rollBody = ''
+		let rolls = []
+
+		if (newLevel <= 10) {
+			// Roll hit die + CON modifier, minimum 1
+			formula = hitDice.die
+			const roll = await new Roll(formula).evaluate()
+			hpGain = Math.max(1, roll.total + conMod)
+			rolls = [roll]
+
+			const rollAnchor = (await roll.toAnchor()).outerHTML
+			const conLabel = conMod >= 0 ? `+${conMod}` : String(conMod)
+			const iconClass = getDieIconFromFormula(formula)
+			rollBody = `
+				<div class="roll-section">
+					<div class="roll-result ${iconClass}">${rollAnchor}</div>
+					<div class="roll-breakdown">${formula} ${conLabel} CON (min 1)</div>
+				</div>`
+		} else {
+			// Flat bonus, no CON modifier
+			hpGain = hitDice.flat
+			rollBody = `
+				<div class="roll-section">
+					<div class="roll-result"><span class="flat-hp">${hpGain}</span></div>
+					<div class="roll-breakdown">${game.i18n.localize('DOLMEN.LevelUpFlat')}</div>
+				</div>`
+		}
+
+		const hpLabel = game.i18n.format('DOLMEN.LevelUpHP', { total: hpGain })
+		const content = `
+			<div class="dolmen level-card">
+				<div class="level-header">
+					<i class="fas fa-arrow-up"></i>
+					<div class="level-info">
+						<h3>${game.i18n.localize('DOLMEN.LevelUpTitle')}</h3>
+						<span class="level-label">${game.i18n.format('DOLMEN.LevelUpTo', { level: newLevel })}</span>
+					</div>
+				</div>
+				<div class="level-body">
+					${rollBody}
+					<div class="level-summary">${hpLabel}</div>
+				</div>
+			</div>`
+
+		await ChatMessage.create({
+			speaker: ChatMessage.getSpeaker({ actor }),
+			content,
+			rolls,
+			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+		})
+
+		// Compute next level XP threshold
+		const nextThreshold = newLevel < 15 ? (thresholds[newLevel + 1] || 0) : 0
+
+		await actor.update({
+			'system.level': newLevel,
+			'system.hp.max': sys.hp.max + hpGain,
+			'system.hp.value': sys.hp.value + hpGain,
+			[`system.hpPerLevel.${newLevel}`]: hpGain,
+			'system.xp.nextLevel': nextThreshold
+		})
+	}
+
+	if (sys.xp.value < requiredXP) {
+		const confirmed = await Dialog.confirm({
+			title: game.i18n.localize('DOLMEN.LevelUpTitle'),
+			content: `<p>${game.i18n.localize('DOLMEN.LevelUpConfirm')}</p>`
+		})
+		if (!confirmed) return
+	}
+
+	await doLevelUp()
+}
+
+/**
+ * Level down the character: decrement level, subtract stored HP, restore XP threshold.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export async function levelDown(sheet) {
+	const actor = sheet.actor
+	const sys = actor.system
+	const level = sys.level
+	const cls = sys.class
+
+	if (level <= 1) {
+		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelMinReached'))
+		return
+	}
+
+	const storedHP = sys.hpPerLevel?.[level]
+	if (storedHP === undefined || storedHP === null) {
+		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelDownNoRecord'))
+	}
+
+	const thresholds = CONFIG.DOLMENWOOD.xpThresholds[cls]
+	const nextThreshold = thresholds ? (thresholds[level] || 0) : 0
+	const hpToSubtract = storedHP ?? 0
+	const newMax = Math.max(1, sys.hp.max - hpToSubtract)
+	const newValue = Math.min(sys.hp.value, newMax)
+
+	await actor.update({
+		'system.level': level - 1,
+		'system.hp.max': newMax,
+		'system.hp.value': newValue,
+		[`system.hpPerLevel.-=${level}`]: null,
+		'system.xp.nextLevel': nextThreshold
+	})
 }

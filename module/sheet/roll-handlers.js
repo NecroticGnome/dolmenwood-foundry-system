@@ -9,6 +9,7 @@ import { AdventurerDataModel } from '../data-models.mjs'
 import { createContextMenu } from './context-menu.js'
 import { computeAdjustedValues } from './data-context.js'
 import { getTraitRollOptions } from './trait-helpers.js'
+import { getDieIconFromFormula } from './attack-rolls.js'
 
 /* -------------------------------------------- */
 /*  Trait Roll Context Menu                     */
@@ -153,7 +154,7 @@ export async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0
 			</div>
 			<div class="roll-body">
 				<div class="roll-section ${resultClass}">
-					<div class="roll-result">
+					<div class="roll-result force-d6-icon">
 						${anchor.outerHTML}
 					</div>
 					<span class="roll-breakdown">${breakdown}</span>
@@ -356,7 +357,7 @@ export async function performSkillCheck(sheet, skillKey, targetOverride = null, 
 			</div>
 			<div class="roll-body">
 				<div class="roll-section ${resultClass}">
-					<div class="roll-result">
+					<div class="roll-result force-d6-icon">
 						${anchor.outerHTML}
 					</div>
 					<span class="roll-target">${game.i18n.localize('DOLMEN.Roll.Target')}: ${targetDisplay}+</span>
@@ -401,12 +402,14 @@ export async function rollTrait(sheet, traitId, traitName, formula, rollTarget =
 		resultSection = `<span class="roll-label ${resultClass}">${resultLabel}</span>`
 	}
 
+	const diceIconClass = getDieIconFromFormula(formula)
+
 	const chatContent = `
 		<div class="dolmen trait-roll">
 			<div class="trait-header">
 				<h3>${traitName}</h3>
 			</div>
-			<div class="roll-result">
+			<div class="roll-result ${diceIconClass}">
 				${(await roll.toAnchor({ classes: ['trait-inline-roll'] })).outerHTML}
 				${resultSection}
 			</div>

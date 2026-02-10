@@ -10,20 +10,22 @@
 
 .dolmen .tooltiptext {
 	visibility: hidden;
-	width: 120px;
+	max-width: 250px;
 	background-color: var(--dolmen-color-h3);
 	color: var(--dolmen-color-background);
-	text-align: center;
+	text-align: left;
 	border-radius: 6px;
-	padding: 5px 0;
+	padding: 5px;
 	position: fixed;
 	z-index: 1;
-	margin-left: -65px;
+	margin-left: -10px;
 	margin-bottom: 20px;
 	font-family: var(--dolmen-font-body);
-	letter-spacing: unset;
 	font-weight: normal;
 	align-self: end;
+	justify-self: center;
+	line-height: 1.25rem;
+	box-shadow: black 0 0 3px;
 }
 
 .dolmen .tooltiptext::after {
@@ -42,13 +44,23 @@
 }
 
 /* -------------------------------------------- */
+/*  Add Skill Modal                             */
+/* -------------------------------------------- */
+
+.add-skill-modal {
+	padding-bottom: 0.5rem;
+}
+
+/* -------------------------------------------- */
 /*  XP Modal                                    */
 /* -------------------------------------------- */
 
 .xp-modal-content {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
 	gap: 1rem;
+	text-align: center;
+	padding-bottom: 0.5rem;
 }
 
 .xp-modal-content .form-group {
@@ -68,18 +80,21 @@
 	text-align: center;
 }
 
+.xp-modal-content .unit {
+	margin: auto;
+	max-width: 2rem;
+}
+
 .xp-modal-content .xp-calculation {
-	background-color: var(--dolmen-color-inner-background);
-	border: 1px solid var(--dolmen-color-box-border);
 	padding: 0.5rem;
 	text-align: center;
 	font-size: 0.9rem;
+	display: flex;
+	grid-column-end: span 2;
 }
 
-.xp-modal-content .xp-total {
-	font-weight: bold;
-	font-size: 1.1rem;
-	color: var(--dolmen-color-h1);
+.xp-modal-content .xp-calculation div {
+	width: 50%;
 }
 
 /* -------------------------------------------- */
@@ -90,6 +105,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;
+	padding-bottom: 0.5rem;
 }
 
 .coin-modal-content .coin-adjust-header {
@@ -192,6 +208,12 @@
 
 .dolmen-weapon-context-menu .weapon-menu-item.nonproficient:hover .weapon-name {
 	color: #ffaaaa;
+}
+
+.dolmen-weapon-context-menu .weapon-menu-item .rest-hint {
+	font-size: 0.7rem;
+	opacity: 0.6;
+	margin-left: auto;
 }
 
 /* -------------------------------------------- */

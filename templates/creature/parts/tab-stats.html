@@ -1,0 +1,164 @@
+<section class="tab-content tab-stats {{tab.cssClass}}" data-group="primary" data-tab="stats">
+	<!-- Header: Portrait + Name + Descriptors -->
+	<section class="two-columns header">
+		<section class="details boxed-section">
+			<h2>{{localize "DOLMEN.Details"}}</h2>
+			<div class="header-details">
+				<div class="header-field" style="grid-column-end: span 2;">
+					<label>{{localize "DOLMEN.Name"}}</label>
+					<input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'DOLMEN.Name'}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Creature.Size"}}</label>
+					<select name="system.size">
+						{{selectOptions @root.sizeChoices selected=system.size}}
+					</select>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Creature.Type"}}</label>
+					<select name="system.monsterType">
+						{{selectOptions @root.monsterTypeChoices selected=system.monsterType}}
+					</select>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Creature.Intelligence"}}</label>
+					<select name="system.intelligence">
+						{{selectOptions @root.intelligenceChoices selected=system.intelligence}}
+					</select>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Alignment"}}</label>
+					<select name="system.alignment">
+						{{selectOptions @root.alignmentChoices selected=system.alignment}}
+					</select>
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Level"}}</label>
+					<input type="number" name="system.level" value="{{system.level}}" min="1" max="15">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Creature.XPAward"}}</label>
+					<input type="number" name="system.xpAward" value="{{system.xpAward}}" min="0">
+				</div>
+			</div>
+		</section>
+		<section class="portrait-section boxed-section">
+			<div class="portrait-container">
+				<img src="{{actor.img}}" alt="{{actor.name}}" class="portrait-image" data-edit="img">
+			</div>
+		</section>
+	</section>
+
+	<section class="two-columns">
+		<section class="creature-main-column">
+			<!-- Game Statistics -->
+			<section class="creature-stats boxed-section">
+				<h2>{{localize "DOLMEN.Combat.Title"}}</h2>
+				<div class="creature-stats-grid">
+					<div class="creature-stat hp-block">
+						<label>{{localize "DOLMEN.Combat.HP"}}</label>
+						<div class="hp-values">
+							<input type="number" name="system.hp.value" value="{{system.hp.value}}" min="0" class="hp-current">
+							<span class="hp-separator">/</span>
+							<input type="number" name="system.hp.max" value="{{system.hp.max}}" min="1" class="hp-max">
+						</div>
+					</div>
+					<div class="creature-stat">
+						<label>{{localize "DOLMEN.Creature.HPDice"}}</label>
+						<input type="text" name="system.hpDice" value="{{system.hpDice}}" placeholder="2d8">
+					</div>
+					<div class="creature-stat">
+						<label>{{localize "DOLMEN.Combat.AC"}}</label>
+						<input type="number" name="system.ac" value="{{system.ac}}" min="0">
+					</div>
+					<div class="creature-stat">
+						<label>{{localize "DOLMEN.Creature.Morale"}}</label>
+						<input type="number" name="system.morale" value="{{system.morale}}" min="2" max="12">
+					</div>
+					<div class="combat"><i class="fa fa-swords rollable"></i></div>
+				</div>
+			</section>
+
+			<!-- Saves -->
+			<section class="save-targets boxed-section">
+				<h2>{{localize "DOLMEN.SaveTargets"}}</h2>
+				<div class="saves-grid">
+					<div class="save">
+						<label>{{localize "DOLMEN.Saves.Doom"}}</label>
+						<input type="number" name="system.saves.doom" value="{{system.saves.doom}}" min="2" max="19">
+					</div>
+					<i class="fa fa-dice-d20 rollable save-roll" data-save="doom" title="{{localize 'DOLMEN.Roll.SavingThrow'}}"></i>
+					<div class="save">
+						<label>{{localize "DOLMEN.Saves.Ray"}}</label>
+						<input type="number" name="system.saves.ray" value="{{system.saves.ray}}" min="2" max="19">
+					</div>
+					<i class="fa fa-dice-d20 rollable save-roll" data-save="ray" title="{{localize 'DOLMEN.Roll.SavingThrow'}}"></i>
+					<div class="save">
+						<label>{{localize "DOLMEN.Saves.Hold"}}</label>
+						<input type="number" name="system.saves.hold" value="{{system.saves.hold}}" min="2" max="19">
+					</div>
+					<i class="fa fa-dice-d20 rollable save-roll" data-save="hold" title="{{localize 'DOLMEN.Roll.SavingThrow'}}"></i>
+					<div class="save">
+						<label>{{localize "DOLMEN.Saves.Blast"}}</label>
+						<input type="number" name="system.saves.blast" value="{{system.saves.blast}}" min="2" max="19">
+					</div>
+					<i class="fa fa-dice-d20 rollable save-roll" data-save="blast" title="{{localize 'DOLMEN.Roll.SavingThrow'}}"></i>
+					<div class="save">
+						<label>{{localize "DOLMEN.Saves.Spell"}}</label>
+						<input type="number" name="system.saves.spell" value="{{system.saves.spell}}" min="2" max="19">
+					</div>
+					<i class="fa fa-dice-d20 rollable save-roll" data-save="spell" title="{{localize 'DOLMEN.Roll.SavingThrow'}}"></i>
+				</div>
+			</section>
+
+			<!-- Movement -->
+			<section class="movement boxed-section">
+				<h2>{{localize "DOLMEN.Movement.Title"}}</h2>
+				<div class="creature-movement-grid">
+					<div class="movement-stat">
+						<label>{{localize "DOLMEN.Movement.Speed"}}</label>
+						<input type="number" name="system.speed" value="{{system.speed}}" min="0">
+					</div>
+					<div class="movement-stat">
+						<label>{{localize "DOLMEN.Creature.Movement.swim"}}</label>
+						<input type="number" name="system.movement.swim" value="{{system.movement.swim}}" min="0">
+					</div>
+					<div class="movement-stat">
+						<label>{{localize "DOLMEN.Creature.Movement.fly"}}</label>
+						<input type="number" name="system.movement.fly" value="{{system.movement.fly}}" min="0">
+					</div>
+					<div class="movement-stat">
+						<label>{{localize "DOLMEN.Creature.Movement.climb"}}</label>
+						<input type="number" name="system.movement.climb" value="{{system.movement.climb}}" min="0">
+					</div>
+					<div class="movement-stat">
+						<label>{{localize "DOLMEN.Creature.Movement.burrow"}}</label>
+						<input type="number" name="system.movement.burrow" value="{{system.movement.burrow}}" min="0">
+					</div>
+				</div>
+			</section>
+		</section>
+		<!-- Attacks -->
+		<section class="creature-attacks boxed-section">
+			<h2>{{localize "DOLMEN.Creature.Attacks"}}</h2>
+			{{#each system.attacks}}
+			<div class="attack-row" data-attack-index="{{@index}}">
+				<span class="attack-label">{{this.attackName}}{{#if (gt this.numAttacks 1)}} (&times;{{this.numAttacks}}){{/if}}</span>
+				{{#if (eq this.attackType "save")}}
+				<span class="attack-bonus"></span>
+				{{else}}
+				<span class="attack-bonus">{{#if (gte this.attackBonus 0)}}+{{/if}}{{this.attackBonus}}</span>
+				{{/if}}
+				<span class="attack-damage">{{#unless (eq this.attackType "save")}}{{this.attackDamage}}{{/unless}}</span>
+				{{#if this.attackEffect}}
+				<span class="attack-note"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.attackEffect}}</span></i></span>
+				{{else}}
+				<span class="attack-note">-</span>
+				{{/if}}
+				<a class="remove-attack rollable" data-action="removeAttack" data-attack-index="{{@index}}" title="{{localize 'DOLMEN.Creature.RemoveAttack'}}"><i class="fas fa-square-x"></i></a>
+			</div>
+			{{/each}}
+			<a class="add-attack-row" data-action="addAttack">{{localize "DOLMEN.Creature.AddAttack"}}</a>
+		</section>
+	</section>
+</section>

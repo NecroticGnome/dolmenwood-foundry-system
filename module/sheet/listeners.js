@@ -7,7 +7,7 @@
 
 import { onMeleeAttackRoll, onMissileAttackRoll, onAttackRollContextMenu } from './attack-rolls.js'
 import { onAbilityRoll, onSaveRoll, onSkillRoll, rollTrait } from './roll-handlers.js'
-import { openXPDialog, openXPEditDialog, openAddSkillDialog, openCoinDialog, removeSkill } from './dialogs.js'
+import { openXPDialog, openXPEditDialog, openAddSkillDialog, openCoinDialog, removeSkill, levelUp, levelDown } from './dialogs.js'
 import { createContextMenu } from './context-menu.js'
 
 /**
@@ -125,6 +125,27 @@ export function setupXPListener(sheet) {
 		xpEditBtn.addEventListener('click', (event) => {
 			event.preventDefault()
 			openXPEditDialog(sheet)
+		})
+	}
+}
+
+/**
+ * Setup level up/down button listeners.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupLevelListeners(sheet) {
+	const upBtn = sheet.element.querySelector('.level-up')
+	if (upBtn) {
+		upBtn.addEventListener('click', (e) => {
+			e.preventDefault()
+			levelUp(sheet)
+		})
+	}
+	const downBtn = sheet.element.querySelector('.level-down')
+	if (downBtn) {
+		downBtn.addEventListener('click', (e) => {
+			e.preventDefault()
+			levelDown(sheet)
 		})
 	}
 }
@@ -710,12 +731,83 @@ export function setupTraitListeners(sheet) {
 		})
 	})
 
-	// Long rest button
+	// Rest button - opens context menu with rest options
 	const longRestBtn = sheet.element.querySelector('.long-rest-btn')
 	if (longRestBtn) {
-		longRestBtn.addEventListener('click', async (event) => {
+		longRestBtn.addEventListener('click', (event) => {
 			event.preventDefault()
-			await sheet.actor.resetTraitUsage()
+			const rect = event.currentTarget.getBoundingClientRect()
+			const position = { top: rect.bottom + 4, left: rect.right }
+
+			const html = `
+				<div class="weapon-menu-item" data-rest-type="overnight">
+					<i class="fa-solid fa-moon"></i>
+					<span>${game.i18n.localize('DOLMEN.Rest.Overnight')}</span>
+					<span class="rest-hint">${game.i18n.localize('DOLMEN.Rest.OvernightHint')}</span>
+				</div>
+				<div class="weapon-menu-item" data-rest-type="fullDay">
+					<i class="fa-solid fa-moon-over-sun"></i>
+					<span>${game.i18n.localize('DOLMEN.Rest.FullDay')}</span>
+					<span class="rest-hint">${game.i18n.localize('DOLMEN.Rest.FullDayHint')}</span>
+				</div>`
+
+			createContextMenu(sheet, {
+				html,
+				position,
+				onItemClick: async (item, menu) => {
+					menu.remove()
+					await sheet.actor.rest(item.dataset.restType)
+				}
+			})
 		})
 	}
+}
+
+/**
+ * Set up rune usage checkbox listeners.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupRuneUsageListeners(sheet) {
+	sheet.element.querySelectorAll('.rune-usage-checkbox').forEach(checkbox => {
+		checkbox.addEventListener('change', async (event) => {
+			event.stopPropagation()
+			const runeId = event.currentTarget.dataset.runeId
+			const index = parseInt(event.currentTarget.dataset.usageIndex)
+			const maxUses = parseInt(event.currentTarget.dataset.maxUses)
+			const deleteOnUse = event.currentTarget.dataset.deleteOnUse === 'true'
+
+			const usage = foundry.utils.deepClone(sheet.actor.system.runeUsage || {})
+			const runeData = usage[runeId] || { used: 0, max: maxUses }
+
+			runeData.used = event.currentTarget.checked ? index + 1 : index
+			runeData.max = maxUses
+			usage[runeId] = runeData
+
+			await sheet.actor.update({ 'system.runeUsage': usage })
+
+			// Delete "once ever" runes when fully used
+			if (deleteOnUse && runeData.used >= maxUses) {
+				const item = sheet.actor.items.get(runeId)
+				if (item) await item.delete()
+			}
+		})
+	})
+}
+
+/**
+ * Set up knack ability usage checkbox listeners.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupKnackUsageListeners(sheet) {
+	sheet.element.querySelectorAll('.knack-usage-checkbox').forEach(checkbox => {
+		checkbox.addEventListener('change', async (event) => {
+			event.stopPropagation()
+			const usageKey = event.currentTarget.dataset.usageKey
+
+			const usage = foundry.utils.deepClone(sheet.actor.system.knackUsage || {})
+			usage[usageKey] = { used: event.currentTarget.checked ? 1 : 0 }
+
+			await sheet.actor.update({ 'system.knackUsage': usage })
+		})
+	})
 }

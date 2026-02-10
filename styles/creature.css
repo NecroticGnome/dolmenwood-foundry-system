@@ -1,0 +1,240 @@
+/* -------------------------------------------- */
+/*  Creature Sheet                              */
+/* -------------------------------------------- */
+/* Game Stats Grid */
+.sheet.dolmen.creature .creature-stats-grid {
+	display: grid;
+	grid-template-columns: max-content repeat(3, 1fr) max-content;
+	gap: 0.5rem;
+	text-align: center;
+}
+
+.sheet.dolmen.creature .creature-main-column {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.sheet.dolmen.creature .boxed-section.details {
+	min-height: 8.5rem;
+	height: 8.5rem;
+}
+
+.sheet.dolmen.creature .portrait-container {
+	width: 8rem;
+	height: 8rem;
+}
+
+.sheet.dolmen.creature .creature-stat label {
+	display: block;
+	font-size: 0.65rem;
+	color: var(--dolmen-color-h3);
+	text-transform: uppercase;
+	margin-bottom: 0.15rem;
+}
+
+.sheet.dolmen.creature .creature-stat input {
+	text-align: center;
+	font-size: 0.9rem;
+	padding: 0.2rem;
+}
+
+.sheet.dolmen.creature .creature-stat input[type="text"] {
+	text-align: center;
+}
+
+.sheet.dolmen.creature .creature-stat .hp-values {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.15rem;
+}
+
+.sheet.dolmen.creature .creature-stat .hp-current,
+.sheet.dolmen.creature .creature-stat .hp-max {
+	width: 3rem;
+	text-align: center;
+}
+
+.sheet.dolmen.creature .creature-stat .hp-separator {
+	font-weight: bold;
+	color: var(--dolmen-color-text-muted);
+}
+
+.sheet.dolmen.creature .creature-stats-grid .combat {
+	margin-top: 0.33rem;
+}
+
+/* Attacks */
+.sheet.dolmen.creature .creature-attacks h2 {
+	margin-bottom: 0;
+}
+
+.sheet.dolmen.creature .add-attack-row {
+	display: block;
+	padding: 0.2rem 0.5rem;
+	margin-left: -0.5rem;
+	margin-right: -0.5rem;
+	font-size: 0.8rem;
+	color: var(--dolmen-color-text-muted);
+	cursor: pointer;
+	text-align: center;
+}
+
+.sheet.dolmen.creature .add-attack-row:hover {
+	color: var(--dolmen-color-h1);
+	background-color: var(--dolmen-color-box-background);
+}
+
+.sheet.dolmen.creature .attack-row {
+	display: grid;
+	grid-template-columns: auto 1rem 2rem 1rem 0.8rem;
+	gap: 0.25rem;
+	padding: 0.2rem 0.5rem;
+	align-items: center;
+	font-size: 0.85rem;
+	border-bottom: 1px solid var(--dolmen-color-box-background);
+	cursor: pointer;
+	margin-left: -0.5rem;
+	margin-right: -0.5rem;
+	transition: background-color 0.1s;
+}
+
+.sheet.dolmen.creature .attack-row:hover {
+	background-color: var(--dolmen-color-box-background);
+}
+
+.sheet.dolmen.creature .attack-row:hover .attack-label {
+	color: var(--dolmen-color-h1);
+}
+
+.sheet.dolmen.creature .attack-row:last-child {
+	border-bottom: none;
+}
+
+.sheet.dolmen.creature .attack-row .attack-label {
+	font-weight: 500;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+
+
+.sheet.dolmen.creature .attack-row .attack-bonus,
+.sheet.dolmen.creature .attack-row .attack-damage {
+	text-align: center;
+	font-weight: bold;
+}
+
+.sheet.dolmen.creature .attack-row .attack-note {
+	text-align: center;
+	font-weight: 700;
+	font-size: 0.85rem;
+}
+
+.sheet.dolmen.creature .attack-row .remove-attack {
+	font-size: 0.7rem;
+	align-self: baseline;
+}
+
+/* Attack Edit Dialog */
+.attack-edit-modal {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.75rem;
+	padding: 0.5rem;
+}
+
+.attack-edit-modal .form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.attack-edit-modal .form-group label {
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: var(--dolmen-color-h3);
+}
+
+.attack-edit-modal .form-group.full-width {
+	grid-column: 1 / -1;
+}
+
+.attack-edit-modal .form-group.full-width textarea {
+	min-height: 3rem;
+	resize: vertical;
+}
+
+.attack-edit-modal .type-radios {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+}
+
+.attack-edit-modal .type-radios label {
+	font-size: 0.85rem;
+	font-weight: normal;
+	text-transform: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+.attack-edit-modal .range-group {
+	grid-column: 1 / -1;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.5rem;
+}
+
+.attack-edit-modal .range-group .form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.attack-edit-modal input:disabled {
+	opacity: 0.4;
+}
+
+/* Movement Grid */
+.sheet.dolmen.creature .creature-movement-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 0.5rem;
+	text-align: center;
+}
+
+.sheet.dolmen.creature .creature-movement-grid .movement-stat label {
+	display: block;
+	font-size: 0.65rem;
+	color: var(--dolmen-color-h3);
+	text-transform: uppercase;
+	margin-bottom: 0.15rem;
+}
+
+.sheet.dolmen.creature .creature-movement-grid .movement-stat input {
+	text-align: center;
+	width: 3rem;
+}
+
+/* Notes tab */
+.sheet.dolmen.creature .creature-notes {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.sheet.dolmen.creature .creature-description {
+	flex: 1;
+	width: 100%;
+	min-height: 200px;
+	padding: 0.5rem;
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 2px;
+	font-size: 0.85rem;
+	font-family: inherit;
+	resize: vertical;
+}
