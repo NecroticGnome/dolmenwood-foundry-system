@@ -1,25 +1,30 @@
 /**
  * Context Menu Utility
- * Generic factory for creating positioned context menus in the sheet.
+ * Generic factory for creating positioned context menus.
  */
 
 /**
  * Create and display a context menu.
- * @param {DolmenSheet} sheet - The sheet instance (for appending to sheet element)
+ * @param {HTMLElement|object} target - Target element to append to, or sheet with .element property
  * @param {object} config - Menu configuration
  * @param {string} config.html - HTML content for the menu
  * @param {object} config.position - Position {top, left}
  * @param {Function} config.onItemClick - Callback when menu item clicked, receives (menuItem, menu)
+ * @param {string} [config.menuClass='dolmen-weapon-context-menu'] - CSS class for menu container
+ * @param {string} [config.itemSelector='.weapon-menu-item'] - Selector for clickable items
  * @param {Element} [config.excludeFromClose] - Element to exclude from close detection
  * @returns {HTMLElement} The menu element
  */
-export function createContextMenu(sheet, { html, position, onItemClick, excludeFromClose = null }) {
+export function createContextMenu(target, { html, position, onItemClick, menuClass = 'dolmen-weapon-context-menu', itemSelector = '.weapon-menu-item', excludeFromClose = null }) {
+	// Get target element (support both sheet objects and raw elements)
+	const targetElement = target.element || target
+
 	// Remove any existing context menu
-	document.querySelector('.dolmen-weapon-context-menu')?.remove()
+	document.querySelector(`.${menuClass}`)?.remove()
 
 	// Create the menu element
 	const menu = document.createElement('div')
-	menu.className = 'dolmen-weapon-context-menu'
+	menu.className = menuClass
 	menu.innerHTML = html
 
 	// Position the menu
@@ -27,15 +32,15 @@ export function createContextMenu(sheet, { html, position, onItemClick, excludeF
 	menu.style.top = `${position.top}px`
 	menu.style.left = `${position.left}px`
 
-	// Add to sheet
-	sheet.element.appendChild(menu)
+	// Add to target
+	targetElement.appendChild(menu)
 
 	// Adjust position after rendering (menu appears to left of click point)
 	const menuRect = menu.getBoundingClientRect()
 	menu.style.left = `${position.left - menuRect.width - 5}px`
 
 	// Add click handlers to menu items
-	menu.querySelectorAll('.weapon-menu-item').forEach(item => {
+	menu.querySelectorAll(itemSelector).forEach(item => {
 		item.addEventListener('click', () => onItemClick(item, menu))
 	})
 
