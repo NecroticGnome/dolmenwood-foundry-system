@@ -12,4 +12,15 @@
 			</label>
 		</div>
 	</section>
+
+	<section class="customize-skills boxed-section">
+		<h2>{{localize "DOLMEN.Skills.OptionalRules"}}</h2>
+		<div class="checkbox-field">
+			<label>
+				<input type="checkbox" name="system.customizeSkills" {{#if system.customizeSkills}}checked{{/if}}>
+				{{localize "DOLMEN.Skills.CustomizeSkills"}}
+			</label>
+			<p class="hint">{{localize "DOLMEN.Skills.CustomizeSkillsHint"}}</p>
+		</div>
+	</section>
 </section>

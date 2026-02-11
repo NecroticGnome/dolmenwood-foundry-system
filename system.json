@@ -2,11 +2,11 @@
   "id": "dolmenwood",
   "title": "Dolmenwood",
   "description": "Dolmenwood from Necrotic Gnome",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "compatibility": {
-    "maximum": "13",
-    "minimum": "13",
-    "verified": "13"
+    "maximum": "13.351",
+    "minimum": "13.0",
+    "verified": "13.351"
   },
   "authors": [
     {
@@ -82,12 +82,78 @@
       "path": "lang/en.json"
     },
     {
+      "lang": "en",
+      "name": "English - Traits",
+      "path": "lang/en-traits.json"
+    },
+    {
+      "lang": "en",
+      "name": "English - Classes",
+      "path": "lang/en-classes.json"
+    },
+    {
+      "lang": "en",
+      "name": "English - Kindreds",
+      "path": "lang/en-kindreds.json"
+    },
+    {
       "lang": "pl",
       "name": "Polski",
       "path": "lang/pl.json"
+    },
+    {
+      "lang": "pl",
+      "name": "Polski - Cechy",
+      "path": "lang/pl-traits.json"
+    },
+    {
+      "lang": "pl",
+      "name": "Polski - Klasy",
+      "path": "lang/pl-classes.json"
+    },
+    {
+      "lang": "pl",
+      "name": "Polski - Rasy",
+      "path": "lang/pl-kindreds.json"
     }
   ],
   "packs": [
+    {
+      "label": "Items",
+      "type": "Item",
+      "name": "items",
+      "path": "packs/items",
+      "system": "dolmenwood",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Kindreds",
+      "type": "Item",
+      "name": "kindreds",
+      "path": "packs/kindreds",
+      "system": "dolmenwood",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Classes",
+      "type": "Item",
+      "name": "classes",
+      "path": "packs/classes",
+      "system": "dolmenwood",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
     {
       "label": "TestNPCs",
       "type": "Actor",
@@ -150,7 +216,9 @@
       "Spell": {},
       "HolySpell": {},
       "Glamour": {},
-      "Rune": {}
+      "Rune": {},
+      "Kindred": {},
+      "Class": {}
     }
   }
 }

@@ -6,7 +6,7 @@ import {
 	computeXPModifier, computeMoonSign, computeEncumbrance, computeAdjustedValues,
 	prepareSpellSlots, prepareKnackAbilities, prepareSpellData,
 	groupSpellsByRank, prepareMemorizedSlots, groupRunesByMagnitude,
-	groupItemsByType, prepareItemData, getRuneUsage
+	groupItemsByType, prepareItemData, getRuneUsage, computeSkillPoints
 } from './sheet/data-context.js'
 import {
 	isKindredClass, getAlignmentRestrictions,
@@ -29,6 +29,11 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets
 
 class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+	constructor(options = {}) {
+		super(options)
+		this._updatingKindredClass = false
+	}
+
 	static DEFAULT_OPTIONS = {
 		classes: ['dolmen', 'sheet', 'actor'],
 		tag: 'form',
@@ -53,6 +58,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		actions: {
 			addSkill: DolmenSheet._onAddSkill,
 			removeSkill: DolmenSheet._onRemoveSkill,
+			setKindred: DolmenSheet._onSetKindred,
+			setClass: DolmenSheet._onSetClass,
 			openItem: DolmenSheet._onOpenItem,
 			equipItem: DolmenSheet._onEquipItem,
 			stowItem: DolmenSheet._onStowItem,
@@ -162,6 +169,36 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			...buildChoices('DOLMEN.Classes', CHOICE_KEYS.classes),
 			...buildChoices('DOLMEN.Kindreds', CHOICE_KEYS.kindredClasses)
 		}
+		// Kindred and Class items
+		const kindredItem = actor.getKindredItem()
+		const classItem = actor.getClassItem()
+		context.kindredItem = kindredItem
+		context.classItem = classItem
+		// Extract names as plain strings for template comparison
+		context.kindredName = kindredItem ? kindredItem.name : null
+		context.className = classItem ? classItem.name : null
+
+		// Build dropdown choices from compendia
+		const kindredPack = game.packs.get('dolmenwood.kindreds')
+		if (kindredPack) {
+			const kindredIndex = await kindredPack.getIndex()
+			context.kindredChoices = Object.fromEntries(
+				kindredIndex.map(e => [e.name, e.name])
+			)
+		} else {
+			context.kindredChoices = buildChoices('DOLMEN.Kindreds', CHOICE_KEYS.kindreds)
+		}
+
+		const classPack = game.packs.get('dolmenwood.classes')
+		if (classPack) {
+			const classIndex = await classPack.getIndex()
+			context.classChoices = Object.fromEntries(
+				classIndex.map(e => [e.name, e.name])
+			)
+		} else {
+			context.classChoices = buildChoices('DOLMEN.Classes', CHOICE_KEYS.classes.concat(CHOICE_KEYS.kindredClasses))
+		}
+
 		// Apply alignment restrictions from traits
 		const alignRestrictions = getAlignmentRestrictions(actor)
 		if (alignRestrictions && alignRestrictions.length > 0) {
@@ -202,13 +239,13 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		// Determine body/fur label based on kindred
 		const furKindreds = ['breggle', 'grimalkin']
-		const kindred = actor.system.kindred
+		const kindred = kindredItem?.system?.kindredId
 		context.bodyLabel = furKindreds.includes(kindred)
 			? game.i18n.localize('DOLMEN.ExtraDetails.Fur')
 			: game.i18n.localize('DOLMEN.ExtraDetails.Body')
 
 		// Compute class detail strings from class
-		const cls = actor.system.class
+		const cls = classItem?.system?.classId
 		const classKeys = ['Weapons', 'Armor', 'PrimeAbilities', 'HitPoints', 'CombatAptitude']
 		const classFields = ['weaponsProficiency', 'armorProficiency', 'primeAbilities', 'hitPointsClass', 'combatAptitude']
 		for (let i = 0; i < classKeys.length; i++) {
@@ -240,9 +277,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			? game.i18n.localize(weightKey)
 			: '—'
 
-		// Prepare inventory items grouped by type
-		const spellTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune']
-		const items = actor.items.contents.filter(i => !spellTypes.includes(i.type))
+		// Prepare inventory items grouped by type (exclude spells, Kindred, and Class items)
+		const excludedTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune', 'Kindred', 'Class']
+		const items = actor.items.contents.filter(i => !excludedTypes.includes(i.type))
 		const equippedItems = items.filter(i => i.system.equipped).map(i => prepareItemData(i))
 		const stowedItems = items.filter(i => !i.system.equipped).map(i => prepareItemData(i))
 
@@ -307,17 +344,23 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.isKindredClass = isKindredClass(actor)
 		if (context.isKindredClass) {
 			context.kindredClassTraits = prepareKindredClassTraits(actor)
-			context.kindredClassName = game.i18n.localize(`DOLMEN.Kindreds.${actor.system.class}`)
+			// For kindred-classes, use the class item name (e.g., "Elf", "Grimalkin")
+			const classItem = actor.getClassItem()
+			context.kindredClassName = classItem ? classItem.name : ''
 		} else {
 			context.kindredTraits = prepareKindredTraits(actor)
 			context.classTraits = prepareClassTraits(actor)
-			context.kindredName = game.i18n.localize(`DOLMEN.Kindreds.${actor.system.kindred}`)
-			context.className = game.i18n.localize(`DOLMEN.Classes.${actor.system.class}`)
+			// kindredName and className are already set earlier from embedded items
 		}
 
 		// Prepare combat talents and holy order choices
 		context.combatTalentChoices = buildChoicesWithBlank('DOLMEN.Traits.Talents', CHOICE_KEYS.combatTalents)
 		context.holyOrderChoices = buildChoicesWithBlank('DOLMEN.Traits.Orders', CHOICE_KEYS.holyOrders)
+
+		// Check if class has combat talents feature (for combat talents display)
+		context.hasCombatTalents = classItem?.system?.hasCombatTalents ?? false
+		// Check if class has holy order feature (for holy order display)
+		context.hasHolyOrder = classItem?.system?.hasHolyOrder ?? false
 
 		// Compute encumbrance and adjusted values (base + adjustment)
 		context.encumbrance = computeEncumbrance(actor)
@@ -331,6 +374,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			? `+${context.xpModifier}%`
 			: `${context.xpModifier}%`
 		context.xpModifierLabel+= ` ${game.i18n.localize('DOLMEN.Modifier')}`
+
+		// Compute available skill points for customize skills option
+		context.skillPoints = actor.system.customizeSkills ? computeSkillPoints(actor) : 0
 
 		// Enrich notes HTML for editor
 		context.enrichedNotes = await TextEditor.enrichHTML(actor.system.background.notes || '', {
@@ -367,12 +413,36 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			}
 		}
 
+		// Ensure kindredName and className are available in all parts
+		if (partId === 'stats') {
+			const kindredItem = this.actor.getKindredItem()
+			const classItem = this.actor.getClassItem()
+			context.kindredName = kindredItem ? kindredItem.name : null
+			context.className = classItem ? classItem.name : null
+		}
+
 		return context
 	}
 
 	_onChangeTab(tabId, group) {
 		this.tabGroups[group] = tabId
 		this.render()
+	}
+
+	async render(options = {}) {
+		// Prevent renders during kindred/class update
+		if (this._updatingKindredClass && !options.force) {
+			return this
+		}
+		return super.render(options)
+	}
+
+	_prepareSubmitData(event, form, formData) {
+		const submitData = super._prepareSubmitData(event, form, formData)
+		// Remove kindred/class selects from submission (they're handled separately)
+		delete submitData._kindred
+		delete submitData._class
+		return submitData
 	}
 
 	/* -------------------------------------------- */
@@ -401,19 +471,75 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		setupRuneUsageListeners(this)
 		setupKnackUsageListeners(this)
 		setupAdjustableInputListeners(this)
+
+		// Setup kindred and class select listeners
+		// These are handled separately to prevent form submission interference
+		const kindredSelect = this.element.querySelector('.kindred-select')
+		if (kindredSelect) {
+			// Remove any existing listeners by cloning the element
+			const newKindredSelect = kindredSelect.cloneNode(true)
+			kindredSelect.parentNode.replaceChild(newKindredSelect, kindredSelect)
+
+			newKindredSelect.addEventListener('change', async (event) => {
+				event.preventDefault()
+				event.stopPropagation()
+				const kindredName = event.target.value
+				if (kindredName) {
+					this._updatingKindredClass = true
+					await this.actor.setKindred(kindredName)
+					this._updatingKindredClass = false
+					this.render()
+				}
+			})
+		}
+
+		const classSelect = this.element.querySelector('.class-select')
+		if (classSelect) {
+			// Remove any existing listeners by cloning the element
+			const newClassSelect = classSelect.cloneNode(true)
+			classSelect.parentNode.replaceChild(newClassSelect, classSelect)
+
+			newClassSelect.addEventListener('change', async (event) => {
+				event.preventDefault()
+				event.stopPropagation()
+				const className = event.target.value
+				if (className) {
+					this._updatingKindredClass = true
+					await this.actor.setClass(className)
+					this._updatingKindredClass = false
+					this.render()
+				}
+			})
+		}
 	}
 
 	/* -------------------------------------------- */
 	/*  Static Action Handlers                      */
 	/* -------------------------------------------- */
 
-	static _onAddSkill(_event, _target) {
+	static _onAddSkill() {
 		openAddSkillDialog(this)
 	}
 
 	static _onRemoveSkill(_event, target) {
 		const index = parseInt(target.dataset.skillIndex)
 		removeSkill(this, index)
+	}
+
+	static async _onSetKindred(_event, target) {
+		const kindredName = target.value
+		if (kindredName) {
+			await this.actor.setKindred(kindredName)
+			// Foundry auto-renders on actor updates
+		}
+	}
+
+	static async _onSetClass(_event, target) {
+		const className = target.value
+		if (className) {
+			await this.actor.setClass(className)
+			// Foundry auto-renders on actor updates
+		}
 	}
 
 	static _onOpenItem(_event, target) {
@@ -448,9 +574,11 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		if (itemId) {
 			const item = this.actor.items.get(itemId)
 			if (item) {
-				const confirmed = await Dialog.confirm({
-					title: game.i18n.localize('DOLMEN.Inventory.DeleteConfirmTitle'),
-					content: game.i18n.format('DOLMEN.Inventory.DeleteConfirmContent', { name: item.name })
+				const confirmed = await foundry.applications.api.DialogV2.confirm({
+					window: { title: game.i18n.localize('DOLMEN.Inventory.DeleteConfirmTitle') },
+					content: game.i18n.format('DOLMEN.Inventory.DeleteConfirmContent', { name: item.name }),
+					rejectClose: false,
+					modal: true
 				})
 				if (confirmed) {
 					await item.delete()
