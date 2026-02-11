@@ -22,6 +22,6 @@ jobs:
       - name: Create GitHub Release
         uses: foundryvtt-dcc/foundry-release-action@main
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          actionToken: ${{ secrets.GITHUB_TOKEN }}
           manifestFileName: 'system.json'
           manifestProtectedTrue: false
