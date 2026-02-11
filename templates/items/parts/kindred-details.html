@@ -1,0 +1,60 @@
+<section class="tab-content kindred-details {{tab.cssClass}}" data-group="primary" data-tab="details">
+	<!-- Identity -->
+	<section class="kindred-identity">
+		<h2>{{localize "DOLMEN.Kindred.Identity"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.KindredId"}}</label>
+				<input type="text" name="system.kindredId" value="{{system.kindredId}}" placeholder="grimalkin">
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.Size"}}</label>
+				<select name="system.size">
+					{{selectOptions sizeChoices selected=system.size}}
+				</select>
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.CreatureType"}}</label>
+				<select name="system.creatureType">
+					{{selectOptions creatureTypeChoices selected=system.creatureType}}
+				</select>
+			</div>
+		</div>
+	</section>
+
+	<!-- Physical Characteristics -->
+	<section class="kindred-physical">
+		<h2>{{localize "DOLMEN.Kindred.PhysicalCharacteristics"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.AgeFormula"}}</label>
+				<input type="text" name="system.ageFormula" value="{{system.ageFormula}}" placeholder="15 + 2d10">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.LifespanFormula"}}</label>
+				<input type="text" name="system.lifespanFormula" value="{{system.lifespanFormula}}" placeholder="50 + 2d20">
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.HeightFormula"}}</label>
+				<input type="text" name="system.heightFormula" value="{{system.heightFormula}}" placeholder="64 + 2d6">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.WeightFormula"}}</label>
+				<input type="text" name="system.weightFormula" value="{{system.weightFormula}}" placeholder="120 + 6d10">
+			</div>
+		</div>
+	</section>
+
+	<!-- Languages -->
+	<section class="kindred-cultural">
+		<h2>{{localize "DOLMEN.Kindred.CulturalTraits"}}</h2>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Kindred.Languages"}}</label>
+			<input type="text" name="system.languages" value="{{join system.languages ', '}}" placeholder="woldish, elvish">
+		</div>
+	</section>
+</section>
