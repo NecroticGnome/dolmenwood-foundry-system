@@ -8,6 +8,11 @@ class DolmenActor extends Actor {
 			this.updateSource({
 				'prototypeToken.actorLink': true
 			})
+		} else if (data.type === 'Creature') {
+			this.updateSource({
+				'prototypeToken.bar1.attribute': 'hp',
+				'prototypeToken.displayBars': CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER
+			})
 		}
 	}
 
