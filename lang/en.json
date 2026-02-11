@@ -595,6 +595,13 @@
 			"HPRestored": "{hp} HP restored",
 			"TraitsReset": "Trait uses reset",
 			"SpellsReminder": "You can memorize your spells now."
+		},
+		"Damage": {
+			"ApplyDamage": "Apply Damage",
+			"ApplyAmount": "Apply {damage} damage",
+			"Applied": "Applied {damage} damage to {name}",
+			"AppliedMultiple": "Applied {damage} damage to {count} tokens",
+			"NoTokensSelected": "No tokens selected. Select a token first."
 		}
 	}
 }
