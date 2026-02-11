@@ -230,7 +230,7 @@
 	cursor: pointer;
 	border-radius: 2px;
 	transition: color 0.1s;
-	font-size: 0.75rem;
+	font-size: 0.85rem;
 }
 
 .sheet.dolmen .tab-magic .spell-row .spell-control:hover {

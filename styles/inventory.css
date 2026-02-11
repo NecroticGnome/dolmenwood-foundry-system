@@ -1,4 +1,17 @@
 /* -------------------------------------------- */
+/*  Inventory Tab - Font Awesome Icon Stability */
+/* -------------------------------------------- */
+
+/* Prevent layout shift when FA icons load by reserving space */
+.sheet.dolmen .tab-inventory [class*="fa-"],
+.sheet.dolmen .tab-inventory [class*="fas "],
+.sheet.dolmen .tab-inventory [class*="far "],
+.sheet.dolmen .tab-inventory [class*="fal "] {
+	display: inline-block;
+	min-width: 1em;
+}
+
+/* -------------------------------------------- */
 /*  Inventory Tab - Encumbrance Grid            */
 /* -------------------------------------------- */
 
@@ -43,6 +56,10 @@
 .sheet.dolmen .tab-content .coins-grid .fa-right-left-large {
 	font-size: 1.5rem;
 	margin-top: 1.25rem;
+	display: inline-block;
+	min-width: 1.5rem;
+	width: 1.5rem;
+	text-align: center;
 }
 
 .sheet.dolmen .tab-content .coin .fa-coin {
@@ -55,6 +72,11 @@
 
 .sheet.dolmen .tab-content .coin .coin-icon {
 	font-size: 1.1rem;
+	display: inline-block;
+	min-width: 1.1rem;
+	width: 1.1rem;
+	text-align: center;
+	vertical-align: middle;
 }
 
 .sheet.dolmen .tab-content .coin .coin-copper {
@@ -298,7 +320,7 @@
 	cursor: pointer;
 	border-radius: 2px;
 	transition: color 0.1s;
-	font-size: 0.75rem;
+	font-size: 0.85rem;
 }
 
 .sheet.dolmen .tab-content .item-row .item-control:hover {
