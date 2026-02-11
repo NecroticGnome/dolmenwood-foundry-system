@@ -55,7 +55,7 @@
 					<div class="level-controls">
 						<a class="level-down" title="{{localize 'DOLMEN.LevelDown'}}"><i class="fas fa-caret-down"></i></a>
 						<span class="level-value">{{system.level}}</span>
-						<a class="level-up" title="{{localize 'DOLMEN.LevelUp'}}"><i class="fas fa-caret-up"></i></a>
+						<a class="level-up {{#if canLevelUp}}ready-to-level{{/if}}" title="{{localize 'DOLMEN.LevelUp'}}"><i class="fas fa-caret-up"></i></a>
 					</div>
 				</div>
 				<div class="header-field">
