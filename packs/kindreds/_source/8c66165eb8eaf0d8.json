@@ -1,0 +1,77 @@
+{
+  "name": "Breggle",
+  "type": "Kindred",
+  "_id": "8c66165eb8eaf0d8",
+  "img": "systems/dolmenwood/assets/kindreds/breggle.svg",
+  "system": {
+    "codexUuid": "",
+    "kindredId": "breggle",
+    "size": "medium",
+    "creatureType": "mortal",
+    "ageFormula": "15 + 2d10",
+    "lifespanFormula": "50 + 2d20",
+    "heightFormula": "64 + 2d6",
+    "weightFormula": "120 + 6d10",
+    "languages": [
+      "woldish"
+    ],
+    "traits": {
+      "active": [
+        {
+          "id": "longhornGaze",
+          "nameKey": "DOLMEN.Traits.LonghornGaze",
+          "descKey": "DOLMEN.Traits.LonghornGazeDesc",
+          "traitType": "active",
+          "minLevel": 4,
+          "usageFrequency": "DOLMEN.Traits.UsesPerDay"
+        },
+        {
+          "id": "hornAttack",
+          "nameKey": "DOLMEN.Traits.HornAttack",
+          "descKey": "DOLMEN.Traits.HornAttackDesc",
+          "traitType": "active",
+          "rollable": true
+        }
+      ],
+      "passive": [
+        {
+          "id": "furDefense",
+          "nameKey": "DOLMEN.Traits.FurDefense",
+          "descKey": "DOLMEN.Traits.FurDefenseDesc",
+          "traitType": "adjustment",
+          "adjustmentType": "static",
+          "adjustmentTarget": "ac",
+          "adjustmentValue": 1,
+          "requiresNoHeavyArmor": true,
+          "hideFromTraitTab": false
+        }
+      ],
+      "info": [
+        {
+          "id": "hornLength",
+          "nameKey": "DOLMEN.Traits.HornLength",
+          "descKey": "DOLMEN.Traits.HornLengthDesc",
+          "traitType": "info"
+        }
+      ]
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.351",
+    "systemId": "dolmenwood",
+    "systemVersion": "0.2.0",
+    "createdTime": 1770843306205,
+    "modifiedTime": 1770843306205,
+    "lastModifiedBy": null
+  },
+  "_key": "!items!8c66165eb8eaf0d8"
+}
