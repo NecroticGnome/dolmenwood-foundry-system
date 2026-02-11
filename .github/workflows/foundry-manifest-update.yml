@@ -1,0 +1,22 @@
+name: Foundry Manifest Update
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Manifest Update
+        uses: foundryvtt-dcc/foundry-manifest-update-action@main
+        with:
+          actionToken: ${{ secrets.GITHUB_TOKEN }}
+          manifestFileName: 'system.json'
+          manifestProtectedTrue: false

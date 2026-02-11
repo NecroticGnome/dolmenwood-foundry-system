@@ -1,0 +1,27 @@
+name: Create GitHub Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'version.txt'
+    tags-ignore:
+      - '**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Create GitHub Release
+        uses: foundryvtt-dcc/foundry-release-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          manifestFileName: 'system.json'
+          manifestProtectedTrue: false
