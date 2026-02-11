@@ -7,6 +7,18 @@
 	line-height: 1.25rem;
 }
 
+.dolmen-roll-card h4 {
+	margin-bottom: 0;
+}
+
+.dolmen-roll-card .characteristic-group {
+	margin-bottom: 1rem;
+}
+
+.dolmen-roll-card .characteristic-group:last-child {
+	margin-bottom: 0;
+}
+
 .dolmen .force-d4-icon .fa-dice-d20 {
 	--fa: "\f6d0";
 	--fa--fa: "\f6d0\f6d0";

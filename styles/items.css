@@ -308,3 +308,28 @@
 	font-family: inherit;
 	resize: vertical;
 }
+
+/* -------------------------------------------- */
+/*  Class & Kindred Sheet Styling               */
+/* -------------------------------------------- */
+
+/* JSON Input Styling */
+.sheet.dolmen.class .json-input,
+.sheet.dolmen.kindred .json-input {
+	width: 100%;
+	padding: 0.5rem;
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 2px;
+	font-family: 'Courier New', Consolas, monospace;
+	font-size: 0.75rem;
+	background: var(--dolmen-color-background);
+	color: var(--dolmen-color-text);
+	resize: vertical;
+	line-height: 1.4;
+}
+
+.sheet.dolmen.class .json-input:focus,
+.sheet.dolmen.kindred .json-input:focus {
+	outline: none;
+	border-color: var(--dolmen-color-input-border-focus);
+}
