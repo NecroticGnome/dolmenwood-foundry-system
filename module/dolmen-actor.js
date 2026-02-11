@@ -6,7 +6,9 @@ class DolmenActor extends Actor {
 		await super._preCreate(data, options, user)
 		if (data.type === 'Adventurer') {
 			this.updateSource({
-				'prototypeToken.actorLink': true
+				'prototypeToken.actorLink': true,
+				'prototypeToken.bar1.attribute': 'hp',
+				'prototypeToken.displayBars': CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER
 			})
 		} else if (data.type === 'Creature') {
 			this.updateSource({
