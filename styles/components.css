@@ -325,3 +325,48 @@
 	color: var(--dolmen-color-background);
 	border-color: var(--dolmen-color-title-background);
 }
+/* Damage context menu */
+.damage-context-menu {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-title-background);
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	min-width: 180px;
+	overflow: hidden;
+	padding: 0.25rem 0;
+}
+
+.damage-context-menu h3 {
+	margin: 0;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	font-size: 0.9rem;
+	text-align: center;
+	border-bottom: 1px solid var(--dolmen-color-box-background);
+}
+
+.damage-context-menu .menu-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	cursor: pointer;
+	transition: background-color 0.1s;
+}
+
+.damage-context-menu .menu-item:hover {
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+}
+
+.damage-context-menu .menu-item i {
+	font-size: 1rem;
+	width: 1.2rem;
+	text-align: center;
+}
+
+/* Make damage rolls clickable */
+.damage-inline-roll {
+	cursor: context-menu;
+}
