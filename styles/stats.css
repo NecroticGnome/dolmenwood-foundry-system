@@ -69,6 +69,27 @@
 	color: var(--dolmen-color-h1);
 }
 
+/* Level up ready indicator */
+.sheet.dolmen .level-controls .level-up.ready-to-level {
+	color: var(--dolmen-color-h2);
+	animation: level-up-pulse 1s ease-in-out infinite;
+	filter: drop-shadow(0 0 0px rgba(255, 0, 0, 0))
+}
+
+@keyframes level-up-pulse {
+
+	0%,
+	100% {
+		color: var(--dolmen-color-h2);
+		filter: drop-shadow(0 0 0px rgba(255, 0, 0, 0))
+	}
+
+	50% {
+		color: red;
+		filter: drop-shadow(0 0 2px rgba(255, 0, 0, 1));
+	}
+}
+
 .sheet.dolmen .tab-content .dual-select {
 	display: flex;
 	gap: 0.25rem;
