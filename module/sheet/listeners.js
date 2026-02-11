@@ -1,4 +1,4 @@
-/* global CONFIG, FilePicker, Roll, ChatMessage, CONST, game, foundry */
+/* global CONFIG, FilePicker, Roll, ChatMessage, CONST, game, foundry, ui */
 /**
  * Listener Setup
  * All _setup* methods that wire up DOM event listeners on the sheet.
@@ -19,10 +19,11 @@ export function setupAdjustableInputListeners(sheet) {
 	sheet.element.querySelectorAll('input.adjustable').forEach(input => {
 		const baseValue = input.dataset.base
 		const adjustedValue = input.dataset.adjusted
+		const manualAdj = parseFloat(input.dataset.manualAdj) || 0
 		const targetName = input.dataset.target
 
-		// Add visual indicator if value is modified by adjustment
-		if (baseValue !== adjustedValue) {
+		// Add visual indicator if value is modified by manual adjustment (not trait adjustment)
+		if (manualAdj !== 0) {
 			input.classList.add('has-adjustment')
 		}
 
@@ -342,11 +343,16 @@ export function setupUnitConversionListeners(sheet) {
  * @param {DolmenSheet} sheet - The sheet instance
  */
 export function setupDetailsRollListeners(sheet) {
-	const kindred = sheet.actor.system.kindred
+	const kindredItem = sheet.actor.getKindredItem()
+	const kindred = kindredItem ? kindredItem.system.kindredId : null
 
 	// Roll age
 	sheet.element.querySelector('.roll-age')?.addEventListener('click', async (event) => {
 		event.preventDefault()
+		if (!kindred) {
+			ui.notifications.warn('No kindred selected')
+			return
+		}
 		const formula = CONFIG.DOLMENWOOD.kindredAgeFormulas[kindred]
 		if (!formula) return
 		const roll = await new Roll(formula).evaluate()
@@ -484,7 +490,10 @@ async function drawFromTable(tableName) {
 	const table = await findRollTable(tableName)
 	if (!table) return null
 	const draw = await table.draw({ displayChat: true })
-	return draw.results[0]?.text || null
+	const result = draw.results[0]
+	if (!result) return null
+	// Use description for text results, or name as fallback (Foundry v13+)
+	return result.description || result.name || null
 }
 
 /**
@@ -525,11 +534,15 @@ function buildTableName(kindred, field) {
  * @param {DolmenSheet} sheet - The sheet instance
  */
 export function setupExtraDetailsRollListeners(sheet) {
-	const kindred = sheet.actor.system.kindred
-
 	sheet.element.querySelectorAll('.roll-detail').forEach(btn => {
 		btn.addEventListener('click', async (event) => {
 			event.preventDefault()
+			const kindredItem = sheet.actor.getKindredItem()
+			if (!kindredItem) {
+				ui.notifications.warn('No kindred selected')
+				return
+			}
+			const kindred = kindredItem.system.kindredId
 			const field = event.currentTarget.dataset.detail
 			const tableName = buildTableName(kindred, field)
 			const result = await drawFromTable(tableName)
@@ -546,11 +559,14 @@ export function setupExtraDetailsRollListeners(sheet) {
  * @param {DolmenSheet} sheet - The sheet instance
  */
 export function setupBackgroundRollListener(sheet) {
-	const kindred = sheet.actor.system.kindred
-
 	sheet.element.querySelector('.roll-background')?.addEventListener('click', async (event) => {
 		event.preventDefault()
-		const kindredLabel = kindred.charAt(0).toUpperCase() + kindred.slice(1)
+		const kindredItem = sheet.actor.getKindredItem()
+		if (!kindredItem) {
+			ui.notifications.warn('No kindred selected')
+			return
+		}
+		const kindredLabel = kindredItem.name
 		const tableName = `${kindredLabel} Backgrounds`
 		const result = await drawFromTable(tableName)
 		if (result) {
@@ -603,12 +619,19 @@ function parseNameColumn(html, column) {
  * @param {DolmenSheet} sheet - The sheet instance
  */
 export function setupNameRollListener(sheet) {
-	const kindred = sheet.actor.system.kindred
-	const kindredLabel = kindred ? kindred.charAt(0).toUpperCase() + kindred.slice(1) : ''
-	const tableName = `${kindredLabel} Names`
-
 	sheet.element.querySelector('.roll-name')?.addEventListener('click', async (event) => {
 		event.preventDefault()
+
+		const kindredItem = sheet.actor.getKindredItem()
+		if (!kindredItem) {
+			ui.notifications.warn('No kindred selected')
+			return
+		}
+
+		const kindred = kindredItem.system.kindredId
+		const kindredLabel = kindredItem.name
+		const tableName = `${kindredLabel} Names`
+
 		// Use click coordinates for positioning (the icon has display:contents so getBoundingClientRect returns zeros)
 		const position = { top: event.clientY, left: event.clientX }
 
