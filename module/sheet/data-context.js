@@ -16,8 +16,9 @@ import { computeTraitAdjustments } from './trait-helpers.js'
  * @returns {number} The XP modifier percentage (-20, -10, 0, 5, or 10)
  */
 export function computeXPModifier(actor, adjustedAbilities) {
-	const cls = actor.system.class
-	const primes = CONFIG.DOLMENWOOD.primeAbilities[cls]
+	const classItem = actor.items.find(i => i.type === 'Class')
+	const primes = classItem?.system?.primeAbilities
+
 	if (!primes || primes.length === 0) return 0
 
 	const lowestScore = Math.min(...primes.map(a => adjustedAbilities[a].score))
@@ -54,8 +55,8 @@ export function computeMoonSign(month, day) {
 export function computeEncumbrance(actor) {
 	const system = actor.system
 	const method = system.encumbrance.method
-	const spellTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune']
-	const items = actor.items.contents.filter(i => !spellTypes.includes(i.type))
+	const excludedTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune', 'Kindred', 'Class']
+	const items = actor.items.contents.filter(i => !excludedTypes.includes(i.type))
 	const equipped = items.filter(i => i.system.equipped)
 	const stowed = items.filter(i => !i.system.equipped)
 	const totalCoins = (system.coins.copper || 0) + (system.coins.silver || 0)
@@ -540,4 +541,50 @@ export function prepareItemData(item) {
 	}
 
 	return data
+}
+
+/**
+ * Calculate available skill points when using the Customize Skills optional rule.
+ * Based on the expertise points system from the Dolmenwood SRD:
+ * - Thief: 4 points at level 1, +2 per level
+ * - Hunter: 2 points at level 1, +1 per level
+ * - Bard: 2 points at level 1, +1 per level
+ * @param {Actor} actor - The actor
+ * @returns {number} Available skill points to distribute
+ */
+export function computeSkillPoints(actor) {
+	const sys = actor.system
+	const level = sys.level || 1
+	const classItem = actor.items.find(i => i.type === 'Class')
+	const classId = classItem?.system?.classId
+
+	// Only certain classes have the customize skills option
+	const skillPointsConfig = {
+		thief: { base: 4, perLevel: 2 },
+		hunter: { base: 2, perLevel: 1 },
+		bard: { base: 2, perLevel: 1 }
+	}
+
+	const config = skillPointsConfig[classId]
+	if (!config) return 0
+
+	// Calculate total expertise points awarded
+	const totalAwarded = config.base + (level - 1) * config.perLevel
+
+	// Calculate points spent (each point reduces a skill target by 1 from base of 6)
+	let totalSpent = 0
+
+	// Base skills (listen, search, survival)
+	totalSpent += (6 - sys.skills.listen)
+	totalSpent += (6 - sys.skills.search)
+	totalSpent += (6 - sys.skills.survival)
+
+	// Extra skills
+	const extraSkills = sys.extraSkills || []
+	for (const skill of extraSkills) {
+		totalSpent += (6 - skill.target)
+	}
+
+	// Available = awarded - spent
+	return totalAwarded - totalSpent
 }

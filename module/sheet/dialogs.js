@@ -354,9 +354,11 @@ export async function levelUp(sheet) {
 	}
 
 	if (sys.xp.value < requiredXP) {
-		const confirmed = await Dialog.confirm({
-			title: game.i18n.localize('DOLMEN.LevelUpTitle'),
-			content: `<p>${game.i18n.localize('DOLMEN.LevelUpConfirm')}</p>`
+		const confirmed = await foundry.applications.api.DialogV2.confirm({
+			window: { title: game.i18n.localize('DOLMEN.LevelUpTitle') },
+			content: `<p>${game.i18n.localize('DOLMEN.LevelUpConfirm')}</p>`,
+			rejectClose: false,
+			modal: true
 		})
 		if (!confirmed) return
 	}

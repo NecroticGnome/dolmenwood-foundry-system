@@ -11,38 +11,55 @@
  * @returns {boolean} True if using a kindred-class
  */
 export function isKindredClass(actor) {
-	return CONFIG.DOLMENWOOD.traits.kindredClassNames.includes(actor.system.class)
+	const classItem = actor.items.find(i => i.type === 'Class')
+	return classItem ? !!classItem.system.requiredKindred : false
+}
+
+/**
+ * Flatten a trait object (with categories) into a flat array of traits.
+ * @param {object} traitObj - Trait object with categories (active, passive, info, restrictions)
+ * @returns {object[]} Flat array of traits
+ */
+function flattenTraitObject(traitObj) {
+	const result = []
+	for (const category of ['active', 'passive', 'info', 'restrictions']) {
+		if (traitObj[category]) {
+			result.push(...traitObj[category])
+		}
+	}
+	return result
 }
 
 /**
  * Get all active traits for the character (kindred + class or kindred-class).
+ * Reads from embedded Kindred/Class items first, then falls back to CONFIG for backward compatibility.
+ * Deduplicates traits by ID to prevent double-application (e.g., Breggle kindred + Breggle class).
  * @param {Actor} actor - The actor
  * @returns {object[]} Array of raw trait definitions
  */
 export function getAllActiveTraits(actor) {
 	const traits = []
-	const isKC = isKindredClass(actor)
+	const seenIds = new Set()
+	const kindredItem = actor.items.find(i => i.type === 'Kindred')
+	const classItem = actor.items.find(i => i.type === 'Class')
 
-	if (isKC) {
-		const traitDef = CONFIG.DOLMENWOOD.traits.kindredClass[actor.system.class]
-		if (traitDef) {
-			for (const category of ['active', 'passive', 'info', 'restrictions']) {
-				if (traitDef[category]) traits.push(...traitDef[category])
+	// If we have embedded items, read traits from them
+	// Get kindred traits
+	if (kindredItem?.system?.traits) {
+		for (const trait of flattenTraitObject(kindredItem.system.traits)) {
+			if (!seenIds.has(trait.id)) {
+				traits.push(trait)
+				seenIds.add(trait.id)
 			}
 		}
-	} else {
-		// Kindred traits
-		const kindredDef = CONFIG.DOLMENWOOD.traits.kindred[actor.system.kindred]
-		if (kindredDef) {
-			for (const category of ['active', 'passive', 'info', 'restrictions']) {
-				if (kindredDef[category]) traits.push(...kindredDef[category])
-			}
-		}
-		// Class traits
-		const classDef = CONFIG.DOLMENWOOD.traits.class[actor.system.class]
-		if (classDef) {
-			for (const category of ['active', 'passive', 'info', 'restrictions']) {
-				if (classDef[category]) traits.push(...classDef[category])
+	}
+
+	// Get class traits (deduplicate to avoid double-applying traits like Fur Defense)
+	if (classItem?.system?.traits) {
+		for (const trait of flattenTraitObject(classItem.system.traits)) {
+			if (!seenIds.has(trait.id)) {
+				traits.push(trait)
+				seenIds.add(trait.id)
 			}
 		}
 	}
@@ -263,7 +280,7 @@ export function prepareTrait(actor, trait, level) {
 		prepared.requiresHolyOrder = true
 		const order = actor.system.holyOrder
 		if (order) {
-			const orderDef = CONFIG.DOLMENWOOD.traits.holyOrders[order]
+			const orderDef = CONFIG.DOLMENWOOD.holyOrders[order]
 			if (orderDef) {
 				prepared.holyOrderName = game.i18n.localize(orderDef.nameKey)
 				prepared.holyOrderDesc = game.i18n.localize(orderDef.descKey)
@@ -310,9 +327,9 @@ export function flattenTraits(actor, traitDef, level) {
  * @returns {object[]} Array of prepared kindred traits
  */
 export function prepareKindredTraits(actor) {
-	const kindred = actor.system.kindred
+	const kindredItem = actor.items.find(i => i.type === 'Kindred')
 	const level = actor.system.level
-	const traitDef = CONFIG.DOLMENWOOD.traits.kindred[kindred]
+	const traitDef = kindredItem?.system?.traits
 
 	if (!traitDef) return []
 	return flattenTraits(actor, traitDef, level)
@@ -324,9 +341,9 @@ export function prepareKindredTraits(actor) {
  * @returns {object[]} Array of prepared class traits
  */
 export function prepareClassTraits(actor) {
-	const charClass = actor.system.class
+	const classItem = actor.items.find(i => i.type === 'Class')
 	const level = actor.system.level
-	const traitDef = CONFIG.DOLMENWOOD.traits.class[charClass]
+	const traitDef = classItem?.system?.traits
 
 	if (!traitDef) return []
 	return flattenTraits(actor, traitDef, level)
@@ -338,9 +355,10 @@ export function prepareClassTraits(actor) {
  * @returns {object[]} Array of prepared kindred-class traits
  */
 export function prepareKindredClassTraits(actor) {
-	const charClass = actor.system.class
+	const classItem = actor.items.find(i => i.type === 'Class')
 	const level = actor.system.level
-	const traitDef = CONFIG.DOLMENWOOD.traits.kindredClass[charClass]
+	// For kindred-classes, the class item contains both kindred and class traits
+	const traitDef = classItem?.system?.traits
 
 	if (!traitDef) return []
 	return flattenTraits(actor, traitDef, level)
