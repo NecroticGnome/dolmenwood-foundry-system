@@ -310,8 +310,19 @@ export class AdventurerDataModel extends ActorDataModel {
 			ability.mod = AdventurerDataModel.computeModifier(ability.score)
 		}
 
+		// Get kindred and class from embedded items (with fallback to old string fields for backward compatibility)
+		const kindredItem = this.parent?.items?.find(i => i.type === 'Kindred')
+		const classItem = this.parent?.items?.find(i => i.type === 'Class')
+
+		const kindredId = kindredItem?.system?.kindredId || this.kindred
+		const classId = classItem?.system?.classId || this.class
+
 		// Derive creature type from kindred
-		this.creatureType = AdventurerDataModel.getCreatureTypeForKindred(this.kindred)
+		if (kindredItem?.system?.creatureType) {
+			this.creatureType = kindredItem.system.creatureType
+		} else {
+			this.creatureType = AdventurerDataModel.getCreatureTypeForKindred(kindredId)
+		}
 
 		// Enable magic types: auto-detect from class/kindred OR manual override
 		const magicAdj = this.adjustments.magic
@@ -320,13 +331,20 @@ export class AdventurerDataModel extends ActorDataModel {
 		const fairyCasters = ['enchanter', 'grimalkin']
 		const fairyKindreds = ['elf', 'grimalkin']
 
-		this.arcaneMagic.enabled = arcaneCasters.includes(this.class) || magicAdj.arcane
-		this.holyMagic.enabled = holyCasters.includes(this.class) || magicAdj.holy
-		this.fairyMagic.enabled = fairyCasters.includes(this.class) || fairyKindreds.includes(this.kindred) || magicAdj.fairy
-		this.knacks.enabled = this.kindred === 'mossling' || magicAdj.knacks
+		this.arcaneMagic.enabled = arcaneCasters.includes(classId) || magicAdj.arcane
+		this.holyMagic.enabled = holyCasters.includes(classId) || magicAdj.holy
+		this.fairyMagic.enabled = fairyCasters.includes(classId) || fairyKindreds.includes(kindredId) || magicAdj.fairy
+		this.knacks.enabled = kindredId === 'mossling' || magicAdj.knacks
 
 		// Compute spell slot max values from class + level progression tables
-		const spellTable = CONFIG.DOLMENWOOD.spellProgression[this.class]
+		// Try to get from class item first, then fall back to CONFIG
+		let spellTable = null
+		if (classItem?.system?.spellProgression?.length > 0) {
+			spellTable = classItem.system.spellProgression
+		} else {
+			spellTable = CONFIG.DOLMENWOOD.spellProgression[classId]
+		}
+
 		if (spellTable) {
 			const level = Math.min(this.level, 15)
 			const slots = spellTable[level]
@@ -424,6 +442,9 @@ export class AdventurerDataModel extends ActorDataModel {
 				id: new StringField({ required: true, blank: false }),
 				target: new NumberField({ required: true, integer: true, min: 2, max: 6, initial: 6 })
 			}), { initial: [] }),
+
+			// Customize Skills optional rule (prevents auto-updating skill targets)
+			customizeSkills: new BooleanField({ required: true, initial: false }),
 
 			// Background (narrative, no mechanical effect)
 			background: new SchemaField({
@@ -949,6 +970,171 @@ export class RuneDataModel extends ItemDataModel {
 				choices: CHOICE_KEYS.runeMagnitudes
 			}),
 			description: new StringField({ required: true, blank: true, initial: "" })
+		}
+	}
+}
+
+/**
+ * Data model for Kindred items.
+ * Stores racial data (size, creature type, formulas, languages, traits).
+ */
+export class KindredDataModel extends ItemDataModel {
+	static defineSchema() {
+		const { ObjectField } = foundry.data.fields
+		return {
+			...super.defineSchema(),
+			// Unique identifier for this kindred (e.g., "grimalkin", "human")
+			kindredId: new StringField({ required: true, blank: true, initial: "" }),
+			// Size category
+			size: new StringField({
+				required: true,
+				blank: false,
+				initial: "medium",
+				choices: CHOICE_KEYS.sizes
+			}),
+			// Creature type (mortal, demi-fey, fairy)
+			creatureType: new StringField({
+				required: true,
+				blank: false,
+				initial: "mortal",
+				choices: CHOICE_KEYS.creatureTypes
+			}),
+			// Roll formulas for character generation
+			ageFormula: new StringField({ required: true, blank: false, initial: "15 + 2d10" }),
+			lifespanFormula: new StringField({ required: true, blank: false, initial: "50 + 2d20" }),
+			heightFormula: new StringField({ required: true, blank: false, initial: "64 + 2d6" }),
+			weightFormula: new StringField({ required: true, blank: false, initial: "120 + 6d10" }),
+			// Native languages
+			languages: new ArrayField(new StringField({ blank: false }), { initial: ["woldish"] }),
+			// Trait definitions stored as JSON object
+			traits: new ObjectField({ initial: {} })
+		}
+	}
+}
+
+/**
+ * Data model for Class items.
+ * Stores class data (XP, HD, spells, traits).
+ */
+export class ClassDataModel extends ItemDataModel {
+	static defineSchema() {
+		const { ObjectField } = foundry.data.fields
+		return {
+			...super.defineSchema(),
+			// Unique identifier for this class (e.g., "fighter", "magician")
+			classId: new StringField({ required: true, blank: true, initial: "" }),
+			// If this is a kindred-class (elf, grimalkin, etc.), store the required kindred ID
+			requiredKindred: new StringField({ required: true, blank: true, initial: "" }),
+			// Prime abilities for XP modifier
+			primeAbilities: new ArrayField(new StringField({
+				blank: false,
+				choices: ['strength', 'intelligence', 'wisdom', 'dexterity', 'constitution', 'charisma']
+			}), { initial: [] }),
+			// Hit dice configuration
+			hitDice: new SchemaField({
+				die: new StringField({ required: true, blank: false, initial: "1d6" }),
+				flat: new NumberField({ required: true, integer: true, min: 0, initial: 1 })
+			}),
+			// XP thresholds per level (index 0-15, where 0 and 1 are unused)
+			xpThresholds: new ArrayField(new NumberField({ integer: true, min: 0 }), {
+				initial: [0, 0, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 260000, 380000, 500000, 620000, 740000, 860000, 980000]
+			}),
+			// Attack bonus progression by level (indices 1-15)
+			attackProgression: new ArrayField(new NumberField({ integer: true, min: 0 }), {
+				initial: [0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7]
+			}),
+			// Saving throw progressions by level (indices 1-15)
+			saveProgressions: new SchemaField({
+				doom: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+					initial: [0, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6]
+				}),
+				ray: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+					initial: [0, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7]
+				}),
+				hold: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+					initial: [0, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6]
+				}),
+				blast: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+					initial: [0, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8]
+				}),
+				spell: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+					initial: [0, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8]
+				})
+			}),
+			// Spell slot progression (array of arrays: [[rank1, rank2, ...], ...])
+			spellProgression: new ArrayField(
+				new ArrayField(new NumberField({ integer: true, min: 0 })),
+				{ initial: [] }
+			),
+			// Skill target progressions by level (indices 0-15, where 0 is unused)
+			// Each skill array contains target values that improve (decrease) with level
+			skillProgressions: new SchemaField({
+				// Base skills
+				listen: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				search: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				survival: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				// Extra skills
+				detectMagic: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				alertness: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				stalking: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				tracking: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				pickLock: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				stealth: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				decipherDocument: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				climbWall: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				disarmMechanism: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				legerdemain: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				}),
+				monsterLore: new ArrayField(new NumberField({ integer: true, min: 2, max: 6 }), {
+					initial: []
+				})
+			}),
+			// Spell type (none, arcane, holy)
+			spellType: new StringField({
+				required: true,
+				blank: false,
+				initial: "none",
+				choices: ['none', 'arcane', 'holy']
+			}),
+			// Combat aptitude
+			combatAptitude: new StringField({
+				required: true,
+				blank: false,
+				initial: "non-martial",
+				choices: ['martial', 'semi-martial', 'non-martial']
+			}),
+			// Class features flags
+			hasCombatTalents: new BooleanField({ required: true, initial: false }),
+			hasHolyOrder: new BooleanField({ required: true, initial: false }),
+			canTwoWeaponFight: new BooleanField({ required: true, initial: false }),
+			hasBackstab: new BooleanField({ required: true, initial: false }),
+			// Trait definitions stored as JSON object
+			traits: new ObjectField({ initial: {} })
 		}
 	}
 }

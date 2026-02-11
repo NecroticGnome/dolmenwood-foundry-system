@@ -4,29 +4,23 @@ import DOLMENWOOD from './module/config.js'
 import DolmenSheet from './module/dolmen-sheet.js'
 import DolmenCreatureSheet from './module/dolmen-creature-sheet.js'
 import DolmenItemSheet from './module/dolmen-item-sheet.js'
+import DolmenKindredSheet from './module/dolmen-kindred-sheet.js'
+import DolmenClassSheet from './module/dolmen-class-sheet.js'
 import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
-import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel } from './module/data-models.mjs'
-import { KINDRED_TRAITS, CLASS_TRAITS, KINDRED_CLASS_TRAITS, COMBAT_TALENTS, HOLY_ORDERS, KINDRED_CLASS_NAMES, ADJUSTMENT_TARGETS } from './module/config/traits.js'
+import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel } from './module/data-models.mjs'
 
 const { Actors, Items } = foundry.documents.collections
 
 Hooks.once('init', async function () {
-	CONFIG.DOLMENWOOD = {
-		...DOLMENWOOD,
-		traits: {
-			kindred: KINDRED_TRAITS,
-			class: CLASS_TRAITS,
-			kindredClass: KINDRED_CLASS_TRAITS,
-			combatTalents: COMBAT_TALENTS,
-			holyOrders: HOLY_ORDERS,
-			kindredClassNames: KINDRED_CLASS_NAMES,
-			adjustmentTargets: ADJUSTMENT_TARGETS
-		}
-	}
+	CONFIG.DOLMENWOOD = DOLMENWOOD
 
 	// Register Handlebars helpers
 	Handlebars.registerHelper('add', (a, b) => (a || 0) + (b || 0))
+	Handlebars.registerHelper('join', (array, separator) => {
+		if (!array || !Array.isArray(array)) return ''
+		return array.join(separator || ', ')
+	})
 
 	CONFIG.Actor.documentClass = DolmenActor
 	CONFIG.Item.documentClass = DolmenItem
@@ -46,7 +40,9 @@ Hooks.once('init', async function () {
 		Spell: SpellDataModel,
 		HolySpell: HolySpellDataModel,
 		Glamour: GlamourDataModel,
-		Rune: RuneDataModel
+		Rune: RuneDataModel,
+		Kindred: KindredDataModel,
+		Class: ClassDataModel
 	}
 
 	game.settings.register('dolmenwood', 'significantLoad', {
@@ -78,6 +74,18 @@ Hooks.once('init', async function () {
 	Items.registerSheet('dolmen', DolmenItemSheet, {
 		types: ['Item', 'Treasure', 'Weapon', 'Armor', 'Foraged', 'Spell', 'HolySpell', 'Glamour', 'Rune'],
 		label: 'DOLMEN.ItemSheetTitle',
+		makeDefault: true
+	})
+
+	Items.registerSheet('dolmen', DolmenKindredSheet, {
+		types: ['Kindred'],
+		label: 'DOLMEN.KindredSheetTitle',
+		makeDefault: true
+	})
+
+	Items.registerSheet('dolmen', DolmenClassSheet, {
+		types: ['Class'],
+		label: 'DOLMEN.ClassSheetTitle',
 		makeDefault: true
 	})
 })

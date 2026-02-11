@@ -17,6 +17,25 @@ DOLMENWOOD.extraSkills = [
 ]
 DOLMENWOOD.maxExtraSkills = 6
 
+// Class-specific skills that are automatically granted
+DOLMENWOOD.classSkills = {
+	fighter: [],
+	knight: [],
+	hunter: ['alertness', 'stalking', 'tracking'],
+	cleric: [],
+	thief: ['pickLock', 'stealth', 'decipherDocument', 'climbWall', 'disarmMechanism', 'legerdemain'],
+	bard: ['decipherDocument', 'legerdemain', 'monsterLore'],
+	magician: ['detectMagic'],
+	friar: [],
+	enchanter: [],
+	// Kindred-classes
+	breggle: [],
+	elf: [],
+	grimalkin: ['pickLock', 'stealth', 'climbWall'],
+	mossling: [],
+	woodgrue: []
+}
+
 DOLMENWOOD.months = {
 	grimvold: { days: 30 },
 	lymewald: { days: 28 },
@@ -241,6 +260,58 @@ DOLMENWOOD.hitDice = {
 	grimalkin: { die: '1d6', flat: 1 },
 	mossling:  { die: '1d6', flat: 2 },
 	woodgrue:  { die: '1d6', flat: 1 }
+}
+
+// Combat talent definitions for Fighter class
+DOLMENWOOD.combatTalents = {
+	battleRage: {
+		nameKey: 'DOLMEN.Traits.Talents.BattleRage',
+		descKey: 'DOLMEN.Traits.Talents.BattleRageDesc'
+	},
+	cleave: {
+		nameKey: 'DOLMEN.Traits.Talents.Cleave',
+		descKey: 'DOLMEN.Traits.Talents.CleaveDesc'
+	},
+	defender: {
+		nameKey: 'DOLMEN.Traits.Talents.Defender',
+		descKey: 'DOLMEN.Traits.Talents.DefenderDesc'
+	},
+	lastStand: {
+		nameKey: 'DOLMEN.Traits.Talents.LastStand',
+		descKey: 'DOLMEN.Traits.Talents.LastStandDesc'
+	},
+	leader: {
+		nameKey: 'DOLMEN.Traits.Talents.Leader',
+		descKey: 'DOLMEN.Traits.Talents.LeaderDesc'
+	},
+	mainGauche: {
+		nameKey: 'DOLMEN.Traits.Talents.MainGauche',
+		descKey: 'DOLMEN.Traits.Talents.MainGaucheDesc'
+	},
+	slayer: {
+		nameKey: 'DOLMEN.Traits.Talents.Slayer',
+		descKey: 'DOLMEN.Traits.Talents.SlayerDesc'
+	},
+	weaponSpecialist: {
+		nameKey: 'DOLMEN.Traits.Talents.WeaponSpecialist',
+		descKey: 'DOLMEN.Traits.Talents.WeaponSpecialistDesc'
+	}
+}
+
+// Holy order definitions for Cleric and Friar classes
+DOLMENWOOD.holyOrders = {
+	stFaxis: {
+		nameKey: 'DOLMEN.Traits.Orders.stFaxis',
+		descKey: 'DOLMEN.Traits.Orders.stFaxisDesc'
+	},
+	stSedge: {
+		nameKey: 'DOLMEN.Traits.Orders.stSedge',
+		descKey: 'DOLMEN.Traits.Orders.stSedgeDesc'
+	},
+	stSignis: {
+		nameKey: 'DOLMEN.Traits.Orders.stSignis',
+		descKey: 'DOLMEN.Traits.Orders.stSignisDesc'
+	}
 }
 
 export default DOLMENWOOD

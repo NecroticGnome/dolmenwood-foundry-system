@@ -107,8 +107,8 @@
 		</section>
 	</section>
 
-	<!-- Fighter Combat Talents Selection (if fighter class) -->
-	{{#if (eq system.class "fighter")}}
+	<!-- Combat Talents Selection (if class has combat talents feature) -->
+	{{#if hasCombatTalents}}
 	<section class="combat-talents-selection boxed-section">
 		<h2>{{localize "DOLMEN.Traits.CombatTalents"}}</h2>
 		<div class="talents-list">
