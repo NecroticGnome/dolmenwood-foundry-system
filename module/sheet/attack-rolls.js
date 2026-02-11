@@ -42,7 +42,8 @@ export function buildWeaponMenuHtml(sheet, weapons) {
  * @returns {boolean} True if proficient
  */
 export function isWeaponProficient(sheet, weapon) {
-	const cls = sheet.actor.system.class
+	const classItem = sheet.actor.getClassItem()
+	const cls = classItem?.system?.classId
 	if (!cls) return true
 
 	// Knight: no missile weapons
@@ -60,11 +61,9 @@ export function isWeaponProficient(sheet, weapon) {
 		if (wType && !restrictedTypes[cls].includes(wType)) return false
 	}
 
-	// Classes restricted to small/medium weapons (no large)
-	const sizeRestrictedClasses = new Set([
-		'bard', 'enchanter', 'thief', 'grimalkin', 'mossling', 'woodgrue'
-	])
-	if (sizeRestrictedClasses.has(cls) && weapon.system.size === 'large') {
+	// Non-martial classes cannot use large weapons
+	const combatAptitude = classItem?.system?.combatAptitude || 'non-martial'
+	if (combatAptitude === 'non-martial' && weapon.system.size === 'large') {
 		return false
 	}
 
@@ -409,14 +408,16 @@ export function openMeleeWeaponMenu(sheet, weapons, attackMode, position, rollTy
 export function getApplicableMeleeModifiers(sheet, weapon) {
 	const modifiers = []
 	const actor = sheet.actor
+	const classItem = actor.getClassItem()
+	const classId = classItem?.system?.classId
 	const traits = getAllActiveTraits(actor)
 	const hasTrait = (id) => traits.some(t => t.id === id)
 	const level = actor.system.level
 	const talents = actor.system.combatTalents || []
 	const meleeWeaponCount = getEquippedWeaponsByQuality(sheet, 'melee').length
 
-	// Backstab - thief class only
-	if (actor.system.class === 'thief') {
+	// Backstab - available if class has backstab feature
+	if (classItem?.system?.hasBackstab) {
 		const strMod = computeAdjustedValues(actor).abilities.strength.mod
 		const modStr = strMod >= 0 ? ` + ${strMod}` : ` - ${Math.abs(strMod)}`
 		modifiers.push({
@@ -456,7 +457,7 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 	}
 
 	// St. Signis - cleric holy order
-	if (actor.system.class === 'cleric' && actor.system.holyOrder === 'stSignis') {
+	if (classId === 'cleric' && actor.system.holyOrder === 'stSignis') {
 		modifiers.push({
 			id: 'stSignis',
 			name: game.i18n.localize('DOLMEN.Attack.Mod.StSignis'),
@@ -513,9 +514,8 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 		})
 	}
 
-	// Two Weapons - requires 2+ equipped melee weapons AND STR or DEX as prime ability
-	const twoWeaponClasses = new Set(['fighter', 'hunter', 'knight', 'thief', 'breggle', 'elf', 'grimalkin', 'woodgrue'])
-	if (meleeWeaponCount >= 2 && twoWeaponClasses.has(actor.system.class)) {
+	// Two Weapons - requires 2+ equipped melee weapons and class ability
+	if (meleeWeaponCount >= 2 && classItem?.system?.canTwoWeaponFight) {
 		modifiers.push({
 			id: 'twoWeaponsPrimary',
 			name: game.i18n.localize('DOLMEN.Attack.Mod.TwoWeaponsPrimary'),
