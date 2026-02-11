@@ -1,0 +1,81 @@
+{
+	"DOLMEN": {
+		"Kindreds": {
+			"breggle": "Breggle",
+			"elf": "Elf",
+			"grimalkin": "Grimalkin",
+			"human": "Human",
+			"mossling": "Mossling",
+			"woodgrue": "Woodgrue"
+		},
+		"KindredDetails": {
+			"Title": "Kindred Details",
+			"KindredType": "Kindred Type",
+			"CurrentAge": "Current Age",
+			"Lifespan": "Lifespan",
+			"Height": "Height",
+			"Weight": "Weight",
+			"Feet": "(ft)",
+			"Cm": "(cm)",
+			"Lbs": "(lbs)",
+			"Kg": "(kg)",
+			"Imperial": "Imperial",
+			"Metric": "Metric",
+			"UnitSystem": "Unit System"
+		},
+		"KindredLifespan": {
+			"human": "50 + 2d20 years",
+			"breggle": "50 + 2d20 years",
+			"mossling": "200 + 5d8 × 10 years",
+			"woodgrue": "300 + 2d100 years",
+			"elf": "Immortal",
+			"grimalkin": "Immortal"
+		},
+		"KindredAge": {
+			"human": "15 + 2d10 years",
+			"breggle": "15 + 2d10 years",
+			"mossling": "50 + 3d6 years",
+			"woodgrue": "50 + 3d6 years",
+			"elf": "1d100 × 9 + 1d10 years",
+			"grimalkin": "1d100 × 9 + 1d10 years"
+		},
+		"KindredHeight": {
+			"human": "5'4\" + 2d6\"",
+			"breggle": "5'4\" + 2d6\"",
+			"elf": "5' + 2d6\"",
+			"grimalkin": "2'6\" + 2d6\"",
+			"mossling": "3'6\" + 2d6\"",
+			"woodgrue": "3' + 2d6\""
+		},
+		"KindredWeight": {
+			"human": "120 + 6d10 lbs",
+			"breggle": "120 + 6d10 lbs",
+			"elf": "100 + 3d10 lbs",
+			"grimalkin": "50 + 3d10 lbs",
+			"mossling": "150 + 2d20 lbs",
+			"woodgrue": "60 + 2d10 lbs"
+		},
+		"KindredSheetTitle": "Kindred Item Sheet",
+		"Kindred": {
+			"Title": "Kindred",
+			"Name": "Kindred Name",
+			"TabDetails": "Details",
+			"TabTraits": "Traits",
+			"Identity": "Identity",
+			"PhysicalCharacteristics": "Physical Characteristics",
+			"CulturalTraits": "Cultural Traits",
+			"KindredId": "Kindred ID",
+			"Size": "Size",
+			"CreatureType": "Creature Type",
+			"AgeFormula": "Age Formula",
+			"LifespanFormula": "Lifespan Formula",
+			"HeightFormula": "Height Formula (inches)",
+			"WeightFormula": "Weight Formula (lbs)",
+			"Languages": "Native Languages",
+			"LanguagesHint": "Comma-separated list of language IDs (e.g., woldish, elvish)",
+			"Traits": "Traits (JSON)",
+			"TraitsJSON": "Traits Definition",
+			"TraitsHint": "JSON object with categories: active, passive, info, restrictions"
+		}
+	}
+}

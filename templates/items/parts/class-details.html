@@ -1,0 +1,66 @@
+<section class="tab-content class-details {{tab.cssClass}}" data-group="primary" data-tab="details">
+	<!-- Identity -->
+	<section class="class-identity">
+		<h2>{{localize "DOLMEN.Class.Identity"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Class.ClassId"}}</label>
+				<input type="text" name="system.classId" value="{{system.classId}}" placeholder="fighter">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Class.RequiredKindred"}}</label>
+				<select name="system.requiredKindred">
+					{{selectOptions kindredChoices selected=system.requiredKindred blank="(Standard Class)"}}
+				</select>
+			</div>
+		</div>
+	</section>
+
+	<!-- Core Attributes -->
+	<section class="class-attributes">
+		<h2>{{localize "DOLMEN.Class.CoreAttributes"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Class.CombatAptitude"}}</label>
+				<select name="system.combatAptitude">
+					{{selectOptions combatAptitudeChoices selected=system.combatAptitude}}
+				</select>
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Class.SpellType"}}</label>
+				<select name="system.spellType">
+					{{selectOptions spellTypeChoices selected=system.spellType}}
+				</select>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Class.PrimeAbilities"}}</label>
+				<input type="text" name="system.primeAbilities" value="{{join system.primeAbilities ', '}}" placeholder="strength, dexterity">
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field" style="flex: 2;">
+				<label>{{localize "DOLMEN.Class.HitDice"}}</label>
+				<input type="text" name="system.hitDice.die" value="{{system.hitDice.die}}" placeholder="1d6">
+			</div>
+			<div class="form-field" style="flex: 1;">
+				<label>{{localize "DOLMEN.Class.FlatHP"}}</label>
+				<input type="number" name="system.hitDice.flat" value="{{system.hitDice.flat}}" placeholder="1">
+			</div>
+		</div>
+	</section>
+
+	<!-- Progression -->
+	<section class="class-progression">
+		<h2>{{localize "DOLMEN.Class.Progression"}}</h2>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Class.XPThresholds"}}</label>
+			<textarea name="system.xpThresholds" rows="3" class="json-input">{{xpThresholdsJSON}}</textarea>
+		</div>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Class.SpellProgression"}}</label>
+			<textarea name="system.spellProgression" rows="6" class="json-input">{{spellProgressionJSON}}</textarea>
+		</div>
+	</section>
+</section>

@@ -1,0 +1,142 @@
+{
+	"DOLMEN": {
+		"Classes": {
+			"bard": "Bard",
+			"cleric": "Cleric",
+			"enchanter": "Enchanter",
+			"fighter": "Fighter",
+			"friar": "Friar",
+			"hunter": "Hunter",
+			"knight": "Knight",
+			"magician": "Magician",
+			"thief": "Thief"
+		},
+		"ClassDetails": {
+			"Title": "Class Details",
+			"PrimeAbilities": "Prime Abilities",
+			"HitPoints": "Hit Points",
+			"CombatAptitude": "Combat Aptitude",
+			"ArmorProficiency": "Armour",
+			"WeaponsProficiency": "Weapons",
+			"Proficiency": {
+				"PrimeAbilities": {
+					"fighter": "Strength",
+					"thief": "Dexterity",
+					"cleric": "Wisdom",
+					"magician": "Intelligence",
+					"knight": "Charisma and Strength",
+					"hunter": "Constitution and Dexterity",
+					"bard": "Charisma and Dexterity",
+					"friar": "Intelligence and Wisdom",
+					"enchanter": "Charisma and Intelligence",
+					"breggle": "Intelligence and Strength",
+					"elf": "Charisma and Strength",
+					"grimalkin": "Dexterity",
+					"mossling": "Constitution and Wisdom",
+					"woodgrue": "Charisma and Dexterity"
+				},
+				"HitPoints": {
+					"fighter": "1d8 per level, +2 after level 10",
+					"thief": "1d4 per level, +1 after level 10",
+					"cleric": "1d6 per level, +1 after level 10",
+					"magician": "1d4 per level, +1 after level 10",
+					"knight": "1d8 per level, +2 after level 10",
+					"hunter": "1d8 per level, +2 after level 10",
+					"bard": "1d6 per level, +1 after level 10",
+					"friar": "1d4 per level, +1 after level 10",
+					"enchanter": "1d6 per level, +1 after level 10",
+					"breggle": "1d6 per level, +2 after level 10",
+					"elf": "1d6 per level, +1 after level 10",
+					"grimalkin": "1d6 per level, +1 after level 10",
+					"mossling": "1d6 per level, +2 after level 10",
+					"woodgrue": "1d6 per level, +1 after level 10"
+				},
+				"CombatAptitude": {
+					"fighter": "Martial",
+					"thief": "Semi-martial",
+					"cleric": "Semi-martial",
+					"magician": "Non-martial",
+					"knight": "Martial",
+					"hunter": "Martial",
+					"bard": "Semi-martial",
+					"friar": "Non-martial",
+					"enchanter": "Semi-martial",
+					"breggle": "Martial",
+					"elf": "Martial",
+					"grimalkin": "Semi-martial",
+					"mossling": "Semi-martial",
+					"woodgrue": "Semi-martial"
+				},
+				"Weapons": {
+					"fighter": "Any",
+					"thief": "Small and Medium",
+					"cleric": "Any",
+					"magician": "Dagger, holy water, oil, staff, torch",
+					"knight": "Any melee weapons",
+					"hunter": "Any",
+					"bard": "Small and Medium",
+					"friar": "Club, dagger, holy water, oil, sling, staff, torch",
+					"enchanter": "Small and Medium",
+					"breggle": "Any",
+					"elf": "Any",
+					"grimalkin": "Small and Medium",
+					"mossling": "Small and Medium",
+					"woodgrue": "Small and Medium"
+				},
+				"Armor": {
+					"fighter": "Any, including shields",
+					"thief": "Light, no shields",
+					"cleric": "Any, including shields",
+					"magician": "None",
+					"knight": "Medium and Heavy, shields",
+					"hunter": "Light, shields",
+					"bard": "Light and Medium, no shields",
+					"friar": "None",
+					"enchanter": "Light and Medium, no shields",
+					"breggle": "Any, including shields",
+					"elf": "Any, including shields",
+					"grimalkin": "Any, including shields",
+					"mossling": "Any, including shields",
+					"woodgrue": "Any, including shields"
+				}
+			}
+		},
+		"ClassSheetTitle": "Class Item Sheet",
+		"Class": {
+			"Title": "Class",
+			"Name": "Class Name",
+			"TabDetails": "Details",
+			"TabTraits": "Traits",
+			"Identity": "Identity",
+			"CoreAttributes": "Core Attributes",
+			"Progression": "Progression",
+			"ClassId": "Class ID",
+			"RequiredKindred": "Required Kindred",
+			"RequiredKindredHint": "For kindred-classes only (e.g., elf, grimalkin). Leave blank for standard classes.",
+			"PrimeAbilities": "Prime Abilities",
+			"PrimeAbilitiesHint": "Comma-separated list (e.g., strength, intelligence)",
+			"HitDice": "Hit Die",
+			"FlatHP": "Flat HP Bonus",
+			"HitDiceHint": "Die roll for levels 1-10, flat bonus for levels 11+",
+			"SpellType": "Spell Type",
+			"SpellTypeChoices": {
+				"none": "None",
+				"arcane": "Arcane",
+				"holy": "Holy"
+			},
+			"CombatAptitude": "Combat Aptitude",
+			"CombatAptitudeChoices": {
+				"martial": "Martial",
+				"semi-martial": "Semi-Martial",
+				"non-martial": "Non-Martial"
+			},
+			"XPThresholds": "XP Thresholds",
+			"XPThresholdsHint": "Array of 16 values (levels 0-15), e.g., [0, 0, 2000, 4000, ...]",
+			"SpellProgression": "Spell Progression",
+			"SpellProgressionHint": "Array of arrays: [[rank1, rank2, ...], ...] for levels 0-15",
+			"Traits": "Traits (JSON)",
+			"TraitsJSON": "Traits Definition",
+			"TraitsHint": "JSON object with categories: active, passive, info, restrictions"
+		}
+	}
+}
