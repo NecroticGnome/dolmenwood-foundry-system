@@ -188,6 +188,19 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 
 	const baseSpeed = encumbranceSpeed ?? system.speed
 
+	// Compute AC from equipped armor + adjusted DEX modifier + shield bonus
+	const equippedArmor = actor.items?.filter(i => i.type === 'Armor' && i.system.equipped) || []
+	const bodyArmor = equippedArmor.filter(i => i.system.armorType !== 'shield')
+	const shields = equippedArmor.filter(i => i.system.armorType === 'shield')
+	const bestArmorAC = bodyArmor.length > 0
+		? Math.max(...bodyArmor.map(a => a.system.ac || 10))
+		: 10
+	const dexMod = abilityAdjusted('dexterity').mod
+	const shieldBonus = shields.length > 0
+		? Math.max(...shields.map(s => s.system.ac || 1))
+		: 0
+	const computedAC = bestArmorAC + dexMod + shieldBonus
+
 	return {
 		abilities: {
 			strength: abilityAdjusted('strength'),
@@ -200,7 +213,7 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 		hp: {
 			max: system.hp.max + (adj.hp.max || 0) + getTraitAdj('hp.max')
 		},
-		ac: system.ac + (adj.ac || 0) + getTraitAdj('ac'),
+		ac: computedAC + (adj.ac || 0) + getTraitAdj('ac'),
 		attack: system.attack + (adj.attack || 0) + getTraitAdj('attack'),
 		attackMelee: getTraitAdj('attack.melee'),
 		attackMissile: getTraitAdj('attack.missile'),

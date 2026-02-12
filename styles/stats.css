@@ -244,6 +244,18 @@
 	width: 3rem;
 }
 
+.sheet.dolmen .tab-content .combat-stat .computed-ac {
+	font-size: 1.25rem;
+	font-weight: bold;
+	text-align: center;
+	color: var(--dolmen-color-text);
+	cursor: help;
+}
+
+.sheet.dolmen .tab-content .combat-stat .computed-ac.has-adjustment {
+	color: var(--dolmen-color-adjusted);
+}
+
 .sheet.dolmen .tab-content .hp-values {
 	display: flex;
 	align-items: center;
