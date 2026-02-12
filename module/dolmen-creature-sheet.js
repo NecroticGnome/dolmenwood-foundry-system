@@ -3,6 +3,7 @@ import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { onSaveRoll } from './sheet/roll-handlers.js'
 import { createContextMenu } from './sheet/context-menu.js'
 import { getDieIconFromFormula } from './sheet/attack-rolls.js'
+import { parseSaveLinks } from './chat-save.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets
@@ -464,7 +465,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 	async _executeCreatureAttack(attack, rangeMod = 0, rangeName = null) {
 		const effectSection = attack.attackEffect
-			? `<div class="roll-section special-section" style="grid-column-end: span 2;"><span class="roll-breakdown">${attack.attackEffect}</span></div>`
+			? `<div class="roll-section special-section" style="grid-column-end: span 2;"><span class="roll-breakdown">${parseSaveLinks(attack.attackEffect)}</span></div>`
 			: ''
 		const rangeBadge = rangeName
 			? `<span class="trait-badge">${rangeName}</span>`
