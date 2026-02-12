@@ -105,7 +105,8 @@
 	font-size: 0.85rem;
 	width: 100%;
 	text-align: left;
-	margin-top: 0;
+	place-content: center;
+	margin: auto;
 }
 
 .dolmen.attack-roll .roll-section label {
@@ -687,6 +688,7 @@
 	cursor: pointer;
 	font-weight: 600;
 	transition: color 0.2s ease;
+	text-align: center;
 }
 
 .inline-save-link:hover {
