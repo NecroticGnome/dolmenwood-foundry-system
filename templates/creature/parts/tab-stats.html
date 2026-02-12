@@ -73,7 +73,10 @@
 					</div>
 					<div class="creature-stat">
 						<label>{{localize "DOLMEN.Creature.Morale"}}</label>
-						<input type="number" name="system.morale" value="{{system.morale}}" min="2" max="12">
+						<div class="morale-values">
+							<input type="number" name="system.morale" value="{{system.morale}}" min="2" max="12">
+							<i class="fa fa-dice rollable morale-roll" title="{{localize 'DOLMEN.Creature.RollMorale'}}"></i>
+						</div>
 					</div>
 					<div class="combat"><i class="fa fa-swords rollable"></i></div>
 				</div>
