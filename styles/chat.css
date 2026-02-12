@@ -578,3 +578,104 @@
 	margin-top: 0.5rem;
 	color: var(--dolmen-color-success);
 }
+
+/* Morale Roll */
+.dolmen-roll.morale-roll {
+	background: var(--dolmen-color-bg);
+	border: 1px solid var(--dolmen-color-border);
+	border-radius: 4px;
+	padding: 0.5rem;
+	margin: 0.25rem 0;
+}
+
+.dolmen-roll.morale-roll .roll-header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid var(--dolmen-color-border);
+	margin-bottom: 0.5rem;
+}
+
+.dolmen-roll.morale-roll .roll-header .roll-label {
+	font-size: 0.9rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h2);
+	text-transform: uppercase;
+}
+
+.dolmen-roll.morale-roll .roll-result {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 0.5rem;
+}
+
+.dolmen-roll.morale-roll .dice-result {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.dolmen-roll.morale-roll .dice-formula {
+	font-size: 0.75rem;
+	color: var(--dolmen-color-text-muted);
+	text-transform: uppercase;
+}
+
+.dolmen-roll.morale-roll .dice-total {
+	font-size: 1.5rem;
+	font-weight: bold;
+	padding: 0.25rem 0.5rem;
+	border-radius: 3px;
+}
+
+.dolmen-roll.morale-roll .dice-total.success {
+	color: var(--dolmen-color-success);
+	background: rgba(var(--dolmen-color-success-rgb), 0.1);
+}
+
+.dolmen-roll.morale-roll .dice-total.failure {
+	color: var(--dolmen-color-failure);
+	background: rgba(var(--dolmen-color-failure-rgb), 0.1);
+}
+
+.dolmen-roll.morale-roll .roll-target {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.dolmen-roll.morale-roll .target-label {
+	font-size: 0.75rem;
+	color: var(--dolmen-color-text-muted);
+	text-transform: uppercase;
+}
+
+.dolmen-roll.morale-roll .target-value {
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h3);
+}
+
+.dolmen-roll.morale-roll .roll-outcome {
+	text-align: center;
+	font-size: 0.9rem;
+	font-weight: bold;
+	padding: 0.5rem;
+	border-radius: 3px;
+	text-transform: uppercase;
+}
+
+.dolmen-roll.morale-roll .roll-outcome.success {
+	color: var(--dolmen-color-success);
+	background: rgba(var(--dolmen-color-success-rgb), 0.15);
+}
+
+.dolmen-roll.morale-roll .roll-outcome.failure {
+	color: var(--dolmen-color-failure);
+	background: rgba(var(--dolmen-color-failure-rgb), 0.15);
+}

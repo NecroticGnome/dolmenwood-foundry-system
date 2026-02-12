@@ -61,6 +61,23 @@
 	color: var(--dolmen-color-text-muted);
 }
 
+.sheet.dolmen.creature .creature-stat .morale-values {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen.creature .creature-stat .morale-values input {
+	flex: 1;
+	max-width: 3rem;
+}
+
+.sheet.dolmen.creature .creature-stat .morale-values .morale-roll {
+	font-size: 0.9rem;
+	cursor: pointer;
+}
+
 .sheet.dolmen.creature .creature-stats-grid .combat {
 	margin-top: 0.33rem;
 }

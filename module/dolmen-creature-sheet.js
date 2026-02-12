@@ -166,6 +166,15 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			})
 		})
 
+		// Morale roll listener
+		const moraleIcon = this.element.querySelector('.morale-roll')
+		if (moraleIcon) {
+			moraleIcon.addEventListener('click', (event) => {
+				event.preventDefault()
+				this._rollMorale()
+			})
+		}
+
 		// Attack roll listener (swords icon opens attack selection menu)
 		const swordsIcon = this.element.querySelector('.combat .fa-swords')
 		if (swordsIcon) {
@@ -323,6 +332,57 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			}
 		})
 		dialog.render(true)
+	}
+
+	/* -------------------------------------------- */
+	/*  Morale Roll                                 */
+	/* -------------------------------------------- */
+
+	async _rollMorale() {
+		const actor = this.actor
+		const morale = actor.system.morale
+
+		// Roll 2d6
+		const roll = new Roll('2d6')
+		await roll.evaluate()
+
+		// Determine success (roll <= morale)
+		const success = roll.total <= morale
+		const resultLabel = success
+			? game.i18n.localize('DOLMEN.Creature.MoraleHolds')
+			: game.i18n.localize('DOLMEN.Creature.MoraleFlees')
+
+		// Prepare chat message
+		const flavor = game.i18n.localize('DOLMEN.Creature.MoraleCheck')
+		const messageData = {
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor }),
+			flavor,
+			rolls: [roll],
+			content: `
+				<div class="dolmen-roll morale-roll">
+					<div class="roll-header">
+						<span class="roll-label">${flavor}</span>
+					</div>
+					<div class="roll-result">
+						<div class="dice-result">
+							<div class="dice-formula">${roll.formula}</div>
+							<div class="dice-total ${success ? 'success' : 'failure'}">${roll.total}</div>
+						</div>
+						<div class="roll-target">
+							<span class="target-label">${game.i18n.localize('DOLMEN.Creature.Morale')}</span>
+							<span class="target-value">${morale}</span>
+						</div>
+					</div>
+					<div class="roll-outcome ${success ? 'success' : 'failure'}">
+						${resultLabel}
+					</div>
+				</div>
+			`,
+			type: CONST.CHAT_MESSAGE_TYPES.ROLL
+		}
+
+		ChatMessage.create(messageData)
 	}
 
 	/* -------------------------------------------- */
