@@ -1,8 +1,8 @@
 {
   "name": "Enchanter",
   "type": "Class",
-  "_id": "1d1686c86d02ec7b",
-  "img": "systems/dolmenwood/assets/classes/enchanter.svg",
+  "_id": "9da58069c7b2c325",
+  "img": "systems/dolmenwood/assets/classes/enchanter.webp",
   "system": {
     "codexUuid": "",
     "classId": "enchanter",
@@ -146,7 +146,7 @@
     "skillProgressions": {},
     "spellProgression": [],
     "spellType": "none",
-    "combatAptitude": "non-martial",
+    "combatAptitude": "semi-martial",
     "hasCombatTalents": false,
     "hasHolyOrder": false,
     "canTwoWeaponFight": false,
@@ -178,9 +178,9 @@
     "coreVersion": "13.351",
     "systemId": "dolmenwood",
     "systemVersion": "0.2.0",
-    "createdTime": 1770843306205,
-    "modifiedTime": 1770843306205,
+    "createdTime": 0,
+    "modifiedTime": 0,
     "lastModifiedBy": null
   },
-  "_key": "!items!1d1686c86d02ec7b"
+  "_key": "!items!9da58069c7b2c325"
 }

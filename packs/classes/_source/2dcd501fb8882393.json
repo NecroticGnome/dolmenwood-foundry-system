@@ -1,0 +1,213 @@
+{
+  "name": "Breggle",
+  "type": "Class",
+  "_id": "2dcd501fb8882393",
+  "img": "systems/dolmenwood/assets/classes/breggle.webp",
+  "system": {
+    "codexUuid": "",
+    "classId": "breggle",
+    "requiredKindred": "breggle",
+    "primeAbilities": [
+      "strength",
+      "intelligence"
+    ],
+    "hitDice": {
+      "die": "1d6",
+      "flat": 2
+    },
+    "xpThresholds": [
+      0,
+      0,
+      2000,
+      4000,
+      8000,
+      16000,
+      32000,
+      64000,
+      128000,
+      260000,
+      380000,
+      500000,
+      620000,
+      740000,
+      860000,
+      980000
+    ],
+    "attackProgression": [
+      0,
+      1,
+      1,
+      2,
+      3,
+      3,
+      4,
+      5,
+      5,
+      6,
+      7,
+      7,
+      8,
+      9,
+      9,
+      10
+    ],
+    "saveProgressions": {
+      "doom": [
+        0,
+        12,
+        12,
+        11,
+        10,
+        10,
+        9,
+        8,
+        8,
+        7,
+        6,
+        6,
+        5,
+        4,
+        4,
+        3
+      ],
+      "ray": [
+        0,
+        13,
+        13,
+        12,
+        11,
+        11,
+        10,
+        9,
+        9,
+        8,
+        7,
+        7,
+        6,
+        5,
+        5,
+        4
+      ],
+      "hold": [
+        0,
+        14,
+        14,
+        13,
+        12,
+        12,
+        11,
+        10,
+        10,
+        9,
+        8,
+        8,
+        7,
+        6,
+        6,
+        5
+      ],
+      "blast": [
+        0,
+        15,
+        15,
+        14,
+        13,
+        13,
+        12,
+        11,
+        11,
+        10,
+        9,
+        9,
+        8,
+        7,
+        7,
+        6
+      ],
+      "spell": [
+        0,
+        16,
+        16,
+        15,
+        14,
+        14,
+        13,
+        12,
+        12,
+        11,
+        10,
+        10,
+        9,
+        8,
+        8,
+        7
+      ]
+    },
+    "skillProgressions": {},
+    "spellProgression": [],
+    "spellType": "arcane",
+    "combatAptitude": "martial",
+    "hasCombatTalents": false,
+    "hasHolyOrder": false,
+    "canTwoWeaponFight": true,
+    "hasBackstab": false,
+    "traits": {
+      "active": [
+        {
+          "id": "longhornGaze",
+          "nameKey": "DOLMEN.Traits.LonghornGaze",
+          "descKey": "DOLMEN.Traits.LonghornGazeDesc",
+          "traitType": "active",
+          "minLevel": 4,
+          "usageFrequency": "DOLMEN.Traits.UsesPerDay"
+        },
+        {
+          "id": "hornAttack",
+          "nameKey": "DOLMEN.Traits.HornAttack",
+          "descKey": "DOLMEN.Traits.HornAttackDesc",
+          "traitType": "active",
+          "rollable": true
+        }
+      ],
+      "passive": [
+        {
+          "id": "furDefense",
+          "nameKey": "DOLMEN.Traits.FurDefense",
+          "descKey": "DOLMEN.Traits.FurDefenseDesc",
+          "traitType": "adjustment",
+          "adjustmentType": "static",
+          "adjustmentTarget": "ac",
+          "adjustmentValue": 1,
+          "requiresNoHeavyArmor": true,
+          "hideFromTraitTab": false
+        }
+      ],
+      "info": [
+        {
+          "id": "hornLength",
+          "nameKey": "DOLMEN.Traits.HornLength",
+          "descKey": "DOLMEN.Traits.HornLengthDesc",
+          "traitType": "info"
+        }
+      ]
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.351",
+    "systemId": "dolmenwood",
+    "systemVersion": "0.2.0",
+    "createdTime": 0,
+    "modifiedTime": 0,
+    "lastModifiedBy": null
+  },
+  "_key": "!items!2dcd501fb8882393"
+}

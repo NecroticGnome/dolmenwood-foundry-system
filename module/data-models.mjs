@@ -765,7 +765,7 @@ export class GearDataModel extends ItemDataModel {
 			costDenomination: new StringField({
 				required: true,
 				initial: 'gp',
-				choices: ['gp', 'sp', 'cp', 'pp']
+				choices: CHOICE_KEYS.costDenominations
 			}),
 			stackSize: new NumberField({
 				required: true,

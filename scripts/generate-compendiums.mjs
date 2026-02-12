@@ -7,6 +7,7 @@
 
 import fs from 'fs'
 import path from 'path'
+import crypto from 'crypto'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -1164,22 +1165,23 @@ const KINDRED_CLASS_TRAITS = {
 	}
 }
 
-// Helper to generate a unique ID
-function generateId() {
-	return 'xxxxxxxxxxxxxxxx'.replace(/x/g, () => Math.floor(Math.random() * 16).toString(16))
+// Helper to generate a deterministic ID from type + name
+// This ensures the same item always gets the same ID across regenerations
+function generateId(type, name) {
+	return crypto.createHash('md5').update(`${type}:${name}`).digest('hex').slice(0, 16)
 }
 
 // Helper to create _stats object for Foundry v13
+// Uses a fixed timestamp so regeneration produces identical output
 function createStats() {
-	const now = Date.now()
 	return {
 		compendiumSource: null,
 		duplicateSource: null,
 		coreVersion: "13.351",
 		systemId: "dolmenwood",
 		systemVersion: "0.2.0",
-		createdTime: now,
-		modifiedTime: now,
+		createdTime: 0,
+		modifiedTime: 0,
 		lastModifiedBy: null
 	}
 }
@@ -1189,9 +1191,10 @@ function generateKindredItems() {
 	const items = []
 
 	for (const [kindredId, metadata] of Object.entries(KINDRED_DATA)) {
-		const itemId = generateId()
+		const name = kindredId.charAt(0).toUpperCase() + kindredId.slice(1)
+		const itemId = generateId('Kindred', name)
 		const item = {
-			name: kindredId.charAt(0).toUpperCase() + kindredId.slice(1),
+			name,
 			type: 'Kindred',
 			_id: itemId,
 			img: `systems/dolmenwood/assets/kindreds/${kindredId}.webp`,
@@ -1232,9 +1235,10 @@ function generateClassItems() {
 	const standardClasses = ['bard', 'cleric', 'enchanter', 'fighter', 'friar', 'hunter', 'knight', 'magician', 'thief']
 
 	for (const classId of standardClasses) {
-		const itemId = generateId()
+		const name = classId.charAt(0).toUpperCase() + classId.slice(1)
+		const itemId = generateId('Class', name)
 		const item = {
-			name: classId.charAt(0).toUpperCase() + classId.slice(1),
+			name,
 			type: 'Class',
 			_id: itemId,
 			img: `systems/dolmenwood/assets/classes/${classId}.webp`,
@@ -1250,7 +1254,7 @@ function generateClassItems() {
 				skillProgressions: DOLMENWOOD.skillProgressions[classId] || {},
 				spellProgression: DOLMENWOOD.spellProgression[classId] || [],
 				spellType: ['magician'].includes(classId) ? 'arcane' : ['cleric', 'friar'].includes(classId) ? 'holy' : 'none',
-				combatAptitude: ['fighter', 'knight', 'hunter'].includes(classId) ? 'martial' : ['bard', 'cleric', 'friar', 'thief'].includes(classId) ? 'semi-martial' : 'non-martial',
+				combatAptitude: ['fighter', 'knight', 'hunter'].includes(classId) ? 'martial' : ['bard', 'cleric', 'enchanter', 'thief'].includes(classId) ? 'semi-martial' : 'non-martial',
 				hasCombatTalents: classId === 'fighter',
 				hasHolyOrder: ['cleric', 'friar'].includes(classId),
 				canTwoWeaponFight: ['fighter', 'hunter', 'knight', 'thief'].includes(classId),
@@ -1273,9 +1277,10 @@ function generateClassItems() {
 
 	// Kindred-classes
 	for (const kindredClassId of KINDRED_CLASS_NAMES) {
-		const itemId = generateId()
+		const name = kindredClassId.charAt(0).toUpperCase() + kindredClassId.slice(1)
+		const itemId = generateId('Class', name)
 		const item = {
-			name: kindredClassId.charAt(0).toUpperCase() + kindredClassId.slice(1),
+			name,
 			type: 'Class',
 			_id: itemId,
 			img: `systems/dolmenwood/assets/classes/${kindredClassId}.webp`,
