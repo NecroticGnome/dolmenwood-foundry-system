@@ -4,7 +4,7 @@
 		{
 			"label": "Stop Foundry VTT",
 			"type": "shell",
-			"command": "Stop-Process -Name 'FoundryVTT' -Force -ErrorAction SilentlyContinue",
+			"command": "Stop-Process -Name 'FoundryVTT' -Force -ErrorAction SilentlyContinue; exit 0",
 			"group": "build"
 		},
 		{
