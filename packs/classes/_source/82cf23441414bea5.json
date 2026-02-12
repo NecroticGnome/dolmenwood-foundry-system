@@ -1,240 +1,240 @@
 {
-  "name": "Woodgrue",
-  "type": "Class",
-  "_id": "82cf23441414bea5",
-  "img": "systems/dolmenwood/assets/classes/woodgrue.svg",
-  "system": {
-    "codexUuid": "",
-    "classId": "woodgrue",
-    "requiredKindred": "woodgrue",
-    "primeAbilities": [
-      "charisma",
-      "dexterity"
-    ],
-    "hitDice": {
-      "die": "1d6",
-      "flat": 1
-    },
-    "xpThresholds": [
-      0,
-      0,
-      2000,
-      4000,
-      8000,
-      16000,
-      32000,
-      64000,
-      128000,
-      260000,
-      380000,
-      500000,
-      620000,
-      740000,
-      860000,
-      980000
-    ],
-    "attackProgression": [
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      2,
-      2,
-      2,
-      3,
-      3,
-      3,
-      4,
-      4,
-      4
-    ],
-    "saveProgressions": {
-      "doom": [
-        0,
-        11,
-        11,
-        10,
-        10,
-        9,
-        9,
-        8,
-        8,
-        7,
-        7,
-        6,
-        6,
-        5,
-        5,
-        4
-      ],
-      "ray": [
-        0,
-        12,
-        12,
-        11,
-        11,
-        10,
-        10,
-        9,
-        9,
-        8,
-        8,
-        7,
-        7,
-        6,
-        6,
-        5
-      ],
-      "hold": [
-        0,
-        13,
-        13,
-        12,
-        12,
-        11,
-        11,
-        10,
-        10,
-        9,
-        9,
-        8,
-        8,
-        7,
-        7,
-        6
-      ],
-      "blast": [
-        0,
-        16,
-        16,
-        15,
-        15,
-        14,
-        14,
-        13,
-        13,
-        12,
-        12,
-        11,
-        11,
-        10,
-        10,
-        9
-      ],
-      "spell": [
-        0,
-        14,
-        14,
-        13,
-        13,
-        12,
-        12,
-        11,
-        11,
-        10,
-        10,
-        9,
-        9,
-        8,
-        8,
-        7
-      ]
-    },
-    "skillProgressions": {},
-    "spellProgression": [],
-    "spellType": "none",
-    "combatAptitude": "semi-martial",
-    "hasCombatTalents": false,
-    "hasHolyOrder": false,
-    "canTwoWeaponFight": true,
-    "hasBackstab": false,
-    "traits": {
-      "active": [
-        {
-          "id": "enchantedMelody",
-          "nameKey": "DOLMEN.Traits.EnchantedMelody",
-          "descKey": "DOLMEN.Traits.EnchantedMelodyDesc",
-          "traitType": "active",
-          "maxUses": 1,
-          "usageFrequency": "DOLMEN.Traits.OncePerDay"
-        }
-      ],
-      "passive": [
-        {
-          "id": "keenSensesListen",
-          "nameKey": "DOLMEN.Traits.KeenSensesListen",
-          "descKey": "DOLMEN.Traits.KeenSensesListenDesc",
-          "traitType": "adjustment",
-          "adjustmentType": "skillOverride",
-          "adjustmentTargets": [
-            "skills.listen"
-          ],
-          "adjustmentValue": 5
-        },
-        {
-          "id": "acVsLarge",
-          "nameKey": "DOLMEN.Traits.ACVsLarge",
-          "descKey": "DOLMEN.Traits.ACVsLargeDesc",
-          "traitType": "adjustment",
-          "adjustmentType": "info"
-        },
-        {
-          "id": "coldIronVuln",
-          "nameKey": "DOLMEN.Traits.ColdIronVuln",
-          "descKey": "DOLMEN.Traits.ColdIronVulnDesc",
-          "traitType": "adjustment",
-          "adjustmentType": "info"
-        },
-        {
-          "id": "fairyResistance",
-          "nameKey": "DOLMEN.Traits.FairyResistance",
-          "descKey": "DOLMEN.Traits.FairyResistanceDesc",
-          "traitType": "info"
-        }
-      ],
-      "info": [
-        {
-          "id": "moonSight",
-          "nameKey": "DOLMEN.Traits.MoonSight",
-          "descKey": "DOLMEN.Traits.MoonSightDesc",
-          "traitType": "info"
-        },
-        {
-          "id": "instrumentsAsWeapons",
-          "nameKey": "DOLMEN.Traits.InstrumentsAsWeapons",
-          "descKey": "DOLMEN.Traits.InstrumentsAsWeaponsDesc",
-          "traitType": "info"
-        },
-        {
-          "id": "smallSize",
-          "nameKey": "DOLMEN.Traits.SmallSize",
-          "descKey": "DOLMEN.Traits.SmallSizeDesc",
-          "traitType": "sizeRestriction",
-          "sizeRestriction": "small",
-          "hideFromTraitTab": false
-        }
-      ]
-    }
-  },
-  "effects": [],
-  "folder": null,
-  "sort": 0,
-  "ownership": {
-    "default": 0
-  },
-  "flags": {},
-  "_stats": {
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "coreVersion": "13.351",
-    "systemId": "dolmenwood",
-    "systemVersion": "0.2.0",
-    "createdTime": 1770843306205,
-    "modifiedTime": 1770843306205,
-    "lastModifiedBy": null
-  },
-  "_key": "!items!82cf23441414bea5"
+	"name": "Woodgrue",
+	"type": "Class",
+	"_id": "82cf23441414bea5",
+	"img": "systems/dolmenwood/assets/classes/woodgrue.webp",
+	"system": {
+		"codexUuid": "",
+		"classId": "woodgrue",
+		"requiredKindred": "woodgrue",
+		"primeAbilities": [
+			"charisma",
+			"dexterity"
+		],
+		"hitDice": {
+			"die": "1d6",
+			"flat": 1
+		},
+		"xpThresholds": [
+			0,
+			0,
+			2000,
+			4000,
+			8000,
+			16000,
+			32000,
+			64000,
+			128000,
+			260000,
+			380000,
+			500000,
+			620000,
+			740000,
+			860000,
+			980000
+		],
+		"attackProgression": [
+			0,
+			0,
+			0,
+			0,
+			1,
+			1,
+			1,
+			2,
+			2,
+			2,
+			3,
+			3,
+			3,
+			4,
+			4,
+			4
+		],
+		"saveProgressions": {
+			"doom": [
+				0,
+				11,
+				11,
+				10,
+				10,
+				9,
+				9,
+				8,
+				8,
+				7,
+				7,
+				6,
+				6,
+				5,
+				5,
+				4
+			],
+			"ray": [
+				0,
+				12,
+				12,
+				11,
+				11,
+				10,
+				10,
+				9,
+				9,
+				8,
+				8,
+				7,
+				7,
+				6,
+				6,
+				5
+			],
+			"hold": [
+				0,
+				13,
+				13,
+				12,
+				12,
+				11,
+				11,
+				10,
+				10,
+				9,
+				9,
+				8,
+				8,
+				7,
+				7,
+				6
+			],
+			"blast": [
+				0,
+				16,
+				16,
+				15,
+				15,
+				14,
+				14,
+				13,
+				13,
+				12,
+				12,
+				11,
+				11,
+				10,
+				10,
+				9
+			],
+			"spell": [
+				0,
+				14,
+				14,
+				13,
+				13,
+				12,
+				12,
+				11,
+				11,
+				10,
+				10,
+				9,
+				9,
+				8,
+				8,
+				7
+			]
+		},
+		"skillProgressions": {},
+		"spellProgression": [],
+		"spellType": "none",
+		"combatAptitude": "semi-martial",
+		"hasCombatTalents": false,
+		"hasHolyOrder": false,
+		"canTwoWeaponFight": true,
+		"hasBackstab": false,
+		"traits": {
+			"active": [
+				{
+					"id": "enchantedMelody",
+					"nameKey": "DOLMEN.Traits.EnchantedMelody",
+					"descKey": "DOLMEN.Traits.EnchantedMelodyDesc",
+					"traitType": "active",
+					"maxUses": 1,
+					"usageFrequency": "DOLMEN.Traits.OncePerDay"
+				}
+			],
+			"passive": [
+				{
+					"id": "keenSensesListen",
+					"nameKey": "DOLMEN.Traits.KeenSensesListen",
+					"descKey": "DOLMEN.Traits.KeenSensesListenDesc",
+					"traitType": "adjustment",
+					"adjustmentType": "skillOverride",
+					"adjustmentTargets": [
+						"skills.listen"
+					],
+					"adjustmentValue": 5
+				},
+				{
+					"id": "acVsLarge",
+					"nameKey": "DOLMEN.Traits.ACVsLarge",
+					"descKey": "DOLMEN.Traits.ACVsLargeDesc",
+					"traitType": "adjustment",
+					"adjustmentType": "info"
+				},
+				{
+					"id": "coldIronVuln",
+					"nameKey": "DOLMEN.Traits.ColdIronVuln",
+					"descKey": "DOLMEN.Traits.ColdIronVulnDesc",
+					"traitType": "adjustment",
+					"adjustmentType": "info"
+				},
+				{
+					"id": "fairyResistance",
+					"nameKey": "DOLMEN.Traits.FairyResistance",
+					"descKey": "DOLMEN.Traits.FairyResistanceDesc",
+					"traitType": "info"
+				}
+			],
+			"info": [
+				{
+					"id": "moonSight",
+					"nameKey": "DOLMEN.Traits.MoonSight",
+					"descKey": "DOLMEN.Traits.MoonSightDesc",
+					"traitType": "info"
+				},
+				{
+					"id": "instrumentsAsWeapons",
+					"nameKey": "DOLMEN.Traits.InstrumentsAsWeapons",
+					"descKey": "DOLMEN.Traits.InstrumentsAsWeaponsDesc",
+					"traitType": "info"
+				},
+				{
+					"id": "smallSize",
+					"nameKey": "DOLMEN.Traits.SmallSize",
+					"descKey": "DOLMEN.Traits.SmallSizeDesc",
+					"traitType": "sizeRestriction",
+					"sizeRestriction": "small",
+					"hideFromTraitTab": false
+				}
+			]
+		}
+	},
+	"effects": [],
+	"folder": null,
+	"sort": 0,
+	"ownership": {
+		"default": 0
+	},
+	"flags": {},
+	"_stats": {
+		"compendiumSource": null,
+		"duplicateSource": null,
+		"coreVersion": "13.351",
+		"systemId": "dolmenwood",
+		"systemVersion": "0.2.0",
+		"createdTime": 1770843306205,
+		"modifiedTime": 1770843306205,
+		"lastModifiedBy": null
+	},
+	"_key": "!items!82cf23441414bea5"
 }

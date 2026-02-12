@@ -237,3 +237,13 @@
 	gap: 0.25rem;
 	justify-content: center;
 }
+
+/* -------------------------------------------- */
+/* Class Details - Item styling 				*/
+/* -------------------------------------------- */
+.sheet.dolmen .kindred-details .boxed-section,
+.sheet.dolmen .class-details .boxed-section,
+.sheet.dolmen .class-traits .boxed-section,
+.sheet.dolmen .kindred-traits .boxed-section {
+	min-height: unset;
+}
