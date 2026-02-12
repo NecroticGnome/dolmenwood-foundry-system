@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Generated compendium files - keep LF to match Node.js output
+packs/**/*.json text eol=lf
