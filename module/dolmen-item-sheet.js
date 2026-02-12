@@ -217,6 +217,16 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 				this.item.update({ 'system.qualities': currentQualities })
 			})
 		})
+
+		// Auto-set AC to 1 when armor type changes to shield
+		const armorTypeSelect = this.element.querySelector('select[name="system.armorType"]')
+		if (armorTypeSelect) {
+			armorTypeSelect.addEventListener('change', (event) => {
+				if (event.currentTarget.value === 'shield') {
+					this.item.update({ 'system.ac': 1 })
+				}
+			})
+		}
 	}
 }
 

@@ -310,25 +310,6 @@ export class AdventurerDataModel extends ActorDataModel {
 			ability.mod = AdventurerDataModel.computeModifier(ability.score)
 		}
 
-		// Auto-calculate AC from equipped armor + DEX modifier + shield bonus
-		const equippedArmor = this.parent?.items?.filter(i => i.type === 'Armor' && i.system.equipped) || []
-		const bodyArmor = equippedArmor.filter(i => i.system.armorType !== 'shield')
-		const shields = equippedArmor.filter(i => i.system.armorType === 'shield')
-
-		// Base AC: best body armor AC or 10 if no armor
-		const bestArmorAC = bodyArmor.length > 0
-			? Math.max(...bodyArmor.map(a => a.system.ac || 10))
-			: 10
-
-		// Add DEX modifier
-		const dexMod = this.abilities.dex.mod || 0
-
-		// Add shield bonus (+1 if equipped)
-		const shieldBonus = shields.length > 0 ? 1 : 0
-
-		// Set final AC (adjustments/traits applied on top via computeAdjustedValues)
-		this.ac = bestArmorAC + dexMod + shieldBonus
-
 		// Get kindred and class from embedded items (with fallback to old string fields for backward compatibility)
 		const kindredItem = this.parent?.items?.find(i => i.type === 'Kindred')
 		const classItem = this.parent?.items?.find(i => i.type === 'Class')

@@ -231,7 +231,7 @@
 				<div class="combat-stat">
 					<label>{{localize "DOLMEN.Combat.AC"}}</label>
 					<input type="hidden" name="system.ac" value="{{system.ac}}">
-					<input type="number" class="adjustable" value="{{adjusted.ac}}" data-base="{{system.ac}}" data-adjusted="{{adjusted.ac}}" data-manual-adj="{{system.adjustments.ac}}" data-target="system.ac" min="0">
+					<div class="stat-value computed-ac {{#if system.adjustments.ac}}has-adjustment{{/if}}" title="{{localize 'DOLMEN.Combat.ACTooltip'}}">{{adjusted.ac}}</div>
 				</div>
 				<div class="combat-stat">
 					<label>{{localize "DOLMEN.Combat.Attack"}}</label>
