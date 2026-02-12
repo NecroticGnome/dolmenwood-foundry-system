@@ -363,7 +363,7 @@ export function setupDetailsRollListeners(sheet) {
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor}`,
 			rolls: [roll],
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
 
@@ -380,7 +380,7 @@ export function setupDetailsRollListeners(sheet) {
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor}`,
 			rolls: [roll],
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
 
@@ -412,7 +412,7 @@ export function setupDetailsRollListeners(sheet) {
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor} — ${birthDay} ${monthLabel}`,
 			rolls: [roll],
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
 
@@ -437,7 +437,7 @@ export function setupDetailsRollListeners(sheet) {
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor} — ${heightFeet} / ${heightCm} cm`,
 			rolls: [roll],
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
 
@@ -459,7 +459,7 @@ export function setupDetailsRollListeners(sheet) {
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor} — ${weightLbs} lbs / ${weightKg} kg`,
 			rolls: [roll],
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
 }
@@ -657,7 +657,7 @@ export function setupNameRollListener(sheet) {
 						speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 						content: `<strong>${tableName}</strong> (${nameType})<br>${rollAnchor}: ${name}`,
 						rolls: [draw.roll],
-						type: CONST.CHAT_MESSAGE_STYLES.OTHER
+						style: CONST.CHAT_MESSAGE_STYLES.OTHER
 					})
 				}
 			})
@@ -677,7 +677,7 @@ export function setupNameRollListener(sheet) {
 					speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 					content: `<strong>${tableName}</strong><br>${nameAnchor}: ${firstName}<br>${surnameAnchor}: ${surname}`,
 					rolls: [nameDraw.roll, surnameDraw.roll],
-					type: CONST.CHAT_MESSAGE_STYLES.OTHER
+					style: CONST.CHAT_MESSAGE_STYLES.OTHER
 				})
 			}
 		} else {
@@ -706,7 +706,7 @@ export function setupNameRollListener(sheet) {
 							speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 							content: `<strong>${tableName}</strong> (${nameType})<br>${nameAnchor}: ${firstName}<br>${surnameAnchor}: ${surname}`,
 							rolls: [nameDraw.roll, surnameDraw.roll],
-							type: CONST.CHAT_MESSAGE_STYLES.OTHER
+							style: CONST.CHAT_MESSAGE_STYLES.OTHER
 						})
 					}
 				}

@@ -169,7 +169,7 @@ export async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
 		rolls: [roll],
-		type: CONST.CHAT_MESSAGE_STYLES.OTHER
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }
 
@@ -258,7 +258,7 @@ export async function performSavingThrow(sheet, saveKey, traitBonus = 0, traitNa
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
 		rolls: [roll],
-		type: CONST.CHAT_MESSAGE_STYLES.OTHER
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }
 
@@ -359,7 +359,7 @@ export async function performSkillCheck(sheet, skillKey, targetOverride = null, 
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
 		rolls: [roll],
-		type: CONST.CHAT_MESSAGE_STYLES.OTHER
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }
 
@@ -409,6 +409,6 @@ export async function rollTrait(sheet, traitId, traitName, formula, rollTarget =
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
 		rolls: [roll],
-		type: CONST.CHAT_MESSAGE_STYLES.OTHER
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }

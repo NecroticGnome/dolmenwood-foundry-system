@@ -288,7 +288,7 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
 		rolls,
-		type: CONST.CHAT_MESSAGE_STYLES.OTHER
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }
 

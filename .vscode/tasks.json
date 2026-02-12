@@ -4,7 +4,7 @@
 		{
 			"label": "Stop Foundry VTT",
 			"type": "shell",
-			"command": "Get-NetTCPConnection -LocalPort 443 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | Where-Object { $_ -ne 0 } | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; exit 0",
+			"command": "$pids = Get-NetTCPConnection -LocalPort 443 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | Where-Object { $_ -ne 0 }; if ($pids) { $pids | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; $pids | ForEach-Object { try { Wait-Process -Id $_ -Timeout 10 -ErrorAction SilentlyContinue } catch {} }; Start-Sleep -Seconds 2 }; exit 0",
 			"group": "build",
 			"problemMatcher": []
 		},

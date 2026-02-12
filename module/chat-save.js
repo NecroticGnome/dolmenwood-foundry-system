@@ -76,7 +76,7 @@ async function performSaveRollForActor(actor, saveKey) {
 				</div>
 			</div>
 		`,
-		type: CONST.CHAT_MESSAGE_TYPES.ROLL
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	}
 
 	ChatMessage.create(messageData)
