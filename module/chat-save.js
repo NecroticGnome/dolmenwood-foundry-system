@@ -40,46 +40,46 @@ async function performSaveRollForActor(actor, saveKey) {
 
 	const saveName = game.i18n.localize(`DOLMEN.Saves.${saveKey.charAt(0).toUpperCase() + saveKey.slice(1)}`)
 
-	// Roll d20
 	const roll = new Roll('1d20')
 	await roll.evaluate()
 
-	// Success if roll >= target
-	const success = roll.total >= saveTarget
-	const resultLabel = success
+	const d20Result = roll.dice[0].results[0].result
+	const isSuccess = d20Result >= saveTarget
+
+	const resultClass = isSuccess ? 'success' : 'failure'
+	const resultLabel = isSuccess
 		? game.i18n.localize('DOLMEN.Roll.Success')
 		: game.i18n.localize('DOLMEN.Roll.Failure')
 
-	// Prepare chat message
-	const flavor = game.i18n.format('DOLMEN.Roll.SavingThrow', { save: saveName })
-	const messageData = {
-		user: game.user.id,
-		speaker: ChatMessage.getSpeaker({ actor }),
-		flavor,
-		rolls: [roll],
-		content: `
-			<div class="dolmen save-roll">
-				<div class="roll-header">
-					<i class="fa fa-shield-halved"></i>
-					<div class="roll-info">
-						<h3>${actor.name}</h3>
-						<span class="roll-type">${saveName}</span>
-					</div>
-				</div>
-				<div class="roll-result">
-					<div class="inline-roll">${roll.total}</div>
-					<span class="roll-vs">vs</span>
-					<span class="roll-target">${saveTarget}</span>
-				</div>
-				<div class="roll-outcome ${success ? 'success' : 'failure'}">
-					${resultLabel}
+	const anchor = await roll.toAnchor({ classes: ['save-inline-roll'] })
+
+	const chatContent = `
+		<div class="dolmen save-roll">
+			<div class="roll-header save">
+				<i class="fa-solid fa-shield-halved"></i>
+				<div class="roll-info">
+					<h3>${game.i18n.localize('DOLMEN.Roll.SaveVs')} ${saveName}</h3>
+					<span class="roll-type">${game.i18n.localize('DOLMEN.Roll.SavingThrow')}</span>
 				</div>
 			</div>
-		`,
-		style: CONST.CHAT_MESSAGE_STYLES.OTHER
-	}
+			<div class="roll-body">
+				<div class="roll-section ${resultClass}">
+					<div class="roll-result">
+						${anchor.outerHTML}
+					</div>
+					<span class="roll-target">${game.i18n.localize('DOLMEN.Roll.Target')}: ${saveTarget}+</span>
+					<span class="roll-label ${resultClass}">${resultLabel}</span>
+				</div>
+			</div>
+		</div>
+	`
 
-	ChatMessage.create(messageData)
+	await ChatMessage.create({
+		speaker: ChatMessage.getSpeaker({ actor }),
+		content: chatContent,
+		rolls: [roll],
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER
+	})
 }
 
 /**
