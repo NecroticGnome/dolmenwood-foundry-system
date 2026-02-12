@@ -338,7 +338,7 @@ export async function levelUp(sheet) {
 			speaker: ChatMessage.getSpeaker({ actor }),
 			content,
 			rolls,
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 
 		// Compute next level XP threshold

@@ -4,7 +4,7 @@
 /* Game Stats Grid */
 .sheet.dolmen.creature .creature-stats-grid {
 	display: grid;
-	grid-template-columns: max-content repeat(3, 1fr) max-content;
+	grid-template-columns: max-content repeat(3, 1fr) max-content max-content;
 	gap: 0.5rem;
 	text-align: center;
 }

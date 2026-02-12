@@ -97,7 +97,7 @@ Hooks.once('ready', async function () {
 })
 
 // Add context menu to damage rolls and save link listeners in chat
-Hooks.on('renderChatMessage', (message, html) => {
+Hooks.on('renderChatMessageHTML', (message, html) => {
 	setupDamageContextMenu(html)
 	setupSaveLinkListeners(html)
 })

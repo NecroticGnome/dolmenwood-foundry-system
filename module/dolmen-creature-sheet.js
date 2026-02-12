@@ -379,7 +379,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 					</div>
 				</div>
 			`,
-			type: CONST.CHAT_MESSAGE_TYPES.ROLL
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		}
 
 		ChatMessage.create(messageData)
@@ -490,7 +490,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			await ChatMessage.create({
 				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 				content,
-				type: CONST.CHAT_MESSAGE_STYLES.OTHER
+				style: CONST.CHAT_MESSAGE_STYLES.OTHER
 			})
 			return
 		}
@@ -541,7 +541,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 			content,
 			rolls,
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	}
 

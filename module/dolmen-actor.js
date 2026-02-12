@@ -254,7 +254,7 @@ class DolmenActor extends Actor {
 			speaker: ChatMessage.getSpeaker({ actor: this }),
 			content,
 			rolls: healRoll ? [healRoll] : [],
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	}
 
@@ -629,7 +629,7 @@ class DolmenActor extends Actor {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: this }),
 			content,
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	}
 

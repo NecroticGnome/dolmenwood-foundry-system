@@ -815,7 +815,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 			content,
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	}
 
