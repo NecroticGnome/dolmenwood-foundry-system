@@ -26,8 +26,16 @@ export async function rollSaveForControlled(saveKey) {
  * @param {string} saveKey - The save type
  */
 async function performSaveRollForActor(actor, saveKey) {
-	const adjusted = computeAdjustedValues(actor)
-	const saveTarget = adjusted.saves[saveKey]
+	// Get save target - different for adventurers (with adjustments) vs creatures
+	let saveTarget
+	if (actor.type === 'Adventurer') {
+		const adjusted = computeAdjustedValues(actor)
+		saveTarget = adjusted.saves[saveKey]
+	} else {
+		// Creature - use saves directly
+		saveTarget = actor.system.saves?.[saveKey]
+	}
+
 	if (saveTarget === undefined) return
 
 	const saveName = game.i18n.localize(`DOLMEN.Saves.${saveKey.charAt(0).toUpperCase() + saveKey.slice(1)}`)
