@@ -1,222 +1,222 @@
 {
-  "name": "Elf",
-  "type": "Class",
-  "_id": "86ddd79481fff143",
-  "img": "systems/dolmenwood/assets/classes/elf.svg",
-  "system": {
-    "codexUuid": "",
-    "classId": "elf",
-    "requiredKindred": "elf",
-    "primeAbilities": [
-      "charisma",
-      "strength"
-    ],
-    "hitDice": {
-      "die": "1d6",
-      "flat": 1
-    },
-    "xpThresholds": [
-      0,
-      0,
-      3500,
-      7000,
-      14000,
-      28000,
-      56000,
-      112000,
-      224000,
-      450000,
-      620000,
-      790000,
-      960000,
-      1130000,
-      1300000,
-      1470000
-    ],
-    "attackProgression": [
-      0,
-      1,
-      1,
-      2,
-      3,
-      3,
-      4,
-      5,
-      5,
-      6,
-      7,
-      7,
-      8,
-      9,
-      9,
-      10
-    ],
-    "saveProgressions": {
-      "doom": [
-        0,
-        12,
-        12,
-        11,
-        10,
-        10,
-        9,
-        8,
-        8,
-        7,
-        6,
-        6,
-        5,
-        4,
-        4,
-        3
-      ],
-      "ray": [
-        0,
-        13,
-        13,
-        12,
-        11,
-        11,
-        10,
-        9,
-        9,
-        8,
-        7,
-        7,
-        6,
-        5,
-        5,
-        4
-      ],
-      "hold": [
-        0,
-        14,
-        14,
-        13,
-        12,
-        12,
-        11,
-        10,
-        10,
-        9,
-        8,
-        8,
-        7,
-        6,
-        6,
-        5
-      ],
-      "blast": [
-        0,
-        15,
-        15,
-        14,
-        13,
-        13,
-        12,
-        11,
-        11,
-        10,
-        9,
-        9,
-        8,
-        7,
-        7,
-        6
-      ],
-      "spell": [
-        0,
-        16,
-        16,
-        15,
-        14,
-        14,
-        13,
-        12,
-        12,
-        11,
-        10,
-        10,
-        9,
-        8,
-        8,
-        7
-      ]
-    },
-    "skillProgressions": {},
-    "spellProgression": [],
-    "spellType": "none",
-    "combatAptitude": "martial",
-    "hasCombatTalents": false,
-    "hasHolyOrder": false,
-    "canTwoWeaponFight": true,
-    "hasBackstab": false,
-    "traits": {
-      "passive": [
-        {
-          "id": "unearthlyBeauty",
-          "nameKey": "DOLMEN.Traits.UnearthlyBeauty",
-          "descKey": "DOLMEN.Traits.UnearthlyBeautyDesc",
-          "traitType": "adjustment",
-          "adjustmentType": "rollOption",
-          "adjustmentTarget": "abilities.charisma",
-          "adjustmentValue": 2
-        },
-        {
-          "id": "coldIronVuln",
-          "nameKey": "DOLMEN.Traits.ColdIronVuln",
-          "descKey": "DOLMEN.Traits.ColdIronVulnDesc",
-          "traitType": "adjustment",
-          "adjustmentType": "info"
-        },
-        {
-          "id": "holySpellFailure",
-          "nameKey": "DOLMEN.Traits.HolySpellFailure",
-          "descKey": "DOLMEN.Traits.HolySpellFailureDesc",
-          "traitType": "active",
-          "rollable": true,
-          "rollFormula": "1d6",
-          "rollTarget": 2
-        },
-        {
-          "id": "keenSenses",
-          "nameKey": "DOLMEN.Traits.KeenSenses",
-          "descKey": "DOLMEN.Traits.KeenSensesDesc",
-          "traitType": "adjustment",
-          "adjustmentType": "skillOverride",
-          "adjustmentTargets": [
-            "skills.listen",
-            "skills.search"
-          ],
-          "adjustmentValue": 5
-        }
-      ],
-      "info": [
-        {
-          "id": "immortal",
-          "nameKey": "DOLMEN.Traits.Immortal",
-          "descKey": "DOLMEN.Traits.ImmortalDesc",
-          "traitType": "info"
-        }
-      ]
-    }
-  },
-  "effects": [],
-  "folder": null,
-  "sort": 0,
-  "ownership": {
-    "default": 0
-  },
-  "flags": {},
-  "_stats": {
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "coreVersion": "13.351",
-    "systemId": "dolmenwood",
-    "systemVersion": "0.2.0",
-    "createdTime": 1770843306205,
-    "modifiedTime": 1770843306205,
-    "lastModifiedBy": null
-  },
-  "_key": "!items!86ddd79481fff143"
+	"name": "Elf",
+	"type": "Class",
+	"_id": "86ddd79481fff143",
+	"img": "systems/dolmenwood/assets/classes/elf.webp",
+	"system": {
+		"codexUuid": "",
+		"classId": "elf",
+		"requiredKindred": "elf",
+		"primeAbilities": [
+			"charisma",
+			"strength"
+		],
+		"hitDice": {
+			"die": "1d6",
+			"flat": 1
+		},
+		"xpThresholds": [
+			0,
+			0,
+			3500,
+			7000,
+			14000,
+			28000,
+			56000,
+			112000,
+			224000,
+			450000,
+			620000,
+			790000,
+			960000,
+			1130000,
+			1300000,
+			1470000
+		],
+		"attackProgression": [
+			0,
+			1,
+			1,
+			2,
+			3,
+			3,
+			4,
+			5,
+			5,
+			6,
+			7,
+			7,
+			8,
+			9,
+			9,
+			10
+		],
+		"saveProgressions": {
+			"doom": [
+				0,
+				12,
+				12,
+				11,
+				10,
+				10,
+				9,
+				8,
+				8,
+				7,
+				6,
+				6,
+				5,
+				4,
+				4,
+				3
+			],
+			"ray": [
+				0,
+				13,
+				13,
+				12,
+				11,
+				11,
+				10,
+				9,
+				9,
+				8,
+				7,
+				7,
+				6,
+				5,
+				5,
+				4
+			],
+			"hold": [
+				0,
+				14,
+				14,
+				13,
+				12,
+				12,
+				11,
+				10,
+				10,
+				9,
+				8,
+				8,
+				7,
+				6,
+				6,
+				5
+			],
+			"blast": [
+				0,
+				15,
+				15,
+				14,
+				13,
+				13,
+				12,
+				11,
+				11,
+				10,
+				9,
+				9,
+				8,
+				7,
+				7,
+				6
+			],
+			"spell": [
+				0,
+				16,
+				16,
+				15,
+				14,
+				14,
+				13,
+				12,
+				12,
+				11,
+				10,
+				10,
+				9,
+				8,
+				8,
+				7
+			]
+		},
+		"skillProgressions": {},
+		"spellProgression": [],
+		"spellType": "none",
+		"combatAptitude": "martial",
+		"hasCombatTalents": false,
+		"hasHolyOrder": false,
+		"canTwoWeaponFight": true,
+		"hasBackstab": false,
+		"traits": {
+			"passive": [
+				{
+					"id": "unearthlyBeauty",
+					"nameKey": "DOLMEN.Traits.UnearthlyBeauty",
+					"descKey": "DOLMEN.Traits.UnearthlyBeautyDesc",
+					"traitType": "adjustment",
+					"adjustmentType": "rollOption",
+					"adjustmentTarget": "abilities.charisma",
+					"adjustmentValue": 2
+				},
+				{
+					"id": "coldIronVuln",
+					"nameKey": "DOLMEN.Traits.ColdIronVuln",
+					"descKey": "DOLMEN.Traits.ColdIronVulnDesc",
+					"traitType": "adjustment",
+					"adjustmentType": "info"
+				},
+				{
+					"id": "holySpellFailure",
+					"nameKey": "DOLMEN.Traits.HolySpellFailure",
+					"descKey": "DOLMEN.Traits.HolySpellFailureDesc",
+					"traitType": "active",
+					"rollable": true,
+					"rollFormula": "1d6",
+					"rollTarget": 2
+				},
+				{
+					"id": "keenSenses",
+					"nameKey": "DOLMEN.Traits.KeenSenses",
+					"descKey": "DOLMEN.Traits.KeenSensesDesc",
+					"traitType": "adjustment",
+					"adjustmentType": "skillOverride",
+					"adjustmentTargets": [
+						"skills.listen",
+						"skills.search"
+					],
+					"adjustmentValue": 5
+				}
+			],
+			"info": [
+				{
+					"id": "immortal",
+					"nameKey": "DOLMEN.Traits.Immortal",
+					"descKey": "DOLMEN.Traits.ImmortalDesc",
+					"traitType": "info"
+				}
+			]
+		}
+	},
+	"effects": [],
+	"folder": null,
+	"sort": 0,
+	"ownership": {
+		"default": 0
+	},
+	"flags": {},
+	"_stats": {
+		"compendiumSource": null,
+		"duplicateSource": null,
+		"coreVersion": "13.351",
+		"systemId": "dolmenwood",
+		"systemVersion": "0.2.0",
+		"createdTime": 1770843306205,
+		"modifiedTime": 1770843306205,
+		"lastModifiedBy": null
+	},
+	"_key": "!items!86ddd79481fff143"
 }

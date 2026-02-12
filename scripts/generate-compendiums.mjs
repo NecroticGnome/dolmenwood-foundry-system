@@ -1194,7 +1194,7 @@ function generateKindredItems() {
 			name: kindredId.charAt(0).toUpperCase() + kindredId.slice(1),
 			type: 'Kindred',
 			_id: itemId,
-			img: `systems/dolmenwood/assets/kindreds/${kindredId}.svg`,
+			img: `systems/dolmenwood/assets/kindreds/${kindredId}.webp`,
 			system: {
 				codexUuid: "",
 				kindredId,
@@ -1237,7 +1237,7 @@ function generateClassItems() {
 			name: classId.charAt(0).toUpperCase() + classId.slice(1),
 			type: 'Class',
 			_id: itemId,
-			img: `systems/dolmenwood/assets/classes/${classId}.svg`,
+			img: `systems/dolmenwood/assets/classes/${classId}.webp`,
 			system: {
 				codexUuid: "",
 				classId,
@@ -1278,7 +1278,7 @@ function generateClassItems() {
 			name: kindredClassId.charAt(0).toUpperCase() + kindredClassId.slice(1),
 			type: 'Class',
 			_id: itemId,
-			img: `systems/dolmenwood/assets/classes/${kindredClassId}.svg`,
+			img: `systems/dolmenwood/assets/classes/${kindredClassId}.webp`,
 			system: {
 				codexUuid: "",
 				classId: kindredClassId,

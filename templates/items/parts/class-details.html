@@ -1,6 +1,6 @@
 <section class="tab-content class-details {{tab.cssClass}}" data-group="primary" data-tab="details">
 	<!-- Identity -->
-	<section class="class-identity">
+	<section class="class-identity boxed-section">
 		<h2>{{localize "DOLMEN.Class.Identity"}}</h2>
 		<div class="form-row">
 			<div class="form-field">
@@ -17,7 +17,7 @@
 	</section>
 
 	<!-- Core Attributes -->
-	<section class="class-attributes">
+	<section class="class-attributes boxed-section">
 		<h2>{{localize "DOLMEN.Class.CoreAttributes"}}</h2>
 		<div class="form-row">
 			<div class="form-field">
@@ -52,7 +52,7 @@
 	</section>
 
 	<!-- Progression -->
-	<section class="class-progression">
+	<section class="class-progression boxed-section">
 		<h2>{{localize "DOLMEN.Class.Progression"}}</h2>
 		<div class="form-group">
 			<label>{{localize "DOLMEN.Class.XPThresholds"}}</label>
@@ -61,6 +61,18 @@
 		<div class="form-group">
 			<label>{{localize "DOLMEN.Class.SpellProgression"}}</label>
 			<textarea name="system.spellProgression" rows="6" class="json-input">{{spellProgressionJSON}}</textarea>
+		</div>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Class.AttackProgression"}}</label>
+			<textarea name="system.attackProgression" rows="3" class="json-input">{{attackProgressionJSON}}</textarea>
+		</div>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Class.SaveProgressions"}}</label>
+			<textarea name="system.saveProgressions" rows="8" class="json-input">{{saveProgressionsJSON}}</textarea>
+		</div>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Class.SkillProgressions"}}</label>
+			<textarea name="system.skillProgressions" rows="10" class="json-input">{{skillProgressionsJSON}}</textarea>
 		</div>
 	</section>
 </section>

@@ -1,98 +1,98 @@
 {
-  "name": "Woodgrue",
-  "type": "Kindred",
-  "_id": "4a6fb2afe1ba3978",
-  "img": "systems/dolmenwood/assets/kindreds/woodgrue.svg",
-  "system": {
-    "codexUuid": "",
-    "kindredId": "woodgrue",
-    "size": "small",
-    "creatureType": "demi-fey",
-    "ageFormula": "50 + 3d6",
-    "lifespanFormula": "300 + 2d100",
-    "heightFormula": "36 + 2d6",
-    "weightFormula": "60 + 2d10",
-    "languages": [
-      "woldish",
-      "woodgrue"
-    ],
-    "traits": {
-      "active": [
-        {
-          "id": "enchantedMelody",
-          "nameKey": "DOLMEN.Traits.EnchantedMelody",
-          "descKey": "DOLMEN.Traits.EnchantedMelodyDesc",
-          "traitType": "active",
-          "maxUses": 1,
-          "usageFrequency": "DOLMEN.Traits.OncePerDay"
-        }
-      ],
-      "passive": [
-        {
-          "id": "keenSensesListen",
-          "nameKey": "DOLMEN.Traits.KeenSensesListen",
-          "descKey": "DOLMEN.Traits.KeenSensesListenDesc",
-          "traitType": "adjustment",
-          "adjustmentType": "skillOverride",
-          "adjustmentTargets": [
-            "skills.listen"
-          ],
-          "adjustmentValue": 5
-        },
-        {
-          "id": "coldIronVuln",
-          "nameKey": "DOLMEN.Traits.ColdIronVuln",
-          "descKey": "DOLMEN.Traits.ColdIronVulnDesc",
-          "traitType": "adjustment",
-          "adjustmentType": "info"
-        },
-        {
-          "id": "fairyResistance",
-          "nameKey": "DOLMEN.Traits.FairyResistance",
-          "descKey": "DOLMEN.Traits.FairyResistanceDesc",
-          "traitType": "info"
-        }
-      ],
-      "info": [
-        {
-          "id": "moonSight",
-          "nameKey": "DOLMEN.Traits.MoonSight",
-          "descKey": "DOLMEN.Traits.MoonSightDesc",
-          "traitType": "info"
-        },
-        {
-          "id": "instrumentsAsWeapons",
-          "nameKey": "DOLMEN.Traits.InstrumentsAsWeapons",
-          "descKey": "DOLMEN.Traits.InstrumentsAsWeaponsDesc",
-          "traitType": "info"
-        },
-        {
-          "id": "smallSize",
-          "nameKey": "DOLMEN.Traits.SmallSize",
-          "descKey": "DOLMEN.Traits.SmallSizeDesc",
-          "traitType": "sizeRestriction",
-          "sizeRestriction": "small",
-          "hideFromTraitTab": false
-        }
-      ]
-    }
-  },
-  "effects": [],
-  "folder": null,
-  "sort": 0,
-  "ownership": {
-    "default": 0
-  },
-  "flags": {},
-  "_stats": {
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "coreVersion": "13.351",
-    "systemId": "dolmenwood",
-    "systemVersion": "0.2.0",
-    "createdTime": 1770843306205,
-    "modifiedTime": 1770843306205,
-    "lastModifiedBy": null
-  },
-  "_key": "!items!4a6fb2afe1ba3978"
+	"name": "Woodgrue",
+	"type": "Kindred",
+	"_id": "4a6fb2afe1ba3978",
+	"img": "systems/dolmenwood/assets/kindreds/woodgrue.webp",
+	"system": {
+		"codexUuid": "",
+		"kindredId": "woodgrue",
+		"size": "small",
+		"creatureType": "demi-fey",
+		"ageFormula": "50 + 3d6",
+		"lifespanFormula": "300 + 2d100",
+		"heightFormula": "36 + 2d6",
+		"weightFormula": "60 + 2d10",
+		"languages": [
+			"woldish",
+			"woodgrue"
+		],
+		"traits": {
+			"active": [
+				{
+					"id": "enchantedMelody",
+					"nameKey": "DOLMEN.Traits.EnchantedMelody",
+					"descKey": "DOLMEN.Traits.EnchantedMelodyDesc",
+					"traitType": "active",
+					"maxUses": 1,
+					"usageFrequency": "DOLMEN.Traits.OncePerDay"
+				}
+			],
+			"passive": [
+				{
+					"id": "keenSensesListen",
+					"nameKey": "DOLMEN.Traits.KeenSensesListen",
+					"descKey": "DOLMEN.Traits.KeenSensesListenDesc",
+					"traitType": "adjustment",
+					"adjustmentType": "skillOverride",
+					"adjustmentTargets": [
+						"skills.listen"
+					],
+					"adjustmentValue": 5
+				},
+				{
+					"id": "coldIronVuln",
+					"nameKey": "DOLMEN.Traits.ColdIronVuln",
+					"descKey": "DOLMEN.Traits.ColdIronVulnDesc",
+					"traitType": "adjustment",
+					"adjustmentType": "info"
+				},
+				{
+					"id": "fairyResistance",
+					"nameKey": "DOLMEN.Traits.FairyResistance",
+					"descKey": "DOLMEN.Traits.FairyResistanceDesc",
+					"traitType": "info"
+				}
+			],
+			"info": [
+				{
+					"id": "moonSight",
+					"nameKey": "DOLMEN.Traits.MoonSight",
+					"descKey": "DOLMEN.Traits.MoonSightDesc",
+					"traitType": "info"
+				},
+				{
+					"id": "instrumentsAsWeapons",
+					"nameKey": "DOLMEN.Traits.InstrumentsAsWeapons",
+					"descKey": "DOLMEN.Traits.InstrumentsAsWeaponsDesc",
+					"traitType": "info"
+				},
+				{
+					"id": "smallSize",
+					"nameKey": "DOLMEN.Traits.SmallSize",
+					"descKey": "DOLMEN.Traits.SmallSizeDesc",
+					"traitType": "sizeRestriction",
+					"sizeRestriction": "small",
+					"hideFromTraitTab": false
+				}
+			]
+		}
+	},
+	"effects": [],
+	"folder": null,
+	"sort": 0,
+	"ownership": {
+		"default": 0
+	},
+	"flags": {},
+	"_stats": {
+		"compendiumSource": null,
+		"duplicateSource": null,
+		"coreVersion": "13.351",
+		"systemId": "dolmenwood",
+		"systemVersion": "0.2.0",
+		"createdTime": 1770843306205,
+		"modifiedTime": 1770843306205,
+		"lastModifiedBy": null
+	},
+	"_key": "!items!4a6fb2afe1ba3978"
 }

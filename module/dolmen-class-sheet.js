@@ -92,6 +92,15 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		// Format XP thresholds
 		context.xpThresholdsJSON = JSON.stringify(this.item.system.xpThresholds, null, 2)
 
+		// Format attack progression
+		context.attackProgressionJSON = JSON.stringify(this.item.system.attackProgression, null, 2)
+
+		// Format save progressions
+		context.saveProgressionsJSON = JSON.stringify(this.item.system.saveProgressions, null, 2)
+
+		// Format skill progressions
+		context.skillProgressionsJSON = JSON.stringify(this.item.system.skillProgressions, null, 2)
+
 		return context
 	}
 
@@ -145,6 +154,43 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 					})
 				} catch (e) {
 					console.error('Failed to parse spellProgression JSON:', e)
+					fd.append(key, value)
+				}
+			} else if (key === 'system.attackProgression' && typeof value === 'string') {
+				// Parse JSON array
+				try {
+					const progression = JSON.parse(value)
+					progression.forEach((bonus, i) => {
+						fd.append(`system.attackProgression.${i}`, bonus)
+					})
+				} catch (e) {
+					console.error('Failed to parse attackProgression JSON:', e)
+					fd.append(key, value)
+				}
+			} else if (key === 'system.saveProgressions' && typeof value === 'string') {
+				// Parse save progressions object
+				try {
+					const progressions = JSON.parse(value)
+					for (const [saveType, progression] of Object.entries(progressions)) {
+						progression.forEach((target, i) => {
+							fd.append(`system.saveProgressions.${saveType}.${i}`, target)
+						})
+					}
+				} catch (e) {
+					console.error('Failed to parse saveProgressions JSON:', e)
+					fd.append(key, value)
+				}
+			} else if (key === 'system.skillProgressions' && typeof value === 'string') {
+				// Parse skill progressions object
+				try {
+					const progressions = JSON.parse(value)
+					for (const [skillId, progression] of Object.entries(progressions)) {
+						progression.forEach((target, i) => {
+							fd.append(`system.skillProgressions.${skillId}.${i}`, target)
+						})
+					}
+				} catch (e) {
+					console.error('Failed to parse skillProgressions JSON:', e)
 					fd.append(key, value)
 				}
 			} else if (key === 'system.traits' && typeof value === 'string') {
