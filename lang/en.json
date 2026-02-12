@@ -420,8 +420,6 @@
 			"Roll": "ROLL",
 			"AttackRoll": "Attack Roll",
 			"DamageRoll": "Damage",
-			"Critical": "Critical!",
-			"Fumble": "Fumble!",
 			"RollAttackOnly": "Roll attack only",
 			"RollDamageOnly": "Roll damage only",
 			"Unarmed": "Unarmed",
@@ -455,8 +453,6 @@
 			"DC": "DC",
 			"Success": "Success",
 			"Failure": "Failure",
-			"CriticalSuccess": "Critical Success!",
-			"CriticalFailure": "Critical Failure!",
 			"NormalRoll": "Normal Roll"
 		},
 		"Edit": "Edit",
@@ -599,6 +595,7 @@
 		"Damage": {
 			"ApplyDamage": "Apply Damage",
 			"ApplyAmount": "Apply {damage} damage",
+			"ApplyPlus": "Apply {damage} + 1 damage",
 			"Applied": "Applied {damage} damage to {name}",
 			"AppliedMultiple": "Applied {damage} damage to {count} tokens",
 			"NoTokensSelected": "No tokens selected. Select a token first."
