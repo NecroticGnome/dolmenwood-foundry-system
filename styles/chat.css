@@ -679,3 +679,17 @@
 	color: var(--dolmen-color-failure);
 	background: rgba(var(--dolmen-color-failure-rgb), 0.15);
 }
+
+/* Inline Save Link */
+.inline-save-link {
+	color: var(--dolmen-color-link);
+	text-decoration: underline;
+	cursor: pointer;
+	font-weight: 600;
+	transition: color 0.2s ease;
+}
+
+.inline-save-link:hover {
+	color: var(--dolmen-color-link-hover);
+	text-decoration: none;
+}

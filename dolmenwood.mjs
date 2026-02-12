@@ -10,6 +10,7 @@ import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
 import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel } from './module/data-models.mjs'
 import { setupDamageContextMenu } from './module/chat-damage.js'
+import { setupSaveLinkListeners } from './module/chat-save.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -95,7 +96,8 @@ Hooks.once('ready', async function () {
 	console.log(game.i18n.localize('DOLMEN.WelcomeMessage'))
 })
 
-// Add context menu to damage rolls in chat
+// Add context menu to damage rolls and save link listeners in chat
 Hooks.on('renderChatMessage', (message, html) => {
 	setupDamageContextMenu(html)
+	setupSaveLinkListeners(html)
 })
