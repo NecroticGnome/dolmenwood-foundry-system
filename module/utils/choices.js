@@ -58,6 +58,7 @@ export const CHOICE_KEYS = {
 	creatureTypes: ['mortal', 'demi-fey', 'fairy'],
 	sizes: ['small', 'medium', 'large'],
 	armorBulks: ['none', 'light', 'medium', 'heavy'],
+	armorTypes: ['armor', 'shield'],
 	foragedTypes: ['plant', 'fungus', 'pipeleaf'],
 	runeMagnitudes: ['lesser', 'greater', 'mighty'],
 	knackTypes: ['birdFriend', 'lockSinger', 'rootFriend', 'threadWhistling', 'woodKenning', 'yeastMaster'],

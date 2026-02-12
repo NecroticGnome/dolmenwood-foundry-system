@@ -100,6 +100,12 @@
 					{{selectOptions @root.armorFitChoices selected=system.fit}}
 				</select>
 			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.ArmorType.label"}}</label>
+				<select name="system.armorType">
+					{{selectOptions @root.armorTypeChoices selected=system.armorType}}
+				</select>
+			</div>
 		</div>
 	</section>
 	{{/if}}

@@ -393,6 +393,11 @@
 				"medium": "Medium",
 				"large": "Large"
 			},
+			"ArmorType": {
+				"label": "Type",
+				"armor": "Body Armor",
+				"shield": "Shield"
+			},
 			"ForagedType": {
 				"label": "Type",
 				"plant": "Plant",
