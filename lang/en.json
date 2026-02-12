@@ -604,6 +604,9 @@
 			"AppliedMultiple": "Applied {damage} damage to {count} tokens",
 			"NoTokensSelected": "No tokens selected. Select a token first."
 		},
+		"Save": {
+			"NoTokensSelected": "No tokens selected. Select a token to roll saving throw."
+		},
 		"Class": {
 			"TabDetails": "Details",
 			"TabTraits": "Traits",

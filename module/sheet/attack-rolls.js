@@ -715,8 +715,10 @@ export async function executeMeleeAttack(sheet, weapon, attackMode, selectedModi
 		}
 	}
 
-	// Special text for push
-	const specialText = isPush ? game.i18n.localize('DOLMEN.Attack.PushEffect') : null
+	// Special text for push (interactive save link)
+	const specialText = isPush
+		? `<a class="inline-save-link" data-save="hold">${game.i18n.localize('DOLMEN.Attack.PushEffect')}</a>`
+		: null
 
 	await performAttackRoll(sheet, weapon, 'melee', {
 		attackOnly: isPush || rollType === 'attack',
