@@ -342,47 +342,44 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const actor = this.actor
 		const morale = actor.system.morale
 
-		// Roll 2d6
 		const roll = new Roll('2d6')
 		await roll.evaluate()
 
-		// Determine success (roll <= morale)
-		const success = roll.total <= morale
-		const resultLabel = success
+		const isSuccess = roll.total <= morale
+		const resultClass = isSuccess ? 'success' : 'failure'
+		const resultLabel = isSuccess
 			? game.i18n.localize('DOLMEN.Creature.MoraleHolds')
 			: game.i18n.localize('DOLMEN.Creature.MoraleFlees')
 
-		// Prepare chat message
-		const flavor = game.i18n.localize('DOLMEN.Creature.MoraleCheck')
-		const messageData = {
-			user: game.user.id,
-			speaker: ChatMessage.getSpeaker({ actor }),
-			flavor,
-			rolls: [roll],
-			content: `
-				<div class="dolmen-roll morale-roll">
-					<div class="roll-header">
-						<span class="roll-label">${flavor}</span>
-					</div>
-					<div class="roll-result">
-						<div class="dice-result">
-							<div class="dice-formula">${roll.formula}</div>
-							<div class="dice-total ${success ? 'success' : 'failure'}">${roll.total}</div>
-						</div>
-						<div class="roll-target">
-							<span class="target-label">${game.i18n.localize('DOLMEN.Creature.Morale')}</span>
-							<span class="target-value">${morale}</span>
-						</div>
-					</div>
-					<div class="roll-outcome ${success ? 'success' : 'failure'}">
-						${resultLabel}
+		const anchor = await roll.toAnchor({ classes: ['morale-inline-roll'] })
+
+		const chatContent = `
+			<div class="dolmen skill-roll">
+				<div class="roll-header skill">
+					<i class="fa-solid fa-flag"></i>
+					<div class="roll-info">
+						<h3>${game.i18n.localize('DOLMEN.Creature.MoraleCheck')}</h3>
+						<span class="roll-type">${actor.name}</span>
 					</div>
 				</div>
-			`,
-			style: CONST.CHAT_MESSAGE_STYLES.OTHER
-		}
+				<div class="roll-body">
+					<div class="roll-section ${resultClass}">
+						<div class="roll-result">
+							${anchor.outerHTML}
+						</div>
+						<span class="roll-target">${game.i18n.localize('DOLMEN.Roll.Target')}: ${morale}-</span>
+						<span class="roll-label ${resultClass}">${resultLabel}</span>
+					</div>
+				</div>
+			</div>
+		`
 
-		ChatMessage.create(messageData)
+		await ChatMessage.create({
+			speaker: ChatMessage.getSpeaker({ actor }),
+			content: chatContent,
+			rolls: [roll],
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
+		})
 	}
 
 	/* -------------------------------------------- */
