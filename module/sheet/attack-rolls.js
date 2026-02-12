@@ -187,8 +187,12 @@ export function buildAttackChatHtml({ weapon, attackType, attack, damage }) {
 			</div>`
 	}
 	if (damage) {
+		const weaponQualities = weapon.system.qualities || []
+		const qualitiesAttr = weaponQualities.length > 0
+			? ` data-weapon-qualities="${weaponQualities.join(',')}"`
+			: ''
 		rollSections += `
-			<div class="roll-section damage-section">
+			<div class="roll-section damage-section"${qualitiesAttr}>
 				<label>${game.i18n.localize('DOLMEN.Attack.DamageRoll')}</label>
 				<div class="roll-result ${iconClass}">
 					${damage.anchor.outerHTML}

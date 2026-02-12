@@ -220,23 +220,11 @@ export async function performSavingThrow(sheet, saveKey, traitBonus = 0, traitNa
 
 	const d20Result = roll.dice[0].results[0].result
 	const isSuccess = d20Result >= saveTarget
-	const isCriticalSuccess = d20Result === 20
-	const isCriticalFailure = d20Result === 1
 
-	let resultClass = isSuccess ? 'success' : 'failure'
-	let resultLabel = ''
-
-	if (isCriticalSuccess) {
-		resultClass = 'critical'
-		resultLabel = game.i18n.localize('DOLMEN.Roll.CriticalSuccess')
-	} else if (isCriticalFailure) {
-		resultClass = 'fumble'
-		resultLabel = game.i18n.localize('DOLMEN.Roll.CriticalFailure')
-	} else if (isSuccess) {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Success')
-	} else {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Failure')
-	}
+	const resultClass = isSuccess ? 'success' : 'failure'
+	const resultLabel = isSuccess
+		? game.i18n.localize('DOLMEN.Roll.Success')
+		: game.i18n.localize('DOLMEN.Roll.Failure')
 
 	const anchor = await roll.toAnchor({ classes: ['save-inline-roll'] })
 

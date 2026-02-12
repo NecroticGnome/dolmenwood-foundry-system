@@ -136,30 +136,10 @@
 	font-weight: bold;
 }
 
-/* Critical hit styling */
-.dolmen.attack-roll .roll-section.critical .inline-roll,
-.dolmen.attack-roll .roll-section.critical .inline-result {
-	color: var(--dolmen-color-success);
-}
-
-/* Fumble styling */
-.dolmen.attack-roll .roll-section.fumble .inline-roll,
-.dolmen.attack-roll .roll-section.fumble .inline-result {
-	color: var(--dolmen-color-failure);
-}
-
 .dolmen.attack-roll .roll-result .roll-label {
 	font-size: 0.7rem;
 	font-weight: bold;
 	text-transform: uppercase;
-}
-
-.dolmen.attack-roll .roll-section.critical .roll-label {
-	color: var(--dolmen-color-success);
-}
-
-.dolmen.attack-roll .roll-section.fumble .roll-label {
-	color: var(--dolmen-color-failure);
 }
 
 .dolmen.attack-roll .roll-breakdown {
@@ -311,49 +291,6 @@
 .dolmen.skill-roll .roll-label.failure {
 	background-color: rgba(204, 0, 0, 0.15);
 	color: var(--dolmen-color-failure);
-}
-
-/* Critical success styling */
-.dolmen.ability-roll .roll-section.critical,
-.dolmen.save-roll .roll-section.critical,
-.dolmen.skill-roll .roll-section.critical {
-	border-color: var(--dolmen-color-success);
-	background-color: rgba(34, 139, 34, 0.1);
-	/* critical background */
-}
-
-.dolmen.ability-roll .roll-section.critical .inline-roll,
-.dolmen.save-roll .roll-section.critical .inline-roll,
-.dolmen.skill-roll .roll-section.critical .inline-roll {
-	color: #228b22;
-}
-
-.dolmen.ability-roll .roll-label.critical,
-.dolmen.save-roll .roll-label.critical,
-.dolmen.skill-roll .roll-label.critical {
-	background-color: #228b22;
-	color: white;
-}
-
-/* Fumble styling */
-.dolmen.ability-roll .roll-section.fumble,
-.dolmen.save-roll .roll-section.fumble,
-.dolmen.skill-roll .roll-section.fumble {
-	border-color: var(--dolmen-color-failure);
-	background-color: rgba(204, 0, 0, 0.1);
-}
-
-.dolmen.ability-roll .roll-section.fumble .inline-roll,
-.dolmen.save-roll .roll-section.fumble .inline-roll,
-.dolmen.skill-roll .roll-section.fumble .inline-roll {
-	color: #c00;
-}
-
-.dolmen.ability-roll .roll-label.fumble,
-.dolmen.save-roll .roll-label.fumble,
-.dolmen.skill-roll .roll-label.fumble {
-	background-color: #c00;
-	color: white;
 }
 
 /* Trait badge in roll headers */

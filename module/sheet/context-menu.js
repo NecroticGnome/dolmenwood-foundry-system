@@ -24,7 +24,7 @@ export function createContextMenu(target, { html, position, onItemClick, menuCla
 
 	// Create the menu element
 	const menu = document.createElement('div')
-	menu.className = menuClass
+	menu.className = `dolmen ${menuClass}`
 	menu.innerHTML = html
 
 	// Position the menu
