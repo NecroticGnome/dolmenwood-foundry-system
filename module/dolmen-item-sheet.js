@@ -130,6 +130,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		// Armor choices
 		context.armorBulkChoices = buildChoices('DOLMEN.Item.Bulk', CHOICE_KEYS.armorBulks)
 		context.armorFitChoices = buildChoices('DOLMEN.Item.Fit', CHOICE_KEYS.sizes)
+		context.armorTypeChoices = buildChoices('DOLMEN.Item.ArmorType', CHOICE_KEYS.armorTypes)
 
 		// Foraged choices
 		context.foragedTypeChoices = buildChoices('DOLMEN.Item.ForagedType', CHOICE_KEYS.foragedTypes)
