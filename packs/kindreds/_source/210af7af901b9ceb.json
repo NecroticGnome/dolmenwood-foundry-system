@@ -1,0 +1,116 @@
+{
+  "name": "Grimalkin",
+  "type": "Kindred",
+  "_id": "210af7af901b9ceb",
+  "img": "systems/dolmenwood/assets/kindreds/grimalkin.webp",
+  "system": {
+    "codexUuid": "",
+    "kindredId": "grimalkin",
+    "size": "small",
+    "creatureType": "fairy",
+    "ageFormula": "1d100 * 9 + 1d10",
+    "lifespanFormula": "0",
+    "heightFormula": "30 + 2d6",
+    "weightFormula": "50 + 3d10",
+    "languages": [
+      "woldish",
+      "grimalkin"
+    ],
+    "traits": {
+      "active": [
+        {
+          "id": "shapeShiftChester",
+          "nameKey": "DOLMEN.Traits.ShapeShiftChester",
+          "descKey": "DOLMEN.Traits.ShapeShiftChesterDesc",
+          "traitType": "active"
+        },
+        {
+          "id": "shapeShiftWilder",
+          "nameKey": "DOLMEN.Traits.ShapeShiftWilder",
+          "descKey": "DOLMEN.Traits.ShapeShiftWilderDesc",
+          "traitType": "active",
+          "rollable": true,
+          "rollFormula": "2d6",
+          "maxUses": 1,
+          "usageFrequency": "DOLMEN.Traits.OncePerDay"
+        },
+        {
+          "id": "healRodent",
+          "nameKey": "DOLMEN.Traits.HealRodent",
+          "descKey": "DOLMEN.Traits.HealRodentDesc",
+          "traitType": "active"
+        }
+      ],
+      "passive": [
+        {
+          "id": "acVsLarge",
+          "nameKey": "DOLMEN.Traits.ACVsLarge",
+          "descKey": "DOLMEN.Traits.ACVsLargeDesc",
+          "traitType": "adjustment",
+          "adjustmentType": "info"
+        },
+        {
+          "id": "coldIronVuln",
+          "nameKey": "DOLMEN.Traits.ColdIronVuln",
+          "descKey": "DOLMEN.Traits.ColdIronVulnDesc",
+          "traitType": "adjustment",
+          "adjustmentType": "info"
+        }
+      ],
+      "info": [
+        {
+          "id": "immortal",
+          "nameKey": "DOLMEN.Traits.Immortal",
+          "descKey": "DOLMEN.Traits.ImmortalDesc",
+          "traitType": "info"
+        },
+        {
+          "id": "smallSize",
+          "nameKey": "DOLMEN.Traits.SmallSize",
+          "descKey": "DOLMEN.Traits.SmallSizeDesc",
+          "traitType": "sizeRestriction",
+          "sizeRestriction": "small",
+          "hideFromTraitTab": false
+        },
+        {
+          "id": "keenSenses",
+          "nameKey": "DOLMEN.Traits.KeenSensesListen",
+          "descKey": "DOLMEN.Traits.KeenSensesListenDesc",
+          "traitType": "adjustment",
+          "adjustmentType": "skillOverride",
+          "adjustmentTargets": [
+            "skills.listen"
+          ],
+          "adjustmentValue": 5
+        },
+        {
+          "id": "magicResistance",
+          "nameKey": "DOLMEN.Traits.MagicResistance",
+          "descKey": "DOLMEN.Traits.MagicResistanceDesc",
+          "traitType": "adjustment",
+          "adjustmentType": "static",
+          "adjustmentTarget": "magicResistance",
+          "adjustmentValue": 2
+        }
+      ]
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.351",
+    "systemId": "dolmenwood",
+    "systemVersion": "0.2.0",
+    "createdTime": 0,
+    "modifiedTime": 0,
+    "lastModifiedBy": null
+  },
+  "_key": "!items!210af7af901b9ceb"
+}

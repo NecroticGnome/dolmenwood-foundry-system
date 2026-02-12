@@ -1,36 +1,37 @@
 {
-  "name": "Thief",
+  "name": "Bard",
   "type": "Class",
-  "_id": "631f2aa337f5e908",
-  "img": "systems/dolmenwood/assets/classes/thief.svg",
+  "_id": "70fcf51c07c20b1b",
+  "img": "systems/dolmenwood/assets/classes/bard.webp",
   "system": {
     "codexUuid": "",
-    "classId": "thief",
+    "classId": "bard",
     "requiredKindred": "",
     "primeAbilities": [
+      "charisma",
       "dexterity"
     ],
     "hitDice": {
-      "die": "1d4",
+      "die": "1d6",
       "flat": 1
     },
     "xpThresholds": [
       0,
       0,
-      1200,
-      2400,
-      4800,
-      9600,
-      19200,
-      38400,
-      76800,
-      150000,
-      270000,
-      390000,
-      510000,
-      630000,
-      750000,
-      870000
+      1750,
+      3500,
+      7000,
+      14000,
+      28000,
+      56000,
+      112000,
+      220000,
+      340000,
+      460000,
+      580000,
+      700000,
+      820000,
+      940000
     ],
     "attackProgression": [
       0,
@@ -145,8 +146,6 @@
     "skillProgressions": {
       "listen": [
         0,
-        6,
-        6,
         5,
         5,
         5,
@@ -158,50 +157,14 @@
         3,
         3,
         3,
-        2,
-        2
-      ],
-      "search": [
-        0,
-        6,
-        5,
-        5,
-        5,
-        5,
-        4,
-        4,
-        4,
-        4,
         3,
         3,
-        3,
-        2,
-        2,
-        2
-      ],
-      "climbWall": [
-        0,
-        4,
-        4,
-        4,
-        3,
-        3,
-        3,
-        3,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
         2,
         2
       ],
       "decipherDocument": [
         0,
         6,
-        6,
-        6,
         5,
         5,
         5,
@@ -213,23 +176,7 @@
         3,
         3,
         3,
-        2
-      ],
-      "disarmMechanism": [
-        0,
-        6,
-        5,
-        5,
-        5,
-        5,
-        4,
-        4,
-        4,
-        4,
-        3,
-        3,
-        3,
-        3,
+        2,
         2,
         2
       ],
@@ -237,11 +184,11 @@
         0,
         6,
         6,
+        6,
         5,
         5,
         5,
         5,
-        4,
         4,
         4,
         4,
@@ -251,38 +198,20 @@
         3,
         2
       ],
-      "pickLock": [
+      "monsterLore": [
         0,
         5,
         5,
-        5,
-        5,
         4,
         4,
         4,
         4,
+        3,
+        3,
         3,
         3,
         3,
         2,
-        2,
-        2,
-        2
-      ],
-      "stealth": [
-        0,
-        5,
-        5,
-        5,
-        5,
-        4,
-        4,
-        4,
-        4,
-        3,
-        3,
-        3,
-        3,
         2,
         2,
         2
@@ -293,24 +222,29 @@
     "combatAptitude": "semi-martial",
     "hasCombatTalents": false,
     "hasHolyOrder": false,
-    "canTwoWeaponFight": true,
-    "hasBackstab": true,
+    "canTwoWeaponFight": false,
+    "hasBackstab": false,
     "traits": {
       "active": [
         {
-          "id": "backstab",
-          "nameKey": "DOLMEN.Traits.Backstab",
-          "descKey": "DOLMEN.Traits.BackstabDesc",
+          "id": "counterCharm",
+          "nameKey": "DOLMEN.Traits.CounterCharm",
+          "descKey": "DOLMEN.Traits.CounterCharmDesc",
+          "traitType": "active"
+        },
+        {
+          "id": "enchantment",
+          "nameKey": "DOLMEN.Traits.Enchantment",
+          "descKey": "DOLMEN.Traits.EnchantmentDesc",
           "traitType": "active",
-          "rollable": true,
-          "rollFormula": "3d4"
+          "usageFrequency": "DOLMEN.Traits.UsesPerDay"
         }
       ],
       "info": [
         {
-          "id": "thiefSkills",
-          "nameKey": "DOLMEN.Traits.ThiefSkills",
-          "descKey": "DOLMEN.Traits.ThiefSkillsDesc",
+          "id": "bardSkills",
+          "nameKey": "DOLMEN.Traits.BardSkills",
+          "descKey": "DOLMEN.Traits.BardSkillsDesc",
           "traitType": "info"
         }
       ]
@@ -329,9 +263,9 @@
     "coreVersion": "13.351",
     "systemId": "dolmenwood",
     "systemVersion": "0.2.0",
-    "createdTime": 1770843306205,
-    "modifiedTime": 1770843306205,
+    "createdTime": 0,
+    "modifiedTime": 0,
     "lastModifiedBy": null
   },
-  "_key": "!items!631f2aa337f5e908"
+  "_key": "!items!70fcf51c07c20b1b"
 }

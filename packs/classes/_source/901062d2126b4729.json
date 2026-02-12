@@ -1,8 +1,8 @@
 {
   "name": "Knight",
   "type": "Class",
-  "_id": "4c5390aa53afc90a",
-  "img": "systems/dolmenwood/assets/classes/knight.svg",
+  "_id": "901062d2126b4729",
+  "img": "systems/dolmenwood/assets/classes/knight.webp",
   "system": {
     "codexUuid": "",
     "classId": "knight",
@@ -259,9 +259,9 @@
     "coreVersion": "13.351",
     "systemId": "dolmenwood",
     "systemVersion": "0.2.0",
-    "createdTime": 1770843306205,
-    "modifiedTime": 1770843306205,
+    "createdTime": 0,
+    "modifiedTime": 0,
     "lastModifiedBy": null
   },
-  "_key": "!items!4c5390aa53afc90a"
+  "_key": "!items!901062d2126b4729"
 }
