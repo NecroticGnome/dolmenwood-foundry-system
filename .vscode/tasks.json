@@ -4,37 +4,42 @@
 		{
 			"label": "Stop Foundry VTT",
 			"type": "shell",
-			"command": "Stop-Process -Name 'FoundryVTT' -Force -ErrorAction SilentlyContinue; exit 0",
-			"group": "build"
+			"command": "Get-NetTCPConnection -LocalPort 443 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | Where-Object { $_ -ne 0 } | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; exit 0",
+			"group": "build",
+			"problemMatcher": []
 		},
 		{
 			"label": "Copy to Foundry",
 			"type": "shell",
 			"command": "node scripts/build-css.js; if ($LASTEXITCODE -ne 0) { exit 1 }; Remove-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' | Out-Null; Get-ChildItem -Path . -Exclude '.*', 'node_modules', 'scripts' | Copy-Item -Destination 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; node scripts/patch-system-json.js 'C:\\FoundryVTT\\Data\\systems\\dolmenwood\\system.json'",
-			"group": "build"
+			"group": "build",
+			"problemMatcher": []
 		},
 		{
 			"label": "FVTT Pack - Pack",
 			"type": "shell",
 			"command": "$packs = Get-ChildItem -Path packs -Directory | Select-Object -ExpandProperty Name; fvtt package workon dolmenwood --type System; foreach ($pack in $packs) { fvtt package pack $pack }",
-			"group": "build"
+			"group": "build",
+			"problemMatcher": []
 		},
 		{
 			"label": "Start Foundry VTT",
 			"type": "shell",
-			"command": "Start-Process 'C:\\FoundryVTT\\FoundryVTT.exe' -ArgumentList '--port=443'",
-			"group": "build"
+			"command": "Start-Process cmd -ArgumentList '/c','fvtt launch --port=443' -WindowStyle Hidden",
+			"group": "build",
+			"problemMatcher": []
 		},
 		{
 			"label": "FVTT Pack - Unpack + Sync",
 			"type": "shell",
 			"command": "$packs = Get-ChildItem -Path packs -Directory | Select-Object -ExpandProperty Name; fvtt package workon dolmenwood --type System; foreach ($pack in $packs) { fvtt package unpack $pack }; Copy-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood\\packs\\*' -Destination 'packs' -Recurse -Force",
-			"group": "build"
+			"group": "build",
+			"problemMatcher": []
 		},
 		{
 			"label": "Deploy to Foundry",
 			"type": "shell",
-			"command": "echo 'Deploy sequence started'",
+			"command": "echo 'Deploy complete'",
 			"dependsOn": [
 				"Stop Foundry VTT",
 				"Copy to Foundry",
@@ -45,6 +50,14 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
+			},
+			"problemMatcher": [],
+			"runOptions": {
+				"instanceLimit": 1
+			},
+			"presentation": {
+				"reveal": "always",
+				"close": true
 			}
 		}
 	]
