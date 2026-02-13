@@ -8,98 +8,34 @@
 	flex-direction: column;
 }
 
-.sheet.dolmen.item .item-header {
-	display: flex;
+/* -------------------------------------------- */
+/*  Item Header (in body tab)                   */
+/* -------------------------------------------- */
+.sheet.dolmen.item .header-details {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
 	gap: 0.5rem;
-	padding: 0.5rem;
-	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
 }
 
-.sheet.dolmen.item .item-header .item-image {
-	width: 48px;
-	height: 48px;
-	border: 2px solid var(--dolmen-color-background);
-	border-radius: 4px;
-	overflow: hidden;
+.sheet.dolmen.item .tab-content .two-columns.header {
+	grid-template-columns: auto 5.5rem;
 }
 
-.sheet.dolmen.item .item-header .item-image img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	cursor: pointer;
-	transition: opacity 0.1s;
+.sheet.dolmen.item .boxed-section.portrait-section {
+	min-height: 5.5rem;
+	height: 5.5rem;
+	padding: 0;
 }
 
-.sheet.dolmen.item .item-header .item-image img:hover {
-	opacity: 0.8;
+.sheet.dolmen.item .portrait-container {
+	width: 5.5rem;
+	height: 5.5rem;
 }
 
-.sheet.dolmen.item .item-header .item-title {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-
-.sheet.dolmen.item .item-header .item-title input {
-	border: none;
-	color: var(--dolmen-color-title);
-	font-size: 1.25rem;
-	font-family: var(--dolmen-font-header);
-	font-weight: normal;
-	padding: 0 0.25rem;
-	margin: 0;
-	background-color: rgba(0, 0, 0, 0.25);
-}
-
-.sheet.dolmen.item .item-header .item-title input:focus {
-	outline: none;
-	border-bottom: 1px solid var(--dolmen-color-background);
-}
-
-.sheet.dolmen.item .item-header .item-type {
-	font-size: 0.75rem;
-	opacity: 0.8;
-	text-transform: uppercase;
-	color: var(--dolmen-color-title);
-}
-
-/* -------------------------------------------- */
-/*  Item Tabs                                   */
-/* -------------------------------------------- */
-
-.sheet.dolmen.item .item-tabs {
-	display: flex;
-	flex-shrink: 0;
-	background-color: var(--dolmen-color-title-background);
-}
-
-.sheet.dolmen.item .item-tabs .item {
-	flex: 1;
-	padding: 0.35rem 0.5rem;
-	text-align: center;
-	cursor: pointer;
-	color: var(--dolmen-color-title);
-	font-size: 0.75rem;
-	line-height: 1;
-	opacity: 0.7;
-	transition: opacity 0.1s;
-}
-
-.sheet.dolmen.item .item-tabs .item:hover {
-	opacity: 1;
-}
-
-.sheet.dolmen.item .item-tabs .item.active {
-	background-color: var(--dolmen-color-box-background);
-	color: var(--dolmen-color-h1);
-	opacity: 1;
-}
-
-.sheet.dolmen.item .item-tabs .item i {
-	margin-right: 0.25rem;
+/* Codex nav button (right-aligned in navbar) */
+.sheet.dolmen.item .codex-nav-btn {
+	position: absolute;
+	right: 0;
 }
 
 /* -------------------------------------------- */
@@ -139,6 +75,10 @@
 	gap: 0.25rem;
 	margin-bottom: 0.5rem;
 	align-items: flex-end;
+}
+
+.sheet.dolmen.item .form-row:last-child {
+	margin-bottom: 0;
 }
 
 .sheet.dolmen.item .form-field {
@@ -228,10 +168,6 @@
 /* -------------------------------------------- */
 /*  Form Groups & Qualities                     */
 /* -------------------------------------------- */
-
-.sheet.dolmen.item .form-group {
-	margin-bottom: 0.5rem;
-}
 
 .sheet.dolmen.item .form-group>label {
 	font-size: 0.7rem;

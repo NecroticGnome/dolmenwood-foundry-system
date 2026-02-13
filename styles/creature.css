@@ -1,6 +1,22 @@
 /* -------------------------------------------- */
 /*  Creature Sheet                              */
 /* -------------------------------------------- */
+/* Codex nav button (right-aligned in navbar) */
+.sheet.dolmen.creature .codex-nav-btn {
+	position: absolute;
+	right: 0;
+}
+
+.sheet.dolmen.creature .codex-input-group {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.sheet.dolmen.creature .codex-input-group input {
+	flex: 1;
+}
+
 /* Game Stats Grid */
 .sheet.dolmen.creature .creature-stats-grid {
 	display: grid;

@@ -3,4 +3,15 @@
 		<h2>{{localize "DOLMEN.Creature.SpecialAbilities"}}</h2>
 		<textarea name="system.description" class="creature-description">{{system.description}}</textarea>
 	</section>
+	<div class="codex-link-row">
+		<div class="form-field codex-field">
+			<label>{{localize "DOLMEN.Item.CodexLink"}}</label>
+			<div class="codex-input-group">
+				<input type="text" name="system.codexUuid" value="{{system.codexUuid}}" placeholder="UUID">
+				<button type="button" class="codex-link-btn" title="{{localize "DOLMEN.Item.CodexOpen"}}">
+					<i class="fas fa-book-open"></i>
+				</button>
+			</div>
+		</div>
+	</div>
 </section>

@@ -1,4 +1,4 @@
-/* global foundry, game, Dialog, FilePicker, Item, Roll, ChatMessage, CONST */
+/* global foundry, game, Dialog, FilePicker, Item, Roll, ChatMessage, CONST, fromUuid */
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { onSaveRoll } from './sheet/roll-handlers.js'
 import { createContextMenu } from './sheet/context-menu.js'
@@ -183,6 +183,36 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				event.preventDefault()
 				this._openAttackSelectionMenu(event)
 			})
+		}
+
+		// Codex link button in notes tab
+		const codexBtn = this.element.querySelector('.codex-link-btn')
+		if (codexBtn) {
+			codexBtn.addEventListener('click', async () => {
+				const uuid = this.actor.system.codexUuid
+				if (uuid) {
+					const doc = await fromUuid(uuid)
+					doc?.sheet?.render(true)
+				}
+			})
+		}
+
+		// Codex icon in navbar (only if UUID is set)
+		const codexUuid = this.actor.system.codexUuid
+		if (codexUuid) {
+			const nav = this.element.querySelector('.tabs[data-group="primary"]')
+			if (nav) {
+				const codexLink = document.createElement('a')
+				codexLink.className = 'item codex-nav-btn'
+				codexLink.title = game.i18n.localize('DOLMEN.Item.CodexOpen')
+				codexLink.innerHTML = '<i class="fas fa-book-open"></i>'
+				codexLink.addEventListener('click', async (event) => {
+					event.preventDefault()
+					const doc = await fromUuid(codexUuid)
+					doc?.sheet?.render(true)
+				})
+				nav.appendChild(codexLink)
+			}
 		}
 
 		// Attack edit listeners (click row to open edit dialog)
