@@ -403,16 +403,14 @@ export class AdventurerDataModel extends ActorDataModel {
 			kindred: new StringField({
 				required: true,
 				blank: false,
-				initial: "human",
-				choices: CHOICE_KEYS.kindreds
+				initial: "human"
 			}),
 
 			// Class
 			class: new StringField({
 				required: true,
 				blank: false,
-				initial: "fighter",
-				choices: CHOICE_KEYS.classes.concat(CHOICE_KEYS.kindredClasses)
+				initial: "fighter"
 			}),
 
 			// Experience Points

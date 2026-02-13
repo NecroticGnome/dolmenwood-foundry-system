@@ -164,12 +164,6 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		// Prepare tabs for the tabs part
 		context.tabs = this._getTabs()
 
-		// Prepare dropdown choices with localized labels
-		context.kindredChoices = buildChoices('DOLMEN.Kindreds', CHOICE_KEYS.kindreds)
-		context.classChoices = {
-			...buildChoices('DOLMEN.Classes', CHOICE_KEYS.classes),
-			...buildChoices('DOLMEN.Kindreds', CHOICE_KEYS.kindredClasses)
-		}
 		// Kindred and Class items
 		const kindredItem = actor.getKindredItem()
 		const classItem = actor.getClassItem()
@@ -187,7 +181,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				kindredIndex.map(e => [e.name, e.name])
 			)
 		} else {
-			context.kindredChoices = buildChoices('DOLMEN.Kindreds', CHOICE_KEYS.kindreds)
+			context.kindredChoices = {}
 		}
 
 		const classPack = game.packs.get('dolmenwood.classes')
@@ -197,7 +191,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				classIndex.map(e => [e.name, e.name])
 			)
 		} else {
-			context.classChoices = buildChoices('DOLMEN.Classes', CHOICE_KEYS.classes.concat(CHOICE_KEYS.kindredClasses))
+			context.classChoices = {}
 		}
 
 		// Apply alignment restrictions from traits

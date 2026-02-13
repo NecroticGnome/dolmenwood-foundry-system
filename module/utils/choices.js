@@ -215,9 +215,6 @@ export function formatArmorProficiency(profArray = []) {
 
 // Pre-defined choice key arrays for common dropdowns
 export const CHOICE_KEYS = {
-	kindreds: ['breggle', 'elf', 'grimalkin', 'human', 'mossling', 'woodgrue'],
-	classes: ['bard', 'cleric', 'enchanter', 'fighter', 'friar', 'hunter', 'knight', 'magician', 'thief'],
-	kindredClasses: ['breggle', 'elf', 'grimalkin', 'mossling', 'woodgrue'],
 	alignments: ['lawful', 'neutral', 'chaotic'],
 	encumbranceMethods: ['weight', 'treasure', 'slots'],
 	moonNames: ['grinning', 'dead', 'beast', 'squamous', 'knights', 'rotting', 'maidens', 'witch', 'robbers', 'goat', 'narrow', 'black'],
