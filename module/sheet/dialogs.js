@@ -272,17 +272,18 @@ export async function levelUp(sheet) {
 	const actor = sheet.actor
 	const sys = actor.system
 	const level = sys.level
-	const cls = sys.class
+	const classItem = actor.getClassItem()
 
 	if (level >= 15) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelMaxReached'))
 		return
 	}
+	if (!classItem) return
 
 	const newLevel = level + 1
-	const thresholds = CONFIG.DOLMENWOOD.xpThresholds[cls]
-	const hitDice = CONFIG.DOLMENWOOD.hitDice[cls]
-	if (!thresholds || !hitDice) return
+	const thresholds = classItem.system.xpThresholds
+	const hitDice = classItem.system.hitDice
+	if (!thresholds?.length || !hitDice) return
 
 	const requiredXP = thresholds[newLevel] || 0
 
@@ -374,7 +375,7 @@ export async function levelDown(sheet) {
 	const actor = sheet.actor
 	const sys = actor.system
 	const level = sys.level
-	const cls = sys.class
+	const classItem = actor.getClassItem()
 
 	if (level <= 1) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelMinReached'))
@@ -386,7 +387,7 @@ export async function levelDown(sheet) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelDownNoRecord'))
 	}
 
-	const thresholds = CONFIG.DOLMENWOOD.xpThresholds[cls]
+	const thresholds = classItem?.system?.xpThresholds
 	const nextThreshold = thresholds ? (thresholds[level] || 0) : 0
 	const hpToSubtract = storedHP ?? 0
 	const newMax = Math.max(1, sys.hp.max - hpToSubtract)

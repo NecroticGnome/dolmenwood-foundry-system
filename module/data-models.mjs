@@ -1,6 +1,6 @@
 import { CHOICE_KEYS } from './utils/choices.js'
 
-/* global foundry, CONFIG */
+/* global foundry */
 const { ArrayField, BooleanField, HTMLField, NumberField, SchemaField, StringField } = foundry.data.fields
 
 /* -------------------------------------------- */
@@ -336,14 +336,10 @@ export class AdventurerDataModel extends ActorDataModel {
 		this.fairyMagic.enabled = fairyCasters.includes(classId) || fairyKindreds.includes(kindredId) || magicAdj.fairy
 		this.knacks.enabled = kindredId === 'mossling' || magicAdj.knacks
 
-		// Compute spell slot max values from class + level progression tables
-		// Try to get from class item first, then fall back to CONFIG
-		let spellTable = null
-		if (classItem?.system?.spellProgression?.length > 0) {
-			spellTable = classItem.system.spellProgression
-		} else {
-			spellTable = CONFIG.DOLMENWOOD.spellProgression[classId]
-		}
+		// Compute spell slot max values from class item progression table
+		const spellTable = classItem?.system?.spellProgression?.length > 0
+			? classItem.system.spellProgression
+			: null
 
 		if (spellTable) {
 			const level = Math.min(this.level, 15)
