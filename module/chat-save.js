@@ -20,7 +20,7 @@ export function parseSaveLinks(text) {
 export async function rollSaveForControlled(saveKey) {
 	const controlled = canvas.tokens.controlled
 	if (controlled.length === 0) {
-		ui.notifications.warn(game.i18n.localize('DOLMEN.Save.NoTokensSelected'))
+		ui.notifications.warn(game.i18n.localize('DOLMEN.SaveRoll.NoTokensSelected'))
 		return
 	}
 
