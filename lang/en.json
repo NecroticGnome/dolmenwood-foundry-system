@@ -625,50 +625,6 @@
 		},
 		"SaveRoll": {
 			"NoTokensSelected": "No tokens selected. Select a token to roll saving throw."
-		},
-		"Class": {
-			"TabDetails": "Details",
-			"TabTraits": "Traits",
-			"Identity": "Identity",
-			"ClassId": "Class ID",
-			"RequiredKindred": "Required Kindred",
-			"CoreAttributes": "Core Attributes",
-			"CombatAptitude": "Combat Aptitude",
-			"SpellType": "Spell Type",
-			"PrimeAbilities": "Prime Abilities",
-			"HitDice": "Hit Dice",
-			"FlatHP": "Flat HP",
-			"Progression": "Progression",
-			"XPThresholds": "XP Thresholds (JSON Array)",
-			"SpellProgression": "Spell Progression (JSON 2D Array)",
-			"AttackProgression": "Attack Progression (JSON Array)",
-			"SaveProgressions": "Save Progressions (JSON Object)",
-			"SkillProgressions": "Skill Progressions (JSON Object)",
-			"SpellTypeChoices": {
-				"none": "None",
-				"arcane": "Arcane",
-				"holy": "Holy"
-			},
-			"CombatAptitudeChoices": {
-				"martial": "Martial",
-				"semi-martial": "Semi-Martial",
-				"non-martial": "Non-Martial"
-			}
-		},
-		"Kindred": {
-			"TabDetails": "Details",
-			"TabTraits": "Traits",
-			"Identity": "Identity",
-			"KindredId": "Kindred ID",
-			"Size": "Size",
-			"CreatureType": "Creature Type",
-			"PhysicalCharacteristics": "Physical Characteristics",
-			"AgeFormula": "Age Formula",
-			"LifespanFormula": "Lifespan Formula",
-			"HeightFormula": "Height Formula",
-			"WeightFormula": "Weight Formula",
-			"CulturalTraits": "Cultural Traits",
-			"Languages": "Languages"
 		}
 	}
 }
