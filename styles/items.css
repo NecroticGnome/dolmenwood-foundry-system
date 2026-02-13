@@ -1,39 +1,51 @@
 /* -------------------------------------------- */
-/*  Item Sheet Styles                           */
+/*  Item / Kindred / Class Sheet Styles         */
 /* -------------------------------------------- */
 
-.sheet.dolmen.item .window-content {
+.sheet.dolmen.item .window-content,
+.sheet.dolmen.kindred .window-content,
+.sheet.dolmen.class .window-content {
 	padding: 0;
 	display: flex;
 	flex-direction: column;
 }
 
 /* -------------------------------------------- */
-/*  Item Header (in body tab)                   */
+/*  Header (in body/details tab)                */
 /* -------------------------------------------- */
-.sheet.dolmen.item .header-details {
+.sheet.dolmen.item .header-details,
+.sheet.dolmen.kindred .header-details,
+.sheet.dolmen.class .header-details {
 	display: grid;
 	grid-template-columns: 2fr 1fr;
 	gap: 0.5rem;
 }
 
-.sheet.dolmen.item .tab-content .two-columns.header {
+.sheet.dolmen.item .tab-content .two-columns.header,
+.sheet.dolmen.kindred .tab-content .two-columns.header,
+.sheet.dolmen.class .tab-content .two-columns.header {
 	grid-template-columns: auto 5.5rem;
 }
 
-.sheet.dolmen.item .boxed-section.portrait-section {
+.sheet.dolmen.item .boxed-section.portrait-section,
+.sheet.dolmen.kindred .boxed-section.portrait-section,
+.sheet.dolmen.class .boxed-section.portrait-section {
 	min-height: 5.5rem;
 	height: 5.5rem;
 	padding: 0;
 }
 
-.sheet.dolmen.item .portrait-container {
+.sheet.dolmen.item .portrait-container,
+.sheet.dolmen.kindred .portrait-container,
+.sheet.dolmen.class .portrait-container {
 	width: 5.5rem;
 	height: 5.5rem;
 }
 
 /* Codex nav button (right-aligned in navbar) */
-.sheet.dolmen.item .codex-nav-btn {
+.sheet.dolmen.item .codex-nav-btn,
+.sheet.dolmen.kindred .codex-nav-btn,
+.sheet.dolmen.class .codex-nav-btn {
 	position: absolute;
 	right: 0;
 }
@@ -42,7 +54,9 @@
 /*  Tab Content                                 */
 /* -------------------------------------------- */
 
-.sheet.dolmen.item .tab-content {
+.sheet.dolmen.item .tab-content,
+.sheet.dolmen.kindred .tab-content,
+.sheet.dolmen.class .tab-content {
 	display: none;
 	flex-direction: column;
 	gap: 0.5rem;
@@ -52,17 +66,23 @@
 	min-height: 0;
 }
 
-.sheet.dolmen.item .tab-content.active {
+.sheet.dolmen.item .tab-content.active,
+.sheet.dolmen.kindred .tab-content.active,
+.sheet.dolmen.class .tab-content.active {
 	display: flex;
 }
 
-.sheet.dolmen.item .tab-content section {
+.sheet.dolmen.item .tab-content section,
+.sheet.dolmen.kindred .tab-content section,
+.sheet.dolmen.class .tab-content section {
 	background-color: var(--dolmen-color-background);
 	border: 2px solid var(--dolmen-color-title-background);
 	padding: 0.5rem;
 }
 
-.sheet.dolmen.item .tab-content h2 {
+.sheet.dolmen.item .tab-content h2,
+.sheet.dolmen.kindred .tab-content h2,
+.sheet.dolmen.class .tab-content h2 {
 	margin-bottom: 0.5rem;
 }
 
@@ -70,32 +90,44 @@
 /*  Form Layout                                 */
 /* -------------------------------------------- */
 
-.sheet.dolmen.item .form-row {
+.sheet.dolmen.item .form-row,
+.sheet.dolmen.kindred .form-row,
+.sheet.dolmen.class .form-row {
 	display: flex;
 	gap: 0.25rem;
 	margin-bottom: 0.5rem;
 	align-items: flex-end;
 }
 
-.sheet.dolmen.item .form-row:last-child {
+.sheet.dolmen.item .form-row:last-child,
+.sheet.dolmen.kindred .form-row:last-child,
+.sheet.dolmen.class .form-row:last-child {
 	margin-bottom: 0;
 }
 
-.sheet.dolmen.item .form-field {
+.sheet.dolmen.item .form-field,
+.sheet.dolmen.kindred .form-field,
+.sheet.dolmen.class .form-field {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
 }
 
-.sheet.dolmen.item .form-field label {
+.sheet.dolmen.item .form-field label,
+.sheet.dolmen.kindred .form-field label,
+.sheet.dolmen.class .form-field label {
 	font-size: 0.7rem;
 	color: var(--dolmen-color-h3);
 	margin-bottom: 0.125rem;
 }
 
 .sheet.dolmen.item .form-field input,
-.sheet.dolmen.item .form-field select {
+.sheet.dolmen.item .form-field select,
+.sheet.dolmen.kindred .form-field input,
+.sheet.dolmen.kindred .form-field select,
+.sheet.dolmen.class .form-field input,
+.sheet.dolmen.class .form-field select {
 	width: 100%;
 	padding: 0.25rem;
 	border: 1px solid var(--dolmen-color-input-border);
@@ -104,7 +136,9 @@
 	box-sizing: border-box;
 }
 
-.sheet.dolmen.item .form-field input[type="number"] {
+.sheet.dolmen.item .form-field input[type="number"],
+.sheet.dolmen.kindred .form-field input[type="number"],
+.sheet.dolmen.class .form-field input[type="number"] {
 	text-align: center;
 }
 
@@ -137,21 +171,29 @@
 /*  Codex Link                                  */
 /* -------------------------------------------- */
 
-.sheet.dolmen.item .codex-link-row {
+.sheet.dolmen.item .codex-link-row,
+.sheet.dolmen.kindred .codex-link-row,
+.sheet.dolmen.class .codex-link-row {
 	margin-bottom: 0.5rem;
 }
 
-.sheet.dolmen.item .codex-input-group {
+.sheet.dolmen.item .codex-input-group,
+.sheet.dolmen.kindred .codex-input-group,
+.sheet.dolmen.class .codex-input-group {
 	display: flex;
 	gap: 0.25rem;
 	align-items: center;
 }
 
-.sheet.dolmen.item .codex-input-group input {
+.sheet.dolmen.item .codex-input-group input,
+.sheet.dolmen.kindred .codex-input-group input,
+.sheet.dolmen.class .codex-input-group input {
 	flex: 1;
 }
 
-.sheet.dolmen.item .codex-link-btn {
+.sheet.dolmen.item .codex-link-btn,
+.sheet.dolmen.kindred .codex-link-btn,
+.sheet.dolmen.class .codex-link-btn {
 	padding: 0.25rem 0.5rem;
 	border: 1px solid var(--dolmen-color-input-border);
 	border-radius: 2px;
@@ -160,7 +202,9 @@
 	font-size: 0.85rem;
 }
 
-.sheet.dolmen.item .codex-link-btn:hover {
+.sheet.dolmen.item .codex-link-btn:hover,
+.sheet.dolmen.kindred .codex-link-btn:hover,
+.sheet.dolmen.class .codex-link-btn:hover {
 	background: var(--dolmen-color-title-background);
 	color: var(--dolmen-color-background);
 }
@@ -169,7 +213,9 @@
 /*  Form Groups & Qualities                     */
 /* -------------------------------------------- */
 
-.sheet.dolmen.item .form-group>label {
+.sheet.dolmen.item .form-group>label,
+.sheet.dolmen.kindred .form-group>label,
+.sheet.dolmen.class .form-group>label {
 	font-size: 0.7rem;
 	color: var(--dolmen-color-h3);
 	margin-bottom: 0.25rem;

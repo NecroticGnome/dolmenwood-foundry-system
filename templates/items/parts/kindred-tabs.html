@@ -1,8 +1,8 @@
-<nav class="item-tabs">
+<nav class="tabs" data-group="primary">
 	{{#each tabs.primary}}
 	<a class="item {{cssClass}}" data-tab="{{id}}" data-group="primary">
 		<i class="{{icon}}"></i>
-		{{label}}
+		<span>{{label}}</span>
 	</a>
 	{{/each}}
 </nav>
