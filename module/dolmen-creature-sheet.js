@@ -26,7 +26,9 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			openItem: DolmenCreatureSheet._onOpenItem,
 			deleteItem: DolmenCreatureSheet._onDeleteItem,
 			addAttack: DolmenCreatureSheet._onAddAttack,
-			removeAttack: DolmenCreatureSheet._onRemoveAttack
+			removeAttack: DolmenCreatureSheet._onRemoveAttack,
+			addAbility: DolmenCreatureSheet._onAddAbility,
+			removeAbility: DolmenCreatureSheet._onRemoveAbility
 		},
 		dragDrop: [{ dropSelector: '.item-list' }]
 	}
@@ -224,6 +226,16 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				this._openAttackDialog(index)
 			})
 		})
+
+		// Ability edit listeners (click row to open edit dialog)
+		this.element.querySelectorAll('.ability-row').forEach(el => {
+			el.addEventListener('click', (event) => {
+				if (event.target.closest('[data-action]')) return
+				event.preventDefault()
+				const index = parseInt(el.dataset.abilityIndex)
+				this._openAbilityDialog(index)
+			})
+		})
 	}
 
 	/* -------------------------------------------- */
@@ -268,6 +280,20 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const attacks = foundry.utils.deepClone(this.actor.system.attacks)
 		attacks.splice(index, 1)
 		this.actor.update({ 'system.attacks': attacks })
+	}
+
+	static _onAddAbility() {
+		const abilities = foundry.utils.deepClone(this.actor.system.specialAbilities)
+		abilities.push({ name: "Ability", description: "" })
+		this.actor.update({ 'system.specialAbilities': abilities })
+	}
+
+	static _onRemoveAbility(_event, target) {
+		const index = parseInt(target.dataset.abilityIndex ?? target.closest('[data-ability-index]')?.dataset.abilityIndex)
+		if (isNaN(index)) return
+		const abilities = foundry.utils.deepClone(this.actor.system.specialAbilities)
+		abilities.splice(index, 1)
+		this.actor.update({ 'system.specialAbilities': abilities })
 	}
 
 	/* -------------------------------------------- */
@@ -361,6 +387,49 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 					html.find('#attack-damage').prop('disabled', isSave)
 				})
 			}
+		})
+		dialog.render(true)
+	}
+
+	/* -------------------------------------------- */
+	/*  Ability Edit Dialog                         */
+	/* -------------------------------------------- */
+
+	_openAbilityDialog(index) {
+		const ability = this.actor.system.specialAbilities[index]
+		if (!ability) return
+
+		const content = `
+			<div class="ability-edit-modal">
+				<div class="form-group full-width">
+					<label>${game.i18n.localize('DOLMEN.Creature.AbilityName')}</label>
+					<input type="text" id="ability-name" value="${ability.name}">
+				</div>
+				<div class="form-group full-width">
+					<label>${game.i18n.localize('DOLMEN.Creature.AbilityDescription')}</label>
+					<textarea id="ability-description">${ability.description || ''}</textarea>
+				</div>
+			</div>
+		`
+
+		const dialog = new Dialog({
+			title: game.i18n.localize('DOLMEN.Creature.EditAbility'),
+			content,
+			buttons: {
+				save: {
+					icon: '<i class="fas fa-check"></i>',
+					label: game.i18n.localize('DOLMEN.Save'),
+					callback: (html) => {
+						const abilities = foundry.utils.deepClone(this.actor.system.specialAbilities)
+						abilities[index] = {
+							name: html.find('#ability-name').val() || 'Ability',
+							description: html.find('#ability-description').val() || ''
+						}
+						this.actor.update({ 'system.specialAbilities': abilities })
+					}
+				}
+			},
+			default: 'save'
 		})
 		dialog.render(true)
 	}

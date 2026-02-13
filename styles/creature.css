@@ -167,7 +167,7 @@
 }
 
 .sheet.dolmen.creature .attack-row .remove-attack {
-	font-size: 0.7rem;
+	font-size: 0.85rem;
 	align-self: baseline;
 }
 
@@ -265,20 +265,83 @@
 	gap: 0.5rem;
 }
 
-.sheet.dolmen.creature .creature-notes {
+.sheet.dolmen.creature .creature-abilities {
 	grid-row: 1;
 	grid-column: 2;
 	grid-row-end: span 2;
 }
 
-.sheet.dolmen.creature .creature-description {
-	flex: 1;
-	width: 100%;
-	min-height: 200px;
-	padding: 0.5rem;
-	border: 1px solid var(--dolmen-color-input-border);
-	border-radius: 2px;
+.sheet.dolmen.creature .creature-abilities h2 {
+	margin-bottom: 0;
+}
+
+.sheet.dolmen.creature .ability-row {
+	position: relative;
+	padding: 0.2rem 0.5rem;
 	font-size: 0.85rem;
-	font-family: inherit;
+	border-bottom: 1px solid var(--dolmen-color-box-background);
+	cursor: pointer;
+	margin-left: -0.5rem;
+	margin-right: -0.5rem;
+	transition: background-color 0.1s;
+	text-align: justify;
+}
+
+.sheet.dolmen.creature .ability-row:hover {
+	background-color: var(--dolmen-color-box-background);
+}
+
+.sheet.dolmen.creature .ability-row .remove-ability {
+	position: absolute;
+	top: 0.15rem;
+	right: 0.15rem;
+	font-size: 0.85rem;
+	opacity: 0;
+	transition: opacity 0.1s;
+}
+
+.sheet.dolmen.creature .ability-row:hover .remove-ability {
+	opacity: 1;
+}
+
+.sheet.dolmen.creature .add-ability-row {
+	display: block;
+	padding: 0.2rem 0.5rem;
+	margin-left: -0.5rem;
+	margin-right: -0.5rem;
+	font-size: 0.8rem;
+	color: var(--dolmen-color-text-muted);
+	cursor: pointer;
+	text-align: center;
+}
+
+.sheet.dolmen.creature .add-ability-row:hover {
+	color: var(--dolmen-color-h1);
+	background-color: var(--dolmen-color-box-background);
+}
+
+/* Ability Edit Dialog */
+.ability-edit-modal {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding: 0.5rem;
+}
+
+.ability-edit-modal .form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.ability-edit-modal .form-group label {
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: var(--dolmen-color-h3);
+}
+
+.ability-edit-modal .form-group textarea {
+	min-height: 6rem;
 	resize: vertical;
 }
