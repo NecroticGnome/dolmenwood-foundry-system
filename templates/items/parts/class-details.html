@@ -71,6 +71,45 @@
 				<input type="number" name="system.hitDice.flat" value="{{system.hitDice.flat}}" placeholder="1">
 			</div>
 		</div>
+		<div class="form-group weapon-prof-group">
+			<label>{{localize "DOLMEN.Class.WeaponsProficiency"}}</label>
+			<div class="weapon-prof-grid">
+				<div class="weapon-prof-size-group">
+					<div class="weapon-prof-types">
+						{{#each weaponProfOptions.groups}}
+						<label class="weapon-prof-option">
+							<input type="checkbox" class="weapon-prof-checkbox" data-prof="{{this.id}}" data-group="true" {{#if this.checked}}checked{{/if}} {{#if this.disabled}}disabled{{/if}}>
+							<span>{{this.label}}</span>
+						</label>
+						{{/each}}
+					</div>
+				</div>
+				{{#each weaponProfOptions.typesBySize}}
+				<div class="weapon-prof-size-group">
+					<span class="weapon-prof-size-label">{{this.label}}</span>
+					<div class="weapon-prof-types">
+						{{#each this.types}}
+						<label class="weapon-prof-option">
+							<input type="checkbox" class="weapon-prof-checkbox" data-prof="{{this.id}}" {{#if this.checked}}checked{{/if}} {{#if this.disabled}}disabled{{/if}}>
+							<span>{{this.label}}</span>
+						</label>
+						{{/each}}
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+		<div class="form-group armor-prof-group">
+			<label>{{localize "DOLMEN.Class.ArmorProficiency"}}</label>
+			<div class="armor-prof-grid">
+				{{#each armorProfOptions}}
+				<label class="weapon-prof-option">
+					<input type="checkbox" class="armor-prof-checkbox" data-prof="{{this.id}}" {{#if this.checked}}checked{{/if}} {{#if this.disabled}}disabled{{/if}}>
+					<span>{{this.label}}</span>
+				</label>
+				{{/each}}
+			</div>
+		</div>
 	</section>
 
 	<!-- Progression -->

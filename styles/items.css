@@ -240,7 +240,98 @@
 	margin: 0;
 }
 
-.sheet.dolmen.item .effects-input {
+/* Weapon proficiency multi-select */
+.sheet.dolmen.class .weapon-prof-group {
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen.class .weapon-prof-group>label {
+	font-weight: bold;
+	margin-bottom: 0.25rem;
+	display: block;
+}
+
+.sheet.dolmen.class .weapon-prof-grid {
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 3px;
+	padding: 0.4rem;
+}
+
+.sheet.dolmen.class .weapon-prof-groups {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.2rem;
+	padding-bottom: 0.3rem;
+	margin-bottom: 0.3rem;
+	border-bottom: 1px solid var(--dolmen-color-input-border);
+}
+
+.sheet.dolmen.class .weapon-prof-types {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.2rem;
+}
+
+.sheet.dolmen.class .weapon-prof-option {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	font-size: 0.75rem;
+	cursor: pointer;
+}
+
+.sheet.dolmen.class .weapon-prof-option input {
+	margin: 0;
+}
+
+.sheet.dolmen.class .weapon-prof-option input:disabled {
+	cursor: not-allowed;
+}
+
+.sheet.dolmen.class .weapon-prof-groups .weapon-prof-option {
+	font-weight: bold;
+	font-size: 0.8rem;
+}
+
+.sheet.dolmen.class .weapon-prof-size-group {
+	padding-top: 0.2rem;
+}
+
+.sheet.dolmen.class .weapon-prof-size-group+.weapon-prof-size-group {
+	border-top: 1px solid var(--dolmen-color-input-border);
+	margin-top: 0.2rem;
+}
+
+.sheet.dolmen.class .weapon-prof-size-label {
+	font-size: 0.7rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: var(--dolmen-color-h3);
+	display: block;
+	margin-bottom: 0.1rem;
+}
+
+/* Armor proficiency */
+.sheet.dolmen.class .armor-prof-group {
+	margin-bottom: 0.5rem;
+}
+
+.sheet.dolmen.class .armor-prof-group>label {
+	font-weight: bold;
+	margin-bottom: 0.25rem;
+	display: block;
+}
+
+.sheet.dolmen.class .armor-prof-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 3px;
+	padding: 0.4rem;
+}
+
+.sheet.dolmen.class .effects-input {
 	width: 100%;
 	min-height: 3rem;
 	padding: 0.25rem;

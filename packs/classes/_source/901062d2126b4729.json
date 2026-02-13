@@ -147,6 +147,14 @@
     "spellProgression": [],
     "spellType": "none",
     "combatAptitude": "martial",
+    "weaponsProficiency": [
+      "anyMelee"
+    ],
+    "armorProficiency": [
+      "medium",
+      "heavy",
+      "shields"
+    ],
     "hasCombatTalents": false,
     "hasHolyOrder": false,
     "canTwoWeaponFight": true,

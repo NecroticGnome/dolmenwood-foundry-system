@@ -254,6 +254,16 @@
     ],
     "spellType": "holy",
     "combatAptitude": "non-martial",
+    "weaponsProficiency": [
+      "club",
+      "dagger",
+      "holyWater",
+      "oil",
+      "sling",
+      "staff",
+      "torch"
+    ],
+    "armorProficiency": [],
     "hasCombatTalents": false,
     "hasHolyOrder": true,
     "canTwoWeaponFight": false,

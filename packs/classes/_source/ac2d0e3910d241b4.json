@@ -253,6 +253,12 @@
     ],
     "spellType": "holy",
     "combatAptitude": "semi-martial",
+    "weaponsProficiency": [
+      "any"
+    ],
+    "armorProficiency": [
+      "any"
+    ],
     "hasCombatTalents": false,
     "hasHolyOrder": true,
     "canTwoWeaponFight": false,

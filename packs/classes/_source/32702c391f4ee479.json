@@ -146,6 +146,12 @@
     "spellProgression": [],
     "spellType": "none",
     "combatAptitude": "martial",
+    "weaponsProficiency": [
+      "any"
+    ],
+    "armorProficiency": [
+      "any"
+    ],
     "hasCombatTalents": true,
     "hasHolyOrder": false,
     "canTwoWeaponFight": true,

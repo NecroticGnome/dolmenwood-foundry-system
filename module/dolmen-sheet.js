@@ -1,5 +1,5 @@
 /* global foundry, game, Dialog, CONFIG, ui, Item, ChatMessage, CONST */
-import { buildChoices, buildChoicesWithBlank, CHOICE_KEYS } from './utils/choices.js'
+import { buildChoices, buildChoicesWithBlank, formatWeaponProficiency, formatArmorProficiency, CHOICE_KEYS } from './utils/choices.js'
 import { parseSaveLinks } from './chat-save.js'
 
 // Sheet module imports
@@ -245,15 +245,37 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			? game.i18n.localize('DOLMEN.ExtraDetails.Fur')
 			: game.i18n.localize('DOLMEN.ExtraDetails.Body')
 
-		// Compute class detail strings from class
-		const cls = classItem?.system?.classId
-		const classKeys = ['Weapons', 'Armor', 'PrimeAbilities', 'HitPoints', 'CombatAptitude']
-		const classFields = ['weaponsProficiency', 'armorProficiency', 'primeAbilities', 'hitPointsClass', 'combatAptitude']
-		for (let i = 0; i < classKeys.length; i++) {
-			const key = `DOLMEN.ClassDetails.Proficiency.${classKeys[i]}.${cls}`
-			context[classFields[i]] = cls && game.i18n.has(key)
-				? game.i18n.localize(key)
+		// Compute class detail strings from class item data
+		if (classItem?.system) {
+			const sys = classItem.system
+			// Prime abilities: localize each ability name
+			context.primeAbilities = sys.primeAbilities?.length > 0
+				? sys.primeAbilities.map(a => game.i18n.localize(`DOLMEN.Abilities.${a.charAt(0).toUpperCase() + a.slice(1)}`)).join(', ')
 				: '—'
+			// Hit points: localized format with die + flat bonus
+			context.hitPointsClass = sys.hitDice?.die
+				? game.i18n.format('DOLMEN.ClassDetails.HitPointsFormat', {
+					hitDie: sys.hitDice.die,
+					flatBonus: sys.hitDice.flat || 0
+				})
+				: '—'
+			// Combat aptitude: localize
+			const aptKey = `DOLMEN.Class.CombatAptitudeChoices.${sys.combatAptitude}`
+			context.combatAptitude = sys.combatAptitude && game.i18n.has(aptKey)
+				? game.i18n.localize(aptKey)
+				: '—'
+		} else {
+			context.primeAbilities = '—'
+			context.hitPointsClass = '—'
+			context.combatAptitude = '—'
+		}
+		// Weapons and armor proficiency from class item data
+		if (classItem?.system) {
+			context.weaponsProficiency = formatWeaponProficiency(classItem.system.weaponsProficiency)
+			context.armorProficiency = formatArmorProficiency(classItem.system.armorProficiency)
+		} else {
+			context.weaponsProficiency = '—'
+			context.armorProficiency = '—'
 		}
 
 		// Compute kindred lifespan string

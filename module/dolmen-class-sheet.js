@@ -1,5 +1,5 @@
 /* global foundry, game, FilePicker, fromUuid */
-import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
+import { buildChoices, buildWeaponProfOptions, buildArmorProfOptions, CHOICE_KEYS, WEAPON_PROF_GROUPS, getWeaponTypesForGroup } from './utils/choices.js'
 import { rewriteCSV, extractJSON } from './utils/form-helpers.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -82,6 +82,12 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.abilityChoices = buildChoices('DOLMEN.Abilities', ['strength', 'intelligence', 'wisdom', 'dexterity', 'constitution', 'charisma'])
 		context.kindredChoices = buildChoices('DOLMEN.Kindreds', CHOICE_KEYS.kindreds)
 
+		// Weapon proficiency multi-select
+		context.weaponProfOptions = buildWeaponProfOptions(this.item.system.weaponsProficiency)
+
+		// Armor proficiency multi-select
+		context.armorProfOptions = buildArmorProfOptions(this.item.system.armorProficiency)
+
 		// Format traits as JSON for editing
 		context.traitsJSON = JSON.stringify(this.item.system.traits, null, 2)
 
@@ -131,6 +137,13 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 	_onRender(context, options) {
 		super._onRender(context, options)
+
+		// Restore scroll position after re-render
+		const scrollEl = this.element.querySelector('.class-details')
+		if (scrollEl && this._savedScrollTop !== undefined) {
+			scrollEl.scrollTop = this._savedScrollTop
+			this._savedScrollTop = undefined
+		}
 
 		// Tab click listeners
 		this.element.querySelectorAll('.tabs .item').forEach(tab => {
@@ -182,6 +195,72 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 				nav.appendChild(codexLink)
 			}
 		}
+
+		// Weapon proficiency checkbox handling
+		const wpCheckboxes = this.element.querySelectorAll('.weapon-prof-checkbox')
+		wpCheckboxes.forEach(checkbox => {
+			checkbox.addEventListener('change', (event) => {
+				event.stopPropagation()
+				this._savedScrollTop = this.element.querySelector('.class-details')?.scrollTop
+				const profId = event.currentTarget.dataset.prof
+				const isGroup = event.currentTarget.dataset.group === 'true'
+				const checked = event.currentTarget.checked
+				let currentProf = [...(this.item.system.weaponsProficiency || [])]
+
+				if (checked) {
+					if (!currentProf.includes(profId)) {
+						currentProf.push(profId)
+					}
+					// If "any" is checked, remove all other entries
+					if (profId === 'any') {
+						currentProf = ['any']
+					}
+					// If a group tag is checked, remove individual types covered by it
+					if (isGroup && profId !== 'any') {
+						const coveredTypes = getWeaponTypesForGroup(profId)
+						currentProf = currentProf.filter(id =>
+							WEAPON_PROF_GROUPS.includes(id) || !coveredTypes.includes(id)
+						)
+					}
+				} else {
+					const index = currentProf.indexOf(profId)
+					if (index !== -1) currentProf.splice(index, 1)
+				}
+
+				this.item.update({ 'system.weaponsProficiency': currentProf })
+			})
+		})
+
+		// Armor proficiency checkbox handling
+		const apCheckboxes = this.element.querySelectorAll('.armor-prof-checkbox')
+		apCheckboxes.forEach(checkbox => {
+			checkbox.addEventListener('change', (event) => {
+				event.stopPropagation()
+				this._savedScrollTop = this.element.querySelector('.class-details')?.scrollTop
+				const profId = event.currentTarget.dataset.prof
+				const checked = event.currentTarget.checked
+				let currentProf = [...(this.item.system.armorProficiency || [])]
+
+				if (checked) {
+					if (profId === 'any') {
+						const hasShields = currentProf.includes('shields')
+						currentProf = hasShields ? ['any', 'shields'] : ['any']
+					} else if (!currentProf.includes(profId)) {
+						currentProf.push(profId)
+					}
+					// Collapse light+medium+heavy to 'any'
+					if (['light', 'medium', 'heavy'].every(t => currentProf.includes(t))) {
+						const hasShields = currentProf.includes('shields')
+						currentProf = hasShields ? ['any', 'shields'] : ['any']
+					}
+				} else {
+					const index = currentProf.indexOf(profId)
+					if (index !== -1) currentProf.splice(index, 1)
+				}
+
+				this.item.update({ 'system.armorProficiency': currentProf })
+			})
+		})
 	}
 }
 
