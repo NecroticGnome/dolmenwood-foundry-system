@@ -29,6 +29,23 @@ const TextEditor = foundry.applications.ux.TextEditor
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets
 
+/**
+ * Convert a height formula (in inches) to a display string with feet/inches notation.
+ * e.g. "64 + 2d6" → "5'4\" + 2d6\""
+ * @param {string} formula - Height formula where the base number is total inches
+ * @returns {string} Formatted height string
+ */
+function formatHeightFormula(formula) {
+	const match = formula.match(/^(\d+)\s*(.*)$/)
+	if (!match) return formula
+	const baseInches = parseInt(match[1])
+	const rest = match[2].trim()
+	const feet = Math.floor(baseInches / 12)
+	const inches = baseInches % 12
+	const base = inches > 0 ? `${feet}'${inches}"` : `${feet}'`
+	return rest ? `${base} ${rest}"` : base
+}
+
 class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 	constructor(options = {}) {
 		super(options)
@@ -272,27 +289,22 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			context.armorProficiency = '—'
 		}
 
-		// Compute kindred lifespan string
-		const lifespanKey = `DOLMEN.KindredLifespan.${kindred}`
-		context.lifespanTitle = kindred && game.i18n.has(lifespanKey)
-			? game.i18n.localize(lifespanKey)
-			: '—'
-
-		// Compute kindred age string
-		const ageKey = `DOLMEN.KindredAge.${kindred}`
-		context.ageTitle = kindred && game.i18n.has(ageKey)
-			? game.i18n.localize(ageKey)
-			: '—'
-
-		// Compute kindred height/weight strings
-		const heightKey = `DOLMEN.KindredHeight.${kindred}`
-		context.heightTitle = kindred && game.i18n.has(heightKey)
-			? game.i18n.localize(heightKey)
-			: '—'
-		const weightKey = `DOLMEN.KindredWeight.${kindred}`
-		context.weightTitle = kindred && game.i18n.has(weightKey)
-			? game.i18n.localize(weightKey)
-			: '—'
+		// Compute kindred physical characteristic display strings from item data
+		if (kindredItem?.system) {
+			const ks = kindredItem.system
+			const fmt = f => f.replace(/\*/g, '×')
+			context.ageTitle = ks.ageFormula ? `${fmt(ks.ageFormula)} years` : '—'
+			context.lifespanTitle = ks.lifespanFormula && ks.lifespanFormula !== '0'
+				? `${fmt(ks.lifespanFormula)} years`
+				: game.i18n.localize('DOLMEN.Immortal')
+			context.heightTitle = ks.heightFormula ? formatHeightFormula(ks.heightFormula) : '—'
+			context.weightTitle = ks.weightFormula ? `${fmt(ks.weightFormula)} lbs` : '—'
+		} else {
+			context.ageTitle = '—'
+			context.lifespanTitle = '—'
+			context.heightTitle = '—'
+			context.weightTitle = '—'
+		}
 
 		// Prepare inventory items grouped by type (exclude spells, Kindred, and Class items)
 		const excludedTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune', 'Kindred', 'Class']
