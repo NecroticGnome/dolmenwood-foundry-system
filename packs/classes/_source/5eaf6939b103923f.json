@@ -264,6 +264,7 @@
       "torch"
     ],
     "armorProficiency": [],
+    "classSkills": [],
     "hasCombatTalents": false,
     "hasHolyOrder": true,
     "canTwoWeaponFight": false,

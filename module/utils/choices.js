@@ -213,6 +213,26 @@ export function formatArmorProficiency(profArray = []) {
 	return `${armorLabel}, ${shieldSuffix}`
 }
 
+/** Extra skill IDs available for class skill selection */
+export const EXTRA_SKILL_IDS = [
+	'detectMagic', 'alertness', 'stalking', 'tracking', 'pickLock',
+	'stealth', 'decipherDocument', 'climbWall', 'disarmMechanism',
+	'legerdemain', 'monsterLore'
+]
+
+/**
+ * Build class skill options for class sheet checkboxes.
+ * @param {string[]} currentSkills - Array of currently selected skill IDs
+ * @returns {Object[]} Array of option objects with checked state
+ */
+export function buildClassSkillOptions(currentSkills = []) {
+	return EXTRA_SKILL_IDS.map(id => ({
+		id,
+		label: game.i18n.localize(`DOLMEN.Skills.${id}`),
+		checked: currentSkills.includes(id)
+	}))
+}
+
 // Pre-defined choice key arrays for common dropdowns
 export const CHOICE_KEYS = {
 	alignments: ['lawful', 'neutral', 'chaotic'],

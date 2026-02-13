@@ -1060,6 +1060,8 @@ export class ClassDataModel extends ItemDataModel {
 			weaponsProficiency: new ArrayField(new StringField(), { initial: [] }),
 			// Armor proficiency (array of bulk types and/or 'shields')
 			armorProficiency: new ArrayField(new StringField(), { initial: [] }),
+			// Class skills (automatically granted extra skills)
+			classSkills: new ArrayField(new StringField(), { initial: [] }),
 			// XP thresholds per level (index 0-15, where 0 and 1 are unused)
 			xpThresholds: new ArrayField(new NumberField({ integer: true, min: 0 }), {
 				initial: [0, 0, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 260000, 380000, 500000, 620000, 740000, 860000, 980000]

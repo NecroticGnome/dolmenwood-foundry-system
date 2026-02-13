@@ -96,6 +96,22 @@ const DOLMENWOOD = {
 		mossling: ['any', 'shields'],
 		woodgrue: ['any', 'shields']
 	},
+	classSkills: {
+		fighter: [],
+		thief: ['pickLock', 'stealth', 'decipherDocument', 'climbWall', 'disarmMechanism', 'legerdemain'],
+		cleric: [],
+		magician: ['detectMagic'],
+		knight: [],
+		hunter: ['alertness', 'stalking', 'tracking'],
+		bard: ['decipherDocument', 'legerdemain', 'monsterLore'],
+		friar: [],
+		enchanter: [],
+		breggle: [],
+		elf: [],
+		grimalkin: ['pickLock', 'stealth', 'climbWall'],
+		mossling: [],
+		woodgrue: []
+	},
 	spellProgression: {
 		magician: [
 			[],
@@ -1299,6 +1315,7 @@ function generateClassItems() {
 				combatAptitude: ['fighter', 'knight', 'hunter'].includes(classId) ? 'martial' : ['bard', 'cleric', 'enchanter', 'thief'].includes(classId) ? 'semi-martial' : 'non-martial',
 				weaponsProficiency: DOLMENWOOD.weaponsProficiency[classId] || [],
 				armorProficiency: DOLMENWOOD.armorProficiency[classId] || [],
+				classSkills: DOLMENWOOD.classSkills[classId] || [],
 				hasCombatTalents: classId === 'fighter',
 				hasHolyOrder: ['cleric', 'friar'].includes(classId),
 				canTwoWeaponFight: ['fighter', 'hunter', 'knight', 'thief'].includes(classId),
@@ -1343,6 +1360,7 @@ function generateClassItems() {
 				combatAptitude: ['breggle', 'elf'].includes(kindredClassId) ? 'martial' : 'semi-martial',
 				weaponsProficiency: DOLMENWOOD.weaponsProficiency[kindredClassId] || [],
 				armorProficiency: DOLMENWOOD.armorProficiency[kindredClassId] || [],
+				classSkills: DOLMENWOOD.classSkills[kindredClassId] || [],
 				hasCombatTalents: false,
 				hasHolyOrder: false,
 				canTwoWeaponFight: ['breggle', 'elf', 'grimalkin', 'woodgrue'].includes(kindredClassId),

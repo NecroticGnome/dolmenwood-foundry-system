@@ -17,24 +17,6 @@ DOLMENWOOD.extraSkills = [
 ]
 DOLMENWOOD.maxExtraSkills = 6
 
-// Class-specific skills that are automatically granted
-DOLMENWOOD.classSkills = {
-	fighter: [],
-	knight: [],
-	hunter: ['alertness', 'stalking', 'tracking'],
-	cleric: [],
-	thief: ['pickLock', 'stealth', 'decipherDocument', 'climbWall', 'disarmMechanism', 'legerdemain'],
-	bard: ['decipherDocument', 'legerdemain', 'monsterLore'],
-	magician: ['detectMagic'],
-	friar: [],
-	enchanter: [],
-	// Kindred-classes
-	breggle: [],
-	elf: [],
-	grimalkin: ['pickLock', 'stealth', 'climbWall'],
-	mossling: [],
-	woodgrue: []
-}
 
 DOLMENWOOD.months = {
 	grimvold: { days: 30 },

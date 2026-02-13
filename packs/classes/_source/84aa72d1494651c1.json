@@ -298,6 +298,14 @@
     "armorProficiency": [
       "light"
     ],
+    "classSkills": [
+      "pickLock",
+      "stealth",
+      "decipherDocument",
+      "climbWall",
+      "disarmMechanism",
+      "legerdemain"
+    ],
     "hasCombatTalents": false,
     "hasHolyOrder": false,
     "canTwoWeaponFight": true,

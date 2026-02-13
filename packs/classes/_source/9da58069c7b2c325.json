@@ -155,6 +155,7 @@
       "light",
       "medium"
     ],
+    "classSkills": [],
     "hasCombatTalents": false,
     "hasHolyOrder": false,
     "canTwoWeaponFight": false,
