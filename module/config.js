@@ -169,7 +169,7 @@ DOLMENWOOD.primeAbilities = {
 DOLMENWOOD.spellProgression = {
 	// Arcane spells, ranks 1-6
 	magician: [
-		null,              // level 0 (unused)
+		[],                // level 0 (unused)
 		[1, 0, 0, 0, 0, 0], // level 1
 		[2, 0, 0, 0, 0, 0], // level 2
 		[2, 1, 0, 0, 0, 0], // level 3
@@ -188,7 +188,7 @@ DOLMENWOOD.spellProgression = {
 	],
 	// Holy spells, ranks 1-5 (no spells at level 1)
 	cleric: [
-		null,              // level 0 (unused)
+		[],                // level 0 (unused)
 		[0, 0, 0, 0, 0],    // level 1
 		[1, 0, 0, 0, 0],    // level 2
 		[2, 0, 0, 0, 0],    // level 3
@@ -207,7 +207,7 @@ DOLMENWOOD.spellProgression = {
 	],
 	// Holy spells, ranks 1-5 (starts casting at level 1)
 	friar: [
-		null,              // level 0 (unused)
+		[],                // level 0 (unused)
 		[1, 0, 0, 0, 0],    // level 1
 		[2, 0, 0, 0, 0],    // level 2
 		[2, 1, 0, 0, 0],    // level 3

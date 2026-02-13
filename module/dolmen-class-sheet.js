@@ -1,6 +1,6 @@
 /* global foundry, game, FilePicker, fromUuid */
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
-import { rewriteCSV, rewriteJSON } from './utils/form-helpers.js'
+import { rewriteCSV, extractJSON } from './utils/form-helpers.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
@@ -123,10 +123,10 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		const flat = formData.object
 		rewriteCSV(flat, 'system.primeAbilities')
 		const jsonFields = ['xpThresholds', 'spellProgression', 'attackProgression', 'saveProgressions', 'skillProgressions', 'traits']
-		for (const field of jsonFields) {
-			rewriteJSON(flat, `system.${field}`)
-		}
-		return foundry.utils.expandObject(flat)
+		const jsonValues = extractJSON(flat, jsonFields, 'system')
+		const result = foundry.utils.expandObject(flat)
+		Object.assign(result.system, jsonValues)
+		return result
 	}
 
 	_onRender(context, options) {

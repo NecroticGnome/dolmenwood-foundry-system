@@ -40,8 +40,9 @@ export function isKindredClass(actor) {
 function flattenTraitObject(traitObj) {
 	const result = []
 	for (const category of ['active', 'passive', 'info', 'restrictions']) {
-		if (traitObj[category]) {
-			result.push(...traitObj[category])
+		const val = traitObj[category]
+		if (Array.isArray(val)) {
+			result.push(...val)
 		}
 	}
 	return result
@@ -331,7 +332,7 @@ export function flattenTraits(actor, traitDef, level) {
 	const categories = ['active', 'passive', 'info', 'restrictions']
 
 	for (const category of categories) {
-		if (traitDef[category]) {
+		if (Array.isArray(traitDef[category])) {
 			for (const trait of traitDef[category]) {
 				// Skip traits marked as hidden from the trait tab
 				if (trait.hideFromTraitTab === true) continue

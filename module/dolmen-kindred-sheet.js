@@ -1,6 +1,6 @@
 /* global foundry, game, FilePicker, fromUuid */
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
-import { rewriteCSV, rewriteJSON } from './utils/form-helpers.js'
+import { rewriteCSV, extractJSON } from './utils/form-helpers.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
@@ -105,8 +105,10 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 	_processFormData(event, form, formData) {
 		const flat = formData.object
 		rewriteCSV(flat, 'system.languages')
-		rewriteJSON(flat, 'system.traits')
-		return foundry.utils.expandObject(flat)
+		const jsonValues = extractJSON(flat, ['traits'], 'system')
+		const result = foundry.utils.expandObject(flat)
+		Object.assign(result.system, jsonValues)
+		return result
 	}
 
 	_onRender(context, options) {
