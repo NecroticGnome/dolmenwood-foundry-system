@@ -47,10 +47,7 @@
 				"Start Foundry VTT"
 			],
 			"dependsOrder": "sequence",
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
+			"group": "build",
 			"problemMatcher": [],
 			"runOptions": {
 				"instanceLimit": 1

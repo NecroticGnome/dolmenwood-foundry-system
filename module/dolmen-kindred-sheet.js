@@ -1,5 +1,6 @@
-/* global foundry, game, FilePicker */
+/* global foundry, game, FilePicker, fromUuid */
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
+import { rewriteCSV, rewriteJSON } from './utils/form-helpers.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
@@ -13,7 +14,7 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		},
 		position: {
 			width: 500,
-			height: 550
+			height: 580
 		},
 		window: {
 			resizable: true
@@ -21,9 +22,6 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 	}
 
 	static PARTS = {
-		header: {
-			template: 'systems/dolmenwood/templates/items/parts/kindred-header.html'
-		},
 		tabs: {
 			template: 'systems/dolmenwood/templates/items/parts/kindred-tabs.html'
 		},
@@ -76,6 +74,7 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.item = this.item
 		context.system = this.item.system
 		context.tabs = this._getTabs()
+		context.hasCodexLink = !!this.item.system.codexUuid
 
 		// Choices
 		context.sizeChoices = buildChoices('DOLMEN.Item.Size', CHOICE_KEYS.sizes)
@@ -103,34 +102,18 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		this.render()
 	}
 
-	_prepareSubmitData(event, form, formData) {
-		// Process special fields BEFORE calling super (which validates)
-		const fd = new FormData()
-
-		// Copy all form data, processing special fields
-		for (const [key, value] of formData.entries()) {
-			if (key === 'system.languages' && typeof value === 'string') {
-				// Parse comma-separated string to array
-				const languages = value.split(',').map(s => s.trim()).filter(s => s.length > 0)
-				languages.forEach((lang, i) => {
-					fd.append(`system.languages.${i}`, lang)
-				})
-			} else if (key === 'system.traits' && typeof value === 'string') {
-				// Keep traits as string for now, let Foundry handle it
-				fd.append(key, value)
-			} else {
-				fd.append(key, value)
-			}
-		}
-
-		return super._prepareSubmitData(event, form, fd)
+	_processFormData(event, form, formData) {
+		const flat = formData.object
+		rewriteCSV(flat, 'system.languages')
+		rewriteJSON(flat, 'system.traits')
+		return foundry.utils.expandObject(flat)
 	}
 
 	_onRender(context, options) {
 		super._onRender(context, options)
 
 		// Tab click listeners
-		this.element.querySelectorAll('.item-tabs .item').forEach(tab => {
+		this.element.querySelectorAll('.tabs .item').forEach(tab => {
 			tab.addEventListener('click', (event) => {
 				event.preventDefault()
 				const { tab: tabId, group } = event.currentTarget.dataset
@@ -138,19 +121,46 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			})
 		})
 
-		// Handle image click for file picker
-		const itemImage = this.element.querySelector('.item-image img')
-		if (itemImage) {
-			itemImage.addEventListener('click', () => {
-				const fp = new FilePicker({
+		// Portrait picker
+		const portrait = this.element.querySelector('.portrait-image')
+		if (portrait) {
+			portrait.addEventListener('click', () => {
+				new FilePicker({
 					type: 'image',
 					current: this.item.img,
-					callback: (path) => {
-						this.item.update({ img: path })
-					}
-				})
-				fp.browse()
+					callback: (path) => this.item.update({ img: path })
+				}).browse()
 			})
+		}
+
+		// Handle codex link button click
+		const codexBtn = this.element.querySelector('.codex-link-btn')
+		if (codexBtn) {
+			codexBtn.addEventListener('click', async () => {
+				const uuid = this.item.system.codexUuid
+				if (uuid) {
+					const doc = await fromUuid(uuid)
+					doc?.sheet?.render(true)
+				}
+			})
+		}
+
+		// Codex icon in navbar (only if UUID is set)
+		const codexUuid = this.item.system.codexUuid
+		if (codexUuid) {
+			const nav = this.element.querySelector('.tabs[data-group="primary"]')
+			if (nav) {
+				const codexLink = document.createElement('a')
+				codexLink.className = 'item codex-nav-btn'
+				codexLink.title = game.i18n.localize('DOLMEN.Item.CodexOpen')
+				codexLink.innerHTML = '<i class="fas fa-book-open"></i>'
+				codexLink.addEventListener('click', async (event) => {
+					event.preventDefault()
+					const doc = await fromUuid(codexUuid)
+					doc?.sheet?.render(true)
+				})
+				nav.appendChild(codexLink)
+			}
 		}
 	}
 }
