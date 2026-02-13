@@ -1,5 +1,5 @@
 /* global foundry, game, FilePicker, fromUuid */
-import { buildChoices, buildWeaponProfOptions, buildArmorProfOptions, CHOICE_KEYS, WEAPON_PROF_GROUPS, getWeaponTypesForGroup } from './utils/choices.js'
+import { buildChoices, buildWeaponProfOptions, buildArmorProfOptions, WEAPON_PROF_GROUPS, getWeaponTypesForGroup } from './utils/choices.js'
 import { rewriteCSV, extractJSON } from './utils/form-helpers.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -80,7 +80,18 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.spellTypeChoices = buildChoices('DOLMEN.Class.SpellTypeChoices', ['none', 'arcane', 'holy'])
 		context.combatAptitudeChoices = buildChoices('DOLMEN.Class.CombatAptitudeChoices', ['martial', 'semi-martial', 'non-martial'])
 		context.abilityChoices = buildChoices('DOLMEN.Abilities', ['strength', 'intelligence', 'wisdom', 'dexterity', 'constitution', 'charisma'])
-		context.kindredChoices = buildChoices('DOLMEN.Kindreds', CHOICE_KEYS.kindreds)
+		// Kindred choices from compendium
+		const kindredPack = game.packs.get('dolmenwood.kindreds')
+		if (kindredPack) {
+			const kindredIndex = await kindredPack.getIndex({ fields: ['system.kindredId'] })
+			context.kindredChoices = Object.fromEntries(
+				kindredIndex
+					.filter(e => e.system?.kindredId)
+					.map(e => [e.system.kindredId, e.name])
+			)
+		} else {
+			context.kindredChoices = {}
+		}
 
 		// Weapon proficiency multi-select
 		context.weaponProfOptions = buildWeaponProfOptions(this.item.system.weaponsProficiency)
