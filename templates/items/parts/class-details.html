@@ -110,6 +110,17 @@
 				{{/each}}
 			</div>
 		</div>
+		<div class="form-group armor-prof-group">
+			<label>{{localize "DOLMEN.Class.ClassSkills"}}</label>
+			<div class="armor-prof-grid">
+				{{#each classSkillOptions}}
+				<label class="weapon-prof-option">
+					<input type="checkbox" class="class-skill-checkbox" data-skill="{{this.id}}" {{#if this.checked}}checked{{/if}}>
+					<span>{{this.label}}</span>
+				</label>
+				{{/each}}
+			</div>
+		</div>
 	</section>
 
 	<!-- Progression -->

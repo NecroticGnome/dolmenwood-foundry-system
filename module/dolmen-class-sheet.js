@@ -1,5 +1,5 @@
 /* global foundry, game, FilePicker, fromUuid */
-import { buildChoices, buildWeaponProfOptions, buildArmorProfOptions, WEAPON_PROF_GROUPS, getWeaponTypesForGroup } from './utils/choices.js'
+import { buildChoices, buildWeaponProfOptions, buildArmorProfOptions, buildClassSkillOptions, WEAPON_PROF_GROUPS, getWeaponTypesForGroup } from './utils/choices.js'
 import { rewriteCSV, extractJSON } from './utils/form-helpers.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -98,6 +98,9 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 		// Armor proficiency multi-select
 		context.armorProfOptions = buildArmorProfOptions(this.item.system.armorProficiency)
+
+		// Class skills multi-select
+		context.classSkillOptions = buildClassSkillOptions(this.item.system.classSkills)
 
 		// Format traits as JSON for editing
 		context.traitsJSON = JSON.stringify(this.item.system.traits, null, 2)
@@ -270,6 +273,29 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 				}
 
 				this.item.update({ 'system.armorProficiency': currentProf })
+			})
+		})
+
+		// Class skills checkbox handling
+		const csCheckboxes = this.element.querySelectorAll('.class-skill-checkbox')
+		csCheckboxes.forEach(checkbox => {
+			checkbox.addEventListener('change', (event) => {
+				event.stopPropagation()
+				this._savedScrollTop = this.element.querySelector('.class-details')?.scrollTop
+				const skillId = event.currentTarget.dataset.skill
+				const checked = event.currentTarget.checked
+				let currentSkills = [...(this.item.system.classSkills || [])]
+
+				if (checked) {
+					if (!currentSkills.includes(skillId)) {
+						currentSkills.push(skillId)
+					}
+				} else {
+					const index = currentSkills.indexOf(skillId)
+					if (index !== -1) currentSkills.splice(index, 1)
+				}
+
+				this.item.update({ 'system.classSkills': currentSkills })
 			})
 		})
 	}

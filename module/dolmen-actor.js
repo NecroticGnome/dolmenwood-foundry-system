@@ -444,7 +444,7 @@ class DolmenActor extends Actor {
 		}
 
 		// Reset extra skills to match new class
-		const newClassSkills = CONFIG.DOLMENWOOD.classSkills?.[progression.classId] || []
+		const newClassSkills = progression.classSkills || []
 		const finalSkills = []
 		for (const skillId of newClassSkills) {
 			if (this.system.customizeSkills) {

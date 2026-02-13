@@ -257,8 +257,10 @@
       "any"
     ],
     "armorProficiency": [
-      "any"
+      "any",
+      "shields"
     ],
+    "classSkills": [],
     "hasCombatTalents": false,
     "hasHolyOrder": true,
     "canTwoWeaponFight": false,

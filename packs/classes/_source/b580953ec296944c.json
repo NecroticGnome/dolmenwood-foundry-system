@@ -151,7 +151,13 @@
       "medium"
     ],
     "armorProficiency": [
-      "any"
+      "any",
+      "shields"
+    ],
+    "classSkills": [
+      "pickLock",
+      "stealth",
+      "climbWall"
     ],
     "hasCombatTalents": false,
     "hasHolyOrder": false,

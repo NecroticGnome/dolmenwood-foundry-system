@@ -227,6 +227,11 @@
       "light",
       "shields"
     ],
+    "classSkills": [
+      "alertness",
+      "stalking",
+      "tracking"
+    ],
     "hasCombatTalents": false,
     "hasHolyOrder": false,
     "canTwoWeaponFight": true,
