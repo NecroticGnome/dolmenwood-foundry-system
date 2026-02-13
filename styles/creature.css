@@ -254,6 +254,16 @@
 }
 
 /* Notes tab */
+.sheet.dolmen.creature .creature-notes-columns {
+	flex: 1;
+}
+
+.sheet.dolmen.creature .creature-notes-fields {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.5rem;
+}
+
 .sheet.dolmen.creature .creature-notes {
 	flex: 1;
 	display: flex;

@@ -679,6 +679,11 @@ export class CreatureDataModel extends ActorDataModel {
 			// Treasure/Hoard type
 			treasureType: new StringField({ required: true, blank: true }),
 
+			// Notes tab fields
+			behaviour: new StringField({ required: true, blank: true }),
+			speech: new StringField({ required: true, blank: true }),
+			possessions: new StringField({ required: true, blank: true }),
+
 			// Description / lore
 			description: new HTMLField({ required: true, blank: true }),
 

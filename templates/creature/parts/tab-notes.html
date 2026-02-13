@@ -1,16 +1,47 @@
 <section class="tab-content tab-notes {{tab.cssClass}}" data-group="primary" data-tab="notes">
-	<section class="creature-notes boxed-section">
-		<h2>{{localize "DOLMEN.Creature.SpecialAbilities"}}</h2>
-		<textarea name="system.description" class="creature-description">{{system.description}}</textarea>
-	</section>
-	<div class="codex-link-row">
-		<div class="form-field codex-field">
-			<label>{{localize "DOLMEN.Item.CodexLink"}}</label>
-			<div class="codex-input-group">
-				<input type="text" name="system.codexUuid" value="{{system.codexUuid}}" placeholder="UUID">
-				<button type="button" class="codex-link-btn" title="{{localize "DOLMEN.Item.CodexOpen"}}">
-					<i class="fas fa-book-open"></i>
-				</button>
+	<div class="two-columns creature-notes-columns">
+		<section class="creature-details boxed-section">
+			<h2>{{localize "DOLMEN.Creature.NotesDetails"}}</h2>
+			<div class="creature-notes-fields">
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Creature.Encounters"}}</label>
+					<input type="text" name="system.encounters" value="{{system.encounters}}" placeholder="1d6">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Creature.LairChance"}}</label>
+					<input type="number" name="system.lairChance" value="{{system.lairChance}}" min="0" max="100">
+				</div>
+				<div class="header-field" style="grid-column-end: span 2;">
+					<label>{{localize "DOLMEN.Creature.Behaviour"}}</label>
+					<input type="text" name="system.behaviour" value="{{system.behaviour}}">
+				</div>
+				<div class="header-field" style="grid-column-end: span 2;">
+					<label>{{localize "DOLMEN.Creature.Speech"}}</label>
+					<input type="text" name="system.speech" value="{{system.speech}}">
+				</div>
+				<div class="header-field" style="grid-column-end: span 2;">
+					<label>{{localize "DOLMEN.Creature.Possessions"}}</label>
+					<input type="text" name="system.possessions" value="{{system.possessions}}">
+				</div>
+				<div class="header-field" style="grid-column-end: span 2;">
+					<label>{{localize "DOLMEN.Creature.Hoard"}}</label>
+					<input type="text" name="system.treasureType" value="{{system.treasureType}}">
+				</div>
+			</div>
+		</section>
+		<section class="creature-notes boxed-section">
+			<h2>{{localize "DOLMEN.Creature.SpecialAbilities"}}</h2>
+			<textarea name="system.description" class="creature-description">{{system.description}}</textarea>
+		</section>
+		<div class="codex-link-row" style="grid-column-end: span 2;">
+			<div class="form-field codex-field">
+				<label>{{localize "DOLMEN.Item.CodexLink"}}</label>
+				<div class="codex-input-group">
+					<input type="text" name="system.codexUuid" value="{{system.codexUuid}}" placeholder="UUID">
+					<button type="button" class="codex-link-btn" title="{{localize " DOLMEN.Item.CodexOpen"}}">
+						<i class="fas fa-book-open"></i>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
