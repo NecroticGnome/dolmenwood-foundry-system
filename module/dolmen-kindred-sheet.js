@@ -78,7 +78,7 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 		// Choices
 		context.sizeChoices = buildChoices('DOLMEN.Item.Size', CHOICE_KEYS.sizes)
-		context.creatureTypeChoices = buildChoices('DOLMEN.CreatureType', CHOICE_KEYS.creatureTypes)
+		context.creatureTypeChoices = buildChoices('DOLMEN.CreatureTypes', CHOICE_KEYS.creatureTypes)
 
 		// Format traits as JSON for editing
 		context.traitsJSON = JSON.stringify(this.item.system.traits, null, 2)

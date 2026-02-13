@@ -18,7 +18,7 @@
 			"CombatAptitude": "Combat Aptitude",
 			"ArmorProficiency": "Armour",
 			"WeaponsProficiency": "Weapons",
-			"Loyalty": "Loyalty (as retainer)",
+			"Loyalty": "Loyalty (as a retainer)",
 			"Proficiency": {
 				"PrimeAbilities": {
 					"fighter": "Strength",
@@ -135,6 +135,9 @@
 			"XPThresholdsHint": "Array of 16 values (levels 0-15), e.g., [0, 0, 2000, 4000, ...]",
 			"SpellProgression": "Spell Progression",
 			"SpellProgressionHint": "Array of arrays: [[rank1, rank2, ...], ...] for levels 0-15",
+			"AttackProgression": "Attack Progression",
+			"SaveProgressions": "Save Progressions",
+			"SkillProgressions": "Skill Progressions",
 			"Traits": "Traits (JSON)",
 			"TraitsJSON": "Traits Definition",
 			"TraitsHint": "JSON object with categories: active, passive, info, restrictions"
