@@ -22,10 +22,10 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 	_getInitialHeight() {
 		const heightByType = {
-			Weapon: 525,
-			Armor: 345,
-			Treasure: 370,
-			Foraged: 425,
+			Weapon: 545,
+			Armor: 365,
+			Treasure: 390,
+			Foraged: 445,
 			Spell: 325,
 			HolySpell: 325,
 			Glamour: 325,
@@ -43,9 +43,6 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 	}
 
 	static PARTS = {
-		header: {
-			template: 'systems/dolmenwood/templates/items/parts/item-header.html'
-		},
 		tabs: {
 			template: 'systems/dolmenwood/templates/items/parts/item-tabs.html'
 		},
@@ -164,7 +161,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		super._onRender(context, options)
 
 		// Tab click listeners
-		this.element.querySelectorAll('.item-tabs .item').forEach(tab => {
+		this.element.querySelectorAll('.tabs .item').forEach(tab => {
 			tab.addEventListener('click', (event) => {
 				event.preventDefault()
 				const { tab: tabId, group } = event.currentTarget.dataset
@@ -172,18 +169,15 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			})
 		})
 
-		// Handle image click for file picker
-		const itemImage = this.element.querySelector('.item-image img')
-		if (itemImage) {
-			itemImage.addEventListener('click', () => {
-				const fp = new FilePicker({
+		// Portrait picker
+		const portrait = this.element.querySelector('.portrait-image')
+		if (portrait) {
+			portrait.addEventListener('click', () => {
+				new FilePicker({
 					type: 'image',
 					current: this.item.img,
-					callback: (path) => {
-						this.item.update({ img: path })
-					}
-				})
-				fp.browse()
+					callback: (path) => this.item.update({ img: path })
+				}).browse()
 			})
 		}
 
@@ -197,6 +191,24 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 					doc?.sheet?.render(true)
 				}
 			})
+		}
+
+		// Codex icon in navbar (only if UUID is set)
+		const codexUuid = this.item.system.codexUuid
+		if (codexUuid) {
+			const nav = this.element.querySelector('.tabs[data-group="primary"]')
+			if (nav) {
+				const codexLink = document.createElement('a')
+				codexLink.className = 'item codex-nav-btn'
+				codexLink.title = game.i18n.localize('DOLMEN.Item.CodexOpen')
+				codexLink.innerHTML = '<i class="fas fa-book-open"></i>'
+				codexLink.addEventListener('click', async (event) => {
+					event.preventDefault()
+					const doc = await fromUuid(codexUuid)
+					doc?.sheet?.render(true)
+				})
+				nav.appendChild(codexLink)
+			}
 		}
 
 		// Handle quality checkbox changes

@@ -1,4 +1,26 @@
 <section class="tab-content item-body {{tab.cssClass}}" data-group="primary" data-tab="body">
+	<!-- Header: Details + Portrait -->
+	<div class="two-columns header">
+		<section class="details boxed-section">
+			<h2>{{localize "DOLMEN.Details"}}</h2>
+			<div class="header-details">
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Item.Name"}}</label>
+					<input type="text" name="name" value="{{item.name}}" placeholder="{{localize 'DOLMEN.Item.Name'}}">
+				</div>
+				<div class="header-field">
+					<label>{{localize "DOLMEN.Item.Type"}}</label>
+					<span class="proficiency-value">{{localize (concat "TYPES.Item." item.type)}}</span>
+				</div>
+			</div>
+		</section>
+		<section class="portrait-section boxed-section">
+			<div class="portrait-container">
+				<img src="{{item.img}}" alt="{{item.name}}" class="portrait-image" data-edit="img">
+			</div>
+		</section>
+	</div>
+
 	{{#if isGear}}
 	<!-- Common gear fields -->
 	<section class="item-common">

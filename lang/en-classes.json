@@ -18,6 +18,7 @@
 			"CombatAptitude": "Combat Aptitude",
 			"ArmorProficiency": "Armour",
 			"WeaponsProficiency": "Weapons",
+			"Loyalty": "Loyalty (retainer)",
 			"Proficiency": {
 				"PrimeAbilities": {
 					"fighter": "Strength",

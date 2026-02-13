@@ -300,6 +300,7 @@
 		"Item": {
 			"Name": "Name",
 			"Cost": "Cost",
+			"Type": "Type",
 			"CostUnit": "gp",
 			"StackSize": "Stack Size",
 			"Denomination": {

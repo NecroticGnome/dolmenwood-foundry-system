@@ -573,6 +573,9 @@ export class AdventurerDataModel extends ActorDataModel {
 				choices: CHOICE_KEYS.combatTalents
 			}), { initial: [] }),
 
+			// Retainer loyalty score (2-12, default 7)
+			loyalty: new NumberField({ required: true, initial: 7, min: 1, max: 12, integer: true }),
+
 			// Cleric Holy Order (chosen at level 2)
 			holyOrder: new StringField({
 				required: true,
@@ -678,6 +681,9 @@ export class CreatureDataModel extends ActorDataModel {
 
 			// Description / lore
 			description: new HTMLField({ required: true, blank: true }),
+
+			// Codex link UUID
+			codexUuid: new StringField({ required: false, blank: true, initial: "" }),
 
 		}
 	}
