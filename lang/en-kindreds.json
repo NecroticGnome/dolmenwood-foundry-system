@@ -72,10 +72,8 @@
 			"HeightFormula": "Height Formula (inches)",
 			"WeightFormula": "Weight Formula (lbs)",
 			"Languages": "Native Languages",
-			"LanguagesHint": "Comma-separated list of language IDs (e.g., woldish, elvish)",
 			"Traits": "Traits (JSON)",
-			"TraitsJSON": "Traits Definition",
-			"TraitsHint": "JSON object with categories: active, passive, info, restrictions"
+			"TraitsJSON": "Traits Definition"
 		}
 	}
 }

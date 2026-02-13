@@ -291,6 +291,13 @@
     "spellProgression": [],
     "spellType": "none",
     "combatAptitude": "semi-martial",
+    "weaponsProficiency": [
+      "small",
+      "medium"
+    ],
+    "armorProficiency": [
+      "light"
+    ],
     "hasCombatTalents": false,
     "hasHolyOrder": false,
     "canTwoWeaponFight": true,

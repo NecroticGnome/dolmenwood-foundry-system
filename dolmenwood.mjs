@@ -102,3 +102,26 @@ Hooks.on('renderChatMessageHTML', (message, html) => {
 	setupSaveLinkListeners(html)
 })
 
+// Sync embedded Kindred/Class items when source items are updated (world or compendium)
+Hooks.on('updateItem', (item) => {
+	if (item.isEmbedded) return
+	if (!['Kindred', 'Class'].includes(item.type)) return
+
+	const matchField = item.type === 'Kindred' ? 'kindredId' : 'classId'
+	const matchValue = item.system[matchField]
+	if (!matchValue) return
+
+	for (const actor of game.actors) {
+		const embedded = actor.items.find(i =>
+			i.type === item.type && i.system[matchField] === matchValue
+		)
+		if (embedded) {
+			embedded.update({
+				name: item.name,
+				img: item.img,
+				system: item.toObject().system
+			})
+		}
+	}
+})
+
