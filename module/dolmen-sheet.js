@@ -1,5 +1,6 @@
 /* global foundry, game, Dialog, CONFIG, ui, Item, ChatMessage, CONST */
 import { buildChoices, buildChoicesWithBlank, CHOICE_KEYS } from './utils/choices.js'
+import { parseSaveLinks } from './chat-save.js'
 
 // Sheet module imports
 import {
@@ -584,6 +585,24 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 					modal: true
 				})
 				if (confirmed) {
+					// Clean up memorized spell slots before deleting
+					if (['Spell', 'HolySpell'].includes(item.type)) {
+						const magicPath = item.type === 'HolySpell' ? 'holyMagic' : 'arcaneMagic'
+						const slotsData = this.actor.system[magicPath]?.spellSlots
+						if (slotsData) {
+							const updates = {}
+							for (const [key, slot] of Object.entries(slotsData)) {
+								const memorized = slot.memorized
+								if (memorized?.includes(itemId)) {
+									updates[`system.${magicPath}.spellSlots.${key}.memorized`] =
+										memorized.map(id => id === itemId ? null : id)
+								}
+							}
+							if (Object.keys(updates).length) {
+								await this.actor.update(updates)
+							}
+						}
+					}
 					await item.delete()
 				}
 			}
@@ -794,7 +813,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			fields += `<div class="spell-field"><strong>${game.i18n.localize('DOLMEN.Magic.Duration')}:</strong> ${sys.duration}</div>`
 		}
 		if (sys.description) {
-			fields += `<div class="spell-description">${sys.description}</div>`
+			fields += `<div class="spell-description">${parseSaveLinks(sys.description)}</div>`
 		}
 		if (sys.codexUuid) {
 			fields += `<div class="spell-codex-link">@UUID[${sys.codexUuid}]{${game.i18n.localize('DOLMEN.Magic.CodexLink')}}</div>`
