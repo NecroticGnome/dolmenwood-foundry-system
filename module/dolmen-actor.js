@@ -481,14 +481,14 @@ class DolmenActor extends Actor {
 		const results = {}
 
 		// Roll age
-		const ageFormula = CONFIG.DOLMENWOOD.kindredAgeFormulas[kindredId]
+		const ageFormula = kindredItem.system.ageFormula
 		if (ageFormula) {
 			const ageRoll = await new Roll(ageFormula).evaluate()
 			results.age = ageRoll.total
 		}
 
 		// Roll lifespan
-		const lifespanFormula = CONFIG.DOLMENWOOD.kindredLifespanFormulas[kindredId]
+		const lifespanFormula = kindredItem.system.lifespanFormula
 		if (lifespanFormula && lifespanFormula !== '0') {
 			const lifespanRoll = await new Roll(lifespanFormula).evaluate()
 			results.lifespan = lifespanRoll.total
@@ -497,7 +497,7 @@ class DolmenActor extends Actor {
 		}
 
 		// Roll height (in inches)
-		const heightFormula = CONFIG.DOLMENWOOD.kindredHeightFormulas[kindredId]
+		const heightFormula = kindredItem.system.heightFormula
 		if (heightFormula) {
 			const heightRoll = await new Roll(heightFormula).evaluate()
 			const totalInches = heightRoll.total
@@ -509,7 +509,7 @@ class DolmenActor extends Actor {
 		}
 
 		// Roll weight
-		const weightFormula = CONFIG.DOLMENWOOD.kindredWeightFormulas[kindredId]
+		const weightFormula = kindredItem.system.weightFormula
 		if (weightFormula) {
 			const weightRoll = await new Roll(weightFormula).evaluate()
 			results.weightLbs = weightRoll.total
