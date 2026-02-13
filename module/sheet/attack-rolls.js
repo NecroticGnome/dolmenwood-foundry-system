@@ -7,7 +7,7 @@
 
 import { createContextMenu } from './context-menu.js'
 import { computeAdjustedValues } from './data-context.js'
-import { getAllActiveTraits } from './trait-helpers.js'
+import { getAllActiveTraits, resolveDamageProgression } from './trait-helpers.js'
 import { parseSaveLinks } from '../chat-save.js'
 
 /* -------------------------------------------- */
@@ -90,7 +90,25 @@ export function getEquippedWeaponsByQuality(sheet, quality) {
  * @param {DolmenSheet} sheet - The sheet instance
  * @returns {object} Unarmed weapon-like object
  */
-export function createUnarmedWeapon() {
+export function createUnarmedWeapon(actor) {
+	const traits = getAllActiveTraits(actor)
+	const level = actor.system.level
+	const naturalWeapon = traits.find(t => t.traitType === 'naturalWeapon' && t.damageProgression)
+	if (naturalWeapon) {
+		const damage = resolveDamageProgression(naturalWeapon.damageProgression, level)
+		if (damage) {
+			return {
+				id: 'unarmed',
+				name: game.i18n.localize(naturalWeapon.nameKey),
+				img: 'icons/skills/melee/unarmed-punch-fist.webp',
+				system: {
+					damage,
+					size: 'small',
+					qualities: ['melee']
+				}
+			}
+		}
+	}
 	return {
 		id: 'unarmed',
 		name: game.i18n.localize('DOLMEN.Attack.Unarmed'),
@@ -353,7 +371,7 @@ export function openAttackTypeMenu(sheet, weapons, position, rollType = null) {
 			menu.remove()
 
 			if (attackMode === 'push') {
-				const unarmed = createUnarmedWeapon()
+				const unarmed = createUnarmedWeapon(sheet.actor)
 				setTimeout(() => openModifierPanel(sheet, unarmed, attackMode, position, true, rollType), 0)
 			} else {
 				setTimeout(() => openMeleeWeaponMenu(sheet, weapons, attackMode, position, rollType), 0)
@@ -374,12 +392,12 @@ export function openMeleeWeaponMenu(sheet, weapons, attackMode, position, rollTy
 	let html = buildWeaponMenuHtml(sheet, weapons)
 
 	// Add unarmed option (always proficient)
-	const unarmedName = game.i18n.localize('DOLMEN.Attack.Unarmed')
+	const unarmed = createUnarmedWeapon(sheet.actor)
 	html += `
 		<div class="weapon-menu-item" data-weapon-id="unarmed" data-proficient="true">
 			<i class="fas fa-hand-fist"></i>
-			<span class="weapon-name">${unarmedName}</span>
-			<span class="weapon-damage">1d2</span>
+			<span class="weapon-name">${unarmed.name}</span>
+			<span class="weapon-damage">${unarmed.system.damage}</span>
 		</div>
 	`
 
@@ -393,7 +411,7 @@ export function openMeleeWeaponMenu(sheet, weapons, attackMode, position, rollTy
 
 			let weapon
 			if (weaponId === 'unarmed') {
-				weapon = createUnarmedWeapon()
+				weapon = unarmed
 			} else {
 				weapon = sheet.actor.items.get(weaponId)
 			}

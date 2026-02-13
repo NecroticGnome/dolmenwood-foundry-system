@@ -6,6 +6,23 @@
  */
 
 /**
+ * Resolve damage from a damageProgression array for a given level.
+ * The array should contain { minLevel, damage } entries sorted by minLevel ascending.
+ * Returns the damage string for the highest minLevel <= the character's level.
+ * @param {object[]} progression - Array of { minLevel: number, damage: string }
+ * @param {number} level - Character level
+ * @returns {string|null} Damage formula or null if no matching entry
+ */
+export function resolveDamageProgression(progression, level) {
+	if (!Array.isArray(progression) || progression.length === 0) return null
+	let result = null
+	for (const entry of progression) {
+		if (level >= entry.minLevel) result = entry.damage
+	}
+	return result
+}
+
+/**
  * Check if the character is using a kindred-class (kindred as class).
  * @param {Actor} actor - The actor
  * @returns {boolean} True if using a kindred-class
@@ -230,6 +247,16 @@ export function prepareTrait(actor, trait, level) {
 	// Compute level-based damage for rollable traits
 	if (trait.getDamage && typeof trait.getDamage === 'function') {
 		prepared.rollFormula = trait.getDamage(level)
+	}
+
+	// Natural weapon traits: resolve damage from progression data and show as value badge
+	if (trait.traitType === 'naturalWeapon') {
+		prepared.isNaturalWeapon = true
+		const damage = resolveDamageProgression(trait.damageProgression, level)
+		if (damage) {
+			prepared.rollFormula = damage
+			prepared.value = damage
+		}
 	}
 
 	// Check minimum level requirement
