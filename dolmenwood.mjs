@@ -101,3 +101,4 @@ Hooks.on('renderChatMessageHTML', (message, html) => {
 	setupDamageContextMenu(html)
 	setupSaveLinkListeners(html)
 })
+

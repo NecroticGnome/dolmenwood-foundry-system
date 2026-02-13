@@ -14,34 +14,22 @@ export function rewriteCSV(obj, key) {
 }
 
 /**
- * Rewrite a JSON string in a flat object as flattened dot-notation entries.
- * e.g. "system.traits" = '{"a":1}' → "system.traits.a" = 1
- * @param {object} obj - Flat key-value object to modify in-place
- * @param {string} key - The field key to rewrite
+ * Extract JSON string fields from a flat object, parse them, and return as an object.
+ * Removes the keys from the flat object so expandObject won't corrupt arrays into objects.
+ * @param {object} flat - Flat key-value object to modify in-place
+ * @param {string[]} fields - Field names (without prefix)
+ * @param {string} prefix - Key prefix (e.g. 'system')
+ * @returns {object} Parsed values keyed by field name
  */
-export function rewriteJSON(obj, key) {
-	if (typeof obj[key] !== 'string') return
-	try {
-		const parsed = JSON.parse(obj[key])
-		delete obj[key]
-		flattenToObject(obj, key, parsed)
-	} catch { /* keep original value */ }
-}
-
-/**
- * Recursively flatten a nested value into dot-notation entries on a plain object.
- * @param {object} obj - The target object to populate
- * @param {string} prefix - The dot-notation prefix
- * @param {*} value - The value to flatten
- */
-function flattenToObject(obj, prefix, value) {
-	if (Array.isArray(value)) {
-		value.forEach((item, i) => flattenToObject(obj, `${prefix}.${i}`, item))
-	} else if (value !== null && typeof value === 'object') {
-		for (const [k, v] of Object.entries(value)) {
-			flattenToObject(obj, `${prefix}.${k}`, v)
-		}
-	} else {
-		obj[prefix] = value ?? ''
+export function extractJSON(flat, fields, prefix) {
+	const result = {}
+	for (const field of fields) {
+		const key = `${prefix}.${field}`
+		if (typeof flat[key] !== 'string') continue
+		try {
+			result[field] = JSON.parse(flat[key])
+			delete flat[key]
+		} catch { /* keep original value */ }
 	}
+	return result
 }
