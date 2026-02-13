@@ -690,6 +690,9 @@ export class CreatureDataModel extends ActorDataModel {
 			// Codex link UUID
 			codexUuid: new StringField({ required: false, blank: true, initial: "" }),
 
+			// Retainer loyalty score (2-12, default 7)
+			loyalty: new NumberField({ required: false, integer: true, min: 1, max: 12 }),
+
 		}
 	}
 }
