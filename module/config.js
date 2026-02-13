@@ -33,44 +33,6 @@ DOLMENWOOD.months = {
 	braghold: { days: 30 }
 }
 
-// Roll formulas for kindred age and lifespan
-DOLMENWOOD.kindredAgeFormulas = {
-	human: '15 + 2d10',
-	breggle: '15 + 2d10',
-	mossling: '50 + 3d6',
-	woodgrue: '50 + 3d6',
-	elf: '1d100 * 9 + 1d10',
-	grimalkin: '1d100 * 9 + 1d10'
-}
-
-DOLMENWOOD.kindredLifespanFormulas = {
-	human: '50 + 2d20',
-	breggle: '50 + 2d20',
-	mossling: '200 + 5d8 * 10',
-	woodgrue: '300 + 2d100',
-	elf: '0',
-	grimalkin: '0'
-}
-
-// Roll formulas for kindred height (in total inches) and weight (in lbs)
-DOLMENWOOD.kindredHeightFormulas = {
-	human: '64 + 2d6',
-	breggle: '64 + 2d6',
-	elf: '60 + 2d6',
-	grimalkin: '30 + 2d6',
-	mossling: '42 + 2d6',
-	woodgrue: '36 + 2d6'
-}
-
-DOLMENWOOD.kindredWeightFormulas = {
-	human: '120 + 6d10',
-	breggle: '120 + 6d10',
-	elf: '100 + 3d10',
-	grimalkin: '50 + 3d10',
-	mossling: '150 + 2d20',
-	woodgrue: '60 + 2d10'
-}
-
 // Day-of-year offset for each month (cumulative days before that month)
 DOLMENWOOD.monthOffsets = {
 	grimvold: 0,

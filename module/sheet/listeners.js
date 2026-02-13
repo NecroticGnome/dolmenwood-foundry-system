@@ -344,16 +344,15 @@ export function setupUnitConversionListeners(sheet) {
  */
 export function setupDetailsRollListeners(sheet) {
 	const kindredItem = sheet.actor.getKindredItem()
-	const kindred = kindredItem ? kindredItem.system.kindredId : null
 
 	// Roll age
 	sheet.element.querySelector('.roll-age')?.addEventListener('click', async (event) => {
 		event.preventDefault()
-		if (!kindred) {
+		if (!kindredItem) {
 			ui.notifications.warn('No kindred selected')
 			return
 		}
-		const formula = CONFIG.DOLMENWOOD.kindredAgeFormulas[kindred]
+		const formula = kindredItem.system.ageFormula
 		if (!formula) return
 		const roll = await new Roll(formula).evaluate()
 		sheet.actor.update({ 'system.physical.age': roll.total })
@@ -370,7 +369,7 @@ export function setupDetailsRollListeners(sheet) {
 	// Roll lifespan
 	sheet.element.querySelector('.roll-lifespan')?.addEventListener('click', async (event) => {
 		event.preventDefault()
-		const formula = CONFIG.DOLMENWOOD.kindredLifespanFormulas[kindred]
+		const formula = kindredItem?.system.lifespanFormula
 		if (!formula || formula === '0') return
 		const roll = await new Roll(formula).evaluate()
 		sheet.actor.update({ 'system.physical.lifespan': roll.total })
@@ -419,7 +418,7 @@ export function setupDetailsRollListeners(sheet) {
 	// Roll height
 	sheet.element.querySelector('.roll-height')?.addEventListener('click', async (event) => {
 		event.preventDefault()
-		const formula = CONFIG.DOLMENWOOD.kindredHeightFormulas[kindred]
+		const formula = kindredItem?.system.heightFormula
 		if (!formula) return
 		const roll = await new Roll(formula).evaluate()
 		const totalInches = roll.total
@@ -444,7 +443,7 @@ export function setupDetailsRollListeners(sheet) {
 	// Roll weight
 	sheet.element.querySelector('.roll-weight')?.addEventListener('click', async (event) => {
 		event.preventDefault()
-		const formula = CONFIG.DOLMENWOOD.kindredWeightFormulas[kindred]
+		const formula = kindredItem?.system.weightFormula
 		if (!formula) return
 		const roll = await new Roll(formula).evaluate()
 		const weightLbs = roll.total
