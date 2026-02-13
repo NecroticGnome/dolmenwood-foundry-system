@@ -293,9 +293,14 @@ const KINDRED_TRAITS = {
 				id: 'hornAttack',
 				nameKey: 'DOLMEN.Traits.HornAttack',
 				descKey: 'DOLMEN.Traits.HornAttackDesc',
-				traitType: 'active',
-				rollable: true,
-				getDamage: (level) => level >= 10 ? '1d6+2' : level >= 9 ? '1d6+1' : level >= 6 ? '1d6' : level >= 3 ? '1d4+1' : '1d4'
+				traitType: 'naturalWeapon',
+				damageProgression: [
+					{ minLevel: 1, damage: '1d4' },
+					{ minLevel: 3, damage: '1d4+1' },
+					{ minLevel: 6, damage: '1d6' },
+					{ minLevel: 9, damage: '1d6+1' },
+					{ minLevel: 10, damage: '1d6+2' }
+				]
 			}
 		],
 		passive: [
@@ -899,9 +904,14 @@ const KINDRED_CLASS_TRAITS = {
 				id: 'hornAttack',
 				nameKey: 'DOLMEN.Traits.HornAttack',
 				descKey: 'DOLMEN.Traits.HornAttackDesc',
-				traitType: 'active',
-				rollable: true,
-				getDamage: (level) => level >= 10 ? '1d6+2' : level >= 9 ? '1d6+1' : level >= 6 ? '1d6' : level >= 3 ? '1d4+1' : '1d4'
+				traitType: 'naturalWeapon',
+				damageProgression: [
+					{ minLevel: 1, damage: '1d4' },
+					{ minLevel: 3, damage: '1d4+1' },
+					{ minLevel: 6, damage: '1d6' },
+					{ minLevel: 9, damage: '1d6+1' },
+					{ minLevel: 10, damage: '1d6+2' }
+				]
 			}
 		],
 		passive: [
