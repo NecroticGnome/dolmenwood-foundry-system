@@ -23,8 +23,6 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			resizable: true
 		},
 		actions: {
-			openItem: DolmenCreatureSheet._onOpenItem,
-			deleteItem: DolmenCreatureSheet._onDeleteItem,
 			addAttack: DolmenCreatureSheet._onAddAttack,
 			removeAttack: DolmenCreatureSheet._onRemoveAttack,
 			addAbility: DolmenCreatureSheet._onAddAbility,
@@ -235,22 +233,6 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 	/* -------------------------------------------- */
 	/*  Static Action Handlers                      */
 	/* -------------------------------------------- */
-
-	static _onOpenItem(_event, target) {
-		const itemId = target.closest('[data-item-id]')?.dataset.itemId
-		if (itemId) {
-			const item = this.actor.items.get(itemId)
-			item?.sheet.render(true)
-		}
-	}
-
-	static _onDeleteItem(_event, target) {
-		const itemId = target.closest('[data-item-id]')?.dataset.itemId
-		if (itemId) {
-			const item = this.actor.items.get(itemId)
-			item?.delete()
-		}
-	}
 
 	static _onAddAttack() {
 		const attacks = foundry.utils.deepClone(this.actor.system.attacks)
