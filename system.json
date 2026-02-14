@@ -31,62 +31,7 @@
     "dolmenwood.mjs"
   ],
   "styles": [
-    {
-      "src": "styles/variables.css",
-      "layer": "variables"
-    },
-    {
-      "src": "styles/base.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/layout.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/stats.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/details.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/inventory.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/items.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/chat.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/components.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/magic.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/traits.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/notes.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/settings.css",
-      "layer": "system"
-    },
-    {
-      "src": "styles/creature.css",
-      "layer": "system"
-    }
+    "styles/dolmenwood.min.css"
   ],
   "languages": [
     {

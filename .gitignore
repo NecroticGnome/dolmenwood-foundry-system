@@ -400,9 +400,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# Build artifacts
-styles/dolmenwood.min.css
-
 # custom ignores
 *.md
 .*

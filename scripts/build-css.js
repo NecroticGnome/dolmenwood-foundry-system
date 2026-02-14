@@ -4,31 +4,40 @@ const path = require('path')
 const CleanCSS = require('clean-css')
 
 const root = path.join(__dirname, '..')
-const systemJson = JSON.parse(fs.readFileSync(path.join(root, 'system.json'), 'utf8'))
 
-// Group CSS files by layer, preserving order
-const layerOrder = []
-const layerFiles = {}
-for (const style of systemJson.styles) {
-	const layer = style.layer || 'default'
-	if (!layerFiles[layer]) {
-		layerFiles[layer] = []
-		layerOrder.push(layer)
+// CSS files grouped by layer, in order
+const layers = [
+	{
+		name: 'variables',
+		files: ['variables.css']
+	},
+	{
+		name: 'system',
+		files: [
+			'base.css',
+			'layout.css',
+			'stats.css',
+			'details.css',
+			'inventory.css',
+			'items.css',
+			'chat.css',
+			'components.css',
+			'magic.css',
+			'traits.css',
+			'notes.css',
+			'settings.css',
+			'creature.css'
+		]
 	}
-	layerFiles[layer].push(style.src)
-}
+]
 
 // Concatenate with @layer wrappers
 let combined = ''
-for (const layer of layerOrder) {
-	const contents = layerFiles[layer]
-		.map(src => fs.readFileSync(path.join(root, src), 'utf8'))
+for (const layer of layers) {
+	const contents = layer.files
+		.map(file => fs.readFileSync(path.join(root, 'styles', file), 'utf8'))
 		.join('\n')
-	if (layer === 'default') {
-		combined += contents + '\n'
-	} else {
-		combined += `@layer ${layer} {\n${contents}\n}\n`
-	}
+	combined += `@layer ${layer.name} {\n${contents}\n}\n`
 }
 
 // Minify (level 1 = safe transforms only)
