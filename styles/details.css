@@ -175,6 +175,7 @@
 	align-items: center;
 	gap: 0.25rem;
 	flex-direction: column;
+	overflow: hidden;
 }
 
 .sheet.dolmen .tab-adjustments .adj-label {
@@ -182,6 +183,10 @@
 	min-width: 2.5rem;
 	color: var(--dolmen-color-h3);
 	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 100%;
 }
 
 .sheet.dolmen .tab-adjustments .adj-row input[type="number"] {
