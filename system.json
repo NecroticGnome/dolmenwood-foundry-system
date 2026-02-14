@@ -130,66 +130,35 @@
       "path": "lang/pl-kindreds.json"
     }
   ],
+  "packFolders": [
+    {
+      "name": "Dolmenwood System Data",
+      "color": "#d54134",
+      "packs": ["kindreds", "classes"]
+    }
+  ],
   "packs": [
     {
-      "label": "Items",
-      "type": "Item",
-      "name": "items",
-      "path": "packs/items",
-      "system": "dolmenwood",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {}
-    },
-    {
-      "label": "Kindreds",
-      "type": "Item",
       "name": "kindreds",
+      "label": "Kindreds",
       "path": "packs/kindreds",
-      "system": "dolmenwood",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {}
-    },
-    {
-      "label": "Classes",
       "type": "Item",
+      "system": "dolmenwood",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
       "name": "classes",
+      "label": "Classes",
       "path": "packs/classes",
+      "type": "Item",
       "system": "dolmenwood",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      },
-      "flags": {}
-    },
-    {
-      "label": "TestNPCs",
-      "type": "Actor",
-      "name": "test2",
-      "path": "packs/test2",
-      "system": "dolmenwood",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {}
-    },
-    {
-      "label": "Traits",
-      "type": "Actor",
-      "name": "traits",
-      "path": "packs/traits",
-      "system": "dolmenwood",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "flags": {}
+      }
     }
   ],
   "grid": {
