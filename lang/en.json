@@ -633,7 +633,9 @@
 			"Credits": "System developed by <a href=\"https://ko-fi.com/blazesanecki\">Blaze Sanecki</a>.",
 			"Copyright": "Dolmenwood is a trademark of Necrotic Gnome. Used with permission.",
 			"DoNotShow": "Don't show this again",
-			"Close": "Close"
+			"Close": "Close",
+			"SettingName": "Show Welcome Message",
+			"SettingHint": "Display the welcome dialog when Foundry loads."
 		}
 	}
 }
