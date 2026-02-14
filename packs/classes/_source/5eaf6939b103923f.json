@@ -257,8 +257,6 @@
     ],
     "armorProficiency": [],
     "classSkills": [],
-    "hasCombatTalents": false,
-    "hasHolyOrder": true,
     "canTwoWeaponFight": false,
     "hasBackstab": false,
     "skillPointsBase": 0,

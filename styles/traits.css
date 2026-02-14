@@ -129,8 +129,8 @@
 	margin-top: 0.1rem;
 }
 
-/* Combat Talents Selection (Fighter) */
-.sheet.dolmen .tab-content .boxed-section.combat-talents-selection {
+/* Custom Section (Combat Talents, Holy Orders, etc.) */
+.sheet.dolmen .tab-content .boxed-section.custom-section {
 	min-height: unset;
 }
 
@@ -150,17 +150,3 @@
 	font-style: italic;
 }
 
-/* Holy Order Selection (embedded in trait) */
-.sheet.dolmen .trait .order-select select {
-	width: 100%;
-	margin-top: 0.5rem;
-}
-
-.sheet.dolmen .trait .order-description {
-	font-size: 0.75rem;
-	color: var(--dolmen-color-text-muted);
-	padding: 0.35rem 0.5rem;
-	margin-top: 0.35rem;
-	background-color: var(--dolmen-color-box-highlight);
-	border-radius: 0.25rem;
-}

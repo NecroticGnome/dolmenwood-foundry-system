@@ -90,20 +90,4 @@ DOLMENWOOD.moonSignTable = [
 	[344, 352, 'black', 'waning']
 ]
 
-// Holy order definitions for Cleric and Friar classes
-DOLMENWOOD.holyOrders = {
-	stFaxis: {
-		nameKey: 'DOLMEN.Traits.Orders.stFaxis',
-		descKey: 'DOLMEN.Traits.Orders.stFaxisDesc'
-	},
-	stSedge: {
-		nameKey: 'DOLMEN.Traits.Orders.stSedge',
-		descKey: 'DOLMEN.Traits.Orders.stSedgeDesc'
-	},
-	stSignis: {
-		nameKey: 'DOLMEN.Traits.Orders.stSignis',
-		descKey: 'DOLMEN.Traits.Orders.stSignisDesc'
-	}
-}
-
 export default DOLMENWOOD

@@ -363,15 +363,19 @@ export class AdventurerDataModel extends ActorDataModel {
 			this.xp.nextLevel = level < 15 ? (xpTable[level] || 0) : 0
 		}
 
-		// Auto-size combat talents array based on level (gained at 2, 6, 10, 14)
-		if (classItem?.system?.hasCombatTalents) {
-			const talentCount = this.level >= 14 ? 4 : this.level >= 10 ? 3 : this.level >= 6 ? 2 : this.level >= 2 ? 1 : 0
-			if (this.combatTalents.length < talentCount) {
-				while (this.combatTalents.length < talentCount) {
-					this.combatTalents.push('')
-				}
-			} else if (this.combatTalents.length > talentCount) {
-				this.combatTalents.length = talentCount
+		// Auto-size selection arrays for traits with requiresSelection (multi-select only)
+		if (classItem?.system?.traits) {
+			const allTraits = []
+			for (const cat of ['active', 'passive', 'info', 'restrictions']) {
+				if (Array.isArray(classItem.system.traits[cat])) allTraits.push(...classItem.system.traits[cat])
+			}
+			for (const trait of allTraits) {
+				if (!trait.requiresSelection || !trait.unlockLevels || trait.selectionType !== 'multi') continue
+				const field = trait.requiresSelection
+				if (!Array.isArray(this[field])) continue
+				const count = trait.unlockLevels.filter(lvl => this.level >= lvl).length
+				while (this[field].length < count) this[field].push('')
+				if (this[field].length > count) this[field].length = count
 			}
 		}
 
@@ -592,8 +596,7 @@ export class AdventurerDataModel extends ActorDataModel {
 			holyOrder: new StringField({
 				required: true,
 				blank: true,
-				initial: "",
-				choices: [""].concat(CHOICE_KEYS.holyOrders)
+				initial: ""
 			}),
 
 			// Custom adjustments for bonuses/penalties from equipment, traits, etc.
@@ -1170,8 +1173,6 @@ export class ClassDataModel extends ItemDataModel {
 				choices: ['martial', 'semi-martial', 'non-martial']
 			}),
 			// Class features flags
-			hasCombatTalents: new BooleanField({ required: true, initial: false }),
-			hasHolyOrder: new BooleanField({ required: true, initial: false }),
 			canTwoWeaponFight: new BooleanField({ required: true, initial: false }),
 			hasBackstab: new BooleanField({ required: true, initial: false }),
 			// Expertise points for skill customization

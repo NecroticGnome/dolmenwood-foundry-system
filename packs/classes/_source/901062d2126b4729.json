@@ -149,8 +149,6 @@
       "shields"
     ],
     "classSkills": [],
-    "hasCombatTalents": false,
-    "hasHolyOrder": false,
     "canTwoWeaponFight": true,
     "hasBackstab": false,
     "skillPointsBase": 0,

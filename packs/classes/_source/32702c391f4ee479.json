@@ -147,8 +147,6 @@
       "shields"
     ],
     "classSkills": [],
-    "hasCombatTalents": true,
-    "hasHolyOrder": false,
     "canTwoWeaponFight": true,
     "hasBackstab": false,
     "skillPointsBase": 0,
@@ -160,7 +158,15 @@
           "nameKey": "DOLMEN.Traits.CombatTalents",
           "descKey": "DOLMEN.Traits.CombatTalentsDesc",
           "traitType": "active",
-          "requiresSelection": "combatTalents"
+          "requiresSelection": "combatTalents",
+          "selectionType": "multi",
+          "unlockLevels": [
+            2,
+            6,
+            10,
+            14
+          ],
+          "hintKey": "DOLMEN.Traits.TalentsGainedHint"
         }
       ],
       "passive": [
