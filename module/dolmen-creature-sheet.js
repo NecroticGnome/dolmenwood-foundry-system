@@ -1,4 +1,4 @@
-/* global foundry, game, Dialog, FilePicker, Item, Roll, ChatMessage, CONST, fromUuid */
+/* global foundry, game, Dialog, FilePicker, Roll, ChatMessage, CONST, fromUuid */
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { onSaveRoll } from './sheet/roll-handlers.js'
 import { createContextMenu } from './sheet/context-menu.js'
@@ -27,8 +27,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			removeAttack: DolmenCreatureSheet._onRemoveAttack,
 			addAbility: DolmenCreatureSheet._onAddAbility,
 			removeAbility: DolmenCreatureSheet._onRemoveAbility
-		},
-		dragDrop: [{ dropSelector: '.item-list' }]
+		}
 	}
 
 	static PARTS = {
@@ -618,23 +617,6 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		})
 	}
 
-	/* -------------------------------------------- */
-	/*  Drag and Drop                               */
-	/* -------------------------------------------- */
-
-	async _onDrop(event) {
-		const data = TextEditor.getDragEventData(event)
-		if (data.type === 'Item') {
-			const item = await Item.implementation.fromDropData(data)
-			if (!item) return
-			// Prevent dropping spells onto creatures
-			const spellTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune']
-			if (spellTypes.includes(item.type)) return
-			return this.actor.createEmbeddedDocuments('Item', [item.toObject()])
-		}
-	}
 }
-
-const TextEditor = foundry.applications.ux.TextEditor
 
 export default DolmenCreatureSheet
