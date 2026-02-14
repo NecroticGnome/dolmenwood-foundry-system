@@ -45,6 +45,7 @@
 			"LocalizationKey": "Localization Key",
 			"Size": "Size",
 			"CreatureType": "Creature Type",
+			"HasFur": "Has Fur",
 			"AgeFormula": "Age Formula",
 			"LifespanFormula": "Lifespan Formula",
 			"HeightFormula": "Height Formula (inches)",

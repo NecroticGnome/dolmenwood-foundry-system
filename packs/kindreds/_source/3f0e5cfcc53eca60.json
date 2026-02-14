@@ -8,6 +8,7 @@
     "kindredId": "human",
     "size": "medium",
     "creatureType": "mortal",
+    "hasFur": false,
     "ageFormula": "15 + 2d10",
     "lifespanFormula": "50 + 2d20",
     "heightFormula": "64 + 2d6",

@@ -8,6 +8,7 @@
     "kindredId": "elf",
     "size": "medium",
     "creatureType": "fairy",
+    "hasFur": false,
     "ageFormula": "1d100 * 9 + 1d10",
     "lifespanFormula": "0",
     "heightFormula": "60 + 2d6",

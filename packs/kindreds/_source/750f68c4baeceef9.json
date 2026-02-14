@@ -8,6 +8,7 @@
     "kindredId": "woodgrue",
     "size": "small",
     "creatureType": "demi-fey",
+    "hasFur": false,
     "ageFormula": "50 + 3d6",
     "lifespanFormula": "300 + 2d100",
     "heightFormula": "36 + 2d6",

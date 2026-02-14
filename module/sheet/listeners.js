@@ -509,19 +509,18 @@ const DETAIL_TABLE_NAMES = {
 	beliefs: 'Beliefs',
 	speech: 'Speech'
 }
-const FUR_KINDREDS = ['breggle', 'grimalkin']
-
 /**
  * Build a RollTable name from kindred and field.
  * Table names follow "{Kindred} {Field}" format from the Dolmenwood Player's Book codex.
  * @param {string} kindred - The kindred key (e.g. 'breggle')
  * @param {string} field - The field key (e.g. 'face', 'body')
+ * @param {boolean} hasFur - Whether the kindred has fur (substitutes 'Fur' for 'Body')
  * @returns {string} Table name (e.g. 'Breggle Face', 'Breggle Fur')
  */
-function buildTableName(kindred, field) {
+function buildTableName(kindred, field, hasFur) {
 	const kindredLabel = kindred.charAt(0).toUpperCase() + kindred.slice(1)
 	let fieldLabel = DETAIL_TABLE_NAMES[field] || field.charAt(0).toUpperCase() + field.slice(1)
-	if (field === 'body' && FUR_KINDREDS.includes(kindred)) {
+	if (field === 'body' && hasFur) {
 		fieldLabel = 'Fur'
 	}
 	return `${kindredLabel} ${fieldLabel}`
@@ -543,7 +542,7 @@ export function setupExtraDetailsRollListeners(sheet) {
 			}
 			const kindred = kindredItem.system.kindredId
 			const field = event.currentTarget.dataset.detail
-			const tableName = buildTableName(kindred, field)
+			const tableName = buildTableName(kindred, field, kindredItem.system.hasFur)
 			const result = await drawFromTable(tableName)
 			if (result) {
 				await sheet.actor.update({ [`system.details.${field}`]: result })
