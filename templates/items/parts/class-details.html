@@ -62,12 +62,6 @@
 			</div>
 		</div>
 		<div class="form-row">
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Class.PrimeAbilities"}}</label>
-				<input type="text" name="system.primeAbilities" value="{{join system.primeAbilities ', '}}" placeholder="strength, dexterity">
-			</div>
-		</div>
-		<div class="form-row">
 			<div class="form-field" style="flex: 2;">
 				<label>{{localize "DOLMEN.Class.HitDice"}}</label>
 				<input type="text" name="system.hitDice.die" value="{{system.hitDice.die}}" placeholder="1d6">
@@ -75,6 +69,17 @@
 			<div class="form-field" style="flex: 1;">
 				<label>{{localize "DOLMEN.Class.FlatHP"}}</label>
 				<input type="number" name="system.hitDice.flat" value="{{system.hitDice.flat}}" placeholder="1">
+			</div>
+		</div>
+		<div class="form-group armor-prof-group">
+			<label>{{localize "DOLMEN.Class.PrimeAbilities"}}</label>
+			<div class="class-skills-grid">
+				{{#each primeAbilityOptions}}
+				<label class="weapon-prof-option">
+					<input type="checkbox" class="prime-ability-checkbox" data-ability="{{this.id}}" {{#if this.checked}}checked{{/if}}>
+					<span>{{this.label}}</span>
+				</label>
+				{{/each}}
 			</div>
 		</div>
 		<div class="form-group weapon-prof-group">
@@ -118,7 +123,7 @@
 		</div>
 		<div class="form-group armor-prof-group">
 			<label>{{localize "DOLMEN.Class.ClassSkills"}}</label>
-			<div class="armor-prof-grid">
+			<div class="class-skills-grid">
 				{{#each classSkillOptions}}
 				<label class="weapon-prof-option">
 					<input type="checkbox" class="class-skill-checkbox" data-skill="{{this.id}}" {{#if this.checked}}checked{{/if}}>

@@ -1,6 +1,6 @@
 /* global foundry, game, FilePicker, fromUuid */
 import { buildChoices, buildWeaponProfOptions, buildArmorProfOptions, buildClassSkillOptions, WEAPON_PROF_GROUPS, getWeaponTypesForGroup } from './utils/choices.js'
-import { rewriteCSV, extractJSON } from './utils/form-helpers.js'
+import { extractJSON } from './utils/form-helpers.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
@@ -93,6 +93,15 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			context.kindredChoices = {}
 		}
 
+		// Prime abilities multi-select
+		const abilityIds = ['strength', 'intelligence', 'wisdom', 'dexterity', 'constitution', 'charisma']
+		const currentPrime = this.item.system.primeAbilities || []
+		context.primeAbilityOptions = abilityIds.map(id => ({
+			id,
+			label: game.i18n.localize(`DOLMEN.Abilities.${id.charAt(0).toUpperCase() + id.slice(1)}`),
+			checked: currentPrime.includes(id)
+		}))
+
 		// Weapon proficiency multi-select
 		context.weaponProfOptions = buildWeaponProfOptions(this.item.system.weaponsProficiency)
 
@@ -145,7 +154,6 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 	_processFormData(event, form, formData) {
 		const flat = formData.object
-		rewriteCSV(flat, 'system.primeAbilities')
 		const jsonFields = ['xpThresholds', 'spellProgression', 'attackProgression', 'saveProgressions', 'skillProgressions', 'traits']
 		const jsonValues = extractJSON(flat, jsonFields, 'system')
 		const result = foundry.utils.expandObject(flat)
@@ -277,6 +285,29 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 				}
 
 				this.item.update({ 'system.armorProficiency': currentProf })
+			})
+		})
+
+		// Prime abilities checkbox handling
+		const paCheckboxes = this.element.querySelectorAll('.prime-ability-checkbox')
+		paCheckboxes.forEach(checkbox => {
+			checkbox.addEventListener('change', (event) => {
+				event.stopPropagation()
+				this._savedScrollTop = this.element.querySelector('.class-details')?.scrollTop
+				const abilityId = event.currentTarget.dataset.ability
+				const checked = event.currentTarget.checked
+				let currentPrime = [...(this.item.system.primeAbilities || [])]
+
+				if (checked) {
+					if (!currentPrime.includes(abilityId)) {
+						currentPrime.push(abilityId)
+					}
+				} else {
+					const index = currentPrime.indexOf(abilityId)
+					if (index !== -1) currentPrime.splice(index, 1)
+				}
+
+				this.item.update({ 'system.primeAbilities': currentPrime })
 			})
 		})
 
