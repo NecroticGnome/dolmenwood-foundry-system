@@ -335,6 +335,16 @@
 	border: 1px solid var(--dolmen-color-input-border);
 	border-radius: 3px;
 	padding: 0.4rem;
+	justify-content: space-between;
+}
+
+.sheet.dolmen.class .class-skills-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.25rem 0.5rem;
+	border: 1px solid var(--dolmen-color-input-border);
+	border-radius: 3px;
+	padding: 0.4rem;
 }
 
 .sheet.dolmen.class .effects-input {
