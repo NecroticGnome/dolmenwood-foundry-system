@@ -2,14 +2,19 @@
 	"DOLMEN": {
 		"Classes": {
 			"bard": "Bard",
+			"breggle": "Breggle",
 			"cleric": "Cleric",
+			"elf": "Elf",
 			"enchanter": "Enchanter",
 			"fighter": "Fighter",
 			"friar": "Friar",
+			"grimalkin": "Grimalkin",
 			"hunter": "Hunter",
 			"knight": "Knight",
 			"magician": "Magician",
-			"thief": "Thief"
+			"mossling": "Mossling",
+			"thief": "Thief",
+			"woodgrue": "Woodgrue"
 		},
 		"ClassDetails": {
 			"Title": "Class Details",
@@ -52,6 +57,7 @@
 			"Progression": "Progression",
 			"ClassId": "Class ID",
 			"RequiredKindred": "Required Kindred",
+			"LocalizationKey": "Localization Key",
 			"PrimeAbilities": "Prime Abilities",
 			"HitDice": "Hit Die",
 			"FlatHP": "Flat HP Bonus",

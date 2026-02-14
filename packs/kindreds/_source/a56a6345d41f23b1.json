@@ -13,7 +13,9 @@
     "heightFormula": "64 + 2d6",
     "weightFormula": "120 + 6d10",
     "languages": [
-      "woldish"
+      "woldish",
+      "gaffe",
+      "caprice"
     ],
     "traits": {
       "active": [

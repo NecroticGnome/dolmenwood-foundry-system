@@ -80,6 +80,14 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.sizeChoices = buildChoices('DOLMEN.Item.Size', CHOICE_KEYS.sizes)
 		context.creatureTypeChoices = buildChoices('DOLMEN.CreatureTypes', CHOICE_KEYS.creatureTypes)
 
+		// Localization key for display
+		const kindredId = this.item.system.kindredId
+		context.localizationKey = kindredId ? `DOLMEN.Kindreds.${kindredId}` : ''
+
+		// Language localization keys for display
+		const langs = this.item.system.languages || []
+		context.languageLocalizationKeys = langs.map(id => ({ id, key: `DOLMEN.Languages.${id}` }))
+
 		// Format traits as JSON for editing
 		context.traitsJSON = JSON.stringify(this.item.system.traits, null, 2)
 

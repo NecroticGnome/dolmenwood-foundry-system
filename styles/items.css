@@ -222,6 +222,12 @@
 	display: block;
 }
 
+.localization-key-list {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.15rem 0.5rem;
+}
+
 .sheet.dolmen.item .qualities-grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);

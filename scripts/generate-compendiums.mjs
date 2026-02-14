@@ -315,11 +315,11 @@ const DOLMENWOOD = {
 // Kindred metadata
 const KINDRED_DATA = {
 	human: { size: 'medium', creatureType: 'mortal', languages: ['woldish'] },
-	breggle: { size: 'medium', creatureType: 'mortal', languages: ['woldish'] },
-	elf: { size: 'medium', creatureType: 'fairy', languages: ['woldish', 'elvish'] },
-	grimalkin: { size: 'small', creatureType: 'fairy', languages: ['woldish', 'grimalkin'] },
-	mossling: { size: 'small', creatureType: 'mortal', languages: ['woldish', 'mossling'] },
-	woodgrue: { size: 'small', creatureType: 'demi-fey', languages: ['woldish', 'woodgrue'] }
+	breggle: { size: 'medium', creatureType: 'mortal', languages: ['woldish', 'gaffe', 'caprice'] },
+	elf: { size: 'medium', creatureType: 'fairy', languages: ['woldish', 'sylvan', 'highElfish'] },
+	grimalkin: { size: 'small', creatureType: 'fairy', languages: ['woldish', 'mewl'] },
+	mossling: { size: 'small', creatureType: 'mortal', languages: ['woldish', 'mulch'] },
+	woodgrue: { size: 'small', creatureType: 'demi-fey', languages: ['woldish', 'sylvan'] }
 }
 
 const KINDRED_CLASS_NAMES = ['breggle', 'elf', 'grimalkin', 'mossling', 'woodgrue']

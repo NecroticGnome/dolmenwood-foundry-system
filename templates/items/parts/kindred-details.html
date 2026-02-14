@@ -29,6 +29,10 @@
 				<label>{{localize "DOLMEN.Kindred.KindredId"}}</label>
 				<input type="text" name="system.kindredId" value="{{system.kindredId}}" placeholder="grimalkin">
 			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.LocalizationKey"}}</label>
+				<span class="proficiency-value">{{localizationKey}}</span>
+			</div>
 		</div>
 		<div class="form-row">
 			<div class="form-field">
@@ -74,9 +78,21 @@
 	<!-- Languages -->
 	<section class="kindred-cultural boxed-section">
 		<h2>{{localize "DOLMEN.Kindred.CulturalTraits"}}</h2>
-		<div class="form-group">
-			<label>{{localize "DOLMEN.Kindred.Languages"}}</label>
-			<input type="text" name="system.languages" value="{{join system.languages ', '}}" placeholder="woldish, elvish">
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.Languages"}}</label>
+				<input type="text" name="system.languages" value="{{join system.languages ', '}}" placeholder="woldish, sylvan">
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Kindred.LocalizationKey"}}</label>
+				<div class="localization-key-list">
+					{{#each languageLocalizationKeys}}
+					<span class="proficiency-value">{{this.key}}</span>
+					{{/each}}
+				</div>
+			</div>
 		</div>
 	</section>
 </section>

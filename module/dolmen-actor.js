@@ -310,11 +310,11 @@ class DolmenActor extends Actor {
 
 	/**
 	 * Set the actor's kindred by creating/replacing the embedded Kindred item.
-	 * @param {string} kindredName - The kindred name to set (e.g., "Grimalkin", "Human")
+	 * @param {string} kindredId - The kindred ID to set (e.g., "grimalkin", "human")
 	 * @returns {Promise<void>}
 	 */
-	async setKindred(kindredName) {
-		if (!kindredName) return
+	async setKindred(kindredId) {
+		if (!kindredId) return
 
 		const existing = this.getKindredItem()
 		const pack = game.packs.get('dolmenwood.kindreds')
@@ -323,31 +323,30 @@ class DolmenActor extends Actor {
 			return
 		}
 
-		// Find the kindred in the compendium by name
-		const index = await pack.getIndex()
-		const entry = index.find(e => e.name.toLowerCase() === kindredName.toLowerCase())
+		// Find the kindred in the compendium by kindredId
+		const index = await pack.getIndex({ fields: ['system.kindredId'] })
+		const entry = index.find(e => e.system?.kindredId === kindredId)
 
 		if (!entry) {
-			ui.notifications.warn(`Kindred "${kindredName}" not found in compendium`)
+			ui.notifications.warn(`Kindred "${kindredId}" not found in compendium`)
 			return
 		}
 
 		const kindredDoc = await pack.getDocument(entry._id)
 		if (!kindredDoc) {
-			ui.notifications.error(`Failed to load kindred "${kindredName}"`)
+			ui.notifications.error(`Failed to load kindred "${kindredId}"`)
 			return
 		}
 
 		// Check if current class is a kindred-class and incompatible with new kindred
 		const currentClass = this.getClassItem()
 		if (currentClass && currentClass.system.requiredKindred) {
-			const newKindredId = kindredDoc.system.kindredId
-			if (currentClass.system.requiredKindred !== newKindredId) {
+			if (currentClass.system.requiredKindred !== kindredId) {
 				// Incompatible - change class to Fighter
-				await this.setClass('Fighter')
+				await this.setClass('fighter')
 				ui.notifications.warn(game.i18n.format('DOLMEN.KindredClassIncompatible', {
-					newKindred: kindredName,
-					className: currentClass.name
+					newKindred: game.i18n.localize(`DOLMEN.Kindreds.${kindredId}`),
+					className: game.i18n.localize(`DOLMEN.Classes.${currentClass.system.classId}`)
 				}))
 			}
 		}
@@ -372,11 +371,11 @@ class DolmenActor extends Actor {
 	 * Set the actor's class by creating/replacing the embedded Class item.
 	 * If the class requires a specific kindred (kindred-class), enforce it.
 	 * Automatically adds class-specific skills to the character.
-	 * @param {string} className - The class name to set (e.g., "Fighter", "Elf")
+	 * @param {string} classId - The class ID to set (e.g., "fighter", "elf")
 	 * @returns {Promise<void>}
 	 */
-	async setClass(className) {
-		if (!className) return
+	async setClass(classId) {
+		if (!classId) return
 
 		const existing = this.getClassItem()
 		const pack = game.packs.get('dolmenwood.classes')
@@ -385,18 +384,18 @@ class DolmenActor extends Actor {
 			return
 		}
 
-		// Find the class in the compendium by name
-		const index = await pack.getIndex()
-		const entry = index.find(e => e.name.toLowerCase() === className.toLowerCase())
+		// Find the class in the compendium by classId
+		const index = await pack.getIndex({ fields: ['system.classId'] })
+		const entry = index.find(e => e.system?.classId === classId)
 
 		if (!entry) {
-			ui.notifications.warn(`Class "${className}" not found in compendium`)
+			ui.notifications.warn(`Class "${classId}" not found in compendium`)
 			return
 		}
 
 		const classDoc = await pack.getDocument(entry._id)
 		if (!classDoc) {
-			ui.notifications.error(`Failed to load class "${className}"`)
+			ui.notifications.error(`Failed to load class "${classId}"`)
 			return
 		}
 
@@ -410,8 +409,7 @@ class DolmenActor extends Actor {
 
 		// If this class requires a specific kindred (kindred-class), enforce it
 		if (classDoc.system.requiredKindred) {
-			// Find the matching kindred by name
-			await this.setKindred(classDoc.name)
+			await this.setKindred(classDoc.system.requiredKindred)
 		}
 
 		// Reset skills to match new class progression
