@@ -169,6 +169,7 @@
 		"LevelUpConfirm": "Not enough XP to level up. Proceed anyway?",
 		"LevelUpTo": "Level {level}",
 		"LevelUpHP": "+{total} HP",
+		"LevelUpHPBreakdown": "{formula} {conMod} CON (min 1)",
 		"LevelUpFlat": "Flat bonus (level 11+)",
 		"LevelDownNoRecord": "No HP record for this level. HP will not be adjusted.",
 		"LevelMaxReached": "Already at maximum level.",
