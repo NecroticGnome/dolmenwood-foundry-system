@@ -14,7 +14,8 @@
     "weightFormula": "100 + 3d10",
     "languages": [
       "woldish",
-      "elvish"
+      "sylvan",
+      "highElfish"
     ],
     "traits": {
       "passive": [

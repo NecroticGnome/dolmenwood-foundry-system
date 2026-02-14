@@ -23,6 +23,15 @@
 			"Metric": "Metric",
 			"UnitSystem": "Unit System"
 		},
+		"Languages": {
+			"woldish": "Woldish",
+			"gaffe": "Gaffe",
+			"caprice": "Caprice",
+			"sylvan": "Sylvan",
+			"highElfish": "High Elfish",
+			"mewl": "Mewl",
+			"mulch": "Mulch"
+		},
 		"KindredSheetTitle": "Kindred Item Sheet",
 		"Kindred": {
 			"Title": "Kindred",
@@ -33,6 +42,7 @@
 			"PhysicalCharacteristics": "Physical Characteristics",
 			"CulturalTraits": "Cultural Traits",
 			"KindredId": "Kindred ID",
+			"LocalizationKey": "Localization Key",
 			"Size": "Size",
 			"CreatureType": "Creature Type",
 			"AgeFormula": "Age Formula",

@@ -102,6 +102,10 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		// Class skills multi-select
 		context.classSkillOptions = buildClassSkillOptions(this.item.system.classSkills)
 
+		// Localization key for display
+		const classId = this.item.system.classId
+		context.localizationKey = classId ? `DOLMEN.Classes.${classId}` : ''
+
 		// Format traits as JSON for editing
 		context.traitsJSON = JSON.stringify(this.item.system.traits, null, 2)
 

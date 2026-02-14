@@ -186,16 +186,19 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const classItem = actor.getClassItem()
 		context.kindredItem = kindredItem
 		context.classItem = classItem
-		// Extract names as plain strings for template comparison
-		context.kindredName = kindredItem ? kindredItem.name : null
-		context.className = classItem ? classItem.name : null
+		// Extract IDs as plain strings for template dropdown matching
+		context.kindredName = kindredItem?.system?.kindredId || null
+		context.className = classItem?.system?.classId || null
 
-		// Build dropdown choices from compendia
+		// Build dropdown choices from compendia (kindredId/classId → localized name)
 		const kindredPack = game.packs.get('dolmenwood.kindreds')
 		if (kindredPack) {
-			const kindredIndex = await kindredPack.getIndex()
+			const kindredIndex = await kindredPack.getIndex({ fields: ['system.kindredId'] })
 			context.kindredChoices = Object.fromEntries(
-				kindredIndex.map(e => [e.name, e.name])
+				kindredIndex
+					.filter(e => e.system?.kindredId)
+					.map(e => [e.system.kindredId, game.i18n.localize(`DOLMEN.Kindreds.${e.system.kindredId}`)])
+					.sort((a, b) => a[1].localeCompare(b[1]))
 			)
 		} else {
 			context.kindredChoices = {}
@@ -203,10 +206,12 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		const classPack = game.packs.get('dolmenwood.classes')
 		if (classPack) {
-			const classIndex = await classPack.getIndex()
-			context.classChoices = Object.fromEntries(
-				classIndex.map(e => [e.name, e.name])
-			)
+			const classIndex = await classPack.getIndex({ fields: ['system.classId', 'system.requiredKindred'] })
+			const classEntries = classIndex
+				.filter(e => e.system?.classId)
+				.map(e => ({ id: e.system.classId, label: game.i18n.localize(`DOLMEN.Classes.${e.system.classId}`), isKindredClass: !!e.system.requiredKindred }))
+				.sort((a, b) => a.isKindredClass === b.isKindredClass ? a.label.localeCompare(b.label) : a.isKindredClass ? 1 : -1)
+			context.classChoices = Object.fromEntries(classEntries.map(e => [e.id, e.label]))
 		} else {
 			context.classChoices = {}
 		}
@@ -245,6 +250,15 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		}
 		context.creatureTypeChoices = buildChoices('DOLMEN.CreatureTypes', CHOICE_KEYS.creatureTypes)
 		context.creatureTypeLabel = game.i18n.localize(`DOLMEN.CreatureTypes.${actor.system.creatureType}`)
+
+		// Localize language names for display
+		const langIds = actor.system.languages || []
+		context.localizedLanguages = (Array.isArray(langIds) ? langIds : [])
+			.map(id => {
+				const key = `DOLMEN.Languages.${id}`
+				return game.i18n.has(key) ? game.i18n.localize(key) : id
+			})
+			.join(', ')
 
 		// Max extra skills for template conditional
 		context.maxExtraSkills = CONFIG.DOLMENWOOD.maxExtraSkills
@@ -373,9 +387,10 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.isKindredClass = isKindredClass(actor)
 		if (context.isKindredClass) {
 			context.kindredClassTraits = prepareKindredClassTraits(actor)
-			// For kindred-classes, use the class item name (e.g., "Elf", "Grimalkin")
-			const classItem = actor.getClassItem()
-			context.kindredClassName = classItem ? classItem.name : ''
+			// For kindred-classes, use the localized class name (e.g., "Elf", "Grimalkin")
+			const kcClassItem = actor.getClassItem()
+			const kcClassId = kcClassItem?.system?.classId
+			context.kindredClassName = kcClassId ? game.i18n.localize(`DOLMEN.Classes.${kcClassId}`) : ''
 		} else {
 			context.kindredTraits = prepareKindredTraits(actor)
 			context.classTraits = prepareClassTraits(actor)
@@ -449,8 +464,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		if (partId === 'stats') {
 			const kindredItem = this.actor.getKindredItem()
 			const classItem = this.actor.getClassItem()
-			context.kindredName = kindredItem ? kindredItem.name : null
-			context.className = classItem ? classItem.name : null
+			context.kindredName = kindredItem?.system?.kindredId || null
+			context.className = classItem?.system?.classId || null
 		}
 
 		return context
@@ -515,10 +530,10 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			newKindredSelect.addEventListener('change', async (event) => {
 				event.preventDefault()
 				event.stopPropagation()
-				const kindredName = event.target.value
-				if (kindredName) {
+				const kindredId = event.target.value
+				if (kindredId) {
 					this._updatingKindredClass = true
-					await this.actor.setKindred(kindredName)
+					await this.actor.setKindred(kindredId)
 					this._updatingKindredClass = false
 					this.render()
 				}
@@ -534,10 +549,10 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			newClassSelect.addEventListener('change', async (event) => {
 				event.preventDefault()
 				event.stopPropagation()
-				const className = event.target.value
-				if (className) {
+				const classId = event.target.value
+				if (classId) {
 					this._updatingKindredClass = true
-					await this.actor.setClass(className)
+					await this.actor.setClass(classId)
 					this._updatingKindredClass = false
 					this.render()
 				}
@@ -559,17 +574,17 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 	}
 
 	static async _onSetKindred(_event, target) {
-		const kindredName = target.value
-		if (kindredName) {
-			await this.actor.setKindred(kindredName)
+		const kindredId = target.value
+		if (kindredId) {
+			await this.actor.setKindred(kindredId)
 			// Foundry auto-renders on actor updates
 		}
 	}
 
 	static async _onSetClass(_event, target) {
-		const className = target.value
-		if (className) {
-			await this.actor.setClass(className)
+		const classId = target.value
+		if (classId) {
+			await this.actor.setClass(classId)
 			// Foundry auto-renders on actor updates
 		}
 	}
