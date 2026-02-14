@@ -1,6 +1,7 @@
-/* global foundry, game, TextEditor */
+/* global foundry, game */
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
+const TextEditor = foundry.applications.ux.TextEditor.implementation
 
 class WelcomeDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 	static DEFAULT_OPTIONS = {

@@ -627,6 +627,9 @@
 		"SaveRoll": {
 			"NoTokensSelected": "No tokens selected. Select a token to roll saving throw."
 		},
+		"RollTable": {
+			"NotFound": "Roll table \"{name}\" not found. Make sure the Dolmenwood Foundry VTT Content Conversion module is installed and enabled."
+		},
 		"Welcome": {
 			"Title": "Welcome to Dolmenwood VTT!",
 			"Info": "A Foundry VTT system for the <a href=\"https://necroticgnome.com/collections/dolmenwood\">Dolmenwood</a> TTRPG published by <a href=\"https://necroticgnome.com\">Necrotic Gnome</a>.",
