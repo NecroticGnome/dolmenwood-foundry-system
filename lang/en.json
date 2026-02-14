@@ -150,7 +150,7 @@
 			"monsterLore": "Monster Lore",
 			"OptionalRules": "Optional Rules",
 			"CustomizeSkills": "Customize Skills",
-			"CustomizeSkillsHint": "Use the expertise points system instead of automatic skill progression (Thief, Hunter, Bard only)."
+			"CustomizeSkillsHint": "Use the optional customising skills rule instead of skill table (works only for skill-based classes, e.g., Thief, Hunter, Bard)."
 		},
 		"SkillPoints": "skill points",
 		"AddSkill": "Add Skill",

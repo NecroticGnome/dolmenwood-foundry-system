@@ -76,6 +76,8 @@
 			"WeaponsProficiency": "Weapons Proficiency",
 			"ArmorProficiency": "Armour Proficiency",
 			"ClassSkills": "Class Skills",
+			"SkillPointsBase": "Expertise Points (Base)",
+			"SkillPointsPerLevel": "Expertise Points (Per Level)",
 			"XPThresholds": "XP Thresholds",
 			"SpellProgression": "Spell Progression",
 			"AttackProgression": "Attack Progression",

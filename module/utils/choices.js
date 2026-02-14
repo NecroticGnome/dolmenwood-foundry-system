@@ -49,7 +49,7 @@ export function buildQualityOptions(currentQualities = []) {
  * Weapon type properties: size and combat usage categories.
  * Used by class sheet to build weapon proficiency multi-select.
  */
-export const WEAPON_TYPE_PROPERTIES = {
+const WEAPON_TYPE_PROPERTIES = {
 	battleAxe: { size: 'large', melee: true, missile: false },
 	club: { size: 'medium', melee: true, missile: false },
 	crossbow: { size: 'medium', melee: false, missile: true },
@@ -173,7 +173,7 @@ export function formatWeaponProficiency(profArray = []) {
 }
 
 /** Armor proficiency options: bulk categories + shields */
-export const ARMOR_PROF_OPTIONS = ['any', 'light', 'medium', 'heavy', 'shields']
+const ARMOR_PROF_OPTIONS = ['any', 'light', 'medium', 'heavy', 'shields']
 
 /**
  * Build armor proficiency options for class sheet checkboxes.
@@ -214,7 +214,7 @@ export function formatArmorProficiency(profArray = []) {
 }
 
 /** Extra skill IDs available for class skill selection */
-export const EXTRA_SKILL_IDS = [
+const EXTRA_SKILL_IDS = [
 	'detectMagic', 'alertness', 'stalking', 'tracking', 'pickLock',
 	'stealth', 'decipherDocument', 'climbWall', 'disarmMechanism',
 	'legerdemain', 'monsterLore'

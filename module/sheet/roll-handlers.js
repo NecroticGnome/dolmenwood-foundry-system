@@ -24,7 +24,7 @@ import { getDieIconFromFormula } from './attack-rolls.js'
  * @param {object} position - Position {top, left}
  * @param {number} [skillTargetOverride] - For skill rolls, the target override value
  */
-export function openTraitRollContextMenu(sheet, key, rollType, options, position, skillTargetOverride = null) {
+function openTraitRollContextMenu(sheet, key, rollType, options, position, skillTargetOverride = null) {
 	const normalLabel = game.i18n.localize('DOLMEN.Roll.NormalRoll')
 
 	let html = `
@@ -96,7 +96,7 @@ export function onAbilityRoll(sheet, abilityKey, event) {
  * @param {number} traitScoreBonus - Bonus to ability score from selected trait
  * @param {string} [traitName] - Name of the trait providing bonus
  */
-export async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0, traitName = null) {
+async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0, traitName = null) {
 	const adjusted = computeAdjustedValues(sheet.actor)
 	const baseScore = adjusted.abilities[abilityKey]?.score
 	const baseMod = adjusted.abilities[abilityKey]?.mod
@@ -205,7 +205,7 @@ export function onSaveRoll(sheet, saveKey, event) {
  * @param {number} traitBonus - Additional bonus from selected trait (lowers target)
  * @param {string} [traitName] - Name of the trait providing bonus
  */
-export async function performSavingThrow(sheet, saveKey, traitBonus = 0, traitName = null) {
+async function performSavingThrow(sheet, saveKey, traitBonus = 0, traitName = null) {
 	const adjusted = computeAdjustedValues(sheet.actor)
 	const baseSaveTarget = adjusted.saves[saveKey]
 	if (baseSaveTarget === undefined) return
@@ -296,7 +296,7 @@ export function onSkillRoll(sheet, skillKey, targetOverride, event) {
  * @param {number} traitBonus - Additional bonus from selected trait
  * @param {string} [traitName] - Name of the trait providing bonus
  */
-export async function performSkillCheck(sheet, skillKey, targetOverride = null, traitBonus = 0, traitName = null) {
+async function performSkillCheck(sheet, skillKey, targetOverride = null, traitBonus = 0, traitName = null) {
 	const adjusted = computeAdjustedValues(sheet.actor)
 	let baseSkillTarget = targetOverride
 

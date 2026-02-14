@@ -1163,6 +1163,9 @@ export class ClassDataModel extends ItemDataModel {
 			hasHolyOrder: new BooleanField({ required: true, initial: false }),
 			canTwoWeaponFight: new BooleanField({ required: true, initial: false }),
 			hasBackstab: new BooleanField({ required: true, initial: false }),
+			// Expertise points for skill customization
+			skillPointsBase: new NumberField({ required: true, initial: 0, integer: true, min: 0 }),
+			skillPointsPerLevel: new NumberField({ required: true, initial: 0, integer: true, min: 0 }),
 			// Trait definitions stored as JSON object
 			traits: new ObjectField({ initial: {} })
 		}

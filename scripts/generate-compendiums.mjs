@@ -1317,6 +1317,8 @@ function generateClassItems() {
 				hasHolyOrder: ['cleric', 'friar'].includes(classId),
 				canTwoWeaponFight: ['fighter', 'hunter', 'knight', 'thief'].includes(classId),
 				hasBackstab: classId === 'thief',
+				skillPointsBase: { thief: 4, hunter: 2, bard: 2 }[classId] || 0,
+				skillPointsPerLevel: { thief: 2, hunter: 1, bard: 1 }[classId] || 0,
 				traits: CLASS_TRAITS[classId] || {}
 			},
 			effects: [],
@@ -1362,6 +1364,8 @@ function generateClassItems() {
 				hasHolyOrder: false,
 				canTwoWeaponFight: ['breggle', 'elf', 'grimalkin', 'woodgrue'].includes(kindredClassId),
 				hasBackstab: false,
+				skillPointsBase: 0,
+				skillPointsPerLevel: 0,
 				traits: KINDRED_CLASS_TRAITS[kindredClassId] || {}
 			},
 			effects: [],

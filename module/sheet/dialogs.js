@@ -246,7 +246,7 @@ export function openAddSkillDialog(sheet) {
  * @param {DolmenSheet} sheet - The sheet instance
  * @param {string} skillId - The skill ID to add
  */
-export function addSkill(sheet, skillId) {
+function addSkill(sheet, skillId) {
 	const currentSkills = foundry.utils.deepClone(sheet.actor.system.extraSkills || [])
 	currentSkills.push({ id: skillId, target: 6 })
 	sheet.actor.update({ 'system.extraSkills': currentSkills })
