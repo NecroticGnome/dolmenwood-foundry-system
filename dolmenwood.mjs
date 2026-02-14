@@ -49,8 +49,10 @@ Hooks.once('init', async function () {
 	}
 
 	game.settings.register('dolmenwood', 'showWelcomeDialog', {
+		name: 'DOLMEN.Welcome.SettingName',
+		hint: 'DOLMEN.Welcome.SettingHint',
 		scope: 'client',
-		config: false,
+		config: true,
 		type: Boolean,
 		default: true
 	})
