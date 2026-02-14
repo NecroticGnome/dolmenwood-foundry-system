@@ -307,7 +307,7 @@ export async function levelUp(sheet) {
 			rollBody = `
 				<div class="roll-section">
 					<div class="roll-result ${iconClass}">${rollAnchor}</div>
-					<div class="roll-breakdown">${formula} ${conLabel} CON (min 1)</div>
+					<div class="roll-breakdown">${game.i18n.format('DOLMEN.LevelUpHPBreakdown', { formula, conMod: conLabel })}</div>
 				</div>`
 		} else {
 			// Flat bonus, no CON modifier
