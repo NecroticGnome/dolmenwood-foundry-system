@@ -420,7 +420,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.xpModifierLabel+= ` ${game.i18n.localize('DOLMEN.Modifier')}`
 
 		// Check if ready to level up
-		context.canLevelUp = actor.system.xp.value >= actor.system.xp.nextLevel
+		context.canLevelUp = actor.system.xp.nextLevel > 0 && actor.system.xp.value >= actor.system.xp.nextLevel
 
 		// Compute available skill points for customize skills option
 		context.skillPoints = actor.system.customizeSkills ? computeSkillPoints(actor) : 0

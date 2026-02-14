@@ -343,7 +343,7 @@ export class AdventurerDataModel extends ActorDataModel {
 
 		if (spellTable) {
 			const level = Math.min(this.level, 15)
-			const slots = spellTable[level]
+			const slots = spellTable[level - 1]
 			if (this.arcaneMagic.enabled && slots?.length === 6) {
 				for (let i = 0; i < 6; i++) {
 					this.arcaneMagic.spellSlots[`rank${i + 1}`].max = slots[i]
@@ -354,6 +354,13 @@ export class AdventurerDataModel extends ActorDataModel {
 					this.holyMagic.spellSlots[`rank${i + 1}`].max = slots[i]
 				}
 			}
+		}
+
+		// Compute XP next-level threshold from class progression
+		const xpTable = classItem?.system?.xpThresholds
+		if (xpTable?.length > 0) {
+			const level = Math.min(this.level, 15)
+			this.xp.nextLevel = level < 15 ? (xpTable[level] || 0) : 0
 		}
 
 		// Apply magic slot adjustments
