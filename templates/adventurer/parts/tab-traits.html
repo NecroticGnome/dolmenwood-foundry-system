@@ -79,18 +79,7 @@
 					<i class="fa fa-dice-d20 rollable" data-trait-id="{{this.id}}" data-roll-formula="{{this.rollFormula}}" data-trait-name="{{this.name}}" data-roll-target="{{this.rollTarget}}"></i>
 					{{/if}}
 				</h3>
-				{{#if this.requiresHolyOrder}}
-				<div class="order-select">
-					<select name="system.holyOrder">
-						{{selectOptions @root.holyOrderChoices selected=@root.system.holyOrder}}
-					</select>
-					{{#if this.holyOrderDesc}}
-					<p class="order-description">{{this.holyOrderDesc}}</p>
-					{{/if}}
-				</div>
-				{{else}}
 				<p>{{this.description}}</p>
-				{{/if}}
 				{{#if this.hasUsageTracking}}
 				<div class="trait-usage">
 					<span class="usage-label">{{this.usageFrequency}}:</span>
@@ -106,18 +95,19 @@
 			{{/each}}
 		</section>
 	</section>
+	{{/if}}
 
-	<!-- Combat Talents Selection (if class has combat talents feature) -->
-	{{#if hasCombatTalents}}
-	<section class="combat-talents-selection boxed-section">
-		<h2>{{localize "DOLMEN.Traits.CombatTalents"}}</h2>
+	<!-- Custom Sections (Combat Talents, Holy Orders, etc.) -->
+	{{#each customSections}}
+	<section class="custom-section boxed-section">
+		<h2>{{this.name}}</h2>
 		<section class="two-columns traits-grid">
-			{{#each combatTalentSlots}}
-			<section class="trait boxed-section active" data-trait-id="combatTalent-{{this.index}}">
-				<h3>{{localize "DOLMEN.Traits.CombatTalents"}}</h3>
+			{{#each this.slots}}
+			<section class="trait boxed-section active">
+				<h3>{{../name}}</h3>
 				<div class="talent-select">
-					<select name="system.combatTalents.{{this.index}}">
-						{{selectOptions @root.combatTalentChoices selected=this.selected}}
+					<select name="system.{{../fieldName}}{{#if ../isMulti}}.{{this.index}}{{/if}}">
+						{{selectOptions ../choices selected=this.selected}}
 					</select>
 				</div>
 				{{#if this.description}}
@@ -126,12 +116,11 @@
 			</section>
 			{{/each}}
 		</section>
-		{{#if (lt combatTalentSlots.length 4)}}
+		{{#if this.showHint}}
 		<div class="add-talent-hint">
-			<small>{{localize "DOLMEN.Traits.TalentsGainedHint"}}</small>
+			<small>{{localize this.hintKey}}</small>
 		</div>
 		{{/if}}
 	</section>
-	{{/if}}
-	{{/if}}
+	{{/each}}
 </section>

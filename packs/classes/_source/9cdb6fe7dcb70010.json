@@ -221,8 +221,6 @@
       "stalking",
       "tracking"
     ],
-    "hasCombatTalents": false,
-    "hasHolyOrder": false,
     "canTwoWeaponFight": true,
     "hasBackstab": false,
     "skillPointsBase": 2,

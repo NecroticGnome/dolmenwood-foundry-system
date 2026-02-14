@@ -291,8 +291,6 @@
       "disarmMechanism",
       "legerdemain"
     ],
-    "hasCombatTalents": false,
-    "hasHolyOrder": false,
     "canTwoWeaponFight": true,
     "hasBackstab": true,
     "skillPointsBase": 4,

@@ -675,7 +675,38 @@ const CLASS_TRAITS = {
 				descKey: '',
 				traitType: 'active',
 				requiresSelection: 'holyOrder',
+				selectionType: 'single',
+				unlockLevels: [2],
 				minLevel: 2
+			}
+		],
+		passive: [
+			{
+				id: 'stFaxis',
+				nameKey: 'DOLMEN.Traits.Orders.stFaxis',
+				descKey: 'DOLMEN.Traits.Orders.stFaxisDesc',
+				traitType: 'info',
+				parentTrait: 'holyOrder',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'stSedge',
+				nameKey: 'DOLMEN.Traits.Orders.stSedge',
+				descKey: 'DOLMEN.Traits.Orders.stSedgeDesc',
+				traitType: 'info',
+				parentTrait: 'holyOrder',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'stSignis',
+				nameKey: 'DOLMEN.Traits.Orders.stSignis',
+				descKey: 'DOLMEN.Traits.Orders.stSignisDesc',
+				traitType: 'adjustment',
+				adjustmentType: 'rollOption',
+				adjustmentTarget: 'attack.melee',
+				adjustmentValue: 1,
+				parentTrait: 'holyOrder',
+				hideFromTraitTab: true
 			}
 		],
 		restrictions: [
@@ -713,7 +744,10 @@ const CLASS_TRAITS = {
 				nameKey: 'DOLMEN.Traits.CombatTalents',
 				descKey: 'DOLMEN.Traits.CombatTalentsDesc',
 				traitType: 'active',
-				requiresSelection: 'combatTalents'
+				requiresSelection: 'combatTalents',
+				selectionType: 'multi',
+				unlockLevels: [2, 6, 10, 14],
+				hintKey: 'DOLMEN.Traits.TalentsGainedHint'
 			}
 		],
 		passive: [
@@ -1403,8 +1437,6 @@ function generateClassItems() {
 				weaponsProficiency: DOLMENWOOD.weaponsProficiency[classId] || [],
 				armorProficiency: DOLMENWOOD.armorProficiency[classId] || [],
 				classSkills: DOLMENWOOD.classSkills[classId] || [],
-				hasCombatTalents: classId === 'fighter',
-				hasHolyOrder: ['cleric', 'friar'].includes(classId),
 				canTwoWeaponFight: ['fighter', 'hunter', 'knight', 'thief'].includes(classId),
 				hasBackstab: classId === 'thief',
 				skillPointsBase: { thief: 4, hunter: 2, bard: 2 }[classId] || 0,
@@ -1450,8 +1482,6 @@ function generateClassItems() {
 				weaponsProficiency: DOLMENWOOD.weaponsProficiency[kindredClassId] || [],
 				armorProficiency: DOLMENWOOD.armorProficiency[kindredClassId] || [],
 				classSkills: DOLMENWOOD.classSkills[kindredClassId] || [],
-				hasCombatTalents: false,
-				hasHolyOrder: false,
 				canTwoWeaponFight: ['breggle', 'elf', 'grimalkin', 'woodgrue'].includes(kindredClassId),
 				hasBackstab: false,
 				skillPointsBase: 0,

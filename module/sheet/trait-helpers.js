@@ -1,4 +1,4 @@
-/* global game, CONFIG */
+/* global game */
 /**
  * Trait Helpers
  * Functions for resolving, computing, and preparing trait data.
@@ -69,7 +69,13 @@ export function getAllActiveTraits(actor) {
 			// Skip child traits not selected by the actor
 			if (trait.parentTrait) {
 				const selections = actor.system[trait.parentTrait]
-				if (!Array.isArray(selections) || !selections.includes(trait.id)) continue
+				if (Array.isArray(selections)) {
+					if (!selections.includes(trait.id)) continue
+				} else if (typeof selections === 'string') {
+					if (selections !== trait.id) continue
+				} else {
+					continue
+				}
 			}
 			traits.push(trait)
 			seenIds.add(trait.id)
@@ -83,7 +89,13 @@ export function getAllActiveTraits(actor) {
 			// Skip child traits not selected by the actor
 			if (trait.parentTrait) {
 				const selections = actor.system[trait.parentTrait]
-				if (!Array.isArray(selections) || !selections.includes(trait.id)) continue
+				if (Array.isArray(selections)) {
+					if (!selections.includes(trait.id)) continue
+				} else if (typeof selections === 'string') {
+					if (selections !== trait.id) continue
+				} else {
+					continue
+				}
 			}
 			traits.push(trait)
 			seenIds.add(trait.id)
@@ -311,19 +323,6 @@ function prepareTrait(actor, trait, level) {
 			: null
 	}
 
-	// Handle holy order selection (embedded in trait)
-	if (trait.requiresSelection === 'holyOrder') {
-		prepared.requiresHolyOrder = true
-		const order = actor.system.holyOrder
-		if (order) {
-			const orderDef = CONFIG.DOLMENWOOD.holyOrders[order]
-			if (orderDef) {
-				prepared.holyOrderName = game.i18n.localize(orderDef.nameKey)
-				prepared.holyOrderDesc = game.i18n.localize(orderDef.descKey)
-			}
-		}
-	}
-
 	return prepared
 }
 
@@ -344,6 +343,8 @@ function flattenTraits(actor, traitDef, level) {
 			for (const trait of traitDef[category]) {
 				// Skip traits marked as hidden from the trait tab
 				if (trait.hideFromTraitTab === true) continue
+				// Skip parent traits with requiresSelection (rendered as custom sections)
+				if (trait.requiresSelection) continue
 
 				const prepared = prepareTrait(actor, trait, level)
 				// Skip traits locked behind a higher level
@@ -398,4 +399,75 @@ export function prepareKindredClassTraits(actor) {
 
 	if (!traitDef) return []
 	return flattenTraits(actor, traitDef, level)
+}
+
+/**
+ * Build custom sections (combat talents, holy orders, etc.) from trait metadata.
+ * Finds all traits with requiresSelection in the class item and builds UI data.
+ * @param {Actor} actor - The actor
+ * @returns {object[]} Array of section objects for template rendering
+ */
+export function buildCustomSections(actor) {
+	const classItem = actor.items.find(i => i.type === 'Class')
+	if (!classItem?.system?.traits) return []
+
+	const level = actor.system.level
+	const sections = []
+
+	// Find all parent traits with requiresSelection
+	const allTraits = flattenTraitObject(classItem.system.traits)
+	for (const parent of allTraits) {
+		if (!parent.requiresSelection) continue
+
+		const fieldName = parent.requiresSelection
+		const isMulti = parent.selectionType === 'multi'
+		const unlockLevels = parent.unlockLevels || []
+
+		// For single-select: skip if level < first unlock level
+		if (!isMulti && unlockLevels.length > 0 && level < unlockLevels[0]) continue
+
+		// Build choices from child traits with matching parentTrait
+		const childTraits = allTraits.filter(t => t.parentTrait === fieldName)
+		const choices = { '': ' ' }
+		for (const child of childTraits) {
+			choices[child.id] = game.i18n.localize(child.nameKey)
+		}
+
+		// Build slots array
+		const slots = []
+		if (isMulti) {
+			const selections = actor.system[fieldName] || []
+			for (let i = 0; i < selections.length; i++) {
+				const selectedId = selections[i]
+				const child = childTraits.find(t => t.id === selectedId)
+				slots.push({
+					index: i,
+					selected: selectedId,
+					description: child ? game.i18n.localize(child.descKey) : ''
+				})
+			}
+		} else {
+			const selectedId = actor.system[fieldName] || ''
+			const child = childTraits.find(t => t.id === selectedId)
+			slots.push({
+				selected: selectedId,
+				description: child ? game.i18n.localize(child.descKey) : ''
+			})
+		}
+
+		// Determine if hint should show
+		const showHint = isMulti && slots.length < unlockLevels.length
+
+		sections.push({
+			name: game.i18n.localize(parent.nameKey),
+			fieldName,
+			isMulti,
+			choices,
+			slots,
+			showHint,
+			hintKey: parent.hintKey || ''
+		})
+	}
+
+	return sections
 }

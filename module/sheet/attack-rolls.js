@@ -417,7 +417,6 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 	const modifiers = []
 	const actor = sheet.actor
 	const classItem = actor.getClassItem()
-	const classId = classItem?.system?.classId
 	const traits = getAllActiveTraits(actor)
 	const level = actor.system.level
 	const meleeWeaponCount = getEquippedWeaponsByQuality(sheet, 'melee').length
@@ -447,15 +446,6 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 			name: game.i18n.localize(trait.nameKey),
 			attackBonus,
 			damageBonus: trait.damageValue || 0
-		})
-	}
-
-	// St. Signis - cleric holy order
-	if (classId === 'cleric' && actor.system.holyOrder === 'stSignis') {
-		modifiers.push({
-			id: 'stSignis',
-			name: game.i18n.localize('DOLMEN.Attack.Mod.StSignis'),
-			attackBonus: 1
 		})
 	}
 

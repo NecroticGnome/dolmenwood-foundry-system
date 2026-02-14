@@ -152,8 +152,6 @@
       "stealth",
       "climbWall"
     ],
-    "hasCombatTalents": false,
-    "hasHolyOrder": false,
     "canTwoWeaponFight": true,
     "hasBackstab": false,
     "skillPointsBase": 0,
