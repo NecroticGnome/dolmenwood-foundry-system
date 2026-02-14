@@ -312,9 +312,9 @@ const DOLMENWOOD = {
 // Kindred metadata
 const KINDRED_DATA = {
 	human: { size: 'medium', creatureType: 'mortal', languages: ['woldish'] },
-	breggle: { size: 'medium', creatureType: 'mortal', languages: ['woldish', 'gaffe', 'caprice'] },
+	breggle: { size: 'medium', creatureType: 'mortal', hasFur: true, languages: ['woldish', 'gaffe', 'caprice'] },
 	elf: { size: 'medium', creatureType: 'fairy', languages: ['woldish', 'sylvan', 'highElfish'] },
-	grimalkin: { size: 'small', creatureType: 'fairy', languages: ['woldish', 'mewl'] },
+	grimalkin: { size: 'small', creatureType: 'fairy', hasFur: true, languages: ['woldish', 'mewl'] },
 	mossling: { size: 'small', creatureType: 'mortal', languages: ['woldish', 'mulch'] },
 	woodgrue: { size: 'small', creatureType: 'demi-fey', languages: ['woldish', 'sylvan'] }
 }
@@ -1382,6 +1382,7 @@ function generateKindredItems() {
 				kindredId,
 				size: metadata.size,
 				creatureType: metadata.creatureType,
+				hasFur: metadata.hasFur || false,
 				ageFormula: DOLMENWOOD.kindredAgeFormulas[kindredId],
 				lifespanFormula: DOLMENWOOD.kindredLifespanFormulas[kindredId],
 				heightFormula: DOLMENWOOD.kindredHeightFormulas[kindredId],

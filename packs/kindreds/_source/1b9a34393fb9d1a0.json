@@ -8,6 +8,7 @@
     "kindredId": "mossling",
     "size": "small",
     "creatureType": "mortal",
+    "hasFur": false,
     "ageFormula": "50 + 3d6",
     "lifespanFormula": "200 + 5d8 * 10",
     "heightFormula": "42 + 2d6",

@@ -264,9 +264,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.maxExtraSkills = CONFIG.DOLMENWOOD.maxExtraSkills
 
 		// Determine body/fur label based on kindred
-		const furKindreds = ['breggle', 'grimalkin']
+		const hasFur = kindredItem?.system?.hasFur
 		const kindred = kindredItem?.system?.kindredId
-		context.bodyLabel = furKindreds.includes(kindred)
+		context.bodyLabel = hasFur
 			? game.i18n.localize('DOLMEN.ExtraDetails.Fur')
 			: game.i18n.localize('DOLMEN.ExtraDetails.Body')
 
@@ -431,7 +431,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.detailTitles = {}
 		for (const field of detailFields) {
 			let fieldLabel = field.charAt(0).toUpperCase() + field.slice(1)
-			if (field === 'body' && furKindreds.includes(kindred)) fieldLabel = 'Fur'
+			if (field === 'body' && hasFur) fieldLabel = 'Fur'
 			context.detailTitles[field] = kindredLabel ? `${kindredLabel} ${fieldLabel}` : ''
 		}
 

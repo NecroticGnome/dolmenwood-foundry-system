@@ -1042,6 +1042,8 @@ export class KindredDataModel extends ItemDataModel {
 			lifespanFormula: new StringField({ required: true, blank: false, initial: "50 + 2d20" }),
 			heightFormula: new StringField({ required: true, blank: false, initial: "64 + 2d6" }),
 			weightFormula: new StringField({ required: true, blank: false, initial: "120 + 6d10" }),
+			// Whether this kindred has fur (affects body/fur label in details)
+			hasFur: new BooleanField({ required: true, initial: false }),
 			// Native languages
 			languages: new ArrayField(new StringField({ blank: false }), { initial: ["woldish"] }),
 			// Trait definitions stored as JSON object
