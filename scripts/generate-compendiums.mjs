@@ -1522,7 +1522,7 @@ function generateClassItems() {
 // Write items to compendium directories
 function writeCompendium(packName, items) {
 	const packDir = path.join(rootDir, 'packs', packName)
-	const sourceDir = path.join(packDir, '_source')
+	const sourceDir = path.join(packDir, 'src')
 
 	// Create directories if they don't exist
 	if (!fs.existsSync(packDir)) {

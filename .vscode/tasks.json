@@ -11,14 +11,14 @@
 		{
 			"label": "Copy to Foundry",
 			"type": "shell",
-			"command": "node scripts/build-css.js; if ($LASTEXITCODE -ne 0) { exit 1 }; Remove-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' | Out-Null; Get-ChildItem -Path . -Exclude '.*', 'node_modules', 'scripts' | Copy-Item -Destination 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; node scripts/patch-system-json.js 'C:\\FoundryVTT\\Data\\systems\\dolmenwood\\system.json'",
+			"command": "node scripts/build-css.js; if ($LASTEXITCODE -ne 0) { exit 1 }; Remove-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' | Out-Null; Get-ChildItem -Path . -Exclude '.*', 'node_modules', 'scripts' | Copy-Item -Destination 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue",
 			"group": "build",
 			"problemMatcher": []
 		},
 		{
 			"label": "FVTT Pack - Pack",
 			"type": "shell",
-			"command": "$packs = Get-ChildItem -Path packs -Directory | Select-Object -ExpandProperty Name; fvtt package workon dolmenwood --type System; foreach ($pack in $packs) { fvtt package pack $pack }",
+			"command": "$packs = Get-ChildItem -Path packs -Directory | Select-Object -ExpandProperty Name; fvtt package workon dolmenwood --type System; foreach ($pack in $packs) { fvtt package pack $pack --in \"packs/$pack/src\" --out \"packs/$pack\" }",
 			"group": "build",
 			"problemMatcher": []
 		},
@@ -32,7 +32,7 @@
 		{
 			"label": "FVTT Pack - Unpack + Sync",
 			"type": "shell",
-			"command": "$packs = Get-ChildItem -Path packs -Directory | Select-Object -ExpandProperty Name; fvtt package workon dolmenwood --type System; foreach ($pack in $packs) { fvtt package unpack $pack }; Copy-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood\\packs\\*' -Destination 'packs' -Recurse -Force",
+			"command": "$packs = Get-ChildItem -Path packs -Directory | Select-Object -ExpandProperty Name; fvtt package workon dolmenwood --type System; foreach ($pack in $packs) { fvtt package unpack $pack --out \"packs/$pack/src\" }; Copy-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood\\packs\\*' -Destination 'packs' -Recurse -Force",
 			"group": "build",
 			"problemMatcher": []
 		},
