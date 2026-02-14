@@ -158,7 +158,7 @@
 		"SelectSkill": "Select a skill to add:",
 		"RemoveSkill": "Remove Skill",
 		"NoSkillsAvailable": "No more skills available to add.",
-		"Languages": "Languages",
+		"LanguagesLabel": "Languages",
 		"Experience": "Experience",
 		"XP": "XP",
 		"Level": "Level",
