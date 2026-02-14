@@ -1,4 +1,6 @@
-/* global foundry, game, Dialog, FilePicker, Roll, ChatMessage, CONST, fromUuid */
+/* global foundry, game, FilePicker, Roll, ChatMessage, CONST, fromUuid */
+
+const { DialogV2 } = foundry.applications.api
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { onSaveRoll } from './sheet/roll-handlers.js'
 import { createContextMenu } from './sheet/context-menu.js'
@@ -329,41 +331,46 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			</div>
 		`
 
-		const dialog = new Dialog({
-			title: game.i18n.localize('DOLMEN.Creature.EditAttack'),
+		DialogV2.wait({
+			window: { title: game.i18n.localize('DOLMEN.Creature.EditAttack') },
+			position: { width: 380 },
 			content,
-			buttons: {
-				save: {
-					icon: '<i class="fas fa-check"></i>',
+			buttons: [
+				{
+					action: 'save',
+					icon: 'fas fa-check',
 					label: game.i18n.localize('DOLMEN.Save'),
-					callback: (html) => {
+					default: true,
+					callback: (event, button, html) => {
+						const el = html.element
 						const attacks = foundry.utils.deepClone(this.actor.system.attacks)
 						attacks[index] = {
-							attackName: html.find('#attack-name').val() || 'Attack',
-							numAttacks: parseInt(html.find('#attack-num').val()) || 1,
-							attackBonus: parseInt(html.find('#attack-bonus').val()) || 0,
-							attackDamage: html.find('#attack-damage').val() || '1d6',
-							attackEffect: html.find('#attack-effect').val() || '',
-							attackType: html.find('input[name="attackType"]:checked').val() || 'attack',
-							rangeShort: parseInt(html.find('#range-short').val()) || 0,
-							rangeMedium: parseInt(html.find('#range-medium').val()) || 0,
-							rangeLong: parseInt(html.find('#range-long').val()) || 0
+							attackName: el.querySelector('#attack-name').value || 'Attack',
+							numAttacks: parseInt(el.querySelector('#attack-num').value) || 1,
+							attackBonus: parseInt(el.querySelector('#attack-bonus').value) || 0,
+							attackDamage: el.querySelector('#attack-damage').value || '1d6',
+							attackEffect: el.querySelector('#attack-effect').value || '',
+							attackType: el.querySelector('input[name="attackType"]:checked')?.value || 'attack',
+							rangeShort: parseInt(el.querySelector('#range-short').value) || 0,
+							rangeMedium: parseInt(el.querySelector('#range-medium').value) || 0,
+							rangeLong: parseInt(el.querySelector('#range-long').value) || 0
 						}
 						this.actor.update({ 'system.attacks': attacks })
 					}
 				}
-			},
-			default: 'save',
-			render: (html) => {
-				// Toggle bonus/damage disabled state based on attack type radio
-				html.find('input[name="attackType"]').on('change', (event) => {
-					const isSave = event.target.value === 'save'
-					html.find('#attack-bonus').prop('disabled', isSave)
-					html.find('#attack-damage').prop('disabled', isSave)
+			],
+			render: (event) => {
+				const el = event.target.element
+				el.querySelectorAll('input[name="attackType"]').forEach(radio => {
+					radio.addEventListener('change', (e) => {
+						const isSave = e.target.value === 'save'
+						el.querySelector('#attack-bonus').disabled = isSave
+						el.querySelector('#attack-damage').disabled = isSave
+					})
 				})
-			}
+			},
+			rejectClose: false
 		})
-		dialog.render(true)
 	}
 
 	/* -------------------------------------------- */
@@ -387,26 +394,29 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			</div>
 		`
 
-		const dialog = new Dialog({
-			title: game.i18n.localize('DOLMEN.Creature.EditAbility'),
+		DialogV2.wait({
+			window: { title: game.i18n.localize('DOLMEN.Creature.EditAbility') },
+			position: { width: 500 },
 			content,
-			buttons: {
-				save: {
-					icon: '<i class="fas fa-check"></i>',
+			buttons: [
+				{
+					action: 'save',
+					icon: 'fas fa-check',
 					label: game.i18n.localize('DOLMEN.Save'),
-					callback: (html) => {
+					default: true,
+					callback: (event, button, html) => {
+						const el = html.element
 						const abilities = foundry.utils.deepClone(this.actor.system.specialAbilities)
 						abilities[index] = {
-							name: html.find('#ability-name').val() || 'Ability',
-							description: html.find('#ability-description').val() || ''
+							name: el.querySelector('#ability-name').value || 'Ability',
+							description: el.querySelector('#ability-description').value || ''
 						}
 						this.actor.update({ 'system.specialAbilities': abilities })
 					}
 				}
-			},
-			default: 'save'
+			],
+			rejectClose: false
 		})
-		dialog.render(true)
 	}
 
 	/* -------------------------------------------- */
