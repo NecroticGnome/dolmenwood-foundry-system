@@ -8,6 +8,7 @@ on:
       - 'version.txt'
     tags-ignore:
       - '**'
+  workflow_dispatch:
 
 permissions:
   contents: write
