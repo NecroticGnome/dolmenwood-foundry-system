@@ -1,4 +1,4 @@
-/* global game */
+/* global game, ui */
 
 /**
  * Find a RollTable by name, checking world tables first, then compendium packs.
@@ -13,6 +13,7 @@ export async function findRollTable(name) {
 		const entry = index.find(e => e.name === name)
 		if (entry) return pack.getDocument(entry._id)
 	}
+	ui.notifications.warn(game.i18n.format('DOLMEN.RollTable.NotFound', { name }))
 	return null
 }
 
