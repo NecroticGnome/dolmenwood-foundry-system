@@ -626,6 +626,14 @@
 		},
 		"SaveRoll": {
 			"NoTokensSelected": "No tokens selected. Select a token to roll saving throw."
+		},
+		"Welcome": {
+			"Title": "Welcome to Dolmenwood VTT!",
+			"Info": "A Foundry VTT system for the <a href=\"https://necroticgnome.com/collections/dolmenwood\">Dolmenwood</a> TTRPG published by <a href=\"https://necroticgnome.com\">Necrotic Gnome</a>.",
+			"Credits": "System developed by <a href=\"https://ko-fi.com/blazesanecki\">Blaze Sanecki</a>.",
+			"Copyright": "Dolmenwood is a trademark of Necrotic Gnome. Used with permission.",
+			"DoNotShow": "Don't show this again",
+			"Close": "Close"
 		}
 	}
 }
