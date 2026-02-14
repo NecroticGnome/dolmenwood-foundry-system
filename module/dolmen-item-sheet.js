@@ -48,11 +48,11 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		},
 		body: {
 			template: 'systems/dolmenwood/templates/items/parts/item-body.html',
-			scrollable: ['.item-body']
+			scrollable: ['']
 		},
 		description: {
 			template: 'systems/dolmenwood/templates/items/parts/item-description.html',
-			scrollable: ['.item-description']
+			scrollable: ['']
 		}
 	}
 

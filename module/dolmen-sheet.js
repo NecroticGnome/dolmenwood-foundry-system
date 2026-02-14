@@ -10,7 +10,7 @@ import {
 	groupItemsByType, prepareItemData, getRuneUsage, computeSkillPoints
 } from './sheet/data-context.js'
 import {
-	isKindredClass, getAlignmentRestrictions,
+	isKindredClass, getAlignmentRestrictions, flattenTraitObject,
 	prepareKindredTraits, prepareClassTraits, prepareKindredClassTraits
 } from './sheet/trait-helpers.js'
 import {
@@ -98,35 +98,35 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		},
 		stats: {
 			template: 'systems/dolmenwood/templates/adventurer/parts/tab-stats.html',
-			scrollable: ['.tab-stats']
+			scrollable: ['']
 		},
 		inventory: {
 			template: 'systems/dolmenwood/templates/adventurer/parts/tab-inventory.html',
-			scrollable: ['.tab-inventory']
+			scrollable: ['']
 		},
 		magic: {
 			template: 'systems/dolmenwood/templates/adventurer/parts/tab-magic.html',
-			scrollable: ['.tab-magic']
+			scrollable: ['']
 		},
 		traits: {
 			template: 'systems/dolmenwood/templates/adventurer/parts/tab-traits.html',
-			scrollable: ['.tab-traits']
+			scrollable: ['']
 		},
 		details: {
 			template: 'systems/dolmenwood/templates/adventurer/parts/tab-details.html',
-			scrollable: ['.tab-details']
+			scrollable: ['']
 		},
 		notes: {
 			template: 'systems/dolmenwood/templates/adventurer/parts/tab-notes.html',
-			scrollable: ['.tab-notes']
+			scrollable: ['']
 		},
 		adjustments: {
 			template: 'systems/dolmenwood/templates/adventurer/parts/tab-adjustments.html',
-			scrollable: ['.tab-adjustments']
+			scrollable: ['']
 		},
 		settings: {
 			template: 'systems/dolmenwood/templates/adventurer/parts/tab-settings.html',
-			scrollable: ['.tab-settings']
+			scrollable: ['']
 		}
 	}
 
@@ -397,8 +397,23 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			// kindredName and className are already set earlier from embedded items
 		}
 
-		// Prepare combat talents and holy order choices
-		context.combatTalentChoices = buildChoicesWithBlank('DOLMEN.Traits.Talents', CHOICE_KEYS.combatTalents)
+		// Prepare combat talents choices and slot data from child trait definitions
+		const talentTraits = classItem?.system?.traits
+			? flattenTraitObject(classItem.system.traits).filter(t => t.parentTrait === 'combatTalents')
+			: []
+		const talentChoices = { '': ' ' }
+		for (const t of talentTraits) {
+			talentChoices[t.id] = game.i18n.localize(t.nameKey)
+		}
+		context.combatTalentChoices = talentChoices
+		context.combatTalentSlots = (actor.system.combatTalents || []).map((talentId, index) => {
+			const trait = talentTraits.find(t => t.id === talentId)
+			return {
+				index,
+				selected: talentId,
+				description: trait ? game.i18n.localize(trait.descKey) : ''
+			}
+		})
 		context.holyOrderChoices = buildChoicesWithBlank('DOLMEN.Traits.Orders', CHOICE_KEYS.holyOrders)
 
 		// Check if class has combat talents feature (for combat talents display)
@@ -558,6 +573,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				}
 			})
 		}
+
 	}
 
 	/* -------------------------------------------- */

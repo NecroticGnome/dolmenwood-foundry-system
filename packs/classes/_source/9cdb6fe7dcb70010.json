@@ -239,7 +239,10 @@
           "id": "trophies",
           "nameKey": "DOLMEN.Traits.Trophies",
           "descKey": "DOLMEN.Traits.TrophiesDesc",
-          "traitType": "active"
+          "traitType": "active",
+          "adjustmentType": "rollOption",
+          "adjustmentTarget": "attack",
+          "adjustmentValue": 1
         }
       ],
       "passive": [

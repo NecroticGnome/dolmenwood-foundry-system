@@ -27,11 +27,11 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		},
 		details: {
 			template: 'systems/dolmenwood/templates/items/parts/kindred-details.html',
-			scrollable: ['.kindred-details']
+			scrollable: ['']
 		},
 		traits: {
 			template: 'systems/dolmenwood/templates/items/parts/kindred-traits.html',
-			scrollable: ['.kindred-traits']
+			scrollable: ['']
 		}
 	}
 

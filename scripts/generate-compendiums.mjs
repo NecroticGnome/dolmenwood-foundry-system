@@ -715,6 +715,90 @@ const CLASS_TRAITS = {
 				traitType: 'active',
 				requiresSelection: 'combatTalents'
 			}
+		],
+		passive: [
+			{
+				id: 'battleRage',
+				nameKey: 'DOLMEN.Traits.Talents.BattleRage',
+				descKey: 'DOLMEN.Traits.Talents.BattleRageDesc',
+				traitType: 'adjustment',
+				adjustmentType: 'rollOption',
+				adjustmentTarget: 'attack.melee',
+				adjustmentValue: 2,
+				damageValue: 2,
+				parentTrait: 'combatTalents',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'cleave',
+				nameKey: 'DOLMEN.Traits.Talents.Cleave',
+				descKey: 'DOLMEN.Traits.Talents.CleaveDesc',
+				traitType: 'adjustment',
+				adjustmentType: 'rollOption',
+				adjustmentTarget: 'attack.melee',
+				adjustmentValue: -2,
+				parentTrait: 'combatTalents',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'mainGauche',
+				nameKey: 'DOLMEN.Traits.Talents.MainGauche',
+				descKey: 'DOLMEN.Traits.Talents.MainGaucheDesc',
+				traitType: 'adjustment',
+				adjustmentType: 'rollOption',
+				adjustmentTarget: 'attack.melee',
+				adjustmentValue: 1,
+				parentTrait: 'combatTalents',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'slayer',
+				nameKey: 'DOLMEN.Traits.Talents.Slayer',
+				descKey: 'DOLMEN.Traits.Talents.SlayerDesc',
+				traitType: 'adjustment',
+				adjustmentType: 'rollOption',
+				adjustmentTarget: 'attack',
+				adjustmentValue: 1,
+				damageValue: 1,
+				parentTrait: 'combatTalents',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'weaponSpecialist',
+				nameKey: 'DOLMEN.Traits.Talents.WeaponSpecialist',
+				descKey: 'DOLMEN.Traits.Talents.WeaponSpecialistDesc',
+				traitType: 'adjustment',
+				adjustmentType: 'rollOption',
+				adjustmentTarget: 'attack',
+				adjustmentValue: 1,
+				damageValue: 1,
+				parentTrait: 'combatTalents',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'defender',
+				nameKey: 'DOLMEN.Traits.Talents.Defender',
+				descKey: 'DOLMEN.Traits.Talents.DefenderDesc',
+				traitType: 'info',
+				parentTrait: 'combatTalents',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'lastStand',
+				nameKey: 'DOLMEN.Traits.Talents.LastStand',
+				descKey: 'DOLMEN.Traits.Talents.LastStandDesc',
+				traitType: 'info',
+				parentTrait: 'combatTalents',
+				hideFromTraitTab: true
+			},
+			{
+				id: 'leader',
+				nameKey: 'DOLMEN.Traits.Talents.Leader',
+				descKey: 'DOLMEN.Traits.Talents.LeaderDesc',
+				traitType: 'info',
+				parentTrait: 'combatTalents',
+				hideFromTraitTab: true
+			}
 		]
 	},
 	friar: {
@@ -787,7 +871,10 @@ const CLASS_TRAITS = {
 				id: 'trophies',
 				nameKey: 'DOLMEN.Traits.Trophies',
 				descKey: 'DOLMEN.Traits.TrophiesDesc',
-				traitType: 'active'
+				traitType: 'active',
+				adjustmentType: 'rollOption',
+				adjustmentTarget: 'attack',
+				adjustmentValue: 1
 			}
 		],
 		passive: [
@@ -846,6 +933,7 @@ const CLASS_TRAITS = {
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'attack',
 				adjustmentValue: 2,
+				damageValue: 2,
 				minLevel: 5
 			},
 			{
@@ -854,7 +942,7 @@ const CLASS_TRAITS = {
 				descKey: 'DOLMEN.Traits.MountedCombatDesc',
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
-				adjustmentTarget: 'attack',
+				adjustmentTarget: 'attack.melee',
 				adjustmentValue: 1
 			},
 			{

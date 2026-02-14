@@ -182,6 +182,7 @@
           "adjustmentType": "rollOption",
           "adjustmentTarget": "attack",
           "adjustmentValue": 2,
+          "damageValue": 2,
           "minLevel": 5
         },
         {
@@ -190,7 +191,7 @@
           "descKey": "DOLMEN.Traits.MountedCombatDesc",
           "traitType": "adjustment",
           "adjustmentType": "rollOption",
-          "adjustmentTarget": "attack",
+          "adjustmentTarget": "attack.melee",
           "adjustmentValue": 1
         },
         {

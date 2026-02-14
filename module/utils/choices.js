@@ -248,7 +248,6 @@ export const CHOICE_KEYS = {
 	runeMagnitudes: ['lesser', 'greater', 'mighty'],
 	knackTypes: ['birdFriend', 'lockSinger', 'rootFriend', 'threadWhistling', 'woodKenning', 'yeastMaster'],
 	spellRanks: ['rank1', 'rank2', 'rank3', 'rank4', 'rank5', 'rank6'],
-	combatTalents: ['battleRage', 'cleave', 'defender', 'lastStand', 'leader', 'mainGauche', 'slayer', 'weaponSpecialist'],
 	holyOrders: ['stFaxis', 'stSedge', 'stSignis'],
 	monsterTypes: ['animal', 'bug', 'construct', 'demi-fey', 'dragon', 'fairy', 'fungus', 'monstrosity', 'mortal', 'ooze', 'plant', 'undead'],
 	intelligenceTypes: ["mindless", "animal", "semi-intelligent", "sentient", "genius"],
