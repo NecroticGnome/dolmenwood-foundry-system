@@ -339,6 +339,7 @@ const KINDRED_TRAITS = {
 				nameKey: 'DOLMEN.Traits.HornAttack',
 				descKey: 'DOLMEN.Traits.HornAttackDesc',
 				traitType: 'naturalWeapon',
+				iconPath: 'systems/dolmenwood/assets/icons/horn.svg',
 				damageProgression: [
 					{ minLevel: 1, damage: '1d4' },
 					{ minLevel: 3, damage: '1d4+1' },
@@ -950,6 +951,7 @@ const KINDRED_CLASS_TRAITS = {
 				nameKey: 'DOLMEN.Traits.HornAttack',
 				descKey: 'DOLMEN.Traits.HornAttackDesc',
 				traitType: 'naturalWeapon',
+				iconPath: 'systems/dolmenwood/assets/icons/horn.svg',
 				damageProgression: [
 					{ minLevel: 1, damage: '1d4' },
 					{ minLevel: 3, damage: '1d4+1' },

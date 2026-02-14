@@ -169,6 +169,7 @@
           "nameKey": "DOLMEN.Traits.HornAttack",
           "descKey": "DOLMEN.Traits.HornAttackDesc",
           "traitType": "naturalWeapon",
+          "iconPath": "systems/dolmenwood/assets/icons/horn.svg",
           "damageProgression": [
             {
               "minLevel": 1,

@@ -9,6 +9,7 @@ import { createContextMenu } from './context-menu.js'
 import { computeAdjustedValues } from './data-context.js'
 import { getAllActiveTraits, resolveDamageProgression } from './trait-helpers.js'
 import { parseSaveLinks } from '../chat-save.js'
+import { getWeaponTypesForGroup, WEAPON_PROF_GROUPS } from '../utils/choices.js'
 
 /* -------------------------------------------- */
 /*  Weapon Helpers                              */
@@ -44,31 +45,24 @@ export function buildWeaponMenuHtml(sheet, weapons) {
  */
 export function isWeaponProficient(sheet, weapon) {
 	const classItem = sheet.actor.getClassItem()
-	const cls = classItem?.system?.classId
-	if (!cls) return true
+	if (!classItem) return true
 
-	// Knight: no missile weapons
-	if (cls === 'knight' && weapon.system.qualities?.includes('missile')) {
-		return false
+	const proficiency = classItem.system?.weaponsProficiency || []
+	if (proficiency.length === 0) return false
+
+	// Build the set of allowed weapon type IDs from the proficiency array
+	const allowed = new Set()
+	for (const entry of proficiency) {
+		if (WEAPON_PROF_GROUPS.includes(entry)) {
+			for (const id of getWeaponTypesForGroup(entry)) allowed.add(id)
+		} else {
+			allowed.add(entry)
+		}
 	}
 
-	// Classes restricted to specific weapon types (by weaponType field)
-	const restrictedTypes = {
-		magician: ['dagger', 'staff', 'holyWater', 'oil', 'torch'],
-		friar: ['club', 'dagger', 'holyWater', 'oil', 'sling', 'staff', 'torch']
-	}
-	if (restrictedTypes[cls]) {
-		const wType = weapon.system.weaponType
-		if (wType && !restrictedTypes[cls].includes(wType)) return false
-	}
-
-	// Non-martial classes cannot use large weapons
-	const combatAptitude = classItem?.system?.combatAptitude || 'non-martial'
-	if (combatAptitude === 'non-martial' && weapon.system.size === 'large') {
-		return false
-	}
-
-	return true
+	const wType = weapon.system.weaponType
+	if (!wType) return true
+	return allowed.has(wType)
 }
 
 /**
@@ -100,7 +94,7 @@ export function createUnarmedWeapon(actor) {
 			return {
 				id: 'unarmed',
 				name: game.i18n.localize(naturalWeapon.nameKey),
-				img: 'icons/skills/melee/unarmed-punch-fist.webp',
+				img: naturalWeapon.iconPath || 'systems/dolmenwood/assets/icons/punch.svg',
 				system: {
 					damage,
 					size: 'small',
@@ -112,7 +106,7 @@ export function createUnarmedWeapon(actor) {
 	return {
 		id: 'unarmed',
 		name: game.i18n.localize('DOLMEN.Attack.Unarmed'),
-		img: 'icons/skills/melee/unarmed-punch-fist.webp',
+		img: 'systems/dolmenwood/assets/icons/punch.svg',
 		system: {
 			damage: '1d2',
 			size: 'small',
@@ -381,9 +375,12 @@ export function openMeleeWeaponMenu(sheet, weapons, attackMode, position, rollTy
 
 	// Add unarmed option (always proficient)
 	const unarmed = createUnarmedWeapon(sheet.actor)
+	const unarmedIcon = unarmed.img !== 'systems/dolmenwood/assets/icons/punch.svg'
+		? `<img src="${unarmed.img}" alt="${unarmed.name}" class="weapon-icon">`
+		: '<i class="fas fa-hand-fist"></i>'
 	html += `
 		<div class="weapon-menu-item" data-weapon-id="unarmed" data-proficient="true">
-			<i class="fas fa-hand-fist"></i>
+			${unarmedIcon}
 			<span class="weapon-name">${unarmed.name}</span>
 			<span class="weapon-damage">${unarmed.system.damage}</span>
 		</div>
