@@ -51,6 +51,11 @@
 	padding-bottom: 0.5rem;
 }
 
+.add-skill-modal select,
+.add-skill-modal input {
+	max-width: 50%;
+}
+
 /* -------------------------------------------- */
 /*  XP Modal                                    */
 /* -------------------------------------------- */

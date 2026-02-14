@@ -1,4 +1,6 @@
-/* global game, Dialog, CONFIG, ui, foundry, Roll, ChatMessage, CONST */
+/* global game, CONFIG, ui, foundry, Roll, ChatMessage, CONST */
+
+const { DialogV2 } = foundry.applications.api
 /**
  * Dialog Handlers
  * XP dialogs, add/remove skill dialogs, and level up/down.
@@ -39,45 +41,45 @@ export function openXPDialog(sheet) {
 		</div>
 	`
 
-	const dialog = new Dialog({
-		title: game.i18n.localize('DOLMEN.XPAddTitle'),
+	DialogV2.wait({
+		window: { title: game.i18n.localize('DOLMEN.XPAddTitle') },
 		content: content,
-		buttons: {
-			add: {
-				icon: '<i class="fas fa-plus"></i>',
+		buttons: [
+			{
+				action: 'add',
+				icon: 'fas fa-plus',
 				label: game.i18n.localize('DOLMEN.XPAddButton'),
-				callback: (html) => {
-					const gained = parseInt(html.find('#xp-gained').val()) || 0
+				default: true,
+				callback: (event, button, html) => {
+					const gained = parseInt(html.element.querySelector('#xp-gained').value) || 0
 					const adjustedXP = Math.floor(gained * (1 + modifier / 100))
 					const newXP = currentXP + adjustedXP
-					sheet.actor.update({
-						'system.xp.value': newXP
-					})
+					sheet.actor.update({ 'system.xp.value': newXP })
 				}
 			},
-			cancel: {
-				icon: '<i class="fas fa-times"></i>',
+			{
+				action: 'cancel',
+				icon: 'fas fa-times',
 				label: game.i18n.localize('DOLMEN.Cancel')
 			}
-		},
-		default: 'add',
-		render: (html) => {
-			const gainedInput = html.find('#xp-gained')
-			const adjustedSpan = html.find('#xp-adjusted')
-			const totalSpan = html.find('#xp-total')
+		],
+		render: (event) => {
+			const html = event.target.element
+			const gainedInput = html.querySelector('#xp-gained')
+			const adjustedSpan = html.querySelector('#xp-adjusted')
+			const totalSpan = html.querySelector('#xp-total')
 
 			const updateTotal = () => {
-				const gained = parseInt(gainedInput.val()) || 0
+				const gained = parseInt(gainedInput.value) || 0
 				const adjustedXP = Math.floor(gained * (1 + modifier / 100))
-				adjustedSpan.text(adjustedXP)
-				totalSpan.text(currentXP + adjustedXP)
+				adjustedSpan.textContent = adjustedXP
+				totalSpan.textContent = currentXP + adjustedXP
 			}
 
-			gainedInput.on('input', updateTotal)
-		}
+			gainedInput.addEventListener('input', updateTotal)
+		},
+		rejectClose: false
 	})
-
-	dialog.render(true)
 }
 
 /**
@@ -94,25 +96,28 @@ export function openXPEditDialog(sheet) {
 			</div>
 		</div>
 	`
-	new Dialog({
-		title: game.i18n.localize('DOLMEN.XPCurrent'),
+	DialogV2.wait({
+		window: { title: game.i18n.localize('DOLMEN.XPCurrent') },
 		content: content,
-		buttons: {
-			save: {
-				icon: '<i class="fas fa-check"></i>',
+		buttons: [
+			{
+				action: 'save',
+				icon: 'fas fa-check',
 				label: game.i18n.localize('DOLMEN.Save'),
-				callback: (html) => {
-					const newXP = parseInt(html.find('#xp-edit-value').val()) || 0
+				default: true,
+				callback: (event, button, html) => {
+					const newXP = parseInt(html.element.querySelector('#xp-edit-value').value) || 0
 					sheet.actor.update({ 'system.xp.value': newXP })
 				}
 			},
-			cancel: {
-				icon: '<i class="fas fa-times"></i>',
+			{
+				action: 'cancel',
+				icon: 'fas fa-times',
 				label: game.i18n.localize('DOLMEN.Cancel')
 			}
-		},
-		default: 'save'
-	}).render(true)
+		],
+		rejectClose: false
+	})
 }
 
 /**
@@ -145,17 +150,19 @@ export function openCoinDialog(sheet) {
 		</div>
 	`
 
-	new Dialog({
-		title: game.i18n.localize('DOLMEN.Coins.AdjustTitle'),
+	DialogV2.wait({
+		window: { title: game.i18n.localize('DOLMEN.Coins.AdjustTitle') },
 		content: content,
-		buttons: {
-			add: {
-				icon: '<i class="fas fa-plus"></i>',
+		buttons: [
+			{
+				action: 'add',
+				icon: 'fas fa-plus',
 				label: game.i18n.localize('DOLMEN.Coins.AdjustAdd'),
-				callback: (html) => {
+				default: true,
+				callback: (event, button, html) => {
 					const update = {}
 					for (const denom of denominations) {
-						const amount = parseInt(html.find(`#coin-${denom}`).val()) || 0
+						const amount = parseInt(html.element.querySelector(`#coin-${denom}`).value) || 0
 						if (amount > 0) {
 							update[`system.coins.${denom}`] = (coins[denom] || 0) + amount
 						}
@@ -165,13 +172,14 @@ export function openCoinDialog(sheet) {
 					}
 				}
 			},
-			subtract: {
-				icon: '<i class="fas fa-minus"></i>',
+			{
+				action: 'subtract',
+				icon: 'fas fa-minus',
 				label: game.i18n.localize('DOLMEN.Coins.AdjustSubtract'),
-				callback: (html) => {
+				callback: (event, button, html) => {
 					const update = {}
 					for (const denom of denominations) {
-						const amount = parseInt(html.find(`#coin-${denom}`).val()) || 0
+						const amount = parseInt(html.element.querySelector(`#coin-${denom}`).value) || 0
 						if (amount > 0) {
 							update[`system.coins.${denom}`] = Math.max(0, (coins[denom] || 0) - amount)
 						}
@@ -181,13 +189,14 @@ export function openCoinDialog(sheet) {
 					}
 				}
 			},
-			cancel: {
-				icon: '<i class="fas fa-times"></i>',
+			{
+				action: 'cancel',
+				icon: 'fas fa-times',
 				label: game.i18n.localize('DOLMEN.Cancel')
 			}
-		},
-		default: 'add'
-	}).render(true)
+		],
+		rejectClose: false
+	})
 }
 
 /**
@@ -218,27 +227,29 @@ export function openAddSkillDialog(sheet) {
 		</div>
 	`
 
-	const dialog = new Dialog({
-		title: game.i18n.localize('DOLMEN.AddSkillTitle'),
+	DialogV2.wait({
+		window: { title: game.i18n.localize('DOLMEN.AddSkillTitle') },
+		position: { width: 350 },
 		content: content,
-		buttons: {
-			add: {
-				icon: '<i class="fas fa-plus"></i>',
+		buttons: [
+			{
+				action: 'add',
+				icon: 'fas fa-plus',
 				label: game.i18n.localize('DOLMEN.AddSkill'),
-				callback: (html) => {
-					const selectedSkill = html.find('#skill-select').val()
+				default: true,
+				callback: (event, button, html) => {
+					const selectedSkill = html.element.querySelector('#skill-select').value
 					addSkill(sheet, selectedSkill)
 				}
 			},
-			cancel: {
-				icon: '<i class="fas fa-times"></i>',
+			{
+				action: 'cancel',
+				icon: 'fas fa-times',
 				label: game.i18n.localize('DOLMEN.Cancel')
 			}
-		},
-		default: 'add'
+		],
+		rejectClose: false
 	})
-
-	dialog.render(true)
 }
 
 /**
@@ -351,7 +362,7 @@ export async function levelUp(sheet) {
 	}
 
 	if (sys.xp.value < requiredXP) {
-		const confirmed = await foundry.applications.api.DialogV2.confirm({
+		const confirmed = await DialogV2.confirm({
 			window: { title: game.i18n.localize('DOLMEN.LevelUpTitle') },
 			content: `<p>${game.i18n.localize('DOLMEN.LevelUpConfirm')}</p>`,
 			rejectClose: false,
