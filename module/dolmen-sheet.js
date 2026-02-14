@@ -64,14 +64,6 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		},
 		window: {
 			resizable: true,
-			controls: [
-				{
-					action: 'configureActor',
-					icon: 'fas fa-trees',
-					label: 'DOLMEN.ConfigureSheet',
-					ownership: 'OWNER'
-				}
-			]
 		},
 		actions: {
 			addSkill: DolmenSheet._onAddSkill,
