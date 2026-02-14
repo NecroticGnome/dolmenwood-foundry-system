@@ -309,14 +309,26 @@ const DOLMENWOOD = {
 	}
 }
 
+// Name roll group presets
+const NAME_GROUPS_GENDERED = [
+	{ label: 'DOLMEN.NameRoll.Male', rolls: ['Male', 'Surname'] },
+	{ label: 'DOLMEN.NameRoll.Female', rolls: ['Female', 'Surname'] },
+	{ label: 'DOLMEN.NameRoll.Unisex', rolls: ['Unisex', 'Surname'] }
+]
+
 // Kindred metadata
 const KINDRED_DATA = {
-	human: { size: 'medium', creatureType: 'mortal', languages: ['woldish'] },
-	breggle: { size: 'medium', creatureType: 'mortal', hasFur: true, languages: ['woldish', 'gaffe', 'caprice'] },
-	elf: { size: 'medium', creatureType: 'fairy', languages: ['woldish', 'sylvan', 'highElfish'] },
-	grimalkin: { size: 'small', creatureType: 'fairy', hasFur: true, languages: ['woldish', 'mewl'] },
-	mossling: { size: 'small', creatureType: 'mortal', languages: ['woldish', 'mulch'] },
-	woodgrue: { size: 'small', creatureType: 'demi-fey', languages: ['woldish', 'sylvan'] }
+	human: { size: 'medium', creatureType: 'mortal', languages: ['woldish'], nameRollGroups: NAME_GROUPS_GENDERED },
+	breggle: { size: 'medium', creatureType: 'mortal', hasFur: true, languages: ['woldish', 'gaffe', 'caprice'], nameRollGroups: NAME_GROUPS_GENDERED },
+	elf: { size: 'medium', creatureType: 'fairy', languages: ['woldish', 'sylvan', 'highElfish'], nameRollGroups: [
+		{ label: 'DOLMEN.NameRoll.Rustic', rolls: ['Rustic'] },
+		{ label: 'DOLMEN.NameRoll.Courtly', rolls: ['Courtly'] }
+	] },
+	grimalkin: { size: 'small', creatureType: 'fairy', hasFur: true, languages: ['woldish', 'mewl'], nameRollGroups: [
+		{ label: '', rolls: ['First Name', 'Surname'] }
+	] },
+	mossling: { size: 'small', creatureType: 'mortal', languages: ['woldish', 'mulch'], nameRollGroups: NAME_GROUPS_GENDERED },
+	woodgrue: { size: 'small', creatureType: 'demi-fey', languages: ['woldish', 'sylvan'], nameRollGroups: NAME_GROUPS_GENDERED }
 }
 
 const KINDRED_CLASS_NAMES = ['breggle', 'elf', 'grimalkin', 'mossling', 'woodgrue']
@@ -1388,6 +1400,7 @@ function generateKindredItems() {
 				heightFormula: DOLMENWOOD.kindredHeightFormulas[kindredId],
 				weightFormula: DOLMENWOOD.kindredWeightFormulas[kindredId],
 				languages: metadata.languages,
+				nameRollGroups: metadata.nameRollGroups || [],
 				traits: KINDRED_TRAITS[kindredId] || {}
 			},
 			effects: [],

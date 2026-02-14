@@ -18,6 +18,20 @@
       "sylvan",
       "highElfish"
     ],
+    "nameRollGroups": [
+      {
+        "label": "DOLMEN.NameRoll.Rustic",
+        "rolls": [
+          "Rustic"
+        ]
+      },
+      {
+        "label": "DOLMEN.NameRoll.Courtly",
+        "rolls": [
+          "Courtly"
+        ]
+      }
+    ],
     "traits": {
       "passive": [
         {

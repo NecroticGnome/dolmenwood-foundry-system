@@ -88,8 +88,9 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		const langs = this.item.system.languages || []
 		context.languageLocalizationKeys = langs.map(id => ({ id, key: `DOLMEN.Languages.${id}` }))
 
-		// Format traits as JSON for editing
+		// Format traits and nameRollGroups as JSON for editing
 		context.traitsJSON = JSON.stringify(this.item.system.traits, null, 2)
+		context.nameRollGroupsJSON = JSON.stringify(this.item.system.nameRollGroups, null, 2)
 
 		return context
 	}
@@ -113,7 +114,7 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 	_processFormData(event, form, formData) {
 		const flat = formData.object
 		rewriteCSV(flat, 'system.languages')
-		const jsonValues = extractJSON(flat, ['traits'], 'system')
+		const jsonValues = extractJSON(flat, ['traits', 'nameRollGroups'], 'system')
 		const result = foundry.utils.expandObject(flat)
 		Object.assign(result.system, jsonValues)
 		return result
