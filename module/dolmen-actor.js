@@ -1,4 +1,6 @@
 /*global Actor, ui, game, Roll, ChatMessage, CONST, CONFIG */
+import { drawFromTableSilent } from './utils/roll-tables.js'
+
 class DolmenActor extends Actor {
 
 	/** @override */
@@ -474,7 +476,6 @@ class DolmenActor extends Actor {
 		const kindredItem = this.getKindredItem()
 		if (!kindredItem) return
 
-		const kindredId = kindredItem.system.kindredId
 		const kindredName = kindredItem.name
 		const results = {}
 
@@ -524,34 +525,18 @@ class DolmenActor extends Actor {
 		const dayRoll = await new Roll(`1d${monthData.days}`).evaluate()
 		results.birthDay = dayRoll.total
 
-		// Roll background (d20 table)
-		const backgroundRoll = await new Roll('1d20').evaluate()
-		results.background = this._getBackground(backgroundRoll.total)
-
-		// Roll appearance traits (d20 for each)
-		const headRoll = await new Roll('1d20').evaluate()
-		results.head = this._getHead(headRoll.total, kindredId)
-
-		const faceRoll = await new Roll('1d20').evaluate()
-		results.face = this._getFace(faceRoll.total)
-
-		const bodyRoll = await new Roll('1d20').evaluate()
-		results.body = this._getBody(bodyRoll.total, kindredId)
-
-		const demeanourRoll = await new Roll('1d20').evaluate()
-		results.demeanour = this._getDemeanour(demeanourRoll.total)
-
-		const dressRoll = await new Roll('1d20').evaluate()
-		results.dress = this._getDress(dressRoll.total)
-
-		const speechRoll = await new Roll('1d20').evaluate()
-		results.speech = this._getSpeech(speechRoll.total)
-
-		const beliefsRoll = await new Roll('1d20').evaluate()
-		results.beliefs = this._getBeliefs(beliefsRoll.total)
-
-		const desiresRoll = await new Roll('1d20').evaluate()
-		results.desires = this._getDesires(desiresRoll.total)
+		// Roll background and appearance traits from RollTables
+		const hasFur = kindredItem.system.hasFur
+		const bodyField = hasFur ? 'Fur' : 'Body'
+		results.background = await drawFromTableSilent(`${kindredName} Backgrounds`) || ''
+		results.head = await drawFromTableSilent(`${kindredName} Head`) || ''
+		results.face = await drawFromTableSilent(`${kindredName} Face`) || ''
+		results.body = await drawFromTableSilent(`${kindredName} ${bodyField}`) || ''
+		results.demeanour = await drawFromTableSilent(`${kindredName} Demeanour`) || ''
+		results.dress = await drawFromTableSilent(`${kindredName} Dress`) || ''
+		results.speech = await drawFromTableSilent(`${kindredName} Speech`) || ''
+		results.beliefs = await drawFromTableSilent(`${kindredName} Beliefs`) || ''
+		results.desires = await drawFromTableSilent(`${kindredName} Desires`) || ''
 
 		// Update actor with rolled values
 		await this.update({
@@ -636,123 +621,5 @@ class DolmenActor extends Actor {
 		})
 	}
 
-	// Background table (d20)
-	_getBackground(roll) {
-		const backgrounds = [
-			'Alchemist', 'Animal Trainer', 'Apothecary', 'Artisan', 'Bandit',
-			'Blacksmith', 'Burglar', 'Charlatan', 'Cutpurse', 'Gambler',
-			'Grave Robber', 'Herbalist', 'Hunter', 'Innkeeper', 'Merchant',
-			'Miner', 'Performer', 'Ratcatcher', 'Sailor', 'Soldier'
-		]
-		return backgrounds[roll - 1] || backgrounds[0]
-	}
-
-	// Head appearance table (d20, kindred-specific)
-	_getHead(roll, kindredId) {
-		if (kindredId === 'breggle') {
-			const options = [
-				'Short curved horns', 'Long straight horns', 'Spiral horns', 'Stubby horns', 'Proud horns',
-				'Broken horn', 'Polished horns', 'Decorated horns', 'Ridged horns', 'Thick horns',
-				'Pointed horns', 'Swept-back horns', 'Wide horns', 'Narrow horns', 'Asymmetric horns',
-				'Battle-scarred horns', 'Painted horns', 'Jeweled horns', 'Notched horns', 'Pristine horns'
-			]
-			return options[roll - 1] || options[0]
-		} else {
-			const options = [
-				'Bald', 'Braided', 'Curly', 'Disheveled', 'Dreadlocks',
-				'Greasy', 'Long', 'Messy', 'Ponytail', 'Short',
-				'Shaved', 'Tangled', 'Thin', 'Topknot', 'Wild',
-				'Unkempt', 'Styled', 'Patchy', 'Receding', 'Flowing'
-			]
-			return options[roll - 1] || options[0]
-		}
-	}
-
-	// Face appearance table (d20)
-	_getFace(roll) {
-		const options = [
-			'Angular', 'Asymmetric', 'Bony', 'Chiseled', 'Delicate',
-			'Elongated', 'Gaunt', 'Handsome', 'Honest', 'Jowly',
-			'Narrow', 'Perfect', 'Pockmarked', 'Round', 'Scarred',
-			'Sharp', 'Square', 'Sunken', 'Tattooed', 'Weather-beaten'
-		]
-		return options[roll - 1] || options[0]
-	}
-
-	// Body appearance table (d20, kindred-specific)
-	_getBody(roll, kindredId) {
-		if (kindredId === 'breggle' || kindredId === 'mossling') {
-			const options = [
-				'Stout', 'Barrel-chested', 'Stocky', 'Rotund', 'Solid',
-				'Thick-set', 'Muscular', 'Burly', 'Heavyset', 'Compact',
-				'Sturdy', 'Dense', 'Broad-shouldered', 'Well-built', 'Powerful',
-				'Robust', 'Brawny', 'Athletic', 'Portly', 'Imposing'
-			]
-			return options[roll - 1] || options[0]
-		} else {
-			const options = [
-				'Bony', 'Chubby', 'Flabby', 'Gaunt', 'Lanky',
-				'Lithe', 'Muscular', 'Pudgy', 'Ripped', 'Scarred',
-				'Scrawny', 'Short', 'Slender', 'Statuesque', 'Stocky',
-				'Stout', 'Tall', 'Thin', 'Toned', 'Wiry'
-			]
-			return options[roll - 1] || options[0]
-		}
-	}
-
-	// Demeanour table (d20)
-	_getDemeanour(roll) {
-		const options = [
-			'Affable', 'Aggressive', 'Aloof', 'Anxious', 'Arrogant',
-			'Cautious', 'Cheerful', 'Curious', 'Dour', 'Friendly',
-			'Gruff', 'Honest', 'Nervous', 'Optimistic', 'Pessimistic',
-			'Quiet', 'Rude', 'Serious', 'Shy', 'Suspicious'
-		]
-		return options[roll - 1] || options[0]
-	}
-
-	// Dress table (d20)
-	_getDress(roll) {
-		const options = [
-			'Colorful', 'Drab', 'Eccentric', 'Elegant', 'Fashionable',
-			'Filthy', 'Formal', 'Garish', 'Immaculate', 'Modest',
-			'Outdated', 'Patched', 'Practical', 'Ragged', 'Rich',
-			'Simple', 'Stained', 'Threadbare', 'Travel-worn', 'Unusual'
-		]
-		return options[roll - 1] || options[0]
-	}
-
-	// Speech table (d20)
-	_getSpeech(roll) {
-		const options = [
-			'Blunt', 'Booming', 'Breathy', 'Crisp', 'Drawling',
-			'Eloquent', 'Fast', 'Flowery', 'Formal', 'Gravelly',
-			'High-pitched', 'Hoarse', 'Loud', 'Mumbly', 'Nasal',
-			'Precise', 'Quiet', 'Rambling', 'Slow', 'Stuttering'
-		]
-		return options[roll - 1] || options[0]
-	}
-
-	// Beliefs table (d20)
-	_getBeliefs(roll) {
-		const options = [
-			'Ancestor worship', 'Atheism', 'Church devotee', 'Cultist', 'Doom-sayer',
-			'Fate believer', 'Fortune seeker', 'Heretic', 'Law upholder', 'Monastery follower',
-			'Nature reverent', 'Nihilist', 'Omen reader', 'Philosopher', 'Saint devotee',
-			'Skeptic', 'Superstitious', 'Traditionalist', 'Truth seeker', 'Zealot'
-		]
-		return options[roll - 1] || options[0]
-	}
-
-	// Desires table (d20)
-	_getDesires(roll) {
-		const options = [
-			'Adventure', 'Comfort', 'Fame', 'Family', 'Freedom',
-			'Glory', 'Gold', 'Honor', 'Knowledge', 'Love',
-			'Peace', 'Power', 'Redemption', 'Respect', 'Revenge',
-			'Safety', 'Status', 'Strength', 'Survival', 'Wisdom'
-		]
-		return options[roll - 1] || options[0]
-	}
 }
 export default DolmenActor
