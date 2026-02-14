@@ -39,11 +39,11 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		},
 		stats: {
 			template: 'systems/dolmenwood/templates/creature/parts/tab-stats.html',
-			scrollable: ['.tab-stats']
+			scrollable: ['']
 		},
 		notes: {
 			template: 'systems/dolmenwood/templates/creature/parts/tab-notes.html',
-			scrollable: ['.tab-notes']
+			scrollable: ['']
 		}
 	}
 

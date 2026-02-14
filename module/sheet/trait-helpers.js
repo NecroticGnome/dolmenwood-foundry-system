@@ -37,7 +37,7 @@ export function isKindredClass(actor) {
  * @param {object} traitObj - Trait object with categories (active, passive, info, restrictions)
  * @returns {object[]} Flat array of traits
  */
-function flattenTraitObject(traitObj) {
+export function flattenTraitObject(traitObj) {
 	const result = []
 	for (const category of ['active', 'passive', 'info', 'restrictions']) {
 		const val = traitObj[category]
@@ -65,20 +65,28 @@ export function getAllActiveTraits(actor) {
 	// Get kindred traits
 	if (kindredItem?.system?.traits) {
 		for (const trait of flattenTraitObject(kindredItem.system.traits)) {
-			if (!seenIds.has(trait.id)) {
-				traits.push(trait)
-				seenIds.add(trait.id)
+			if (seenIds.has(trait.id)) continue
+			// Skip child traits not selected by the actor
+			if (trait.parentTrait) {
+				const selections = actor.system[trait.parentTrait]
+				if (!Array.isArray(selections) || !selections.includes(trait.id)) continue
 			}
+			traits.push(trait)
+			seenIds.add(trait.id)
 		}
 	}
 
 	// Get class traits (deduplicate to avoid double-applying traits like Fur Defense)
 	if (classItem?.system?.traits) {
 		for (const trait of flattenTraitObject(classItem.system.traits)) {
-			if (!seenIds.has(trait.id)) {
-				traits.push(trait)
-				seenIds.add(trait.id)
+			if (seenIds.has(trait.id)) continue
+			// Skip child traits not selected by the actor
+			if (trait.parentTrait) {
+				const selections = actor.system[trait.parentTrait]
+				if (!Array.isArray(selections) || !selections.includes(trait.id)) continue
 			}
+			traits.push(trait)
+			seenIds.add(trait.id)
 		}
 	}
 

@@ -44,11 +44,11 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		},
 		details: {
 			template: 'systems/dolmenwood/templates/items/parts/class-details.html',
-			scrollable: ['.class-details']
+			scrollable: ['']
 		},
 		traits: {
 			template: 'systems/dolmenwood/templates/items/parts/class-traits.html',
-			scrollable: ['.class-traits']
+			scrollable: ['']
 		}
 	}
 

@@ -363,6 +363,18 @@ export class AdventurerDataModel extends ActorDataModel {
 			this.xp.nextLevel = level < 15 ? (xpTable[level] || 0) : 0
 		}
 
+		// Auto-size combat talents array based on level (gained at 2, 6, 10, 14)
+		if (classItem?.system?.hasCombatTalents) {
+			const talentCount = this.level >= 14 ? 4 : this.level >= 10 ? 3 : this.level >= 6 ? 2 : this.level >= 2 ? 1 : 0
+			if (this.combatTalents.length < talentCount) {
+				while (this.combatTalents.length < talentCount) {
+					this.combatTalents.push('')
+				}
+			} else if (this.combatTalents.length > talentCount) {
+				this.combatTalents.length = talentCount
+			}
+		}
+
 		// Apply magic slot adjustments
 		if (this.arcaneMagic.enabled) {
 			for (let i = 1; i <= 6; i++) {
@@ -570,8 +582,7 @@ export class AdventurerDataModel extends ActorDataModel {
 
 			// Fighter Combat Talents (selected at levels 2, 6, 10, 14)
 			combatTalents: new ArrayField(new StringField({
-				blank: false,
-				choices: CHOICE_KEYS.combatTalents
+				blank: false
 			}), { initial: [] }),
 
 			// Retainer loyalty score (2-12, default 7)

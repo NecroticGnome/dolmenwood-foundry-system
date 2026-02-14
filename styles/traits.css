@@ -130,14 +130,15 @@
 }
 
 /* Combat Talents Selection (Fighter) */
-.sheet.dolmen .combat-talents-selection {
-	margin-top: 0.5rem;
+.sheet.dolmen .tab-content .boxed-section.combat-talents-selection {
+	min-height: unset;
 }
 
 .sheet.dolmen .talents-list {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
+	margin-top: 0.5rem;
 }
 
 .sheet.dolmen .talent-entry select {

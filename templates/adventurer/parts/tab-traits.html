@@ -111,20 +111,26 @@
 	{{#if hasCombatTalents}}
 	<section class="combat-talents-selection boxed-section">
 		<h2>{{localize "DOLMEN.Traits.CombatTalents"}}</h2>
-		<div class="talents-list">
-			{{#each system.combatTalents}}
-			<div class="talent-entry">
-				<select name="system.combatTalents.{{@index}}">
-					{{selectOptions @root.combatTalentChoices selected=this}}
-				</select>
-			</div>
+		<section class="two-columns traits-grid">
+			{{#each combatTalentSlots}}
+			<section class="trait boxed-section active" data-trait-id="combatTalent-{{this.index}}">
+				<h3>{{localize "DOLMEN.Traits.CombatTalents"}}</h3>
+				<div class="talent-select">
+					<select name="system.combatTalents.{{this.index}}">
+						{{selectOptions @root.combatTalentChoices selected=this.selected}}
+					</select>
+				</div>
+				{{#if this.description}}
+				<p>{{this.description}}</p>
+				{{/if}}
+			</section>
 			{{/each}}
-			{{#if (lt system.combatTalents.length 4)}}
-			<div class="add-talent-hint">
-				<small>{{localize "DOLMEN.Traits.TalentsGainedHint"}}</small>
-			</div>
-			{{/if}}
+		</section>
+		{{#if (lt combatTalentSlots.length 4)}}
+		<div class="add-talent-hint">
+			<small>{{localize "DOLMEN.Traits.TalentsGainedHint"}}</small>
 		</div>
+		{{/if}}
 	</section>
 	{{/if}}
 	{{/if}}

@@ -419,9 +419,7 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 	const classItem = actor.getClassItem()
 	const classId = classItem?.system?.classId
 	const traits = getAllActiveTraits(actor)
-	const hasTrait = (id) => traits.some(t => t.id === id)
 	const level = actor.system.level
-	const talents = actor.system.combatTalents || []
 	const meleeWeaponCount = getEquippedWeaponsByQuality(sheet, 'melee').length
 
 	// Backstab - available if class has backstab feature
@@ -436,31 +434,19 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 		})
 	}
 
-	// Trophy - hunter has trophies trait
-	if (hasTrait('trophies')) {
+	// Attack modifiers from rollOption traits
+	for (const trait of traits) {
+		if (trait.adjustmentType !== 'rollOption') continue
+		const target = trait.adjustmentTarget
+		if (target !== 'attack' && target !== 'attack.melee') continue
+		if (trait.minLevel && level < trait.minLevel) continue
+		const attackBonus = typeof trait.adjustmentValue === 'function'
+			? trait.adjustmentValue(level) : trait.adjustmentValue
 		modifiers.push({
-			id: 'trophy',
-			name: game.i18n.localize('DOLMEN.Attack.Mod.Trophy'),
-			attackBonus: 1
-		})
-	}
-
-	// Mounted Combat - knight trait
-	if (hasTrait('mountedCombat')) {
-		modifiers.push({
-			id: 'mountedCombat',
-			name: game.i18n.localize('DOLMEN.Traits.MountedCombat'),
-			attackBonus: 1
-		})
-	}
-
-	// Monster Slayer - knight trait, level 5+
-	if (hasTrait('monsterSlayer') && level >= 5) {
-		modifiers.push({
-			id: 'monsterSlayer',
-			name: game.i18n.localize('DOLMEN.Traits.MonsterSlayer'),
-			attackBonus: 2,
-			damageBonus: 2
+			id: trait.id,
+			name: game.i18n.localize(trait.nameKey),
+			attackBonus,
+			damageBonus: trait.damageValue || 0
 		})
 	}
 
@@ -470,46 +456,6 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 			id: 'stSignis',
 			name: game.i18n.localize('DOLMEN.Attack.Mod.StSignis'),
 			attackBonus: 1
-		})
-	}
-
-	// Fighter combat talents
-	if (talents.includes('battleRage')) {
-		modifiers.push({
-			id: 'battleRage',
-			name: game.i18n.localize('DOLMEN.Traits.Talents.BattleRage'),
-			attackBonus: 2,
-			damageBonus: 2
-		})
-	}
-	if (talents.includes('cleave')) {
-		modifiers.push({
-			id: 'cleave',
-			name: game.i18n.localize('DOLMEN.Traits.Talents.Cleave'),
-			attackBonus: -2
-		})
-	}
-	if (talents.includes('mainGauche')) {
-		modifiers.push({
-			id: 'mainGauche',
-			name: game.i18n.localize('DOLMEN.Traits.Talents.MainGauche'),
-			attackBonus: 1
-		})
-	}
-	if (talents.includes('slayer')) {
-		modifiers.push({
-			id: 'slayer',
-			name: game.i18n.localize('DOLMEN.Traits.Talents.Slayer'),
-			attackBonus: 1,
-			damageBonus: 1
-		})
-	}
-	if (talents.includes('weaponSpecialist')) {
-		modifiers.push({
-			id: 'weaponSpecialist',
-			name: game.i18n.localize('DOLMEN.Traits.Talents.WeaponSpecialist'),
-			attackBonus: 1,
-			damageBonus: 1
 		})
 	}
 
@@ -837,44 +783,21 @@ export function getApplicableMissileModifiers(sheet, weapon) {
 	const modifiers = []
 	const actor = sheet.actor
 	const traits = getAllActiveTraits(actor)
-	const hasTrait = (id) => traits.some(t => t.id === id)
 	const level = actor.system.level
-	const talents = actor.system.combatTalents || []
 
-	// Trophy - hunter has trophies trait
-	if (hasTrait('trophies')) {
+	// Attack modifiers from rollOption traits
+	for (const trait of traits) {
+		if (trait.adjustmentType !== 'rollOption') continue
+		const target = trait.adjustmentTarget
+		if (target !== 'attack' && target !== 'attack.missile') continue
+		if (trait.minLevel && level < trait.minLevel) continue
+		const attackBonus = typeof trait.adjustmentValue === 'function'
+			? trait.adjustmentValue(level) : trait.adjustmentValue
 		modifiers.push({
-			id: 'trophy',
-			name: game.i18n.localize('DOLMEN.Attack.Mod.Trophy'),
-			attackBonus: 1
-		})
-	}
-
-	// Monster Slayer - knight trait, level 5+
-	if (hasTrait('monsterSlayer') && level >= 5) {
-		modifiers.push({
-			id: 'monsterSlayer',
-			name: game.i18n.localize('DOLMEN.Traits.MonsterSlayer'),
-			attackBonus: 2,
-			damageBonus: 2
-		})
-	}
-
-	// Fighter combat talents (applicable to missile)
-	if (talents.includes('weaponSpecialist')) {
-		modifiers.push({
-			id: 'weaponSpecialist',
-			name: game.i18n.localize('DOLMEN.Traits.Talents.WeaponSpecialist'),
-			attackBonus: 1,
-			damageBonus: 1
-		})
-	}
-	if (talents.includes('slayer')) {
-		modifiers.push({
-			id: 'slayer',
-			name: game.i18n.localize('DOLMEN.Traits.Talents.Slayer'),
-			attackBonus: 1,
-			damageBonus: 1
+			id: trait.id,
+			name: game.i18n.localize(trait.nameKey),
+			attackBonus,
+			damageBonus: trait.damageValue || 0
 		})
 	}
 
