@@ -5,6 +5,23 @@ import { extractJSON } from './utils/form-helpers.js'
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
 
+function formatCompactJSON(data) {
+	if (Array.isArray(data)) {
+		if (data.every(v => !Array.isArray(v) && typeof v !== 'object')) {
+			return JSON.stringify(data)
+		}
+		const lines = data.map(item => '  ' + JSON.stringify(item))
+		return '[\n' + lines.join(',\n') + '\n]'
+	}
+	if (typeof data === 'object' && data !== null) {
+		const entries = Object.entries(data)
+		if (entries.length === 0) return '{}'
+		const lines = entries.map(([key, val]) => '  "' + key + '": ' + JSON.stringify(val))
+		return '{\n' + lines.join(',\n') + '\n}'
+	}
+	return JSON.stringify(data)
+}
+
 class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 	static DEFAULT_OPTIONS = {
 		classes: ['dolmen', 'sheet', 'class'],
@@ -118,20 +135,12 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		// Format traits as JSON for editing
 		context.traitsJSON = JSON.stringify(this.item.system.traits, null, 2)
 
-		// Format spell progression
-		context.spellProgressionJSON = JSON.stringify(this.item.system.spellProgression, null, 2)
-
-		// Format XP thresholds
-		context.xpThresholdsJSON = JSON.stringify(this.item.system.xpThresholds, null, 2)
-
-		// Format attack progression
-		context.attackProgressionJSON = JSON.stringify(this.item.system.attackProgression, null, 2)
-
-		// Format save progressions
-		context.saveProgressionsJSON = JSON.stringify(this.item.system.saveProgressions, null, 2)
-
-		// Format skill progressions
-		context.skillProgressionsJSON = JSON.stringify(this.item.system.skillProgressions, null, 2)
+		// Format progressions with compact arrays
+		context.spellProgressionJSON = formatCompactJSON(this.item.system.spellProgression)
+		context.xpThresholdsJSON = formatCompactJSON(this.item.system.xpThresholds)
+		context.attackProgressionJSON = formatCompactJSON(this.item.system.attackProgression)
+		context.saveProgressionsJSON = formatCompactJSON(this.item.system.saveProgressions)
+		context.skillProgressionsJSON = formatCompactJSON(this.item.system.skillProgressions)
 
 		return context
 	}

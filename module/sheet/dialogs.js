@@ -285,7 +285,7 @@ export async function levelUp(sheet) {
 	const hitDice = classItem.system.hitDice
 	if (!thresholds?.length || !hitDice) return
 
-	const requiredXP = thresholds[newLevel] || 0
+	const requiredXP = thresholds[newLevel - 1] || 0
 
 	const doLevelUp = async () => {
 		let hpGain
@@ -342,15 +342,11 @@ export async function levelUp(sheet) {
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 
-		// Compute next level XP threshold
-		const nextThreshold = newLevel < 15 ? (thresholds[newLevel + 1] || 0) : 0
-
 		await actor.update({
 			'system.level': newLevel,
 			'system.hp.max': sys.hp.max + hpGain,
 			'system.hp.value': sys.hp.value + hpGain,
-			[`system.hpPerLevel.${newLevel}`]: hpGain,
-			'system.xp.nextLevel': nextThreshold
+			[`system.hpPerLevel.${newLevel}`]: hpGain
 		})
 	}
 
@@ -375,7 +371,6 @@ export async function levelDown(sheet) {
 	const actor = sheet.actor
 	const sys = actor.system
 	const level = sys.level
-	const classItem = actor.getClassItem()
 
 	if (level <= 1) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelMinReached'))
@@ -387,8 +382,6 @@ export async function levelDown(sheet) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelDownNoRecord'))
 	}
 
-	const thresholds = classItem?.system?.xpThresholds
-	const nextThreshold = thresholds ? (thresholds[level] || 0) : 0
 	const hpToSubtract = storedHP ?? 0
 	const newMax = Math.max(1, sys.hp.max - hpToSubtract)
 	const newValue = Math.min(sys.hp.value, newMax)
@@ -397,7 +390,6 @@ export async function levelDown(sheet) {
 		'system.level': level - 1,
 		'system.hp.max': newMax,
 		'system.hp.value': newValue,
-		[`system.hpPerLevel.-=${level}`]: null,
-		'system.xp.nextLevel': nextThreshold
+		[`system.hpPerLevel.-=${level}`]: null
 	})
 }

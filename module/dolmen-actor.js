@@ -59,9 +59,9 @@ class DolmenActor extends Actor {
 		const progression = classItem.system
 
 		// Apply attack bonus from progression table
-		if (progression.attackProgression?.[newLevel] !== undefined) {
+		if (progression.attackProgression?.[newLevel - 1] !== undefined) {
 			changed.system = changed.system || {}
-			changed.system.attack = progression.attackProgression[newLevel]
+			changed.system.attack = progression.attackProgression[newLevel - 1]
 		}
 
 		// Apply saving throws from progression tables
@@ -70,8 +70,8 @@ class DolmenActor extends Actor {
 			changed.system.saves = changed.system.saves || {}
 
 			for (const save of ['doom', 'ray', 'hold', 'blast', 'spell']) {
-				if (progression.saveProgressions[save]?.[newLevel] !== undefined) {
-					changed.system.saves[save] = progression.saveProgressions[save][newLevel]
+				if (progression.saveProgressions[save]?.[newLevel - 1] !== undefined) {
+					changed.system.saves[save] = progression.saveProgressions[save][newLevel - 1]
 				}
 			}
 		}
@@ -83,9 +83,9 @@ class DolmenActor extends Actor {
 			// Update base skills (listen, search, survival)
 			const baseSkills = ['listen', 'search', 'survival']
 			for (const skill of baseSkills) {
-				if (progression.skillProgressions[skill]?.[newLevel] !== undefined) {
+				if (progression.skillProgressions[skill]?.[newLevel - 1] !== undefined) {
 					changed.system.skills = changed.system.skills || {}
-					changed.system.skills[skill] = progression.skillProgressions[skill][newLevel]
+					changed.system.skills[skill] = progression.skillProgressions[skill][newLevel - 1]
 				}
 			}
 
@@ -94,7 +94,7 @@ class DolmenActor extends Actor {
 			if (currentExtraSkills.length > 0) {
 				// Map through all extra skills and update targets if progression exists
 				const updatedExtraSkills = currentExtraSkills.map(skill => {
-					const progressionTarget = progression.skillProgressions[skill.id]?.[newLevel]
+					const progressionTarget = progression.skillProgressions[skill.id]?.[newLevel - 1]
 					if (progressionTarget !== undefined) {
 						return { ...skill, target: progressionTarget }
 					}
@@ -151,7 +151,7 @@ class DolmenActor extends Actor {
 			// Reset base skills to progression values or default 6
 			const baseSkills = ['listen', 'search', 'survival']
 			for (const skill of baseSkills) {
-				const progressionValue = progression.skillProgressions?.[skill]?.[level]
+				const progressionValue = progression.skillProgressions?.[skill]?.[level - 1]
 				changed.system.skills[skill] = progressionValue !== undefined ? progressionValue : 6
 			}
 
@@ -159,7 +159,7 @@ class DolmenActor extends Actor {
 			const currentExtraSkills = this.system.extraSkills || []
 			if (currentExtraSkills.length > 0) {
 				changed.system.extraSkills = currentExtraSkills.map(skill => {
-					const progressionTarget = progression.skillProgressions?.[skill.id]?.[level]
+					const progressionTarget = progression.skillProgressions?.[skill.id]?.[level - 1]
 					return {
 						...skill,
 						target: progressionTarget !== undefined ? progressionTarget : 6
@@ -436,7 +436,7 @@ class DolmenActor extends Actor {
 				updateData['system.skills'][skill] = 6
 			} else {
 				// Use progression value or default to 6
-				const progressionValue = progression.skillProgressions?.[skill]?.[level]
+				const progressionValue = progression.skillProgressions?.[skill]?.[level - 1]
 				updateData['system.skills'][skill] = progressionValue !== undefined ? progressionValue : 6
 			}
 		}
@@ -450,7 +450,7 @@ class DolmenActor extends Actor {
 				finalSkills.push({ id: skillId, target: 6 })
 			} else {
 				// Use progression value or default to 6
-				const progressionTarget = progression.skillProgressions?.[skillId]?.[level]
+				const progressionTarget = progression.skillProgressions?.[skillId]?.[level - 1]
 				finalSkills.push({
 					id: skillId,
 					target: progressionTarget !== undefined ? progressionTarget : 6
