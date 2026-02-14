@@ -293,6 +293,8 @@
     "hasHolyOrder": false,
     "canTwoWeaponFight": false,
     "hasBackstab": false,
+    "skillPointsBase": 0,
+    "skillPointsPerLevel": 0,
     "traits": {}
   },
   "effects": [],

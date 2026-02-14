@@ -1,5 +1,4 @@
 const DOLMENWOOD = {}
-DOLMENWOOD.welcomeMessage = 'Welcome to the Dolmenwood RPG System!'
 
 // Available extra skills that can be added to adventurers
 DOLMENWOOD.extraSkills = [

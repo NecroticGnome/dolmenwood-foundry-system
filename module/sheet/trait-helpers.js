@@ -226,7 +226,7 @@ export function getTraitRollOptions(actor, rollType) {
  * @param {number} level - Character level
  * @returns {object} Prepared trait with computed values
  */
-export function prepareTrait(actor, trait, level) {
+function prepareTrait(actor, trait, level) {
 	const prepared = {
 		id: trait.id,
 		name: game.i18n.localize(trait.nameKey),
@@ -327,7 +327,7 @@ export function prepareTrait(actor, trait, level) {
  * @param {number} level - Character level
  * @returns {object[]} Array of prepared traits
  */
-export function flattenTraits(actor, traitDef, level) {
+function flattenTraits(actor, traitDef, level) {
 	const traits = []
 	const categories = ['active', 'passive', 'info', 'restrictions']
 

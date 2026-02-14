@@ -558,10 +558,7 @@ export function prepareItemData(item) {
 
 /**
  * Calculate available skill points when using the Customize Skills optional rule.
- * Based on the expertise points system from the Dolmenwood SRD:
- * - Thief: 4 points at level 1, +2 per level
- * - Hunter: 2 points at level 1, +1 per level
- * - Bard: 2 points at level 1, +1 per level
+ * Based on the expertise points in the class item.
  * @param {Actor} actor - The actor
  * @returns {number} Available skill points to distribute
  */
@@ -569,20 +566,14 @@ export function computeSkillPoints(actor) {
 	const sys = actor.system
 	const level = sys.level || 1
 	const classItem = actor.items.find(i => i.type === 'Class')
-	const classId = classItem?.system?.classId
 
-	// Only certain classes have the customize skills option
-	const skillPointsConfig = {
-		thief: { base: 4, perLevel: 2 },
-		hunter: { base: 2, perLevel: 1 },
-		bard: { base: 2, perLevel: 1 }
-	}
-
-	const config = skillPointsConfig[classId]
-	if (!config) return 0
+	// Read skill point config from class item data
+	const base = classItem?.system?.skillPointsBase || 0
+	const perLevel = classItem?.system?.skillPointsPerLevel || 0
+	if (base === 0 && perLevel === 0) return 0
 
 	// Calculate total expertise points awarded
-	const totalAwarded = config.base + (level - 1) * config.perLevel
+	const totalAwarded = base + (level - 1) * perLevel
 
 	// Calculate points spent (each point reduces a skill target by 1 from base of 6)
 	let totalSpent = 0

@@ -246,7 +246,7 @@ export function buildAttackChatHtml({ weapon, attackType, attack, damage }) {
  * @param {string} attackType - Either 'melee' or 'missile'
  * @param {object} [options] - Roll options
  */
-export async function performAttackRoll(sheet, weapon, attackType, {
+async function performAttackRoll(sheet, weapon, attackType, {
 	attackOnly = false, damageOnly = false,
 	traitBonus = 0, traitName = null,
 	totalAttackMod = null, damageFormula = null,
@@ -309,18 +309,6 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 		rolls,
 		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
-}
-
-/**
- * Perform a full attack roll with a weapon (attack + damage).
- * @param {DolmenSheet} sheet - The sheet instance
- * @param {Item} weapon - The weapon to attack with
- * @param {string} attackType - Either 'melee' or 'missile'
- * @param {number} [traitBonus=0] - Bonus from selected trait
- * @param {string} [traitName=null] - Name of trait providing bonus
- */
-export async function rollAttack(sheet, weapon, attackType, traitBonus = 0, traitName = null) {
-	return performAttackRoll(sheet, weapon, attackType, { traitBonus, traitName })
 }
 
 
@@ -682,7 +670,7 @@ export function openModifierPanel(sheet, weapon, attackMode, position, proficien
  * @param {boolean} [proficient=true] - Whether the character is proficient with this weapon
  * @param {string|null} [rollType=null] - 'attack', 'damage', or null for both
  */
-export async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, numericMod, proficient = true, rollType = null) {
+async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, numericMod, proficient = true, rollType = null) {
 	// Attack type bonuses
 	const attackModeBonus = attackMode === 'charge' ? 2 : attackMode === 'push' ? -4 : 0
 	const proficiencyPenalty = proficient ? 0 : -4
@@ -1031,7 +1019,7 @@ export function openMissileModifierPanel(sheet, weapon, position, proficient = t
  * @param {number} [rangeMod=0] - Range modifier to attack
  * @param {string|null} [rangeName=null] - Range name for chat badge
  */
-export async function executeMissileAttack(sheet, weapon, selectedModifiers, numericMod, proficient = true, rollType = null, rangeMod = 0, rangeName = null) {
+async function executeMissileAttack(sheet, weapon, selectedModifiers, numericMod, proficient = true, rollType = null, rangeMod = 0, rangeName = null) {
 	let modAttackBonus = 0
 	let modDamageBonus = 0
 	const modifierNames = []
