@@ -585,40 +585,45 @@ class DolmenActor extends Actor {
 	 * @private
 	 */
 	async _sendCharacteristicsToChat(kindredName, results) {
-		const monthName = game.i18n.localize(`DOLMEN.Months.${results.birthMonth}`)
+		const loc = (key) => game.i18n.localize(key)
+		const fmt = (key, data) => game.i18n.format(key, data)
+		const monthName = loc(`DOLMEN.Months.${results.birthMonth}`)
 		const lifespanText = results.lifespan === 0
-			? game.i18n.localize('DOLMEN.Immortal')
-			: `${results.lifespan} years`
+			? loc('DOLMEN.Immortal')
+			: fmt('DOLMEN.KindredDetails.ValueYears', { value: results.lifespan })
+		const ageText = fmt('DOLMEN.KindredDetails.ValueYears', { value: results.age })
+		const heightText = fmt('DOLMEN.KindredDetails.HeightFormat', { feet: results.heightFeet, cm: results.heightCm })
+		const weightText = fmt('DOLMEN.KindredDetails.WeightFormat', { lbs: results.weightLbs, kg: results.weightKg })
 
 		const content = `
 			<div class="dolmen-roll-card">
 				<div class="card-content">
-					<p><strong>${game.i18n.format('DOLMEN.RolledKindredDetails', { kindred: kindredName })}:</strong></p>
+					<p><strong>${fmt('DOLMEN.RolledKindredDetails', { kindred: kindredName })}:</strong></p>
 					<div class="characteristic-group">
-						<h4>Physical Characteristics</h4>
-						<p><strong>Age:</strong> ${results.age} years</p>
-						<p><strong>Lifespan:</strong> ${lifespanText}</p>
-						<p><strong>Height:</strong> ${results.heightFeet} (${results.heightCm} cm)</p>
-						<p><strong>Weight:</strong> ${results.weightLbs} lbs (${results.weightKg} kg)</p>
-						<p><strong>Birthday:</strong> ${monthName} ${results.birthDay}</p>
+						<h4>${loc('DOLMEN.Kindred.PhysicalCharacteristics')}</h4>
+						<p><strong>${loc('DOLMEN.KindredDetails.CurrentAge')}:</strong> ${ageText}</p>
+						<p><strong>${loc('DOLMEN.KindredDetails.Lifespan')}:</strong> ${lifespanText}</p>
+						<p><strong>${loc('DOLMEN.KindredDetails.Height')}:</strong> ${heightText}</p>
+						<p><strong>${loc('DOLMEN.KindredDetails.Weight')}:</strong> ${weightText}</p>
+						<p><strong>${loc('DOLMEN.Birthday')}:</strong> ${monthName} ${results.birthDay}</p>
 					</div>
 					<div class="characteristic-group">
-						<h4>Background</h4>
+						<h4>${loc('DOLMEN.Background')}</h4>
 						<p>${results.background}</p>
 					</div>
 					<div class="characteristic-group">
-						<h4>Appearance</h4>
-						<p><strong>Head:</strong> ${results.head}</p>
-						<p><strong>Face:</strong> ${results.face}</p>
-						<p><strong>Body:</strong> ${results.body}</p>
-						<p><strong>Dress:</strong> ${results.dress}</p>
+						<h4>${loc('DOLMEN.ExtraDetails.Appearance')}</h4>
+						<p><strong>${loc('DOLMEN.ExtraDetails.Head')}:</strong> ${results.head}</p>
+						<p><strong>${loc('DOLMEN.ExtraDetails.Face')}:</strong> ${results.face}</p>
+						<p><strong>${loc('DOLMEN.ExtraDetails.Body')}:</strong> ${results.body}</p>
+						<p><strong>${loc('DOLMEN.ExtraDetails.Dress')}:</strong> ${results.dress}</p>
 					</div>
 					<div class="characteristic-group">
-						<h4>Mannerisms</h4>
-						<p><strong>Demeanour:</strong> ${results.demeanour}</p>
-						<p><strong>Speech:</strong> ${results.speech}</p>
-						<p><strong>Beliefs:</strong> ${results.beliefs}</p>
-						<p><strong>Desires:</strong> ${results.desires}</p>
+						<h4>${loc('DOLMEN.ExtraDetails.Mannerisms')}</h4>
+						<p><strong>${loc('DOLMEN.ExtraDetails.Demeanour')}:</strong> ${results.demeanour}</p>
+						<p><strong>${loc('DOLMEN.ExtraDetails.Speech')}:</strong> ${results.speech}</p>
+						<p><strong>${loc('DOLMEN.ExtraDetails.Beliefs')}:</strong> ${results.beliefs}</p>
+						<p><strong>${loc('DOLMEN.ExtraDetails.Desires')}:</strong> ${results.desires}</p>
 					</div>
 				</div>
 			</div>

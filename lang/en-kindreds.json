@@ -21,7 +21,10 @@
 			"Kg": "(kg)",
 			"Imperial": "Imperial",
 			"Metric": "Metric",
-			"UnitSystem": "Unit System"
+			"UnitSystem": "Unit System",
+			"ValueYears": "{value} years",
+			"HeightFormat": "{feet} ({cm} cm)",
+			"WeightFormat": "{lbs} lbs ({kg} kg)"
 		},
 		"Languages": {
 			"woldish": "Woldish",
