@@ -609,11 +609,48 @@ function parseNameColumn(html, column) {
 }
 
 /**
+ * Roll a name from a single name roll group.
+ * Draws from the RollTable once per column in group.rolls, parses each,
+ * joins parts with a space, updates actor name, and posts a chat message.
+ * @param {DolmenSheet} sheet - The sheet instance
+ * @param {string} tableName - The RollTable name (e.g. "Human Names")
+ * @param {object} group - Name roll group with label and rolls array
+ */
+async function rollNameGroup(sheet, tableName, group) {
+	const parts = []
+	const draws = []
+	for (const column of group.rolls) {
+		const draw = await drawFromTableRaw(tableName)
+		if (!draw) return
+		const value = parseNameColumn(draw.result.description, column)
+		if (!value) return
+		parts.push(value)
+		draws.push({ draw, value })
+	}
+
+	const fullName = parts.join(' ')
+	await sheet.actor.update({ name: fullName })
+
+	const anchors = []
+	for (const { draw, value } of draws) {
+		const anchor = (await draw.roll.toAnchor()).outerHTML
+		anchors.push(`${anchor}: ${value}`)
+	}
+
+	const labelSuffix = group.label ? ` (${game.i18n.localize(group.label)})` : ''
+	await ChatMessage.create({
+		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
+		content: `<strong>${tableName}</strong>${labelSuffix}<br>${anchors.join('<br>')}`,
+		rolls: draws.map(d => d.draw.roll),
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER
+	})
+}
+
+/**
  * Setup rollable icon listener for name field.
- * Opens a context menu based on kindred:
- * - Elf: Rustic / Courtly (no surname)
- * - Grimalkin: rolls directly for First Name + Surname (no context menu)
- * - Others: Male / Female / Unisex, then appends Surname
+ * Reads nameRollGroups from the kindred item:
+ * - 1 group: roll directly (no context menu)
+ * - Multiple groups: show context menu, user picks one
  * @param {DolmenSheet} sheet - The sheet instance
  */
 export function setupNameRollListener(sheet) {
@@ -626,62 +663,20 @@ export function setupNameRollListener(sheet) {
 			return
 		}
 
-		const kindred = kindredItem.system.kindredId
-		const kindredLabel = kindredItem.name
-		const tableName = `${kindredLabel} Names`
+		const groups = kindredItem.system.nameRollGroups
+		if (!groups || groups.length === 0) {
+			ui.notifications.warn('No name roll groups configured for this kindred')
+			return
+		}
 
-		// Use click coordinates for positioning (the icon has display:contents so getBoundingClientRect returns zeros)
-		const position = { top: event.clientY, left: event.clientX }
+		const tableName = `${kindredItem.name} Names`
 
-		if (kindred === 'elf') {
-			// Elf: context menu with Rustic / Courtly (no surname)
-			const menuHtml = ['Rustic', 'Courtly'].map(opt =>
-				`<div class="weapon-menu-item" data-name-type="${opt}">${opt}</div>`
-			).join('')
-			createContextMenu(sheet, {
-				html: menuHtml,
-				position,
-				excludeFromClose: event.currentTarget,
-				onItemClick: async (item, menu) => {
-					menu.remove()
-					const nameType = item.dataset.nameType
-					const draw = await drawFromTableRaw(tableName)
-					if (!draw) return
-					const name = parseNameColumn(draw.result.description, nameType)
-					if (!name) return
-					await sheet.actor.update({ name })
-					const rollAnchor = (await draw.roll.toAnchor()).outerHTML
-					await ChatMessage.create({
-						speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
-						content: `<strong>${tableName}</strong> (${nameType})<br>${rollAnchor}: ${name}`,
-						rolls: [draw.roll],
-						style: CONST.CHAT_MESSAGE_STYLES.OTHER
-					})
-				}
-			})
-		} else if (kindred === 'grimalkin') {
-			// Grimalkin: roll twice - one for First Name, one for Surname
-			const nameDraw = await drawFromTableRaw(tableName)
-			if (!nameDraw) return
-			const firstName = parseNameColumn(nameDraw.result.description, 'First Name')
-			const surnameDraw = await drawFromTableRaw(tableName)
-			if (!surnameDraw) return
-			const surname = parseNameColumn(surnameDraw.result.description, 'Surname')
-			if (firstName && surname) {
-				await sheet.actor.update({ name: `${firstName} ${surname}` })
-				const nameAnchor = (await nameDraw.roll.toAnchor()).outerHTML
-				const surnameAnchor = (await surnameDraw.roll.toAnchor()).outerHTML
-				await ChatMessage.create({
-					speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
-					content: `<strong>${tableName}</strong><br>${nameAnchor}: ${firstName}<br>${surnameAnchor}: ${surname}`,
-					rolls: [nameDraw.roll, surnameDraw.roll],
-					style: CONST.CHAT_MESSAGE_STYLES.OTHER
-				})
-			}
+		if (groups.length === 1) {
+			await rollNameGroup(sheet, tableName, groups[0])
 		} else {
-			// Others: context menu with Male / Female / Unisex, then roll twice for name + surname
-			const menuHtml = ['Male', 'Female', 'Unisex'].map(opt =>
-				`<div class="weapon-menu-item" data-name-type="${opt}">${opt}</div>`
+			const position = { top: event.clientY, left: event.clientX }
+			const menuHtml = groups.map((g, i) =>
+				`<div class="weapon-menu-item" data-group-index="${i}">${game.i18n.localize(g.label)}</div>`
 			).join('')
 			createContextMenu(sheet, {
 				html: menuHtml,
@@ -689,24 +684,8 @@ export function setupNameRollListener(sheet) {
 				excludeFromClose: event.currentTarget,
 				onItemClick: async (item, menu) => {
 					menu.remove()
-					const nameType = item.dataset.nameType
-					const nameDraw = await drawFromTableRaw(tableName)
-					if (!nameDraw) return
-					const firstName = parseNameColumn(nameDraw.result.description, nameType)
-					const surnameDraw = await drawFromTableRaw(tableName)
-					if (!surnameDraw) return
-					const surname = parseNameColumn(surnameDraw.result.description, 'Surname')
-					if (firstName && surname) {
-						await sheet.actor.update({ name: `${firstName} ${surname}` })
-						const nameAnchor = (await nameDraw.roll.toAnchor()).outerHTML
-						const surnameAnchor = (await surnameDraw.roll.toAnchor()).outerHTML
-						await ChatMessage.create({
-							speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
-							content: `<strong>${tableName}</strong> (${nameType})<br>${nameAnchor}: ${firstName}<br>${surnameAnchor}: ${surname}`,
-							rolls: [nameDraw.roll, surnameDraw.roll],
-							style: CONST.CHAT_MESSAGE_STYLES.OTHER
-						})
-					}
+					const group = groups[parseInt(item.dataset.groupIndex)]
+					await rollNameGroup(sheet, tableName, group)
 				}
 			})
 		}

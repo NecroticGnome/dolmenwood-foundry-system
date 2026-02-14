@@ -33,6 +33,13 @@
 			"mulch": "Mulch"
 		},
 		"KindredSheetTitle": "Kindred Item Sheet",
+		"NameRoll": {
+			"Male": "Male",
+			"Female": "Female",
+			"Unisex": "Unisex",
+			"Rustic": "Rustic",
+			"Courtly": "Courtly"
+		},
 		"Kindred": {
 			"Title": "Kindred",
 			"Name": "Kindred Name",
@@ -51,6 +58,7 @@
 			"HeightFormula": "Height Formula (inches)",
 			"WeightFormula": "Weight Formula (lbs)",
 			"Languages": "Native Languages",
+			"NameRollGroups": "Name Roll Groups (JSON)",
 			"Traits": "Traits (JSON)",
 			"TraitsJSON": "Traits Definition"
 		}

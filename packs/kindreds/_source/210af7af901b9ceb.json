@@ -17,6 +17,15 @@
       "woldish",
       "mewl"
     ],
+    "nameRollGroups": [
+      {
+        "label": "",
+        "rolls": [
+          "First Name",
+          "Surname"
+        ]
+      }
+    ],
     "traits": {
       "active": [
         {

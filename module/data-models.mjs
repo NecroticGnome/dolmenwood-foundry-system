@@ -1046,6 +1046,8 @@ export class KindredDataModel extends ItemDataModel {
 			hasFur: new BooleanField({ required: true, initial: false }),
 			// Native languages
 			languages: new ArrayField(new StringField({ blank: false }), { initial: ["woldish"] }),
+			// Name roll groups for data-driven name generation
+			nameRollGroups: new ArrayField(new ObjectField(), { initial: [] }),
 			// Trait definitions stored as JSON object
 			traits: new ObjectField({ initial: {} })
 		}

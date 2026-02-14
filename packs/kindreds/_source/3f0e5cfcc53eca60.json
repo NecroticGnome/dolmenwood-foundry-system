@@ -16,6 +16,29 @@
     "languages": [
       "woldish"
     ],
+    "nameRollGroups": [
+      {
+        "label": "DOLMEN.NameRoll.Male",
+        "rolls": [
+          "Male",
+          "Surname"
+        ]
+      },
+      {
+        "label": "DOLMEN.NameRoll.Female",
+        "rolls": [
+          "Female",
+          "Surname"
+        ]
+      },
+      {
+        "label": "DOLMEN.NameRoll.Unisex",
+        "rolls": [
+          "Unisex",
+          "Surname"
+        ]
+      }
+    ],
     "traits": {
       "passive": [
         {
