@@ -94,12 +94,6 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.intelligenceChoices = buildChoices('DOLMEN.IntelligenceTypes', CHOICE_KEYS.intelligenceTypes)
 		context.alignmentChoices = buildChoices('DOLMEN.Alignments', CHOICE_KEYS.alignments)
 
-		// Prepare items list (gear only, no spells)
-		const spellTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune']
-		context.items = actor.items.contents
-			.filter(i => !spellTypes.includes(i.type))
-			.sort((a, b) => a.sort - b.sort)
-
 		// Active movement types (non-zero)
 		context.activeMovement = []
 		for (const [key, value] of Object.entries(actor.system.movement || {})) {
