@@ -11,6 +11,7 @@ import DolmenItem from './module/dolmen-item.js'
 import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel } from './module/data-models.mjs'
 import { setupDamageContextMenu } from './module/chat-damage.js'
 import { setupSaveLinkListeners } from './module/chat-save.js'
+import WelcomeDialog from './module/welcome-dialog.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -46,6 +47,13 @@ Hooks.once('init', async function () {
 		Kindred: KindredDataModel,
 		Class: ClassDataModel
 	}
+
+	game.settings.register('dolmenwood', 'showWelcomeDialog', {
+		scope: 'client',
+		config: false,
+		type: Boolean,
+		default: true
+	})
 
 	game.settings.register('dolmenwood', 'significantLoad', {
 		name: 'DOLMEN.Encumbrance.SignificantLoad',
@@ -94,6 +102,10 @@ Hooks.once('init', async function () {
 
 Hooks.once('ready', async function () {
 	console.log(game.i18n.localize('DOLMEN.WelcomeMessage'))
+
+	if (game.user.isGM && game.settings.get('dolmenwood', 'showWelcomeDialog')) {
+		new WelcomeDialog().render(true)
+	}
 })
 
 // Add context menu to damage rolls and save link listeners in chat
