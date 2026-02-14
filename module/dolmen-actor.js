@@ -560,7 +560,7 @@ class DolmenActor extends Actor {
 		})
 
 		// Send results to chat
-		await this._sendCharacteristicsToChat(kindredName, results)
+		await this._sendCharacteristicsToChat(kindredName, results, hasFur)
 	}
 
 	/**
@@ -569,7 +569,7 @@ class DolmenActor extends Actor {
 	 * @param {object} results - Rolled characteristics
 	 * @private
 	 */
-	async _sendCharacteristicsToChat(kindredName, results) {
+	async _sendCharacteristicsToChat(kindredName, results, hasFur) {
 		const loc = (key) => game.i18n.localize(key)
 		const fmt = (key, data) => game.i18n.format(key, data)
 		const monthName = loc(`DOLMEN.Months.${results.birthMonth}`)
@@ -600,7 +600,7 @@ class DolmenActor extends Actor {
 						<h4>${loc('DOLMEN.ExtraDetails.Appearance')}</h4>
 						<p><strong>${loc('DOLMEN.ExtraDetails.Head')}:</strong> ${results.head}</p>
 						<p><strong>${loc('DOLMEN.ExtraDetails.Face')}:</strong> ${results.face}</p>
-						<p><strong>${loc('DOLMEN.ExtraDetails.Body')}:</strong> ${results.body}</p>
+						<p><strong>${loc(hasFur ? 'DOLMEN.ExtraDetails.Fur' : 'DOLMEN.ExtraDetails.Body')}:</strong> ${results.body}</p>
 						<p><strong>${loc('DOLMEN.ExtraDetails.Dress')}:</strong> ${results.dress}</p>
 					</div>
 					<div class="characteristic-group">
