@@ -1,3 +1,22 @@
 {
-	"DOLMEN": {}
+	"DOLMEN": {
+		"Settings": {
+			"ColorTheme": "Motyw kolorystyczny",
+			"ColorThemeHint": "Wybierz motyw kolorystyczny dla kart postaci i czatu Dolmenwood.",
+			"ThemeAuto": "Auto (Jasny/Ciemny)",
+			"ThemePlayerbook": "Podręcznik Dolmenwood",
+			"ThemeDruneAltar": "Ołtarz Drune",
+			"ThemeWintersDaughter": "Córka Zimy",
+			"ThemeColdPrince": "Zimowy Książę",
+			"ThemeGrimalkin": "Księżniczka Grimalkin",
+			"ThemeNagLord": "Nag-Lord",
+			"ThemeWoodgrue": "Domek Woodgrue",
+			"ThemeMosslingDen": "Nora Mszaka",
+			"ThemeBreggleHorns": "Rogi Breggli",
+			"ThemeMortalsEnd": "Koniec Śmiertelnika",
+			"ThemeSilverDagger": "Srebrny Sztylet",
+			"ThemeColdIronAxe": "Topór z Zimnego Żelaza",
+			"ThemeHighContrast": "Wysoki Kontrast"
+		}
+	}
 }

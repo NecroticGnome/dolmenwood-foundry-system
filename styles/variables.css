@@ -27,16 +27,59 @@
 	font-style: normal;
 }
 
-.theme-dark,
-.theme-light {
+.dolmen {
 	--dolmen-font-title: "Longdon Decorative", serif;
 	--dolmen-font-subtitle: "IM Fell DW Pica", serif;
 	--dolmen-font-header: "Cooper Hewitt", sans-serif;
 	--dolmen-font-body: "Poly", serif;
 }
 
-/* Color variables for Dark and Light themes (Dark is WIP) */
-.theme-dark .dolmen {
+/* ── 1. Dolmenwood Playerbook (default light theme) ── */
+[data-dolmen-theme="playerbook"] .dolmen {
+	--dolmen-color-background: #ffffff;
+	--dolmen-color-text: #090404;
+	--dolmen-color-h1: #d54134;
+	--dolmen-color-h2: #dd6d54;
+	--dolmen-color-h3: #633121;
+
+	--dolmen-color-title: #ffffff;
+	--dolmen-color-title-background: #d54134;
+
+	--dolmen-color-inner-background: #f5e4e0;
+
+	--dolmen-color-box-background: #f5eede;
+	--dolmen-color-box-border: #dd6d54;
+
+	--dolmen-color-input-border: #633121aa;
+	--dolmen-color-input-border-focus: #dd6d54;
+	--dolmen-color-header-weapon: #f5d0d0;
+	--dolmen-color-header-armor: #d0e4f0;
+	--dolmen-color-header-foraged: #d0f0d0;
+	--dolmen-color-header-treasure: #f0e7d0;
+	--dolmen-color-header-item: #e0e0e0;
+	--dolmen-color-header-magic: #e0d0f0;
+
+	--dolmen-color-adjusted: #c92a2a;
+
+	--dolmen-color-text-muted: #6b5e53;
+	--dolmen-color-accent: #8b4513;
+	--dolmen-color-box-highlight: rgba(139, 69, 19, 0.1);
+
+	--dolmen-color-success: #228b22;
+	--dolmen-color-failure: #cc0000;
+	--dolmen-color-roll-ability: #4a6fa5;
+	--dolmen-color-roll-save: #6b4c9a;
+	--dolmen-color-roll-skill: #4a8f6f;
+	--dolmen-color-roll-trait: #7a5a8a;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 2. Drune Altar (dark red theme) ── */
+[data-dolmen-theme="drunealtar"] .dolmen {
 	--dolmen-color-background: #1e0e0e;
 	--dolmen-color-text: #f2eee9;
 
@@ -81,42 +124,505 @@
 	--dolmen-color-coin-pellucidium: #c0eae5;
 }
 
-.theme-light .dolmen {
-	--dolmen-color-background: #ffffff;
-	--dolmen-color-text: #090404;
-	--dolmen-color-h1: #d54134;
-	--dolmen-color-h2: #dd6d54;
-	--dolmen-color-h3: #633121;
+/* ── 3. Winter's Daughter (bright blue) ── */
+[data-dolmen-theme="wintersdaughter"] .dolmen {
+	--dolmen-color-background: #eaf4ff;
+	--dolmen-color-text: #1a2a3d;
 
-	--dolmen-color-title: #ffffff;
-	--dolmen-color-title-background: #d54134;
+	--dolmen-color-h1: #2a7acc;
+	--dolmen-color-h2: #3a8add;
+	--dolmen-color-h3: #1a5a99;
 
-	--dolmen-color-inner-background: #f5e4e0;
+	--dolmen-color-title: #eaf4ff;
+	--dolmen-color-title-background: #2a7acc;
 
-	--dolmen-color-box-background: #f5eede;
-	--dolmen-color-box-border: #dd6d54;
+	--dolmen-color-inner-background: #daeaf8;
 
-	--dolmen-color-input-border: #633121aa;
-	--dolmen-color-input-border-focus: #dd6d54;
-	--dolmen-color-header-weapon: #f5d0d0;
-	--dolmen-color-header-armor: #d0e4f0;
-	--dolmen-color-header-foraged: #d0f0d0;
-	--dolmen-color-header-treasure: #f0e7d0;
-	--dolmen-color-header-item: #e0e0e0;
-	--dolmen-color-header-magic: #e0d0f0;
+	--dolmen-color-box-background: #e4f0fc;
+	--dolmen-color-box-border: #3a8add;
 
-	--dolmen-color-adjusted: #c92a2a;
+	--dolmen-color-input-border: #2a7acc66;
+	--dolmen-color-input-border-focus: #2a7acc;
+
+	--dolmen-color-header-weapon: #d8cce0;
+	--dolmen-color-header-armor: #c8ddf0;
+	--dolmen-color-header-foraged: #cce8d8;
+	--dolmen-color-header-treasure: #e8e0cc;
+	--dolmen-color-header-item: #d8dce0;
+	--dolmen-color-header-magic: #d4ccec;
+
+	--dolmen-color-adjusted: #c0392b;
+
+	--dolmen-color-text-muted: #506878;
+	--dolmen-color-accent: #2a7acc;
+	--dolmen-color-box-highlight: rgba(42, 122, 204, 0.1);
+
+	--dolmen-color-success: #2e7d32;
+	--dolmen-color-failure: #c62828;
+	--dolmen-color-roll-ability: #3a80c0;
+	--dolmen-color-roll-save: #6a5aaa;
+	--dolmen-color-roll-skill: #3a9a7a;
+	--dolmen-color-roll-trait: #7a6aaa;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 4. Cold Prince (dark blue) ── */
+[data-dolmen-theme="coldprince"] .dolmen {
+	--dolmen-color-background: #0a1628;
+	--dolmen-color-text: #dce8f5;
+
+	--dolmen-color-h1: #4a90d9;
+	--dolmen-color-h2: #3a7abf;
+	--dolmen-color-h3: #8bb8e0;
+
+	--dolmen-color-title: #dce8f5;
+	--dolmen-color-title-background: #2a5a8a;
+
+	--dolmen-color-inner-background: #0e1e38;
+
+	--dolmen-color-box-background: #081220;
+	--dolmen-color-box-border: #4a90d9;
+
+	--dolmen-color-input-border: #3a7abf66;
+	--dolmen-color-input-border-focus: #4a90d9;
+
+	--dolmen-color-header-weapon: #1a1020;
+	--dolmen-color-header-armor: #0a2040;
+	--dolmen-color-header-foraged: #0a2018;
+	--dolmen-color-header-treasure: #201a0a;
+	--dolmen-color-header-item: #161620;
+	--dolmen-color-header-magic: #180a30;
+
+	--dolmen-color-adjusted: #6ab0ff;
+
+	--dolmen-color-text-muted: #98b0c8;
+	--dolmen-color-accent: #4a90d9;
+	--dolmen-color-box-highlight: rgb(74 144 217 / 15%);
+
+	--dolmen-color-success: #4caf50;
+	--dolmen-color-failure: #ef5350;
+	--dolmen-color-roll-ability: #5a9ad9;
+	--dolmen-color-roll-save: #7a6ab0;
+	--dolmen-color-roll-skill: #4aaa8a;
+	--dolmen-color-roll-trait: #8a7aaa;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 5. Grimalkin Princess (bright pink) ── */
+[data-dolmen-theme="grimalkin"] .dolmen {
+	--dolmen-color-background: #fff0f5;
+	--dolmen-color-text: #3d1a2a;
+
+	--dolmen-color-h1: #c93a6a;
+	--dolmen-color-h2: #e15176;
+	--dolmen-color-h3: #a02850;
+
+	--dolmen-color-title: #fff0f5;
+	--dolmen-color-title-background: #c93a6a;
+
+	--dolmen-color-inner-background: #fce4ec;
+
+	--dolmen-color-box-background: #fdf0f4;
+	--dolmen-color-box-border: #e15176;
+
+	--dolmen-color-input-border: #c93a6a66;
+	--dolmen-color-input-border-focus: #e15176;
+
+	--dolmen-color-header-weapon: #f5d0cc;
+	--dolmen-color-header-armor: #e0d8e8;
+	--dolmen-color-header-foraged: #d8e8d0;
+	--dolmen-color-header-treasure: #f0e0cc;
+	--dolmen-color-header-item: #e8dce0;
+	--dolmen-color-header-magic: #e4d0e8;
+
+	--dolmen-color-adjusted: #b8184a;
+
+	--dolmen-color-text-muted: #7a5068;
+	--dolmen-color-accent: #c93a6a;
+	--dolmen-color-box-highlight: rgba(225, 81, 118, 0.1);
+
+	--dolmen-color-success: #2e7d32;
+	--dolmen-color-failure: #c62828;
+	--dolmen-color-roll-ability: #5a7ab0;
+	--dolmen-color-roll-save: #8a5aaa;
+	--dolmen-color-roll-skill: #5a9a7a;
+	--dolmen-color-roll-trait: #aa5a8a;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 6. Nag-Lord (dark purple/fey) ── */
+[data-dolmen-theme="naglord"] .dolmen {
+	--dolmen-color-background: #0f0a1f;
+	--dolmen-color-text: #e8dff5;
+
+	--dolmen-color-h1: #9b59b6;
+	--dolmen-color-h2: #8e44ad;
+	--dolmen-color-h3: #c39bd3;
+
+	--dolmen-color-title: #e8dff5;
+	--dolmen-color-title-background: #6c3483;
+
+	--dolmen-color-inner-background: #1a1230;
+
+	--dolmen-color-box-background: #0a0615;
+	--dolmen-color-box-border: #9b59b6;
+
+	--dolmen-color-input-border: #8e44ad66;
+	--dolmen-color-input-border-focus: #9b59b6;
+
+	--dolmen-color-header-weapon: #2a0a1a;
+	--dolmen-color-header-armor: #0a1a2a;
+	--dolmen-color-header-foraged: #0a2a1a;
+	--dolmen-color-header-treasure: #2a1a0a;
+	--dolmen-color-header-item: #1a1a1a;
+	--dolmen-color-header-magic: #1a0a2a;
+
+	--dolmen-color-adjusted: #e066ff;
+
+	--dolmen-color-text-muted: #b8a8d0;
+	--dolmen-color-accent: #9b59b6;
+	--dolmen-color-box-highlight: rgb(155 89 182 / 15%);
+
+	--dolmen-color-success: #27ae60;
+	--dolmen-color-failure: #e74c3c;
+	--dolmen-color-roll-ability: #5a8fcc;
+	--dolmen-color-roll-save: #8a6abc;
+	--dolmen-color-roll-skill: #5aaa7a;
+	--dolmen-color-roll-trait: #9a7abc;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 7. Woodgrue Treehouse (muted green) ── */
+[data-dolmen-theme="woodgrue"] .dolmen {
+	--dolmen-color-background: #f0f4ee;
+	--dolmen-color-text: #2a3028;
+
+	--dolmen-color-h1: #4a7a4a;
+	--dolmen-color-h2: #5a8a5a;
+	--dolmen-color-h3: #3a6a3a;
+
+	--dolmen-color-title: #f0f4ee;
+	--dolmen-color-title-background: #4a7a4a;
+
+	--dolmen-color-inner-background: #e4eae0;
+
+	--dolmen-color-box-background: #eaefe8;
+	--dolmen-color-box-border: #5a8a5a;
+
+	--dolmen-color-input-border: #4a7a4a66;
+	--dolmen-color-input-border-focus: #4a7a4a;
+
+	--dolmen-color-header-weapon: #e0d0cc;
+	--dolmen-color-header-armor: #ccd8dc;
+	--dolmen-color-header-foraged: #d0dcd0;
+	--dolmen-color-header-treasure: #dcd8cc;
+	--dolmen-color-header-item: #d8d8d4;
+	--dolmen-color-header-magic: #d4d0dc;
+
+	--dolmen-color-adjusted: #c0392b;
+
+	--dolmen-color-text-muted: #5a6858;
+	--dolmen-color-accent: #4a7a4a;
+	--dolmen-color-box-highlight: rgba(74, 122, 74, 0.1);
+
+	--dolmen-color-success: #2e7d32;
+	--dolmen-color-failure: #c62828;
+	--dolmen-color-roll-ability: #5a7a9a;
+	--dolmen-color-roll-save: #7a6a8a;
+	--dolmen-color-roll-skill: #4a8a5a;
+	--dolmen-color-roll-trait: #7a6a7a;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 8. Mossling Den (dark woodland green) ── */
+[data-dolmen-theme="mosslingden"] .dolmen {
+	--dolmen-color-background: #0d1f0d;
+	--dolmen-color-text: #d4e6d4;
+
+	--dolmen-color-h1: #5a9a5a;
+	--dolmen-color-h2: #4a8a4a;
+	--dolmen-color-h3: #8bc48b;
+
+	--dolmen-color-title: #d4e6d4;
+	--dolmen-color-title-background: #2d5a2d;
+
+	--dolmen-color-inner-background: #132913;
+
+	--dolmen-color-box-background: #0a170a;
+	--dolmen-color-box-border: #5a9a5a;
+
+	--dolmen-color-input-border: #4a8a4a66;
+	--dolmen-color-input-border-focus: #5a9a5a;
+
+	--dolmen-color-header-weapon: #2a1010;
+	--dolmen-color-header-armor: #102a2a;
+	--dolmen-color-header-foraged: #1a2e1a;
+	--dolmen-color-header-treasure: #2a2410;
+	--dolmen-color-header-item: #1a1a1a;
+	--dolmen-color-header-magic: #1a102a;
+
+	--dolmen-color-adjusted: #ff6b6b;
+
+	--dolmen-color-text-muted: #a0b8a0;
+	--dolmen-color-accent: #6b8f5a;
+	--dolmen-color-box-highlight: rgb(90 154 90 / 15%);
+
+	--dolmen-color-success: #4caf50;
+	--dolmen-color-failure: #ef5350;
+	--dolmen-color-roll-ability: #5a8fb0;
+	--dolmen-color-roll-save: #7a6a9a;
+	--dolmen-color-roll-skill: #5a9a6a;
+	--dolmen-color-roll-trait: #8a7a9a;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 9. Breggle Horns (sepia/parchment theme) ── */
+[data-dolmen-theme="bregglehorns"] .dolmen {
+	--dolmen-color-background: #f5e6d0;
+	--dolmen-color-text: #3d2b1f;
+
+	--dolmen-color-h1: #8b4513;
+	--dolmen-color-h2: #a0522d;
+	--dolmen-color-h3: #6b3a2a;
+
+	--dolmen-color-title: #f5e6d0;
+	--dolmen-color-title-background: #8b4513;
+
+	--dolmen-color-inner-background: #efe0cc;
+
+	--dolmen-color-box-background: #f0ddc0;
+	--dolmen-color-box-border: #a0522d;
+
+	--dolmen-color-input-border: #8b451366;
+	--dolmen-color-input-border-focus: #a0522d;
+
+	--dolmen-color-header-weapon: #e8c8b0;
+	--dolmen-color-header-armor: #c8d8d0;
+	--dolmen-color-header-foraged: #c8d8c0;
+	--dolmen-color-header-treasure: #e0d4b8;
+	--dolmen-color-header-item: #d8d0c0;
+	--dolmen-color-header-magic: #d8c8d8;
+
+	--dolmen-color-adjusted: #b22222;
 
 	--dolmen-color-text-muted: #6b5e53;
 	--dolmen-color-accent: #8b4513;
-	--dolmen-color-box-highlight: rgba(139, 69, 19, 0.1);
+	--dolmen-color-box-highlight: rgba(139, 69, 19, 0.12);
 
-	--dolmen-color-success: #228b22;
-	--dolmen-color-failure: #cc0000;
+	--dolmen-color-success: #2e7d32;
+	--dolmen-color-failure: #b71c1c;
 	--dolmen-color-roll-ability: #4a6fa5;
 	--dolmen-color-roll-save: #6b4c9a;
 	--dolmen-color-roll-skill: #4a8f6f;
 	--dolmen-color-roll-trait: #7a5a8a;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 10. Mortal's End (dark brown/dirt) ── */
+[data-dolmen-theme="mortalsend"] .dolmen {
+	--dolmen-color-background: #1a1208;
+	--dolmen-color-text: #e8ddd0;
+
+	--dolmen-color-h1: #a0784a;
+	--dolmen-color-h2: #8a6a3a;
+	--dolmen-color-h3: #c4a878;
+
+	--dolmen-color-title: #e8ddd0;
+	--dolmen-color-title-background: #432c1d;
+
+	--dolmen-color-inner-background: #241a0c;
+
+	--dolmen-color-box-background: #140e06;
+	--dolmen-color-box-border: #a0784a;
+
+	--dolmen-color-input-border: #8a6a3a66;
+	--dolmen-color-input-border-focus: #a0784a;
+
+	--dolmen-color-header-weapon: #3a1a10;
+	--dolmen-color-header-armor: #1a2a30;
+	--dolmen-color-header-foraged: #1a2a14;
+	--dolmen-color-header-treasure: #3a2a10;
+	--dolmen-color-header-item: #2a2218;
+	--dolmen-color-header-magic: #2a1a28;
+
+	--dolmen-color-adjusted: #e0906a;
+
+	--dolmen-color-text-muted: #b8a890;
+	--dolmen-color-accent: #a0784a;
+	--dolmen-color-box-highlight: rgb(160 120 74 / 15%);
+
+	--dolmen-color-success: #5a9a3a;
+	--dolmen-color-failure: #cc4444;
+	--dolmen-color-roll-ability: #6a8aaa;
+	--dolmen-color-roll-save: #8a7a6a;
+	--dolmen-color-roll-skill: #6a9a6a;
+	--dolmen-color-roll-trait: #9a8a6a;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 11. Silver Dagger (light gray) ── */
+[data-dolmen-theme="silverdagger"] .dolmen {
+	--dolmen-color-background: #f0f0f2;
+	--dolmen-color-text: #1a1a2a;
+
+	--dolmen-color-h1: #5a5a6a;
+	--dolmen-color-h2: #6a6a7a;
+	--dolmen-color-h3: #4a4a5a;
+
+	--dolmen-color-title: #f0f0f2;
+	--dolmen-color-title-background: #5a5a6a;
+
+	--dolmen-color-inner-background: #e4e4e8;
+
+	--dolmen-color-box-background: #eaeaee;
+	--dolmen-color-box-border: #6a6a7a;
+
+	--dolmen-color-input-border: #5a5a6a66;
+	--dolmen-color-input-border-focus: #5a5a6a;
+
+	--dolmen-color-header-weapon: #dcd0d0;
+	--dolmen-color-header-armor: #d0d4dc;
+	--dolmen-color-header-foraged: #d0dcd0;
+	--dolmen-color-header-treasure: #dcdcc8;
+	--dolmen-color-header-item: #d8d8d8;
+	--dolmen-color-header-magic: #d4d0dc;
+
+	--dolmen-color-adjusted: #aa3030;
+
+	--dolmen-color-text-muted: #6a6a78;
+	--dolmen-color-accent: #5a5a6a;
+	--dolmen-color-box-highlight: rgba(90, 90, 106, 0.1);
+
+	--dolmen-color-success: #2e7d32;
+	--dolmen-color-failure: #c62828;
+	--dolmen-color-roll-ability: #4a6a9a;
+	--dolmen-color-roll-save: #6a5a8a;
+	--dolmen-color-roll-skill: #4a8a6a;
+	--dolmen-color-roll-trait: #7a6a8a;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 12. Cold Iron Axe (dark gray) ── */
+[data-dolmen-theme="coldironaxe"] .dolmen {
+	--dolmen-color-background: #18181c;
+	--dolmen-color-text: #d8d8e0;
+
+	--dolmen-color-h1: #8a8a9a;
+	--dolmen-color-h2: #7a7a8a;
+	--dolmen-color-h3: #a8a8b8;
+
+	--dolmen-color-title: #d8d8e0;
+	--dolmen-color-title-background: #3a3a48;
+
+	--dolmen-color-inner-background: #222228;
+
+	--dolmen-color-box-background: #121216;
+	--dolmen-color-box-border: #8a8a9a;
+
+	--dolmen-color-input-border: #7a7a8a66;
+	--dolmen-color-input-border-focus: #8a8a9a;
+
+	--dolmen-color-header-weapon: #2a1818;
+	--dolmen-color-header-armor: #182028;
+	--dolmen-color-header-foraged: #182818;
+	--dolmen-color-header-treasure: #282018;
+	--dolmen-color-header-item: #202020;
+	--dolmen-color-header-magic: #201828;
+
+	--dolmen-color-adjusted: #ee6666;
+
+	--dolmen-color-text-muted: #9898a8;
+	--dolmen-color-accent: #8a8a9a;
+	--dolmen-color-box-highlight: rgb(138 138 154 / 12%);
+
+	--dolmen-color-success: #4caf50;
+	--dolmen-color-failure: #ef5350;
+	--dolmen-color-roll-ability: #5a8ab0;
+	--dolmen-color-roll-save: #7a6a9a;
+	--dolmen-color-roll-skill: #5a9a6a;
+	--dolmen-color-roll-trait: #8a7a9a;
+
+	--dolmen-color-coin-copper: #a77445;
+	--dolmen-color-coin-silver: #8e8e8e;
+	--dolmen-color-coin-gold: #c5ac21;
+	--dolmen-color-coin-pellucidium: #c0eae5;
+}
+
+/* ── 13. High Contrast (maximum readability) ── */
+[data-dolmen-theme="highcontrast"] .dolmen {
+	--dolmen-color-background: #000000;
+	--dolmen-color-text: #ffffff;
+
+	--dolmen-color-h1: #00ddff;
+	--dolmen-color-h2: #dd44aa;
+	--dolmen-color-h3: #ffdd00;
+
+	--dolmen-color-title: #000000;
+	--dolmen-color-title-background: #00ddff;
+
+	--dolmen-color-inner-background: #1a1a1a;
+
+	--dolmen-color-box-background: #0d0d0d;
+	--dolmen-color-box-border: #00ddff;
+
+	--dolmen-color-input-border: #ffffff88;
+	--dolmen-color-input-border-focus: #00ddff;
+
+	--dolmen-color-header-weapon: #330000;
+	--dolmen-color-header-armor: #002233;
+	--dolmen-color-header-foraged: #003300;
+	--dolmen-color-header-treasure: #332200;
+	--dolmen-color-header-item: #222222;
+	--dolmen-color-header-magic: #220033;
+
+	--dolmen-color-adjusted: #ff4444;
+
+	--dolmen-color-text-muted: #cccccc;
+	--dolmen-color-accent: #00ddff;
+	--dolmen-color-box-highlight: rgb(0 221 255 / 15%);
+
+	--dolmen-color-success: #00ff00;
+	--dolmen-color-failure: #ff0000;
+	--dolmen-color-roll-ability: #66aaff;
+	--dolmen-color-roll-save: #aa88ff;
+	--dolmen-color-roll-skill: #66ffaa;
+	--dolmen-color-roll-trait: #cc88ff;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;

@@ -15,6 +15,20 @@ import WelcomeDialog from './module/welcome-dialog.js'
 
 const { Actors, Items } = foundry.documents.collections
 
+let themePreview = null
+
+function isFoundryDark() {
+	return document.documentElement.classList.contains('theme-dark')
+		|| document.body?.classList.contains('theme-dark')
+}
+
+function applyTheme(theme) {
+	const resolved = theme === 'auto'
+		? (isFoundryDark() ? 'coldironaxe' : 'silverdagger')
+		: theme
+	document.documentElement.setAttribute('data-dolmen-theme', resolved)
+}
+
 Hooks.once('init', async function () {
 	CONFIG.DOLMENWOOD = DOLMENWOOD
 
@@ -27,7 +41,7 @@ Hooks.once('init', async function () {
 
 	CONFIG.Actor.documentClass = DolmenActor
 	CONFIG.Item.documentClass = DolmenItem
-	
+
 	// Register Actor data models
 	CONFIG.Actor.dataModels = {
 		Adventurer: AdventurerDataModel,
@@ -71,6 +85,44 @@ Hooks.once('init', async function () {
 		}
 	})
 
+	game.settings.register('dolmenwood', 'colorTheme', {
+		name: 'DOLMEN.Settings.ColorTheme',
+		hint: 'DOLMEN.Settings.ColorThemeHint',
+		scope: 'client',
+		config: true,
+		type: String,
+		default: 'auto',
+		choices: {
+			auto: 'DOLMEN.Settings.ThemeAuto',
+			playerbook: 'DOLMEN.Settings.ThemePlayerbook',
+			drunealtar: 'DOLMEN.Settings.ThemeDruneAltar',
+			wintersdaughter: 'DOLMEN.Settings.ThemeWintersDaughter',
+			coldprince: 'DOLMEN.Settings.ThemeColdPrince',
+			grimalkin: 'DOLMEN.Settings.ThemeGrimalkin',
+			naglord: 'DOLMEN.Settings.ThemeNagLord',
+			woodgrue: 'DOLMEN.Settings.ThemeWoodgrue',
+			mosslingden: 'DOLMEN.Settings.ThemeMosslingDen',
+			bregglehorns: 'DOLMEN.Settings.ThemeBreggleHorns',
+			mortalsend: 'DOLMEN.Settings.ThemeMortalsEnd',
+			silverdagger: 'DOLMEN.Settings.ThemeSilverDagger',
+			coldironaxe: 'DOLMEN.Settings.ThemeColdIronAxe',
+			highcontrast: 'DOLMEN.Settings.ThemeHighContrast'
+		},
+		onChange: applyTheme
+	})
+
+	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
+
+	// Re-apply auto theme when Foundry's own light/dark mode changes
+	const themeObserver = new MutationObserver(() => {
+		const active = themePreview ?? game.settings.get('dolmenwood', 'colorTheme')
+		if (active === 'auto') applyTheme('auto')
+	})
+	themeObserver.observe(document.documentElement, { attributeFilter: ['class'] })
+	if (document.body) {
+		themeObserver.observe(document.body, { attributeFilter: ['class'] })
+	}
+
 	Actors.registerSheet('dolmen', DolmenSheet, {
 		types: ['Adventurer'],
 		label: 'DOLMEN.SheetTitle',
@@ -108,6 +160,20 @@ Hooks.once('ready', async function () {
 	if (game.user.isGM && game.settings.get('dolmenwood', 'showWelcomeDialog')) {
 		new WelcomeDialog().render(true)
 	}
+})
+
+// Live-preview theme when dropdown changes in settings
+Hooks.on('renderSettingsConfig', (app, html) => {
+	const select = html.querySelector('[name="dolmenwood.colorTheme"]')
+	if (!select) return
+	select.addEventListener('change', () => {
+		themePreview = select.value
+		applyTheme(select.value)
+	})
+	app.addEventListener('close', () => {
+		themePreview = null
+		applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
+	})
 })
 
 // Add context menu to damage rolls and save link listeners in chat
