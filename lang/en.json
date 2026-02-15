@@ -630,6 +630,24 @@
 		"RollTable": {
 			"NotFound": "Roll table \"{name}\" not found. Make sure the Dolmenwood Foundry VTT Content Conversion module is installed and enabled."
 		},
+		"Settings": {
+			"ColorTheme": "Color Theme",
+			"ColorThemeHint": "Choose a color theme for Dolmenwood sheets and chat cards.",
+			"ThemeAuto": "Auto (Light/Dark)",
+			"ThemePlayerbook": "Dolmenwood Playerbook",
+			"ThemeDruneAltar": "Drune Altar",
+			"ThemeWintersDaughter": "Winter's Daughter",
+			"ThemeColdPrince": "Cold Prince",
+			"ThemeGrimalkin": "Grimalkin Princess",
+			"ThemeNagLord": "Nag-Lord",
+			"ThemeWoodgrue": "Woodgrue Treehouse",
+			"ThemeMosslingDen": "Mossling Den",
+			"ThemeBreggleHorns": "Breggle Horns",
+			"ThemeMortalsEnd": "Mortal's End",
+			"ThemeSilverDagger": "Silver Dagger",
+			"ThemeColdIronAxe": "Cold Iron Axe",
+			"ThemeHighContrast": "High Contrast"
+		},
 		"Welcome": {
 			"Title": "Welcome to Dolmenwood VTT!",
 			"Info": "A Foundry VTT system for the <a href=\"https://necroticgnome.com/collections/dolmenwood\">Dolmenwood</a> TTRPG published by <a href=\"https://necroticgnome.com\">Necrotic Gnome</a>.",
