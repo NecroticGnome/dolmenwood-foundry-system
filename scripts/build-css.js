@@ -26,7 +26,8 @@ const layers = [
 			'traits.css',
 			'notes.css',
 			'settings.css',
-			'creature.css'
+			'creature.css',
+			'calendar.css'
 		]
 	}
 ]
