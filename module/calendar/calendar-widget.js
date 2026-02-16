@@ -10,7 +10,7 @@ const { DialogV2 } = foundry.applications.api
 
 const ARC_WIDTH = 120
 const ARC_HEIGHT = 62
-const ARC_RADIUS = 50
+const ARC_RADIUS = 42
 const ARC_CX = ARC_WIDTH / 2
 const ARC_CY = ARC_HEIGHT - 2
 
@@ -18,7 +18,7 @@ const ARC_CY = ARC_HEIGHT - 2
  * Build the SVG arc with sun/moon positioned along it.
  */
 function renderArc(position, isDay, moonPhase) {
-	const angle = Math.PI - position * Math.PI
+	const angle = position * Math.PI
 	const cx = ARC_CX - ARC_RADIUS * Math.cos(angle)
 	const cy = ARC_CY - ARC_RADIUS * Math.sin(angle)
 
@@ -58,6 +58,28 @@ function renderArc(position, isDay, moonPhase) {
 }
 
 /**
+ * Compute opacities for the 4 sky background layers.
+ * Crossfades: night → sunrise → midday → evening → night
+ * The "from" layer stays at 1 while the "to" layer fades in on top.
+ */
+function computeSkyOpacities(hour, sunrise, sunset) {
+	const noon = (sunrise + sunset) / 2
+
+	if (hour < sunrise) {
+		const t = hour / sunrise
+		return { night: 1, sunrise: t, midday: 0, evening: 0 }
+	} else if (hour < noon) {
+		const t = (hour - sunrise) / (noon - sunrise)
+		return { night: 0, sunrise: 1, midday: t, evening: 0 }
+	} else if (hour < sunset) {
+		const t = (hour - noon) / (sunset - noon)
+		return { night: 0, sunrise: 0, midday: 1, evening: t }
+	}
+	const t = (hour - sunset) / (24 - sunset)
+	return { night: 1, sunrise: 0, midday: 0, evening: 1 - t }
+}
+
+/**
  * Build the full widget HTML.
  */
 function renderWidget() {
@@ -92,6 +114,13 @@ function renderWidget() {
 		: ''
 
 	const arcSvg = renderArc(position, isDay, phase)
+	const sky = computeSkyOpacities(cal.hour + cal.minute / 60, sunrise, sunset)
+	const arcBg = `
+		<img class="calendar-arc-bg" src="systems/dolmenwood/assets/calendar/night.webp" alt="" style="opacity: ${sky.night}">
+		<img class="calendar-arc-bg" src="systems/dolmenwood/assets/calendar/sunrise.webp" alt="" style="opacity: ${sky.sunrise}">
+		<img class="calendar-arc-bg" src="systems/dolmenwood/assets/calendar/midday.webp" alt="" style="opacity: ${sky.midday}">
+		<img class="calendar-arc-bg" src="systems/dolmenwood/assets/calendar/evening.webp" alt="" style="opacity: ${sky.evening}">
+	`
 
 	const isGM = game.user.isGM
 	const gmControls = isGM ? `
@@ -103,7 +132,7 @@ function renderWidget() {
 	` : ''
 
 	return `
-		<div class="calendar-arc-container">${arcSvg}</div>
+		<div class="calendar-arc-container">${arcBg}${arcSvg}</div>
 		<div class="calendar-row">
 			<div class="calendar-bar">
 				<div class="calendar-section calendar-day-name${isWysenday ? ' wysenday' : ''}">
@@ -169,7 +198,8 @@ function injectWidget() {
  */
 function attachListeners(widget) {
 	for (const btn of widget.querySelectorAll('.calendar-gm-btn[data-advance]')) {
-		btn.addEventListener('click', () => {
+		btn.addEventListener('click', (e) => {
+			e.stopPropagation()
 			const seconds = parseInt(btn.dataset.advance)
 			game.time.advance(seconds)
 		})
