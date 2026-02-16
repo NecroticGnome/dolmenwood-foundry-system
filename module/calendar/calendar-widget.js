@@ -17,7 +17,7 @@ const ARC_CY = ARC_HEIGHT - 2
 /**
  * Build the SVG arc with sun/moon positioned along it.
  */
-function renderArc(position, isDay, moonPhase) {
+function renderArc(position, isDay, phaseIcon) {
 	const angle = position * Math.PI
 	const cx = ARC_CX - ARC_RADIUS * Math.cos(angle)
 	const cy = ARC_CY - ARC_RADIUS * Math.sin(angle)
@@ -25,6 +25,7 @@ function renderArc(position, isDay, moonPhase) {
 	const arcStart = `${ARC_CX - ARC_RADIUS},${ARC_CY}`
 	const arcEnd = `${ARC_CX + ARC_RADIUS},${ARC_CY}`
 
+	const BODY_SIZE = 12
 	let celestialBody
 	if (isDay) {
 		celestialBody = `
@@ -37,15 +38,11 @@ function renderArc(position, isDay, moonPhase) {
 			<circle cx="${cx}" cy="${cy}" r="6" fill="#FFD700" filter="url(#sun-glow)"/>
 		`
 	} else {
-		const isWaning = moonPhase === 'waning'
-		const offsetX = isWaning ? 3 : -3
 		celestialBody = `
-			<circle cx="${cx}" cy="${cy}" r="5" fill="#C0C0C0"/>
-			<circle cx="${cx + offsetX}" cy="${cy}" r="5" fill="rgba(0,0,0,0.85)"/>
+			<image href="systems/dolmenwood/assets/calendar/${phaseIcon}.webp"
+				x="${cx - BODY_SIZE / 2}" y="${cy - BODY_SIZE / 2}"
+				width="${BODY_SIZE}" height="${BODY_SIZE}"/>
 		`
-		if (moonPhase === 'full') {
-			celestialBody = `<circle cx="${cx}" cy="${cy}" r="5" fill="#E8E8E8"/>`
-		}
 	}
 
 	return `
@@ -116,8 +113,8 @@ function renderWidget() {
 	const worldTime = game.time.worldTime
 	const cal = worldTimeToCalendar(worldTime)
 	const season = getSeason(cal.monthKey)
-	const { sunrise, sunset } = getDaylightHours(season)
-	const { moon, phase } = getMoonForDay(cal.dayOfYear)
+	const { sunrise, sunset } = getDaylightHours(cal.monthKey)
+	const { moon, phase, phaseIcon } = getMoonForDay(cal.dayOfYear)
 	const { position, isDay } = getCelestialPosition(cal.hour + cal.minute / 60, sunrise, sunset)
 
 	const monthName = game.i18n.localize(`DOLMEN.Months.${cal.monthKey}`)
@@ -125,6 +122,7 @@ function renderWidget() {
 	const moonName = game.i18n.localize(`DOLMEN.MoonNames.${moon}`)
 	const phaseName = game.i18n.localize(`DOLMEN.MoonPhases.${phase}`)
 	const seasonData = CONFIG.DOLMENWOOD.seasons[season]
+	const activeUnseason = game.settings.get('dolmenwood', 'activeUnseason')
 	const timeStr = `${String(cal.hour).padStart(2, '0')}:${String(cal.minute).padStart(2, '0')}`
 	const dateStr = `${ordinalDay(cal.day)} of ${monthName}, ${game.i18n.localize('DOLMEN.Calendar.Year')} ${cal.year}`
 
@@ -143,7 +141,7 @@ function renderWidget() {
 			</div>`
 		: ''
 
-	const arcSvg = renderArc(position, isDay, phase)
+	const arcSvg = renderArc(position, isDay, phaseIcon)
 	const sky = computeSkyOpacities(cal.hour + cal.minute / 60, sunrise, sunset)
 	const arcBg = `
 		<img class="calendar-arc-bg" src="systems/dolmenwood/assets/calendar/night.webp" alt="" style="opacity: ${sky.night}">
@@ -181,13 +179,17 @@ function renderWidget() {
 					<span>${timeStr}</span>
 				</div>
 				<div class="calendar-divider"></div>
-				<div class="calendar-section calendar-season">
+				<div class="calendar-section calendar-season${isGM ? ' gm-clickable' : ''}">
+					${activeUnseason ? `<div class="calendar-unseason-stripe">
+						<i class="${CONFIG.DOLMENWOOD.unseasons[activeUnseason]?.icon ?? 'fa-solid fa-bolt'}"></i>
+						<span>${game.i18n.localize(`DOLMEN.Calendar.Unseasons.${activeUnseason}`)}</span>
+					</div>` : ''}
 					<i class="${seasonData.icon}"></i>
 					<span>${seasonName}</span>
 				</div>
 				<div class="calendar-divider"></div>
 				<div class="calendar-section calendar-moon">
-					<i class="fa-solid fa-moon"></i>
+					<img class="calendar-moon-icon" src="systems/dolmenwood/assets/calendar/${phaseIcon}.webp" alt="${phaseName}">
 					<span>${moonName} (${phaseName})</span>
 				</div>
 			</div>
@@ -241,6 +243,10 @@ function attachListeners(widget) {
 	const timeSection = widget.querySelector('.calendar-time.gm-clickable')
 	if (timeSection) {
 		timeSection.addEventListener('click', openSetTimeDialog)
+	}
+	const seasonSection = widget.querySelector('.calendar-season.gm-clickable')
+	if (seasonSection) {
+		seasonSection.addEventListener('click', openSetUnseasonDialog)
 	}
 }
 
@@ -437,6 +443,58 @@ function openSetTimeDialog() {
 }
 
 /**
+ * Open a dialog to set or clear the active unseason.
+ */
+function openSetUnseasonDialog() {
+	const cal = worldTimeToCalendar(game.time.worldTime)
+	const current = game.settings.get('dolmenwood', 'activeUnseason')
+
+	// Build radio options: "None" plus each unseason valid for the current month
+	const unseasons = CONFIG.DOLMENWOOD.unseasons
+	let options = `<label class="calendar-unseason-option">
+		<input type="radio" name="unseason" value="" ${!current ? 'checked' : ''}>
+		<span>${game.i18n.localize('DOLMEN.Calendar.UnseasonsNone')}</span>
+	</label>`
+	for (const [key, data] of Object.entries(unseasons)) {
+		const valid = data.months.includes(cal.monthKey)
+		const checked = current === key ? ' checked' : ''
+		const disabled = !valid && current !== key ? ' disabled' : ''
+		const name = game.i18n.localize(`DOLMEN.Calendar.Unseasons.${key}`)
+		const cls = valid ? '' : ' class="calendar-unseason-unavailable"'
+		options += `<label class="calendar-unseason-option"${cls}>
+			<input type="radio" name="unseason" value="${key}"${checked}${disabled}>
+			<i class="${data.icon}"></i>
+			<span>${name}</span>
+		</label>`
+	}
+
+	const content = `<div class="calendar-unseason-form">${options}</div>`
+
+	DialogV2.wait({
+		window: { title: game.i18n.localize('DOLMEN.Calendar.SetUnseasonTitle') },
+		content,
+		buttons: [
+			{
+				action: 'set',
+				label: game.i18n.localize('DOLMEN.Calendar.SetTimeConfirm'),
+				icon: 'fas fa-check',
+				callback: (event, button) => {
+					const form = button.closest('.dialog-content') ?? button.closest('.window-content')
+					const selected = form.querySelector('input[name="unseason"]:checked')
+					const value = selected ? selected.value : ''
+					game.settings.set('dolmenwood', 'activeUnseason', value)
+				}
+			},
+			{
+				action: 'cancel',
+				label: game.i18n.localize('DOLMEN.Cancel'),
+				icon: 'fas fa-times'
+			}
+		]
+	})
+}
+
+/**
  * Toggle widget visibility based on setting.
  */
 function toggleWidget(visible) {
@@ -469,6 +527,13 @@ export function initCalendarWidget() {
 	// Update display when world time changes
 	Hooks.on('updateWorldTime', () => {
 		if (game.settings.get('dolmenwood', 'showCalendar')) {
+			injectWidget()
+		}
+	})
+
+	// Re-render when unseason setting changes
+	Hooks.on('updateSetting', (setting) => {
+		if (setting.key === 'dolmenwood.activeUnseason' && game.settings.get('dolmenwood', 'showCalendar')) {
 			injectWidget()
 		}
 	})

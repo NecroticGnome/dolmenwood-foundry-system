@@ -46,46 +46,69 @@ export function getSeason(monthKey) {
 }
 
 /**
- * Get sunrise/sunset hours for a season.
+ * Get sunrise/sunset hours for a month.
  */
-export function getDaylightHours(season) {
-	const data = CONFIG.DOLMENWOOD.seasons[season]
+export function getDaylightHours(monthKey) {
+	const data = CONFIG.DOLMENWOOD.months[monthKey]
 	return { sunrise: data.sunrise, sunset: data.sunset }
 }
 
 /**
- * Look up the moon name and phase for a given day of the year.
+ * Look up the moon name, phase, and visual phase icon for a given day of the year.
+ * Returns { moon, phase, phaseIcon } where phaseIcon is the image filename.
  */
 export function getMoonForDay(dayOfYear) {
 	for (const [start, end, moon, phase] of CONFIG.DOLMENWOOD.moonSignTable) {
 		if (dayOfYear >= start && dayOfYear <= end) {
-			return { moon, phase }
+			const duration = end - start + 1
+			const progress = duration > 1 ? (dayOfYear - start) / (duration - 1) : 0.5
+			return { moon, phase, phaseIcon: getPhaseIcon(phase, progress) }
 		}
 	}
-	return { moon: 'black', phase: 'waning' }
+	return { moon: 'black', phase: 'waning', phaseIcon: 'moon_waning_crescent' }
+}
+
+/**
+ * Map a phase (waxing/full/waning) and progress (0-1) to a detailed moon icon filename.
+ */
+function getPhaseIcon(phase, progress) {
+	if (phase === 'full') return 'moon_full'
+	if (phase === 'waxing') {
+		if (progress < 0.15) return 'moon_new'
+		if (progress < 0.4) return 'moon_waning_crescent'
+		if (progress < 0.65) return 'moon_third_quarter'
+		return 'moon_waning_gibbous'
+	}
+	// waning
+	if (progress < 0.35) return 'moon_waxing_gibbous'
+	if (progress < 0.6) return 'moon_first_quarter'
+	if (progress < 0.85) return 'moon_waxing_crescent'
+	return 'moon_new'
 }
 
 /**
  * Calculate celestial body position on the arc.
  * Returns { position: 0-1, isDay: boolean }
  * position 0 = left (rise), 0.5 = zenith, 1 = right (set)
+ * Sun zenith is fixed at 12:00, moon zenith at 0:00.
  */
 export function getCelestialPosition(hour, sunrise, sunset) {
-	const fractionalHour = hour
-	if (fractionalHour >= sunrise && fractionalHour <= sunset) {
-		const dayLength = sunset - sunrise
-		const position = (fractionalHour - sunrise) / dayLength
-		return { position, isDay: true }
+	if (hour >= sunrise && hour <= sunset) {
+		// Daytime: sun rises at sunrise, peaks at 12:00, sets at sunset
+		const morningLen = 12 - sunrise
+		const afternoonLen = sunset - 12
+		if (hour <= 12) {
+			return { position: morningLen > 0 ? 0.5 * (hour - sunrise) / morningLen : 0.5, isDay: true }
+		}
+		return { position: 0.5 + (afternoonLen > 0 ? 0.5 * (hour - 12) / afternoonLen : 0.5), isDay: true }
 	}
-	const nightLength = 24 - (sunset - sunrise)
-	let nightElapsed
-	if (fractionalHour > sunset) {
-		nightElapsed = fractionalHour - sunset
-	} else {
-		nightElapsed = (24 - sunset) + fractionalHour
+	// Nighttime: moon rises at sunset, peaks at 0:00, sets at sunrise
+	const eveningLen = 24 - sunset   // sunset → midnight
+	const predawnLen = sunrise        // midnight → sunrise
+	if (hour > sunset) {
+		return { position: eveningLen > 0 ? 0.5 * (hour - sunset) / eveningLen : 0.5, isDay: false }
 	}
-	const position = nightElapsed / nightLength
-	return { position, isDay: false }
+	return { position: 0.5 + (predawnLen > 0 ? 0.5 * hour / predawnLen : 0.5), isDay: false }
 }
 
 /**
