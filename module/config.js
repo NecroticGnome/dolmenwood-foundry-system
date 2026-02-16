@@ -90,4 +90,167 @@ DOLMENWOOD.moonSignTable = [
 	[344, 352, 'black', 'waning']
 ]
 
+DOLMENWOOD.seasons = {
+	winter: { months: ['braghold', 'grimvold', 'lymewald'], icon: 'fa-solid fa-snowflake', sunrise: 7.5, sunset: 16.5 },
+	spring: { months: ['haggryme', 'symswald', 'harchment'], icon: 'fa-solid fa-seedling', sunrise: 6.0, sunset: 18.0 },
+	summer: { months: ['iggwyld', 'chysting', 'lillipythe'], icon: 'fa-solid fa-sun', sunrise: 5.0, sunset: 20.0 },
+	autumn: { months: ['haelhold', 'reedwryme', 'obthryme'], icon: 'fa-solid fa-leaf', sunrise: 6.5, sunset: 17.5 }
+}
+DOLMENWOOD.DAYS_PER_YEAR = 352
+DOLMENWOOD.SECONDS_PER_DAY = 86400
+DOLMENWOOD.monthToSeason = {}
+for (const [season, data] of Object.entries(DOLMENWOOD.seasons)) {
+	for (const month of data.months) DOLMENWOOD.monthToSeason[month] = season
+}
+
+// Days of the week (7-day cycle within each month, days 1-28)
+DOLMENWOOD.weekDays = ['colly', 'chime', 'hayme', 'moot', 'frisk', 'eggfast', 'sunning']
+
+// Wysendays: extra days beyond the 28-day cycle at the end of each month
+// Each entry is the display name for day 29, 30, 31 respectively
+DOLMENWOOD.wysendays = {
+	grimvold: ['Hanglemas', "Dyboll's Day"],
+	haggryme: ["Yarl's Day", 'The Day of Virgins'],
+	symswald: ['Hopfast'],
+	harchment: ['Smithing'],
+	iggwyld: ['Shortening', "Longshank's Day"],
+	chysting: ['Bradging', 'Copsewallow', 'Chalice'],
+	lillipythe: ["Old Dobey's Day"],
+	reedwryme: ["Shub's Eve", 'Druden Day'],
+	braghold: ['The Day of Doors', 'Dolmenday']
+}
+
+// Holidays: feasts, solstices, equinoxes, and festivals by month and day
+DOLMENWOOD.holidays = {
+	grimvold: {
+		1: 'Feast of St. Vinicus',
+		4: 'Feast of St. Albert',
+		5: 'Feast of St. Offrid',
+		9: 'Feast of St. Choad',
+		17: 'Feast of St. Clyde',
+		19: 'Winter Solstice & Feast of St. Elsa',
+		21: 'Feast of St. Baldric',
+		27: 'Feast of St. Cantius',
+		29: 'Feast of St. Joane'
+	},
+	lymewald: {
+		2: 'Feast of St. Waylord',
+		3: 'Feast of St. Gondyw',
+		9: 'Feast of St. Calafredus',
+		15: 'Feast of St. Wynne',
+		19: 'Feast of St. Albrith',
+		23: 'Feast of St. Fredulus',
+		28: 'Feast of St. Eggort'
+	},
+	haggryme: {
+		5: 'Feast of St. Clister',
+		6: 'Feast of St. Ponch',
+		11: 'Feast of St. Flatius',
+		12: 'Feast of St. Quister',
+		13: 'Feast of St. Aeynid',
+		18: 'Feast of St. Visyg',
+		22: 'Feast of St. Pannard',
+		23: 'Feast of St. Simone',
+		25: 'Feast of St. Sortia',
+		27: 'Feast of St. Pastery',
+		28: 'Feast of St. Bethany',
+		29: 'Feast of St. Tumbel',
+		30: 'Feast of St. Lillibeth'
+	},
+	symswald: {
+		1: 'Feast of St. Gwigh',
+		2: 'The Feast of Cats',
+		3: 'Feast of St. Medigor',
+		5: 'Feast of St. Ingrid',
+		7: 'Feast of St. Neblit',
+		8: 'Feast of St. Dullard',
+		10: 'Feast of St. Whittery',
+		12: 'Feast of St. Pious',
+		14: 'Feast of St. Thorm',
+		18: 'Feast of St. Goodenough',
+		20: 'Vernal Equinox'
+	},
+	harchment: {
+		7: 'Feast of St. Craven',
+		9: 'Feast of St. Rhilma',
+		10: 'Feast of St. Talambeth',
+		16: 'Feast of St. Jorrael',
+		19: 'Feast of St. Hoargrime',
+		22: 'Feast of St. Abthius',
+		24: 'Feast of St. Primace',
+		26: 'Feast of St. Knock',
+		29: 'Feast of St. Wilbranch'
+	},
+	iggwyld: {
+		3: 'Feast of St. Gripe',
+		9: 'Feast of St. Puriphon',
+		19: 'Feast of St. Hildace',
+		27: 'Feast of St. Maternis',
+		30: 'Feast of St. Waylaine'
+	},
+	chysting: {
+		6: 'Feast of St. Nuncy',
+		10: 'Feast of St. Apoplect',
+		16: 'Feast of St. Cornice',
+		18: 'Summer Solstice',
+		20: 'Feast of St. Dougan',
+		27: 'Feast of St. Sabian',
+		31: 'Feast of St. Jubilant'
+	},
+	lillipythe: {
+		4: 'Feast of St. Foggarty',
+		5: 'Feast of St. Keye',
+		9: 'Feast of St. Primula',
+		16: 'Feast of St. Dillage',
+		20: 'Feast of St. Torphia',
+		25: 'Feast of St. Esther',
+		27: 'Feast of St. Philodeus',
+		28: 'Feast of St. Lummox',
+		29: 'Feast of St. Capernott'
+	},
+	haelhold: {
+		5: 'Feast of St. Willibart',
+		8: 'Feast of St. Sanguine',
+		10: 'Feast of St. Benester',
+		15: 'Feast of St. Faxis',
+		25: 'Feast of St. Gretchen',
+		28: 'Feast of St. Galaunt'
+	},
+	reedwryme: {
+		1: 'Feast of St. Dextre',
+		3: 'Feast of St. Wick',
+		4: 'Feast of St. Elephantine',
+		8: 'Feast of St. Moribund',
+		13: 'Feast of St. Loame',
+		18: 'Feast of St. Shank',
+		19: 'Autumnal Equinox',
+		21: 'Feast of St. Hollyhock',
+		22: 'Feast of St. Egbert',
+		25: 'Feast of St. Clewyd',
+		26: 'Feast of St. Howarth',
+		27: 'Feast of St. Howdych',
+		29: 'Feast of St. Signis',
+		30: 'Festival of the Green Man'
+	},
+	obthryme: {
+		7: 'Feast of St. Horace',
+		9: 'Feast of St. Hamfast',
+		13: 'Feast of St. Woad',
+		22: 'Feast of St. Hodwich',
+		24: 'Feast of St. Wort',
+		27: 'Feast of St. Godfrey',
+		28: 'Feast of St. Dank'
+	},
+	braghold: {
+		9: 'Feast of St. Poltry',
+		10: 'Feast of St. Sedge',
+		15: 'Feast of St. Clyve',
+		21: 'Feast of St. Gawain',
+		25: 'Feast of St. Thridgold',
+		28: 'Feast of St. Therese',
+		29: 'Feast of St. Habicus',
+		30: 'The Hunting of the Winter Hart & Feast of St. Willofrith'
+	}
+}
+
 export default DOLMENWOOD
