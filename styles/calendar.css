@@ -17,11 +17,23 @@
 }
 
 .calendar-arc-container {
+	position: relative;
 	line-height: 0;
 	margin-bottom: -1px;
 }
 
+.calendar-arc-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	pointer-events: none;
+}
+
 .calendar-arc-svg {
+	position: relative;
 	display: block;
 }
 
