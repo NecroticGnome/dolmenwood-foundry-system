@@ -93,7 +93,7 @@ DOLMENWOOD.moonSignTable = [
 DOLMENWOOD.seasons = {
 	winter: { months: ['braghold', 'grimvold', 'lymewald'], icon: 'fa-solid fa-snowflake', sunrise: 7.5, sunset: 16.5 },
 	spring: { months: ['haggryme', 'symswald', 'harchment'], icon: 'fa-solid fa-seedling', sunrise: 6.0, sunset: 18.0 },
-	summer: { months: ['iggwyld', 'chysting', 'lillipythe'], icon: 'fa-solid fa-sun', sunrise: 5.0, sunset: 20.0 },
+	summer: { months: ['iggwyld', 'chysting', 'lillipythe'], icon: 'fa-solid fa-sun', sunrise: 4.5, sunset: 19.5 },
 	autumn: { months: ['haelhold', 'reedwryme', 'obthryme'], icon: 'fa-solid fa-leaf', sunrise: 6.5, sunset: 17.5 }
 }
 DOLMENWOOD.DAYS_PER_YEAR = 352
