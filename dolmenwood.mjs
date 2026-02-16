@@ -122,6 +122,13 @@ Hooks.once('init', async function () {
 		onChange: toggleWidget
 	})
 
+	game.settings.register('dolmenwood', 'activeUnseason', {
+		scope: 'world',
+		config: false,
+		type: String,
+		default: ''
+	})
+
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
 
 	// Re-apply auto theme when Foundry's own light/dark mode changes
