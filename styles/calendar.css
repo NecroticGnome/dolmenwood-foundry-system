@@ -118,10 +118,81 @@
 
 .calendar-season {
 	min-width: 140px;
+	position: relative;
+}
+
+/* Unseason stripe — positioned above the season section */
+
+.calendar-unseason-stripe {
+	position: absolute;
+	bottom: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	background: rgba(0, 0, 0, 0.75);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border: 1px solid rgba(139, 101, 8, 0.4);
+	border-radius: 6px;
+	padding: 4px 10px;
+	color: #c8a0ff;
+	font-size: 11px;
+	white-space: nowrap;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.calendar-unseason-stripe i {
+	font-size: 10px;
+	opacity: 0.8;
+}
+
+/* Unseason dialog */
+
+.calendar-unseason-form {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 8px;
+}
+
+.calendar-unseason-option {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.calendar-unseason-option:hover {
+	background: rgba(128, 128, 128, 0.15);
+}
+
+.calendar-unseason-option i {
+	width: 16px;
+	text-align: center;
+	opacity: 0.7;
+}
+
+.calendar-unseason-unavailable {
+	opacity: 0.4;
 }
 
 .calendar-moon {
 	min-width: 140px;
+}
+
+.calendar-moon-icon {
+	width: 14px;
+	height: 14px;
+	object-fit: contain;
+	vertical-align: middle;
+	opacity: 0.85;
 }
 
 /* Holiday stripe — positioned above the date section */

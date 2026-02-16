@@ -18,18 +18,18 @@ DOLMENWOOD.maxExtraSkills = 6
 
 
 DOLMENWOOD.months = {
-	grimvold: { days: 30 },
-	lymewald: { days: 28 },
-	haggryme: { days: 30 },
-	symswald: { days: 29 },
-	harchment: { days: 29 },
-	iggwyld: { days: 30 },
-	chysting: { days: 31 },
-	lillipythe: { days: 29 },
-	haelhold: { days: 28 },
-	reedwryme: { days: 30 },
-	obthryme: { days: 28 },
-	braghold: { days: 30 }
+	grimvold: { days: 30, sunrise: 8.0, sunset: 16.0 },
+	lymewald: { days: 28, sunrise: 8.0, sunset: 16.5 },
+	haggryme: { days: 30, sunrise: 7.5, sunset: 17.0 },
+	symswald: { days: 29, sunrise: 6.5, sunset: 18.0 },
+	harchment: { days: 29, sunrise: 6.0, sunset: 20.0 },
+	iggwyld: { days: 30, sunrise: 5.0, sunset: 21.0 },
+	chysting: { days: 31, sunrise: 4.5, sunset: 21.5 },
+	lillipythe: { days: 29, sunrise: 5.0, sunset: 21.0 },
+	haelhold: { days: 28, sunrise: 6.0, sunset: 20.5 },
+	reedwryme: { days: 30, sunrise: 6.5, sunset: 19.5 },
+	obthryme: { days: 28, sunrise: 7.5, sunset: 18.0 },
+	braghold: { days: 30, sunrise: 7.5, sunset: 16.5 }
 }
 
 // Day-of-year offset for each month (cumulative days before that month)
@@ -91,10 +91,18 @@ DOLMENWOOD.moonSignTable = [
 ]
 
 DOLMENWOOD.seasons = {
-	winter: { months: ['braghold', 'grimvold', 'lymewald'], icon: 'fa-solid fa-snowflake', sunrise: 7.5, sunset: 16.5 },
-	spring: { months: ['haggryme', 'symswald', 'harchment'], icon: 'fa-solid fa-seedling', sunrise: 6.0, sunset: 18.0 },
-	summer: { months: ['iggwyld', 'chysting', 'lillipythe'], icon: 'fa-solid fa-sun', sunrise: 4.5, sunset: 19.5 },
-	autumn: { months: ['haelhold', 'reedwryme', 'obthryme'], icon: 'fa-solid fa-leaf', sunrise: 6.5, sunset: 17.5 }
+	winter: { months: ['grimvold', 'lymewald', 'haggryme'], icon: 'fa-solid fa-snowflake' },
+	spring: { months: ['symswald', 'harchment', 'iggwyld'], icon: 'fa-solid fa-seedling' },
+	summer: { months: ['chysting', 'lillipythe', 'haelhold'], icon: 'fa-solid fa-sun' },
+	autumn: { months: ['reedwryme', 'obthryme', 'braghold'], icon: 'fa-solid fa-leaf' }
+}
+
+// Unseasons: rare magical environmental conditions
+DOLMENWOOD.unseasons = {
+	hitching: { icon: 'fa-solid fa-moon', months: ['grimvold'] },
+	vague: { icon: 'fa-solid fa-smog', months: ['lymewald', 'haggryme'] },
+	colliggwyld: { icon: 'fa-solid fa-mushroom', months: ['iggwyld'] },
+	chame: { icon: 'fa-solid fa-snake', months: ['haelhold'] }
 }
 DOLMENWOOD.DAYS_PER_YEAR = 352
 DOLMENWOOD.SECONDS_PER_DAY = 86400

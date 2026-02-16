@@ -695,7 +695,15 @@
 			"SetTimeConfirm": "Set",
 			"Advance10Min": "Advance 10 minutes",
 			"Advance1Hr": "Advance 1 hour",
-			"Advance8Hr": "Advance 8 hours (rest)"
+			"Advance8Hr": "Advance 8 hours (rest)",
+			"Unseasons": {
+				"hitching": "Hitching",
+				"vague": "Vague",
+				"colliggwyld": "Colliggwyld",
+				"chame": "Chame"
+			},
+			"UnseasonsNone": "None (normal season)",
+			"SetUnseasonTitle": "Set Unseason"
 		}
 	}
 }
