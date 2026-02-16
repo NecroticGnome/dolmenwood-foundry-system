@@ -63,20 +63,50 @@ function renderArc(position, isDay, moonPhase) {
  * The "from" layer stays at 1 while the "to" layer fades in on top.
  */
 function computeSkyOpacities(hour, sunrise, sunset) {
-	const noon = (sunrise + sunset) / 2
+	const dayLen = sunset - sunrise
+	const nightLen = 24 - dayLen
 
-	if (hour < sunrise) {
-		const t = hour / sunrise
-		return { night: 1, sunrise: t, midday: 0, evening: 0 }
-	} else if (hour < noon) {
-		const t = (hour - sunrise) / (noon - sunrise)
-		return { night: 0, sunrise: 1, midday: t, evening: 0 }
+	// Daylight split 25/50/25: sunrise→midday fade | midday hold | midday→evening fade
+	// Nighttime split 25/50/25: evening→night fade | night hold | night→sunrise fade
+	const nightEnd = sunrise - 0.25 * nightLen
+	const morningEnd = sunrise + 0.25 * dayLen
+	const afternoonStart = sunset - 0.25 * dayLen
+	const eveningEnd = sunset + 0.25 * nightLen
+
+	const o = { night: 0, sunrise: 0, midday: 0, evening: 0 }
+
+	if (hour < nightEnd) {
+		// Night hold
+		o.night = 1
+	} else if (hour < sunrise) {
+		// Night → Sunrise crossfade
+		const p = (hour - nightEnd) / (sunrise - nightEnd)
+		o.night = 1 - p
+		o.sunrise = p
+	} else if (hour < morningEnd) {
+		// Sunrise → Midday crossfade
+		const p = (hour - sunrise) / (morningEnd - sunrise)
+		o.sunrise = 1 - p
+		o.midday = p
+	} else if (hour < afternoonStart) {
+		// Midday hold
+		o.midday = 1
 	} else if (hour < sunset) {
-		const t = (hour - noon) / (sunset - noon)
-		return { night: 0, sunrise: 0, midday: 1, evening: t }
+		// Midday → Evening crossfade
+		const p = (hour - afternoonStart) / (sunset - afternoonStart)
+		o.midday = 1 - p
+		o.evening = p
+	} else if (hour < eveningEnd) {
+		// Evening → Night crossfade
+		const p = (hour - sunset) / (eveningEnd - sunset)
+		o.evening = 1 - p
+		o.night = p
+	} else {
+		// Night hold
+		o.night = 1
 	}
-	const t = (hour - sunset) / (24 - sunset)
-	return { night: 1, sunrise: 0, midday: 0, evening: 1 - t }
+
+	return o
 }
 
 /**
