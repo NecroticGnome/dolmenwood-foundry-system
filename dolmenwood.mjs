@@ -12,6 +12,7 @@ import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, 
 import { setupDamageContextMenu } from './module/chat-damage.js'
 import { setupSaveLinkListeners } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
+import { initCalendarWidget, toggleWidget } from './module/calendar/calendar-widget.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -111,6 +112,16 @@ Hooks.once('init', async function () {
 		onChange: applyTheme
 	})
 
+	game.settings.register('dolmenwood', 'showCalendar', {
+		name: 'DOLMEN.Calendar.SettingName',
+		hint: 'DOLMEN.Calendar.SettingHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false,
+		onChange: toggleWidget
+	})
+
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
 
 	// Re-apply auto theme when Foundry's own light/dark mode changes
@@ -160,6 +171,8 @@ Hooks.once('ready', async function () {
 	if (game.user.isGM && game.settings.get('dolmenwood', 'showWelcomeDialog')) {
 		new WelcomeDialog().render(true)
 	}
+
+	initCalendarWidget()
 })
 
 // Live-preview theme when dropdown changes in settings
