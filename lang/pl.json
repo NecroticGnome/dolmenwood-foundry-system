@@ -17,6 +17,45 @@
 			"ThemeSilverDagger": "Srebrny Sztylet",
 			"ThemeColdIronAxe": "Topór z Zimnego Żelaza",
 			"ThemeHighContrast": "Wysoki Kontrast"
+		},
+		"Calendar": {
+			"SettingName": "Pokaż widget kalendarza",
+			"SettingHint": "Wyświetl widget kalendarza i czasu nad paskiem makr.",
+			"Year": "Rok",
+			"Month": "Miesiąc",
+			"Day": "Dzień",
+			"Hour": "Godzina",
+			"Minute": "Minuta",
+			"WeekDays": {
+				"colly": "Colly",
+				"chime": "Chime",
+				"hayme": "Hayme",
+				"moot": "Moot",
+				"frisk": "Frisk",
+				"eggfast": "Eggfast",
+				"sunning": "Sunning"
+			},
+			"WeekDaysShort": {
+				"colly": "Col",
+				"chime": "Chi",
+				"hayme": "Hay",
+				"moot": "Moo",
+				"frisk": "Fri",
+				"eggfast": "Egg",
+				"sunning": "Sun"
+			},
+			"Seasons": {
+				"winter": "Zima",
+				"spring": "Wiosna",
+				"summer": "Lato",
+				"autumn": "Jesień"
+			},
+			"SetDateTitle": "Ustaw datę",
+			"SetTimeTitle": "Ustaw czas",
+			"SetTimeConfirm": "Ustaw",
+			"Advance10Min": "Przesuń o 10 minut",
+			"Advance1Hr": "Przesuń o 1 godzinę",
+			"Advance8Hr": "Przesuń o 8 godzin (odpoczynek)"
 		}
 	}
 }
