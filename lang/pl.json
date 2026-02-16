@@ -27,13 +27,13 @@
 			"Hour": "Godzina",
 			"Minute": "Minuta",
 			"WeekDays": {
-				"colly": "Colly",
-				"chime": "Chime",
-				"hayme": "Hayme",
-				"moot": "Moot",
-				"frisk": "Frisk",
-				"eggfast": "Eggfast",
-				"sunning": "Sunning"
+				"colly": "Okadziałek",
+				"chime": "Trelek",
+				"hayme": "Słoda",
+				"moot": "Zwartek",
+				"frisk": "Pląsek",
+				"eggfast": "Postota",
+				"sunning": "Nagrzeła"
 			},
 			"WeekDaysShort": {
 				"colly": "Col",
@@ -55,7 +55,15 @@
 			"SetTimeConfirm": "Ustaw",
 			"Advance10Min": "Przesuń o 10 minut",
 			"Advance1Hr": "Przesuń o 1 godzinę",
-			"Advance8Hr": "Przesuń o 8 godzin (odpoczynek)"
+			"Advance8Hr": "Przesuń o 8 godzin (odpoczynek)",
+			"Unseasons": {
+				"hitching": "Hitching",
+				"vague": "Vague",
+				"colliggwyld": "Colliggwyld",
+				"chame": "Chame"
+			},
+			"UnseasonsNone": "Brak (normalna pora roku)",
+			"SetUnseasonTitle": "Ustaw nie-porę"
 		}
 	}
 }
