@@ -18,6 +18,27 @@
 			"ThemeColdIronAxe": "Topór z Zimnego Żelaza",
 			"ThemeHighContrast": "Wysoki Kontrast"
 		},
+		"Moon": "Księżyc",
+		"MoonSign": "Znak Księżycowy",
+		"MoonNames": {
+			"grinning": "Wyszczerzony",
+			"dead": "Martwy",
+			"beast": "Bestialski",
+			"squamous": "Łuskowaty",
+			"knights": "Rycerski",
+			"rotting": "Gnijący",
+			"maidens": "Dziewiczy",
+			"witch": "Wiedźmi",
+			"robbers": "Złodziejski",
+			"goat": "Kozi",
+			"narrow": "Wąski",
+			"black": "Czarny"
+		},
+		"MoonPhases": {
+			"waning": "Ubywa",
+			"full": "Pełnia",
+			"waxing": "Przybywa"
+		},
 		"Calendar": {
 			"SettingName": "Pokaż widget kalendarza",
 			"SettingHint": "Wyświetl widget kalendarza i czasu nad paskiem makr.",
