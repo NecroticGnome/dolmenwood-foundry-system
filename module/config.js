@@ -261,4 +261,23 @@ DOLMENWOOD.holidays = {
 	}
 }
 
+// Weather table names (match RollTable names in content conversion compendium)
+DOLMENWOOD.weatherTableNames = {
+	winter: 'Weather — Winter',
+	spring: 'Weather — Spring',
+	summer: 'Weather — Summer',
+	autumn: 'Weather — Autumn',
+	hitching: 'Weather — Hitching',
+	vague: 'Weather — Vague'
+}
+
+// Unseasons that use a different season's weather table (Campaign Book p.112)
+// Colliggwyld -> spring, Chame -> summer; Hitching/Vague have their own tables
+DOLMENWOOD.unseasonWeatherTable = {
+	hitching: 'hitching',
+	vague: 'vague',
+	colliggwyld: 'spring',
+	chame: 'summer'
+}
+
 export default DOLMENWOOD

@@ -1,10 +1,11 @@
-/* global game, Hooks, CONFIG, foundry */
+/* global game, Hooks, CONFIG, foundry, ChatMessage */
 
 import {
 	worldTimeToCalendar, calendarToWorldTime,
 	getSeason, getDaylightHours, getMoonForDay,
 	getCelestialPosition, ordinalDay, getDayName, getHoliday
 } from './calendar-time.js'
+import { drawFromTableRaw } from '../utils/roll-tables.js'
 
 const { DialogV2 } = foundry.applications.api
 
@@ -107,6 +108,104 @@ function computeSkyOpacities(hour, sunrise, sunset) {
 }
 
 /**
+ * Parse a weather table result description into text and effect flags.
+ * Descriptions may contain: "weather text<br><b>Effect:</b> description"
+ */
+function parseWeatherDescription(desc) {
+	if (!desc) return { text: '', effects: '' }
+	// Split on the first <br> to separate weather text from effects
+	const parts = desc.split(/<br\s*\/?>/i)
+	const text = parts[0].replace(/<[^>]+>/g, '').trim()
+	let effects = ''
+	const rest = parts.slice(1).join(' ')
+	if (/travel\s+impeded/i.test(rest)) effects += 'I'
+	if (/poor\s+visibility/i.test(rest)) effects += 'V'
+	if (/wet\s+conditions/i.test(rest)) effects += 'W'
+	return { text, effects }
+}
+
+/**
+ * Return a Font Awesome icon class based on weather description keywords.
+ */
+function getWeatherIcon(text) {
+	const t = text.toLowerCase()
+	if (/blizzard|snow/.test(t)) return 'fa-snowflake'
+	if (/storm|thunder/.test(t)) return 'fa-cloud-bolt'
+	if (/rain|drizzle|downpour|torrential/.test(t)) return 'fa-cloud-rain'
+	if (/fog|mist/.test(t)) return 'fa-smog'
+	if (/wind|blustery|bracing/.test(t)) return 'fa-wind'
+	if (/sun|sunny|clear|bright/.test(t)) return 'fa-sun'
+	if (/cloud|overcast|gloomy|brooding/.test(t)) return 'fa-cloud'
+	if (/hot|humid|sweltering|baking|balmy/.test(t)) return 'fa-temperature-high'
+	if (/cold|frigid|freezing|icy|frost|chill|bitter/.test(t)) return 'fa-temperature-low'
+	if (/dew|damp/.test(t)) return 'fa-droplet'
+	return 'fa-cloud-sun'
+}
+
+/**
+ * Roll weather from the appropriate season/unseason table (GM only).
+ * Saves result to world setting and posts a chat message.
+ */
+async function rollWeather() {
+	if (!game.user.isGM) return
+
+	const cal = worldTimeToCalendar(game.time.worldTime)
+	const season = getSeason(cal.monthKey)
+	const activeUnseason = game.settings.get('dolmenwood', 'activeUnseason')
+
+	// Determine which table to use
+	let tableKey = season
+	if (activeUnseason && CONFIG.DOLMENWOOD.unseasonWeatherTable[activeUnseason]) {
+		tableKey = CONFIG.DOLMENWOOD.unseasonWeatherTable[activeUnseason]
+	}
+	const tableName = CONFIG.DOLMENWOOD.weatherTableNames[tableKey]
+	if (!tableName) return
+
+	const draw = await drawFromTableRaw(tableName)
+	if (!draw) return
+
+	const desc = draw.result.description || draw.result.text || ''
+	const { text, effects } = parseWeatherDescription(desc)
+	const roll = draw.roll.total
+
+	// Save to world setting
+	await game.settings.set('dolmenwood', 'currentWeather', { text, effects, roll })
+
+	// Build effect badges for chat
+	const effectLabels = {
+		I: game.i18n.localize('DOLMEN.Calendar.Weather.Impeded'),
+		V: game.i18n.localize('DOLMEN.Calendar.Weather.Visibility'),
+		W: game.i18n.localize('DOLMEN.Calendar.Weather.Wet')
+	}
+	let effectsHtml = ''
+	for (const flag of effects) {
+		if (effectLabels[flag]) {
+			effectsHtml += `<div style="margin-top: 4px; font-size: 11px; opacity: 0.85;">\u26a0 ${effectLabels[flag]}</div>`
+		}
+	}
+
+	const icon = getWeatherIcon(text)
+	const chatTitle = game.i18n.localize('DOLMEN.Calendar.Weather.ChatTitle')
+	const content = `
+		<div style="padding: 4px 0;">
+			<div style="font-weight: 700; margin-bottom: 4px;">
+				<i class="fa-solid ${icon}"></i> ${chatTitle}
+			</div>
+			<div>
+				<strong>${roll}</strong> &mdash; ${text}
+			</div>
+			${effectsHtml}
+		</div>
+	`
+
+	ChatMessage.create({
+		content,
+		speaker: { alias: chatTitle },
+		sound: CONFIG.sounds.dice
+	})
+}
+
+/**
  * Build the full widget HTML.
  */
 function renderWidget() {
@@ -159,9 +258,45 @@ function renderWidget() {
 		</div>
 	` : ''
 
+	// Weather bar data
+	const weather = game.settings.get('dolmenwood', 'currentWeather')
+	const hasWeather = weather && weather.text
+	let weatherBarHtml = ''
+	if (hasWeather) {
+		const wIcon = getWeatherIcon(weather.text)
+		let badges = ''
+		const badgeInfo = {
+			I: game.i18n.localize('DOLMEN.Calendar.Weather.Impeded'),
+			V: game.i18n.localize('DOLMEN.Calendar.Weather.Visibility'),
+			W: game.i18n.localize('DOLMEN.Calendar.Weather.Wet')
+		}
+		for (const flag of (weather.effects || '')) {
+			if (badgeInfo[flag]) {
+				badges += `<span class="weather-badge weather-badge-${flag}" title="${badgeInfo[flag]}">${flag}</span>`
+			}
+		}
+		const rollBtn = isGM
+			? `<a class="calendar-weather-roll" title="${game.i18n.localize('DOLMEN.Calendar.Weather.RollWeather')}"><i class="fa-solid fa-dice"></i></a>`
+			: ''
+		weatherBarHtml = `
+			<div class="calendar-weather-bar">
+				<i class="fa-solid ${wIcon}"></i>
+				<span class="calendar-weather-text">${weather.text}</span>
+				${badges}
+				${rollBtn}
+			</div>`
+	} else if (isGM) {
+		weatherBarHtml = `
+			<div class="calendar-weather-bar">
+				<span class="calendar-weather-text">${game.i18n.localize('DOLMEN.Calendar.Weather.NoWeather')}</span>
+				<a class="calendar-weather-roll" title="${game.i18n.localize('DOLMEN.Calendar.Weather.RollWeather')}"><i class="fa-solid fa-dice"></i></a>
+			</div>`
+	}
+
 	return `
 		<div class="calendar-arc-container">${arcBg}${arcSvg}</div>
 		<div class="calendar-row">
+			${weatherBarHtml}
 			<div class="calendar-bar">
 				<div class="calendar-section calendar-day-name${isWysenday ? ' wysenday' : ''}">
 					<span>${dayDisplayName}</span>
@@ -247,6 +382,13 @@ function attachListeners(widget) {
 	const seasonSection = widget.querySelector('.calendar-season.gm-clickable')
 	if (seasonSection) {
 		seasonSection.addEventListener('click', openSetUnseasonDialog)
+	}
+	const weatherBtn = widget.querySelector('.calendar-weather-roll')
+	if (weatherBtn) {
+		weatherBtn.addEventListener('click', (e) => {
+			e.stopPropagation()
+			rollWeather()
+		})
 	}
 }
 
@@ -531,9 +673,10 @@ export function initCalendarWidget() {
 		}
 	})
 
-	// Re-render when unseason setting changes
+	// Re-render when unseason or weather setting changes
 	Hooks.on('updateSetting', (setting) => {
-		if (setting.key === 'dolmenwood.activeUnseason' && game.settings.get('dolmenwood', 'showCalendar')) {
+		if ((setting.key === 'dolmenwood.activeUnseason' || setting.key === 'dolmenwood.currentWeather')
+			&& game.settings.get('dolmenwood', 'showCalendar')) {
 			injectWidget()
 		}
 	})
