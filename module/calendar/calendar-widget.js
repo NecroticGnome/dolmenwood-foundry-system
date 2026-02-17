@@ -235,8 +235,7 @@ function renderWidget() {
 	const holiday = getHoliday(cal.monthKey, cal.day)
 	const holidayHtml = holiday
 		? `<div class="calendar-holiday-stripe">
-				<i class="fa-solid fa-star"></i>
-				<span>${holiday}</span>
+				${holiday.split(' & ').map(h => `<div class="calendar-holiday-line"><i class="fa-solid fa-star"></i><span>${h}</span></div>`).join('')}
 			</div>`
 		: ''
 
