@@ -703,7 +703,15 @@
 				"chame": "Chame"
 			},
 			"UnseasonsNone": "None (normal season)",
-			"SetUnseasonTitle": "Set Unseason"
+			"SetUnseasonTitle": "Set Unseason",
+			"Weather": {
+				"NoWeather": "—",
+				"RollWeather": "Roll Weather (2d6)",
+				"Impeded": "Travel Impeded: Travel Points reduced by 2",
+				"Visibility": "Poor Visibility: encounter distance halved, +1-in-6 lost",
+				"Wet": "Wet Conditions: building a campfire is difficult",
+				"ChatTitle": "Weather"
+			}
 		}
 	}
 }

@@ -129,6 +129,13 @@ Hooks.once('init', async function () {
 		default: ''
 	})
 
+	game.settings.register('dolmenwood', 'currentWeather', {
+		scope: 'world',
+		config: false,
+		type: Object,
+		default: { text: '', effects: '', roll: 0 }
+	})
+
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
 
 	// Re-apply auto theme when Foundry's own light/dark mode changes
