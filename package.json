@@ -4,11 +4,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@foundryvtt/foundryvtt-cli": "^1.0.3",
     "clean-css": "^5.3.3",
     "globals": "^17.0.0"
   },
   "scripts": {
     "lint": "eslint .",
-    "build:css": "node scripts/build-css.js"
+    "build:css": "node scripts/build-css.js",
+    "todb": "node scripts/compile-packs.mjs",
+    "tojson": "node scripts/extract-packs.mjs"
   }
 }

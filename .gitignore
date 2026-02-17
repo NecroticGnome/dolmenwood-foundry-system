@@ -406,3 +406,12 @@ FodyWeavers.xsd
 !.gitignore
 !.gitattributes
 !README.md
+
+# Foundry LevelDB pack files (regenerated via npm run todb)
+packs/**/LOCK
+packs/**/LOG
+packs/**/LOG.old
+packs/**/CURRENT
+packs/**/MANIFEST-*
+packs/**/*.ldb
+packs/**/*.log
