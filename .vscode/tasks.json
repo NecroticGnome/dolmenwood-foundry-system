@@ -18,7 +18,7 @@
 		{
 			"label": "FVTT Pack - Pack",
 			"type": "shell",
-			"command": "$packs = Get-ChildItem -Path packs -Directory | Select-Object -ExpandProperty Name; fvtt package workon dolmenwood --type System; foreach ($pack in $packs) { fvtt package pack $pack --in \"packs/$pack/src\" --out \"packs/$pack\" }",
+			"command": "$packs = Get-ChildItem -Path packs -Directory | Select-Object -ExpandProperty Name; fvtt package workon dolmenwood --type System; foreach ($pack in $packs) { fvtt package pack $pack --in \"packs/$pack/src\" --out \"packs\" }",
 			"group": "build",
 			"problemMatcher": []
 		},
@@ -42,8 +42,8 @@
 			"command": "echo 'Deploy complete'",
 			"dependsOn": [
 				"Stop Foundry VTT",
-				"Copy to Foundry",
 				"FVTT Pack - Pack",
+				"Copy to Foundry",
 				"Start Foundry VTT"
 			],
 			"dependsOrder": "sequence",
