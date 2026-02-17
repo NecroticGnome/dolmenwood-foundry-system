@@ -76,28 +76,28 @@ function computeSkyOpacities(hour, sunrise, sunset) {
 		// Night hold
 		o.night = 1
 	} else if (hour < sunrise) {
-		// Night → Sunrise crossfade
+		// Night → Sunrise crossfade (night stays at 1, sunrise fades in on top)
 		const p = (hour - nightEnd) / (sunrise - nightEnd)
-		o.night = 1 - p
+		o.night = 1
 		o.sunrise = p
 	} else if (hour < morningEnd) {
-		// Sunrise → Midday crossfade
+		// Sunrise → Midday crossfade (sunrise stays at 1, midday fades in on top)
 		const p = (hour - sunrise) / (morningEnd - sunrise)
-		o.sunrise = 1 - p
+		o.sunrise = 1
 		o.midday = p
 	} else if (hour < afternoonStart) {
 		// Midday hold
 		o.midday = 1
 	} else if (hour < sunset) {
-		// Midday → Evening crossfade
+		// Midday → Evening crossfade (midday stays at 1, evening fades in on top)
 		const p = (hour - afternoonStart) / (sunset - afternoonStart)
-		o.midday = 1 - p
+		o.midday = 1
 		o.evening = p
 	} else if (hour < eveningEnd) {
-		// Evening → Night crossfade
+		// Evening → Night crossfade (night at 1 underneath, evening fades out)
 		const p = (hour - sunset) / (eveningEnd - sunset)
+		o.night = 1
 		o.evening = 1 - p
-		o.night = p
 	} else {
 		// Night hold
 		o.night = 1
