@@ -1,0 +1,316 @@
+{
+  "name": "Magician",
+  "type": "Class",
+  "_id": "8353cdaa0cf57b45",
+  "img": "systems/dolmenwood/assets/classes/magician.webp",
+  "system": {
+    "codexUuid": "",
+    "classId": "magician",
+    "requiredKindred": "",
+    "primeAbilities": [
+      "intelligence"
+    ],
+    "hitDice": {
+      "die": "1d4",
+      "flat": 1
+    },
+    "xpThresholds": [
+      0,
+      2500,
+      5000,
+      10000,
+      20000,
+      40000,
+      80000,
+      160000,
+      320000,
+      470000,
+      620000,
+      770000,
+      920000,
+      1070000,
+      1220000
+    ],
+    "attackProgression": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      4,
+      4,
+      4
+    ],
+    "saveProgressions": {
+      "doom": [
+        14,
+        14,
+        14,
+        13,
+        13,
+        13,
+        12,
+        12,
+        12,
+        11,
+        11,
+        11,
+        10,
+        10,
+        10
+      ],
+      "ray": [
+        14,
+        14,
+        14,
+        13,
+        13,
+        13,
+        12,
+        12,
+        12,
+        11,
+        11,
+        11,
+        10,
+        10,
+        10
+      ],
+      "hold": [
+        13,
+        13,
+        13,
+        12,
+        12,
+        12,
+        11,
+        11,
+        11,
+        10,
+        10,
+        10,
+        9,
+        9,
+        9
+      ],
+      "blast": [
+        16,
+        16,
+        16,
+        15,
+        15,
+        15,
+        14,
+        14,
+        14,
+        13,
+        13,
+        13,
+        12,
+        12,
+        12
+      ],
+      "spell": [
+        14,
+        14,
+        14,
+        13,
+        13,
+        13,
+        12,
+        12,
+        12,
+        11,
+        11,
+        11,
+        10,
+        10,
+        10
+      ]
+    },
+    "skillProgressions": {
+      "detectMagic": [
+        6,
+        6,
+        5,
+        5,
+        5,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    "spellProgression": [
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        2,
+        2,
+        1,
+        0,
+        0
+      ],
+      [
+        3,
+        3,
+        2,
+        2,
+        0,
+        0
+      ],
+      [
+        3,
+        3,
+        2,
+        2,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        2,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        2,
+        1
+      ],
+      [
+        4,
+        4,
+        3,
+        3,
+        2,
+        2
+      ],
+      [
+        4,
+        4,
+        3,
+        3,
+        3,
+        2
+      ],
+      [
+        5,
+        4,
+        4,
+        3,
+        3,
+        2
+      ],
+      [
+        5,
+        4,
+        4,
+        3,
+        3,
+        3
+      ]
+    ],
+    "spellType": "arcane",
+    "combatAptitude": "non-martial",
+    "weaponsProficiency": [
+      "dagger",
+      "holyWater",
+      "oil",
+      "staff",
+      "torch"
+    ],
+    "armorProficiency": [],
+    "classSkills": [
+      "detectMagic"
+    ],
+    "canTwoWeaponFight": false,
+    "hasBackstab": false,
+    "skillPointsBase": 0,
+    "skillPointsPerLevel": 0,
+    "traits": {}
+  },
+  "effects": [],
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.351",
+    "systemId": "dolmenwood",
+    "systemVersion": "0.2.0",
+    "createdTime": 0,
+    "modifiedTime": 0,
+    "lastModifiedBy": null
+  },
+  "_key": "!items!8353cdaa0cf57b45"
+}
