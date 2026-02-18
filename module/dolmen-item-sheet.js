@@ -1,4 +1,4 @@
-/* global foundry, game, FilePicker, fromUuid */
+/* global foundry, game, FilePicker, fromUuid, TextEditor */
 import { buildChoices, buildChoicesWithBlank, buildQualityOptions, CHOICE_KEYS } from './utils/choices.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -117,6 +117,9 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			context.descriptionFieldName = 'system.description'
 			context.descriptionFieldValue = this.item.system.description
 		}
+		context.enrichedDescription = context.descriptionFieldValue
+			? await TextEditor.enrichHTML(context.descriptionFieldValue)
+			: ''
 
 		// Weapon choices
 		context.weaponTypeChoices = buildChoicesWithBlank('DOLMEN.Item.WeaponType', CHOICE_KEYS.weaponTypes)
