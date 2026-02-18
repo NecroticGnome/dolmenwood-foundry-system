@@ -939,12 +939,15 @@ export function initCalendarWidget() {
 	})
 
 	// Re-render when unseason or weather setting changes
-	Hooks.on('updateSetting', (setting) => {
+	// Listen on both create (first write in a new world) and update (subsequent writes)
+	const onSettingChange = (setting) => {
 		if ((setting.key === 'dolmenwood.activeUnseason' || setting.key === 'dolmenwood.currentWeather')
 			&& game.settings.get('dolmenwood', 'showCalendar')) {
 			injectWidget()
 		}
-	})
+	}
+	Hooks.on('createSetting', onSettingChange)
+	Hooks.on('updateSetting', onSettingChange)
 
 	// Reposition on window resize / fullscreen change
 	resizeHandler = foundry.utils.debounce(() => {

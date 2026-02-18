@@ -125,7 +125,7 @@ Hooks.once('init', async function () {
 		scope: 'world',
 		config: true,
 		type: Boolean,
-		default: false,
+		default: true,
 		onChange: toggleWidget
 	})
 
