@@ -18,6 +18,20 @@
 			"ThemeColdIronAxe": "Topór z Zimnego Żelaza",
 			"ThemeHighContrast": "Wysoki Kontrast"
 		},
+		"Months": {
+			"grimvold": "Ciemnobor",
+			"lymewald": "Wapniec",
+			"haggryme": "Oszroniec",
+			"symswald": "Jasnobor",
+			"harchment": "Parzec",
+			"iggwyld": "Zdziczeń",
+			"chysting": "Cudyń",
+			"lillipythe": "Lilion",
+			"haelhold": "Zażniwiec",
+			"reedwryme": "Krasnoziąb",
+			"obthryme": "Mrozopad",
+			"braghold": "Domowar"
+		},
 		"Moon": "Księżyc",
 		"MoonSign": "Znak Księżycowy",
 		"MoonNames": {
@@ -39,31 +53,33 @@
 			"full": "Pełnia",
 			"waxing": "Przybywa"
 		},
+		"Close": "Zamknij",
 		"Calendar": {
 			"SettingName": "Pokaż widget kalendarza",
 			"SettingHint": "Wyświetl widget kalendarza i czasu nad paskiem makr.",
 			"Year": "Rok",
 			"Month": "Miesiąc",
 			"Day": "Dzień",
+			"DateFormat": "{dayNum} {month} {year} r.",
 			"Hour": "Godzina",
 			"Minute": "Minuta",
 			"WeekDays": {
-				"colly": "Okadziałek",
-				"chime": "Trelek",
+				"colly": "Płonieziałek",
+				"chime": "Wtórek",
 				"hayme": "Słoda",
 				"moot": "Zwartek",
 				"frisk": "Pląsek",
-				"eggfast": "Postota",
-				"sunning": "Nagrzeła"
+				"eggfast": "Srogota",
+				"sunning": "Śniadziela"
 			},
 			"WeekDaysShort": {
-				"colly": "Col",
-				"chime": "Chi",
-				"hayme": "Hay",
-				"moot": "Moo",
-				"frisk": "Fri",
-				"eggfast": "Egg",
-				"sunning": "Sun"
+				"colly": "Płn",
+				"chime": "Wt",
+				"hayme": "Sł",
+				"moot": "Zw",
+				"frisk": "Pl",
+				"eggfast": "Sg",
+				"sunning": "Śn"
 			},
 			"Seasons": {
 				"winter": "Zima",
@@ -84,7 +100,18 @@
 				"chame": "Chame"
 			},
 			"UnseasonsNone": "Brak (normalna pora roku)",
-			"SetUnseasonTitle": "Ustaw nie-porę"
+			"SetUnseasonTitle": "Ustaw nie-porę",
+			"Notes": {
+				"Title": "Notatki kalendarza",
+				"ButtonTitle": "Notatki kalendarza",
+				"AddNote": "Dodaj notatkę",
+				"DeleteNote": "Usuń notatkę",
+				"GmOnly": "Tylko MG",
+				"Everyone": "Wszyscy",
+				"Placeholder": "Wpisz notatkę...",
+				"NoNotes": "Brak notatek na ten dzień.",
+				"Notification": "Notatka kalendarza"
+			}
 		}
 	}
 }

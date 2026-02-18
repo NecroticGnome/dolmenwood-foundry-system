@@ -281,13 +281,13 @@
 
 /* Clickable date/time sections for GMs */
 
-.calendar-date.gm-clickable,
+.calendar-date.clickable,
 .calendar-time.gm-clickable {
 	cursor: pointer;
 	transition: background 0.15s;
 }
 
-.calendar-date.gm-clickable:hover,
+.calendar-date.clickable:hover,
 .calendar-time.gm-clickable:hover {
 	background: rgba(255, 255, 255, 0.1);
 }
@@ -333,6 +333,13 @@
 	min-width: 180px;
 	text-align: center;
 	font-size: 14px;
+}
+
+.calendar-picker-year {
+	width: 56px;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 700;
 }
 
 .calendar-picker-grid {
@@ -530,4 +537,169 @@
 .calendar-weather-roll:hover {
 	background: rgba(255, 255, 255, 0.18);
 	color: #fff;
+}
+
+/* Settings bar (absolute, right side) */
+
+.calendar-settings-bar {
+	position: absolute;
+	left: calc(100% + 4px);
+	top: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.75);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 6px;
+	padding: 4px;
+	color: #e0e0e0;
+}
+
+.calendar-settings-btn {
+	cursor: pointer;
+	opacity: 0.7;
+	transition: opacity 0.15s;
+	font-size: 12px;
+}
+
+.calendar-settings-btn:hover {
+	opacity: 1;
+}
+
+/* Has-notes indicator dot on picker days */
+
+.calendar-picker-day.has-notes::before {
+	content: '';
+	position: absolute;
+	top: 1px;
+	right: 2px;
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: #6ab4ff;
+}
+
+.calendar-picker-wysenday.has-notes::before {
+	content: '';
+	position: absolute;
+	top: -2px;
+	right: 4px;
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: #6ab4ff;
+}
+
+/* Notes panel inside dialog */
+
+.calendar-notes-panel {
+	border-top: 1px solid rgba(128, 128, 128, 0.3);
+	margin-top: 10px;
+	padding-top: 8px;
+}
+
+.calendar-notes-header {
+	font-weight: 700;
+	font-size: 13px;
+	margin-bottom: 6px;
+}
+
+.calendar-notes-list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	max-height: 200px;
+	overflow-y: auto;
+}
+
+.calendar-notes-empty {
+	opacity: 0.5;
+	font-size: 12px;
+	padding: 4px 0;
+}
+
+.calendar-note-item {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 6px;
+	border-radius: 4px;
+	background: rgba(128, 128, 128, 0.08);
+}
+
+.calendar-note-holiday {
+	color: light-dark(#8b6914, #f0c040);
+}
+
+.calendar-note-holiday i {
+	font-size: 10px;
+	opacity: 0.8;
+	flex-shrink: 0;
+}
+
+.calendar-note-badge {
+	font-size: 9px;
+	padding: 1px 5px;
+	border-radius: 8px;
+	text-transform: uppercase;
+	font-weight: 700;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.calendar-note-badge.gm-only {
+	background: rgba(217, 161, 40, 0.3);
+	color: light-dark(#8b6914, #f0c040);
+}
+
+.calendar-note-badge.everyone {
+	background: rgba(100, 180, 130, 0.3);
+	color: light-dark(#2a7a4a, #6ad48a);
+}
+
+.calendar-note-text {
+	flex: 1;
+	font-size: 12px;
+}
+
+.calendar-note-delete {
+	cursor: pointer;
+	opacity: 0.5;
+	font-size: 11px;
+	transition: opacity 0.15s;
+	flex-shrink: 0;
+}
+
+.calendar-note-delete:hover {
+	opacity: 1;
+	color: #e55;
+}
+
+/* Add note form */
+
+.calendar-notes-add {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 8px;
+}
+
+.calendar-notes-input {
+	flex: 1;
+	font-size: 12px;
+}
+
+.calendar-notes-gm-label {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 11px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.calendar-notes-add-btn {
+	cursor: pointer;
 }
