@@ -115,14 +115,19 @@ function computeWeightTreasure(equipped, stowed, totalCoins, significantLoad) {
 	return { current, max: 1600, speed }
 }
 
+function itemSlots(i) {
+	const w = i.system.weightSlots || 0
+	if (!w) return 0
+	const qty = i.system.quantity || 1
+	const stack = i.system.stackSize || 1
+	if (stack > 1) return w * Math.ceil(qty / stack)
+	return w * qty
+}
+
 function computeSlots(equipped, stowed, totalCoins) {
-	const equippedSlots = equipped.reduce(
-		(sum, i) => sum + (i.system.weightSlots || 0) * (i.system.quantity || 1), 0
-	)
+	const equippedSlots = equipped.reduce((sum, i) => sum + itemSlots(i), 0)
 	const coinSlots = Math.ceil(totalCoins / 100)
-	const stowedSlots = stowed.reduce(
-		(sum, i) => sum + (i.system.weightSlots || 0) * (i.system.quantity || 1), 0
-	) + coinSlots
+	const stowedSlots = stowed.reduce((sum, i) => sum + itemSlots(i), 0) + coinSlots
 
 	// Speed from equipped tier
 	let equippedSpeed
