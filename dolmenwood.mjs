@@ -12,7 +12,7 @@ import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, 
 import { setupDamageContextMenu } from './module/chat-damage.js'
 import { setupSaveLinkListeners } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
-import { initCalendarWidget, toggleWidget } from './module/calendar/calendar-widget.js'
+import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -201,6 +201,9 @@ Hooks.once('ready', async function () {
 	}
 
 	initCalendarWidget()
+
+	// Socket listener for player calendar note operations
+	game.socket.on('system.dolmenwood', handleCalendarSocket)
 })
 
 // Live-preview theme when dropdown changes in settings

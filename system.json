@@ -110,7 +110,7 @@
     "distance": 5,
     "units": "ft"
   },
-  "socket": false,
+  "socket": true,
   "initiative": "1d20",
   "primaryTokenAttribute": "hp.value",
   "url": "https://github.com/blaze-sanecki/foundry-dolmenwood",
