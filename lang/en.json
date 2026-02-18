@@ -185,6 +185,7 @@
 		"XPAddTitle": "Add Experience Points",
 		"XPAddButton": "Add",
 		"Cancel": "Cancel",
+		"Close": "Close",
 		"Save": "Save",
 		"Amount": "Amount",
 		"None": "None",
@@ -657,6 +658,73 @@
 			"Close": "Close",
 			"SettingName": "Show Welcome Message",
 			"SettingHint": "Display the welcome dialog when Foundry loads."
+		},
+		"Calendar": {
+			"SettingName": "Show Calendar Widget",
+			"SettingHint": "Display a calendar and time widget above the macro hotbar.",
+			"Year": "Year",
+			"Month": "Month",
+			"Day": "Day",
+			"DateFormat": "{day} of {month}, Year {year}",
+			"Hour": "Hour",
+			"Minute": "Minute",
+			"WeekDays": {
+				"colly": "Colly",
+				"chime": "Chime",
+				"hayme": "Hayme",
+				"moot": "Moot",
+				"frisk": "Frisk",
+				"eggfast": "Eggfast",
+				"sunning": "Sunning"
+			},
+			"WeekDaysShort": {
+				"colly": "Col",
+				"chime": "Chi",
+				"hayme": "Hay",
+				"moot": "Moo",
+				"frisk": "Fri",
+				"eggfast": "Egg",
+				"sunning": "Sun"
+			},
+			"Seasons": {
+				"winter": "Winter",
+				"spring": "Spring",
+				"summer": "Summer",
+				"autumn": "Autumn"
+			},
+			"SetDateTitle": "Set Date",
+			"SetTimeTitle": "Set Time",
+			"SetTimeConfirm": "Set",
+			"Advance10Min": "Advance 10 minutes",
+			"Advance1Hr": "Advance 1 hour",
+			"Advance8Hr": "Advance 8 hours (rest)",
+			"Unseasons": {
+				"hitching": "Hitching",
+				"vague": "Vague",
+				"colliggwyld": "Colliggwyld",
+				"chame": "Chame"
+			},
+			"UnseasonsNone": "None (normal season)",
+			"SetUnseasonTitle": "Set Unseason",
+			"Weather": {
+				"NoWeather": "—",
+				"RollWeather": "Roll Weather (2d6)",
+				"Impeded": "Travel Impeded: Travel Points reduced by 2",
+				"Visibility": "Poor Visibility: encounter distance halved, +1-in-6 lost",
+				"Wet": "Wet Conditions: building a campfire is difficult",
+				"ChatTitle": "Weather"
+			},
+			"Notes": {
+				"Title": "Calendar Notes",
+				"ButtonTitle": "Calendar Notes",
+				"AddNote": "Add Note",
+				"DeleteNote": "Delete Note",
+				"GmOnly": "GM Only",
+				"Everyone": "Everyone",
+				"Placeholder": "Enter note...",
+				"NoNotes": "No notes for this day.",
+				"Notification": "Calendar Note"
+			}
 		}
 	}
 }
