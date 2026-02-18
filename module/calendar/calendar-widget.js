@@ -1,4 +1,4 @@
-/* global game, Hooks, CONFIG, foundry, ChatMessage */
+/* global game, Hooks, CONFIG, foundry, ChatMessage, ui */
 
 import {
 	worldTimeToCalendar, calendarToWorldTime,
@@ -223,7 +223,7 @@ function renderWidget() {
 	const seasonData = CONFIG.DOLMENWOOD.seasons[season]
 	const activeUnseason = game.settings.get('dolmenwood', 'activeUnseason')
 	const timeStr = `${String(cal.hour).padStart(2, '0')}:${String(cal.minute).padStart(2, '0')}`
-	const dateStr = `${ordinalDay(cal.day)} of ${monthName}, ${game.i18n.localize('DOLMEN.Calendar.Year')} ${cal.year}`
+	const dateStr = game.i18n.format('DOLMEN.Calendar.DateFormat', { day: ordinalDay(cal.day), dayNum: cal.day, month: monthName, year: cal.year })
 
 	// Day name (weekday or wysenday)
 	const { name: dayNameKey, isWysenday } = getDayName(cal.monthKey, cal.day)
@@ -301,7 +301,7 @@ function renderWidget() {
 					<span>${dayDisplayName}</span>
 				</div>
 				<div class="calendar-divider"></div>
-				<div class="calendar-section calendar-date${isGM ? ' gm-clickable' : ''}">
+				<div class="calendar-section calendar-date clickable">
 					${holidayHtml}
 					<i class="fa-solid fa-calendar-day"></i>
 					<span>${dateStr}</span>
@@ -327,6 +327,9 @@ function renderWidget() {
 					<span>${moonName} (${phaseName})</span>
 				</div>
 			</div>
+			${isGM ? `<div class="calendar-settings-bar">
+				<a class="calendar-settings-btn" title="${game.i18n.localize('DOLMEN.Calendar.SetDateTitle')}"><i class="fa-solid fa-gear"></i></a>
+			</div>` : ''}
 		</div>
 	`
 }
@@ -370,9 +373,16 @@ function attachListeners(widget) {
 			game.time.advance(seconds)
 		})
 	}
-	const dateSection = widget.querySelector('.calendar-date.gm-clickable')
+	const dateSection = widget.querySelector('.calendar-date.clickable')
 	if (dateSection) {
-		dateSection.addEventListener('click', openSetDateDialog)
+		dateSection.addEventListener('click', openNotesDialog)
+	}
+	const settingsBtn = widget.querySelector('.calendar-settings-btn')
+	if (settingsBtn) {
+		settingsBtn.addEventListener('click', (e) => {
+			e.stopPropagation()
+			openSetDateDialog()
+		})
 	}
 	const timeSection = widget.querySelector('.calendar-time.gm-clickable')
 	if (timeSection) {
@@ -394,7 +404,7 @@ function attachListeners(widget) {
 /**
  * Build the inner HTML for the calendar date picker.
  */
-function buildPickerContent(year, monthKey, selectedDay) {
+function buildPickerContent(year, monthKey, selectedDay, { noteDays, readOnly } = {}) {
 	const monthName = game.i18n.localize(`DOLMEN.Months.${monthKey}`)
 	const weekDays = CONFIG.DOLMENWOOD.weekDays
 	const holidays = CONFIG.DOLMENWOOD.holidays[monthKey] || {}
@@ -416,8 +426,9 @@ function buildPickerContent(year, monthKey, selectedDay) {
 			const selected = day === selectedDay ? ' selected' : ''
 			const holiday = holidays[day]
 			const holidayClass = holiday ? ' holiday' : ''
+			const hasNotes = noteDays?.has(day) ? ' has-notes' : ''
 			const titleAttr = holiday ? ` title="${holiday}"` : ''
-			cells += `<td><div class="calendar-picker-day${selected}${holidayClass}" data-calendar-day="${day}"${titleAttr}>${day}</div></td>`
+			cells += `<td><div class="calendar-picker-day${selected}${holidayClass}${hasNotes}" data-calendar-day="${day}"${titleAttr}>${day}</div></td>`
 		}
 		gridRows += `<tr>${cells}</tr>`
 	}
@@ -430,17 +441,22 @@ function buildPickerContent(year, monthKey, selectedDay) {
 			const selected = day === selectedDay ? ' selected' : ''
 			const holiday = holidays[day]
 			const holidayClass = holiday ? ' holiday' : ''
+			const hasNotes = noteDays?.has(day) ? ' has-notes' : ''
 			const titleAttr = holiday ? ` title="${holiday}"` : ''
-			return `<div class="calendar-picker-wysenday${selected}${holidayClass}" data-calendar-day="${day}"${titleAttr}>${name}</div>`
+			return `<div class="calendar-picker-wysenday${selected}${holidayClass}${hasNotes}" data-calendar-day="${day}"${titleAttr}>${name}</div>`
 		}).join('')
 		wysendayHtml = `<div class="calendar-picker-wysendays">${pills}</div>`
 	}
+
+	const yearHtml = readOnly
+		? `<span>${year}</span>`
+		: `<input type="number" class="calendar-picker-year" value="${year}" min="1">`
 
 	return `
 		<div class="calendar-picker-nav">
 			<button type="button" data-calendar-nav="prev-year" title="Previous year">\u00AB</button>
 			<button type="button" data-calendar-nav="prev-month" title="Previous month">\u2039</button>
-			<div class="calendar-picker-title">${monthName}, ${yearLabel} ${year}</div>
+			<div class="calendar-picker-title">${monthName}, ${yearLabel} ${yearHtml}</div>
 			<button type="button" data-calendar-nav="next-month" title="Next month">\u203A</button>
 			<button type="button" data-calendar-nav="next-year" title="Next year">\u00BB</button>
 		</div>
@@ -511,7 +527,16 @@ function openSetDateDialog() {
 		}
 	}
 
+	function handleYearInput(event) {
+		if (!event.target.classList.contains('calendar-picker-year')) return
+		const picker = document.querySelector('.calendar-picker')
+		if (!picker) return
+		const val = Math.max(1, parseInt(event.target.value) || 1)
+		picker.dataset.year = val
+	}
+
 	document.addEventListener('click', handlePickerClick, true)
+	document.addEventListener('input', handleYearInput, true)
 
 	DialogV2.wait({
 		window: { title: game.i18n.localize('DOLMEN.Calendar.SetDateTitle') },
@@ -540,6 +565,7 @@ function openSetDateDialog() {
 		]
 	}).finally(() => {
 		document.removeEventListener('click', handlePickerClick, true)
+		document.removeEventListener('input', handleYearInput, true)
 	})
 }
 
@@ -636,6 +662,233 @@ function openSetUnseasonDialog() {
 }
 
 /**
+ * Get the note storage key for a given date.
+ */
+function getNoteKey(year, monthKey, day) {
+	return `${year}-${monthKey}-${day}`
+}
+
+/**
+ * Get set of days in a month that have notes visible to the current user.
+ */
+function getNoteDays(year, monthKey) {
+	const notes = game.settings.get('dolmenwood', 'calendarNotes')
+	const isGM = game.user.isGM
+	const days = new Set()
+	const maxDays = CONFIG.DOLMENWOOD.months[monthKey].days
+	for (let d = 1; d <= maxDays; d++) {
+		const dayNotes = notes[getNoteKey(year, monthKey, d)]
+		if (!dayNotes || dayNotes.length === 0) continue
+		if (isGM || dayNotes.some(n => !n.gmOnly)) days.add(d)
+	}
+	return days
+}
+
+/**
+ * Build the notes panel HTML for a selected day.
+ */
+function buildNotesPanel(year, monthKey, day) {
+	const notes = game.settings.get('dolmenwood', 'calendarNotes')
+	const isGM = game.user.isGM
+	const key = getNoteKey(year, monthKey, day)
+	const dayNotes = (notes[key] || []).filter(n => isGM || !n.gmOnly)
+	const monthName = game.i18n.localize(`DOLMEN.Months.${monthKey}`)
+
+	// Holidays for this day (shown before user notes, not deletable)
+	const holidays = CONFIG.DOLMENWOOD.holidays[monthKey] || {}
+	const holiday = holidays[day]
+	let holidayHtml = ''
+	if (holiday) {
+		holidayHtml = holiday.split(' & ').map(h =>
+			`<div class="calendar-note-item calendar-note-holiday"><i class="fa-solid fa-star"></i><span class="calendar-note-text">${h}</span></div>`
+		).join('')
+	}
+
+	let notesList = ''
+	if (dayNotes.length === 0 && !holiday) {
+		notesList = `<div class="calendar-notes-empty">${game.i18n.localize('DOLMEN.Calendar.Notes.NoNotes')}</div>`
+	} else {
+		notesList = dayNotes.map(n => {
+			const badge = n.gmOnly
+				? `<span class="calendar-note-badge gm-only">${game.i18n.localize('DOLMEN.Calendar.Notes.GmOnly')}</span>`
+				: `<span class="calendar-note-badge everyone">${game.i18n.localize('DOLMEN.Calendar.Notes.Everyone')}</span>`
+			const del = isGM
+				? `<a class="calendar-note-delete" data-delete-note="${n.id}" title="${game.i18n.localize('DOLMEN.Calendar.Notes.DeleteNote')}"><i class="fa-solid fa-trash"></i></a>`
+				: ''
+			return `<div class="calendar-note-item">${badge}<span class="calendar-note-text">${n.text}</span>${del}</div>`
+		}).join('')
+	}
+
+	const addForm = isGM ? `
+		<div class="calendar-notes-add">
+			<input type="text" class="calendar-notes-input" placeholder="${game.i18n.localize('DOLMEN.Calendar.Notes.Placeholder')}">
+			<button type="button" class="calendar-notes-add-btn" title="${game.i18n.localize('DOLMEN.Calendar.Notes.AddNote')}"><i class="fa-solid fa-plus"></i></button>
+			<label class="calendar-notes-gm-label"><input type="checkbox" class="calendar-notes-gm-check" checked> ${game.i18n.localize('DOLMEN.Calendar.Notes.GmOnly')}</label>
+		</div>
+	` : ''
+
+	return `
+		<div class="calendar-notes-header">${ordinalDay(day)} ${monthName}</div>
+		<div class="calendar-notes-list">${holidayHtml}${notesList}</div>
+		${addForm}
+	`
+}
+
+/**
+ * Open the calendar notes dialog.
+ */
+function openNotesDialog() {
+	const cal = worldTimeToCalendar(game.time.worldTime)
+	const monthKeys = Object.keys(CONFIG.DOLMENWOOD.months)
+
+	function buildFullContent(year, monthKey, selectedDay) {
+		const noteDays = getNoteDays(year, monthKey)
+		return `
+			${buildPickerContent(year, monthKey, selectedDay, { noteDays, readOnly: true })}
+			<div class="calendar-notes-panel">
+				${buildNotesPanel(year, monthKey, selectedDay)}
+			</div>
+		`
+	}
+
+	function rebuildContainer() {
+		const c = document.querySelector('.calendar-notes-container')
+		if (!c) return
+		c.innerHTML = buildFullContent(parseInt(c.dataset.year), c.dataset.month, parseInt(c.dataset.selectedDay))
+	}
+
+	async function addNote() {
+		const c = document.querySelector('.calendar-notes-container')
+		if (!c) return
+		const input = c.querySelector('.calendar-notes-input')
+		const checkbox = c.querySelector('.calendar-notes-gm-check')
+		const text = input?.value?.trim()
+		if (!text) return
+		const key = getNoteKey(parseInt(c.dataset.year), c.dataset.month, parseInt(c.dataset.selectedDay))
+		const notes = foundry.utils.deepClone(game.settings.get('dolmenwood', 'calendarNotes'))
+		if (!notes[key]) notes[key] = []
+		notes[key].push({ id: foundry.utils.randomID(), text, gmOnly: checkbox?.checked ?? true })
+		await game.settings.set('dolmenwood', 'calendarNotes', notes)
+		rebuildContainer()
+	}
+
+	async function deleteNote(noteId) {
+		const c = document.querySelector('.calendar-notes-container')
+		if (!c) return
+		const key = getNoteKey(parseInt(c.dataset.year), c.dataset.month, parseInt(c.dataset.selectedDay))
+		const notes = foundry.utils.deepClone(game.settings.get('dolmenwood', 'calendarNotes'))
+		if (!notes[key]) return
+		notes[key] = notes[key].filter(n => n.id !== noteId)
+		if (notes[key].length === 0) delete notes[key]
+		await game.settings.set('dolmenwood', 'calendarNotes', notes)
+		rebuildContainer()
+	}
+
+	function handleClick(event) {
+		const c = document.querySelector('.calendar-notes-container')
+		if (!c) return
+
+		const dayEl = event.target.closest('[data-calendar-day]')
+		if (dayEl && c.contains(dayEl)) {
+			c.dataset.selectedDay = dayEl.dataset.calendarDay
+			rebuildContainer()
+			return
+		}
+
+		const navBtn = event.target.closest('[data-calendar-nav]')
+		if (navBtn && c.contains(navBtn)) {
+			const action = navBtn.dataset.calendarNav
+			let year = parseInt(c.dataset.year)
+			let monthIndex = monthKeys.indexOf(c.dataset.month)
+			let selectedDay = parseInt(c.dataset.selectedDay)
+			if (action === 'prev-year') year = Math.max(1, year - 1)
+			else if (action === 'next-year') year++
+			else if (action === 'prev-month') {
+				monthIndex--
+				if (monthIndex < 0) {
+					monthIndex = monthKeys.length - 1
+					year = Math.max(1, year - 1)
+				}
+			} else if (action === 'next-month') {
+				monthIndex++
+				if (monthIndex >= monthKeys.length) {
+					monthIndex = 0
+					year++
+				}
+			}
+			const newMonthKey = monthKeys[monthIndex]
+			selectedDay = Math.min(selectedDay, CONFIG.DOLMENWOOD.months[newMonthKey].days)
+			c.dataset.year = year
+			c.dataset.month = newMonthKey
+			c.dataset.selectedDay = selectedDay
+			rebuildContainer()
+			return
+		}
+
+		const delBtn = event.target.closest('[data-delete-note]')
+		if (delBtn && c.contains(delBtn)) {
+			deleteNote(delBtn.dataset.deleteNote)
+			return
+		}
+
+		if (event.target.closest('.calendar-notes-add-btn') && c.contains(event.target)) {
+			addNote()
+		}
+	}
+
+	function handleInput(event) {
+		if (!event.target.classList.contains('calendar-picker-year')) return
+		const c = document.querySelector('.calendar-notes-container')
+		if (!c) return
+		c.dataset.year = Math.max(1, parseInt(event.target.value) || 1)
+	}
+
+	function handleKeydown(event) {
+		if (event.key === 'Enter' && event.target.classList.contains('calendar-notes-input')) {
+			event.preventDefault()
+			addNote()
+		}
+	}
+
+	const content = `<div class="calendar-notes-container calendar-picker" data-year="${cal.year}" data-month="${cal.monthKey}" data-selected-day="${cal.day}">
+		${buildFullContent(cal.year, cal.monthKey, cal.day)}
+	</div>`
+
+	document.addEventListener('click', handleClick, true)
+	document.addEventListener('input', handleInput, true)
+	document.addEventListener('keydown', handleKeydown, true)
+
+	DialogV2.wait({
+		window: { title: game.i18n.localize('DOLMEN.Calendar.Notes.Title') },
+		content,
+		buttons: [{
+			action: 'close',
+			label: game.i18n.localize('DOLMEN.Close'),
+			icon: 'fas fa-times'
+		}]
+	}).finally(() => {
+		document.removeEventListener('click', handleClick, true)
+		document.removeEventListener('input', handleInput, true)
+		document.removeEventListener('keydown', handleKeydown, true)
+	})
+}
+
+/**
+ * Show note notifications when the day changes.
+ */
+function showDayNoteNotifications(year, monthKey, day) {
+	const notes = game.settings.get('dolmenwood', 'calendarNotes')
+	const dayNotes = notes[getNoteKey(year, monthKey, day)]
+	if (!dayNotes || dayNotes.length === 0) return
+	const isGM = game.user.isGM
+	const label = game.i18n.localize('DOLMEN.Calendar.Notes.Notification')
+	for (const note of dayNotes) {
+		if (note.gmOnly && !isGM) continue
+		ui.notifications.info(`${label}: ${note.text}`)
+	}
+}
+
+/**
  * Toggle widget visibility based on setting.
  */
 function toggleWidget(visible) {
@@ -651,12 +904,19 @@ function toggleWidget(visible) {
 /** Debounced resize handler reference for cleanup */
 let resizeHandler = null
 
+/** Track last day for note notifications */
+let lastNotifiedDay = null
+
 /**
  * Initialize the calendar widget. Called from the ready hook.
  */
 export function initCalendarWidget() {
 	const enabled = game.settings.get('dolmenwood', 'showCalendar')
 	if (enabled) injectWidget()
+
+	// Initialize day tracking for note notifications
+	const initCal = worldTimeToCalendar(game.time.worldTime)
+	lastNotifiedDay = getNoteKey(initCal.year, initCal.monthKey, initCal.day)
 
 	// Re-inject when hotbar renders (position may have changed)
 	Hooks.on('renderHotbar', () => {
@@ -665,11 +925,17 @@ export function initCalendarWidget() {
 		}
 	})
 
-	// Update display when world time changes
+	// Update display when world time changes + check for day-change notes
 	Hooks.on('updateWorldTime', () => {
 		if (game.settings.get('dolmenwood', 'showCalendar')) {
 			injectWidget()
 		}
+		const cal = worldTimeToCalendar(game.time.worldTime)
+		const dayKey = getNoteKey(cal.year, cal.monthKey, cal.day)
+		if (lastNotifiedDay !== null && dayKey !== lastNotifiedDay) {
+			showDayNoteNotifications(cal.year, cal.monthKey, cal.day)
+		}
+		lastNotifiedDay = dayKey
 	})
 
 	// Re-render when unseason or weather setting changes

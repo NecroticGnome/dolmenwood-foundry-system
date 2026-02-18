@@ -185,6 +185,7 @@
 		"XPAddTitle": "Add Experience Points",
 		"XPAddButton": "Add",
 		"Cancel": "Cancel",
+		"Close": "Close",
 		"Save": "Save",
 		"Amount": "Amount",
 		"None": "None",
@@ -664,6 +665,7 @@
 			"Year": "Year",
 			"Month": "Month",
 			"Day": "Day",
+			"DateFormat": "{day} of {month}, Year {year}",
 			"Hour": "Hour",
 			"Minute": "Minute",
 			"WeekDays": {
@@ -711,6 +713,17 @@
 				"Visibility": "Poor Visibility: encounter distance halved, +1-in-6 lost",
 				"Wet": "Wet Conditions: building a campfire is difficult",
 				"ChatTitle": "Weather"
+			},
+			"Notes": {
+				"Title": "Calendar Notes",
+				"ButtonTitle": "Calendar Notes",
+				"AddNote": "Add Note",
+				"DeleteNote": "Delete Note",
+				"GmOnly": "GM Only",
+				"Everyone": "Everyone",
+				"Placeholder": "Enter note...",
+				"NoNotes": "No notes for this day.",
+				"Notification": "Calendar Note"
 			}
 		}
 	}
