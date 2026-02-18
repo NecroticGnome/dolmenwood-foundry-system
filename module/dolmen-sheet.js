@@ -215,7 +215,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		} else {
 			context.alignmentChoices = buildChoices('DOLMEN.Alignments', CHOICE_KEYS.alignments)
 		}
-		context.encumbranceChoices = buildChoices('DOLMEN.Encumbrance', CHOICE_KEYS.encumbranceMethods)
+		context.encumbranceMethod = game.settings.get('dolmenwood', 'encumbranceMethod')
+		context.encumbranceMethodLabel = game.i18n.localize(`DOLMEN.Encumbrance.${context.encumbranceMethod}`)
 		context.monthNameChoices = buildChoicesWithBlank('DOLMEN.Months', CHOICE_KEYS.months)
 		// Build day choices (1-31) for birthday selector
 		const dayChoices = { 0: ' ' }
@@ -868,6 +869,25 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		})
 	}
 
+	// Divide item cost by qty, converting to lower denomination if needed
+	static _divideCost(system, qty) {
+		if (!system.cost || qty <= 1) return
+		const denomOrder = ['pp', 'gp', 'sp', 'cp']
+		const toCopper = { pp: 1000, gp: 100, sp: 10, cp: 1 }
+		const totalCp = system.cost * (toCopper[system.costDenomination] || 1)
+		const perUnit = totalCp / qty
+		for (const denom of denomOrder) {
+			const val = perUnit / toCopper[denom]
+			if (Number.isInteger(val) && val > 0) {
+				system.cost = val
+				system.costDenomination = denom
+				return
+			}
+		}
+		system.cost = Math.round(perUnit)
+		system.costDenomination = 'cp'
+	}
+
 	async _onDrop(event) {
 		const data = TextEditor.getDragEventData(event)
 
@@ -903,16 +923,26 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 							}
 						}
 					}
-					// Fallback: strip name and divide weight
+					// Fallback: strip name and divide weight/cost
 					if (!found) {
 						itemData.name = baseName
 						if (qty > 1) {
-							if (itemData.system.weightSlots) itemData.system.weightSlots = +(itemData.system.weightSlots / qty).toFixed(2)
 							if (itemData.system.weightCoins) itemData.system.weightCoins = +(itemData.system.weightCoins / qty).toFixed(2)
+							DolmenSheet._divideCost(itemData.system, qty)
 						}
 					}
 					if (itemData.system.quantity !== undefined) {
 						itemData.system.quantity = qty
+					}
+				}
+				// Strip "(Bag of X)" from name, divide weight and cost by X
+				const bagMatch = itemData.name.match(/\s*\(Bag of (\d+)\)\s*$/i)
+				if (bagMatch) {
+					const bagQty = parseInt(bagMatch[1]) || 1
+					itemData.name = itemData.name.replace(/\s*\(Bag of \d+\)\s*$/i, '').trim()
+					if (bagQty > 1) {
+						if (itemData.system.weightCoins) itemData.system.weightCoins = +(itemData.system.weightCoins / bagQty).toFixed(2)
+						DolmenSheet._divideCost(itemData.system, bagQty)
 					}
 				}
 				await this.actor.createEmbeddedDocuments('Item', [itemData])

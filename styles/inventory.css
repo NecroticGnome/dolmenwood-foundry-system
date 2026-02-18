@@ -17,9 +17,9 @@
 
 .sheet.dolmen .tab-content .encumbrance-grid {
 	display: grid;
-	grid-template-columns: 1fr auto auto;
+	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
-	align-items: end;
+	margin: auto 0;
 }
 
 .sheet.dolmen .tab-content .encumbrance-stat .encumbrance-value {
@@ -30,7 +30,6 @@
 }
 
 .sheet.dolmen .tab-content .encumbrance-stat.encumbrance-load {
-	grid-column: span 2;
 	text-align: center;
 }
 
@@ -49,8 +48,8 @@
 
 .sheet.dolmen .tab-content .coins-grid {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr) 0.25fr;
-	gap: 0.25rem;
+	grid-template-columns: repeat(4, 1fr) 0.35fr;
+	gap: 0;
 }
 
 .sheet.dolmen .tab-content .coins-grid .fa-right-left-large {

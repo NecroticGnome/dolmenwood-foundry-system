@@ -6,11 +6,9 @@
 			<div class="encumbrance-grid">
 				<div class="encumbrance-stat">
 					<label>{{localize "DOLMEN.Encumbrance.Method"}}</label>
-					<select name="system.encumbrance.method">
-						{{selectOptions @root.encumbranceChoices selected=system.encumbrance.method}}
-					</select>
+					<span class="encumbrance-value">{{encumbranceMethodLabel}}</span>
 				</div>
-				{{#if (eq system.encumbrance.method "slots")}}
+				{{#if (eq encumbranceMethod "slots")}}
 				<div class="encumbrance-stat">
 					<label>{{localize "DOLMEN.Inventory.Equipped"}}</label>
 					<span class="encumbrance-value">{{encumbrance.equipped.current}} / {{encumbrance.equipped.max}}</span>
@@ -92,7 +90,7 @@
 						<span class="item-name">{{#if (eq this.system.materialType "cold-iron")}}<i class="fas fa-snowflake"></i> {{/if}}{{#if (eq this.system.materialType "silver")}}<i class="fas fa-star-christmas"></i> {{/if}}{{this.name}}</span>
 						<span class="item-qualities">{{{this.qualitiesDisplay}}}</span>
 						<span class="item-damage">{{this.system.damage}}</span>
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -127,7 +125,7 @@
 						<span class="item-name">{{this.name}}</span>
 						<span class="item-bulk">{{this.bulkDisplay}}</span>
 						<span class="item-ac">{{this.system.ac}}</span>
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -158,7 +156,7 @@
 					<div class="item-row item" data-item-id="{{this.id}}" data-action="openItem">
 						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
 						<span class="item-name">{{this.name}}</span>
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -193,7 +191,7 @@
 						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -228,7 +226,7 @@
 						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -280,7 +278,7 @@
 						<span class="item-name">{{this.name}}</span>
 						<span class="item-qualities">{{{this.qualitiesDisplay}}}</span>
 						<span class="item-damage">{{this.system.damage}}</span>
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -315,7 +313,7 @@
 						<span class="item-name">{{this.name}}</span>
 						<span class="item-bulk">{{this.bulkDisplay}}</span>
 						<span class="item-ac">{{this.system.ac}}</span>
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -346,7 +344,7 @@
 					<div class="item-row item" data-item-id="{{this.id}}" data-action="openItem">
 						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
 						<span class="item-name">{{this.name}}</span>
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -381,7 +379,7 @@
 						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">
@@ -416,7 +414,7 @@
 						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
-						<span class="item-weight">{{#if (eq @root.system.encumbrance.method "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
+						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
 							<span class="qty-value">{{this.system.quantity}}</span>
 							<span class="qty-arrows">

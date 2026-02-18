@@ -117,6 +117,12 @@
 		<h2>{{localize "DOLMEN.Item.ArmorDetails"}}</h2>
 		<div class="form-row">
 			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.ArmorType.label"}}</label>
+				<select name="system.armorType">
+					{{selectOptions @root.armorTypeChoices selected=system.armorType}}
+				</select>
+			</div>
+			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.AC"}}</label>
 				<input type="number" name="system.ac" value="{{system.ac}}" min="0">
 			</div>
@@ -130,12 +136,6 @@
 				<label>{{localize "DOLMEN.Item.Fit.label"}}</label>
 				<select name="system.fit">
 					{{selectOptions @root.armorFitChoices selected=system.fit}}
-				</select>
-			</div>
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.ArmorType.label"}}</label>
-				<select name="system.armorType">
-					{{selectOptions @root.armorTypeChoices selected=system.armorType}}
 				</select>
 			</div>
 		</div>
