@@ -669,6 +669,45 @@ function getNoteKey(year, monthKey, day) {
 }
 
 /**
+ * Rebuild the notes dialog container if it is currently open.
+ * Called from setting-change hooks so all clients stay in sync.
+ */
+function rebuildNotesContainer() {
+	const c = document.querySelector('.calendar-notes-container')
+	if (!c) return
+	const year = parseInt(c.dataset.year)
+	const monthKey = c.dataset.month
+	const selectedDay = parseInt(c.dataset.selectedDay)
+	const noteDays = getNoteDays(year, monthKey)
+	c.innerHTML = `
+		${buildPickerContent(year, monthKey, selectedDay, { noteDays, readOnly: true })}
+		<div class="calendar-notes-panel">
+			${buildNotesPanel(year, monthKey, selectedDay)}
+		</div>
+	`
+}
+
+/**
+ * Handle calendar note socket events (GM only).
+ * Players emit these since they cannot write world settings directly.
+ */
+export function handleCalendarSocket(data) {
+	if (!game.user.isGM) return
+	if (data.action === 'addCalendarNote') {
+		const notes = foundry.utils.deepClone(game.settings.get('dolmenwood', 'calendarNotes'))
+		if (!notes[data.key]) notes[data.key] = []
+		notes[data.key].push(data.note)
+		game.settings.set('dolmenwood', 'calendarNotes', notes)
+	} else if (data.action === 'deleteCalendarNote') {
+		const notes = foundry.utils.deepClone(game.settings.get('dolmenwood', 'calendarNotes'))
+		if (!notes[data.key]) return
+		notes[data.key] = notes[data.key].filter(n => n.id !== data.noteId)
+		if (notes[data.key].length === 0) delete notes[data.key]
+		game.settings.set('dolmenwood', 'calendarNotes', notes)
+	}
+}
+
+/**
  * Get set of days in a month that have notes visible to the current user.
  */
 function getNoteDays(year, monthKey) {
@@ -712,20 +751,24 @@ function buildNotesPanel(year, monthKey, day) {
 			const badge = n.gmOnly
 				? `<span class="calendar-note-badge gm-only">${game.i18n.localize('DOLMEN.Calendar.Notes.GmOnly')}</span>`
 				: `<span class="calendar-note-badge everyone">${game.i18n.localize('DOLMEN.Calendar.Notes.Everyone')}</span>`
-			const del = isGM
+			const canDelete = isGM || !n.gmOnly
+			const del = canDelete
 				? `<a class="calendar-note-delete" data-delete-note="${n.id}" title="${game.i18n.localize('DOLMEN.Calendar.Notes.DeleteNote')}"><i class="fa-solid fa-trash"></i></a>`
 				: ''
 			return `<div class="calendar-note-item">${badge}<span class="calendar-note-text">${n.text}</span>${del}</div>`
 		}).join('')
 	}
 
-	const addForm = isGM ? `
+	const gmCheckbox = isGM
+		? `<label class="calendar-notes-gm-label"><input type="checkbox" class="calendar-notes-gm-check" checked> ${game.i18n.localize('DOLMEN.Calendar.Notes.GmOnly')}</label>`
+		: ''
+	const addForm = `
 		<div class="calendar-notes-add">
 			<input type="text" class="calendar-notes-input" placeholder="${game.i18n.localize('DOLMEN.Calendar.Notes.Placeholder')}">
 			<button type="button" class="calendar-notes-add-btn" title="${game.i18n.localize('DOLMEN.Calendar.Notes.AddNote')}"><i class="fa-solid fa-plus"></i></button>
-			<label class="calendar-notes-gm-label"><input type="checkbox" class="calendar-notes-gm-check" checked> ${game.i18n.localize('DOLMEN.Calendar.Notes.GmOnly')}</label>
+			${gmCheckbox}
 		</div>
-	` : ''
+	`
 
 	return `
 		<div class="calendar-notes-header">${ordinalDay(day)} ${monthName}</div>
@@ -765,23 +808,33 @@ function openNotesDialog() {
 		const text = input?.value?.trim()
 		if (!text) return
 		const key = getNoteKey(parseInt(c.dataset.year), c.dataset.month, parseInt(c.dataset.selectedDay))
-		const notes = foundry.utils.deepClone(game.settings.get('dolmenwood', 'calendarNotes'))
-		if (!notes[key]) notes[key] = []
-		notes[key].push({ id: foundry.utils.randomID(), text, gmOnly: checkbox?.checked ?? true })
-		await game.settings.set('dolmenwood', 'calendarNotes', notes)
-		rebuildContainer()
+		const gmOnly = game.user.isGM ? (checkbox?.checked ?? true) : false
+		const note = { id: foundry.utils.randomID(), text, gmOnly }
+		if (game.user.isGM) {
+			const notes = foundry.utils.deepClone(game.settings.get('dolmenwood', 'calendarNotes'))
+			if (!notes[key]) notes[key] = []
+			notes[key].push(note)
+			await game.settings.set('dolmenwood', 'calendarNotes', notes)
+			rebuildContainer()
+		} else {
+			game.socket.emit('system.dolmenwood', { action: 'addCalendarNote', key, note })
+		}
 	}
 
 	async function deleteNote(noteId) {
 		const c = document.querySelector('.calendar-notes-container')
 		if (!c) return
 		const key = getNoteKey(parseInt(c.dataset.year), c.dataset.month, parseInt(c.dataset.selectedDay))
-		const notes = foundry.utils.deepClone(game.settings.get('dolmenwood', 'calendarNotes'))
-		if (!notes[key]) return
-		notes[key] = notes[key].filter(n => n.id !== noteId)
-		if (notes[key].length === 0) delete notes[key]
-		await game.settings.set('dolmenwood', 'calendarNotes', notes)
-		rebuildContainer()
+		if (game.user.isGM) {
+			const notes = foundry.utils.deepClone(game.settings.get('dolmenwood', 'calendarNotes'))
+			if (!notes[key]) return
+			notes[key] = notes[key].filter(n => n.id !== noteId)
+			if (notes[key].length === 0) delete notes[key]
+			await game.settings.set('dolmenwood', 'calendarNotes', notes)
+			rebuildContainer()
+		} else {
+			game.socket.emit('system.dolmenwood', { action: 'deleteCalendarNote', key, noteId })
+		}
 	}
 
 	function handleClick(event) {
@@ -925,6 +978,14 @@ export function initCalendarWidget() {
 		}
 	})
 
+	// Reposition when sidebar collapses/expands (hotbar shifts)
+	Hooks.on('collapseSidebar', () => {
+		const widget = document.getElementById('dolmen-calendar-widget')
+		if (widget && game.settings.get('dolmenwood', 'showCalendar')) {
+			setTimeout(() => updateWidgetPosition(widget), 300)
+		}
+	})
+
 	// Update display when world time changes + check for day-change notes
 	Hooks.on('updateWorldTime', () => {
 		if (game.settings.get('dolmenwood', 'showCalendar')) {
@@ -938,12 +999,15 @@ export function initCalendarWidget() {
 		lastNotifiedDay = dayKey
 	})
 
-	// Re-render when unseason or weather setting changes
+	// Re-render when unseason, weather, or calendar notes setting changes
 	// Listen on both create (first write in a new world) and update (subsequent writes)
 	const onSettingChange = (setting) => {
 		if ((setting.key === 'dolmenwood.activeUnseason' || setting.key === 'dolmenwood.currentWeather')
 			&& game.settings.get('dolmenwood', 'showCalendar')) {
 			injectWidget()
+		}
+		if (setting.key === 'dolmenwood.calendarNotes') {
+			rebuildNotesContainer()
 		}
 	}
 	Hooks.on('createSetting', onSettingChange)
