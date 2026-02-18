@@ -54,7 +54,7 @@ export function computeMoonSign(month, day) {
  */
 export function computeEncumbrance(actor) {
 	const system = actor.system
-	const method = system.encumbrance.method
+	const method = game.settings.get('dolmenwood', 'encumbranceMethod')
 	const excludedTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune', 'Kindred', 'Class']
 	const items = actor.items.contents.filter(i => !excludedTypes.includes(i.type))
 	const equipped = items.filter(i => i.system.equipped)

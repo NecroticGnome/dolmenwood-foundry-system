@@ -13,6 +13,7 @@ import { setupDamageContextMenu } from './module/chat-damage.js'
 import { setupSaveLinkListeners } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
+import { getFaSymbol } from './module/sheet/data-context.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -77,6 +78,36 @@ Hooks.once('init', async function () {
 		config: true,
 		type: Boolean,
 		default: true
+	})
+
+	game.settings.register('dolmenwood', 'encumbranceMethod', {
+		name: 'DOLMEN.Encumbrance.Method',
+		hint: 'DOLMEN.Encumbrance.MethodHint',
+		scope: 'world',
+		config: true,
+		type: String,
+		default: 'weight',
+		choices: {
+			weight: 'DOLMEN.Encumbrance.weight',
+			treasure: 'DOLMEN.Encumbrance.treasure',
+			slots: 'DOLMEN.Encumbrance.slots'
+		},
+		onChange: () => {
+			ui.items?.render()
+			Object.values(ui.windows).forEach(app => {
+				if (app.collection?.documentName === 'Item') app.render()
+			})
+			foundry.applications.instances?.forEach(app => {
+				if (app.collection?.documentName === 'Item') app.render()
+			})
+			// Re-render open adventurer sheets
+			Object.values(ui.windows).forEach(app => {
+				if (app.document?.type === 'Adventurer') app.render()
+			})
+			foundry.applications.instances?.forEach(app => {
+				if (app.document?.type === 'Adventurer') app.render()
+			})
+		}
 	})
 
 	game.settings.register('dolmenwood', 'significantLoad', {
@@ -247,5 +278,114 @@ Hooks.on('updateItem', (item) => {
 			})
 		}
 	}
+})
+
+// Build item tag HTML for directory entries
+function buildItemTags(item) {
+	const tags = []
+	if (item.type === 'Weapon') {
+		if (item.system?.damage) {
+			const dmgLabel = game.i18n.localize('DOLMEN.Attack.DamageRoll')
+			tags.push(`<span class="compendium-tag tooltip"><i class="fa-sharp-duotone fa-light fa-burst"></i> ${item.system.damage}<span class="tooltiptext">${dmgLabel}</span></span>`)
+		}
+		if (item.system?.qualities?.length) {
+			for (const q of item.system.qualities) {
+				tags.push(`<span class="compendium-tag">${getFaSymbol(q, item)}</span>`)
+			}
+		}
+	} else if (item.type === 'Armor') {
+		if (item.system?.ac != null) {
+			const acLabel = game.i18n.localize('DOLMEN.Combat.AC')
+			const acPrefix = item.system?.armorType === 'shield' ? '+' : ''
+			tags.push(`<span class="compendium-tag tooltip"><i class="fas fa-shield"></i> ${acPrefix}${item.system.ac}<span class="tooltiptext">${acLabel}</span></span>`)
+		}
+		if (item.system?.armorType === 'shield') {
+			const shieldLabel = game.i18n.localize('DOLMEN.Item.ArmorType.shield')
+			tags.push(`<span class="compendium-tag"><i class="fa-regular fa-shield"></i> ${shieldLabel}</span>`)
+		} else if (item.system?.bulk) {
+			const bulkLabel = game.i18n.localize(`DOLMEN.Item.Bulk.${item.system.bulk}`)
+			const bulkIcons = { none: 'fa-regular fa-helmet-battle', light: 'fa-regular fa-helmet-battle', medium: 'fa-duotone fa-solid fa-helmet-battle', heavy: 'fa-solid fa-helmet-battle' }
+			const icon = bulkIcons[item.system.bulk] || 'fa-solid fa-helmet-battle'
+			tags.push(`<span class="compendium-tag"><i class="${icon}"></i> ${bulkLabel}</span>`)
+		}
+	}
+	return tags.length ? tags.join('') : null
+}
+
+// Build weight/cost stats HTML for directory entries
+function buildItemStats(item) {
+	const stats = []
+	const method = game.settings.get('dolmenwood', 'encumbranceMethod')
+	const weight = method === 'slots' ? item.system?.weightSlots : item.system?.weightCoins
+	if (weight) {
+		const wtLabel = game.i18n.localize('DOLMEN.Item.Weight')
+		stats.push(`<span class="compendium-stat tooltip"><i class="fas fa-weight-hanging"></i> <span class="stat-value">${weight}</span><span class="tooltiptext">${wtLabel}</span></span>`)
+	}
+	if (item.system?.cost) {
+		const costLabel = game.i18n.localize('DOLMEN.Item.Cost')
+		stats.push(`<span class="compendium-stat tooltip"><i class="fas fa-coins"></i> <span class="stat-value stat-cost">${item.system.cost}${item.system.costDenomination}</span><span class="tooltiptext">${costLabel}</span></span>`)
+	}
+	return stats.length ? stats.join('') : null
+}
+
+// Inject item tags into a directory listing
+function injectItemTags(el, getItem) {
+	el.classList.add('dolmen')
+	for (const entry of el.querySelectorAll('.directory-item')) {
+		const id = entry.dataset.documentId || entry.dataset.entryId
+		const item = getItem(id)
+		if (!item) continue
+		const tagsHtml = buildItemTags(item)
+		const statsHtml = buildItemStats(item)
+		if (!tagsHtml && !statsHtml) continue
+		const nameEl = entry.querySelector('.entry-name')
+		if (nameEl) {
+			const wrapper = document.createElement('div')
+			wrapper.className = 'compendium-entry-wrapper'
+			nameEl.parentNode.insertBefore(wrapper, nameEl)
+			wrapper.appendChild(nameEl)
+			if (tagsHtml) {
+				const tagDiv = document.createElement('div')
+				tagDiv.className = 'compendium-item-tags'
+				tagDiv.innerHTML = tagsHtml
+				wrapper.appendChild(tagDiv)
+			}
+			if (statsHtml) {
+				const statsDiv = document.createElement('div')
+				statsDiv.className = 'compendium-item-stats'
+				statsDiv.innerHTML = statsHtml
+				wrapper.appendChild(statsDiv)
+			}
+		}
+	}
+}
+
+// Inject item property tags into compendium listings
+Hooks.on('renderCompendium', async (app, html) => {
+	const pack = app.collection
+	if (pack.documentName !== 'Item') return
+	const el = html instanceof HTMLElement ? html : html[0] || html
+	const index = await pack.getIndex({
+		fields: ['system.qualities', 'system.damage', 'system.rangeShort', 'system.rangeMedium', 'system.rangeLong', 'system.ac', 'system.bulk', 'system.armorType', 'system.weightSlots', 'system.weightCoins', 'system.cost', 'system.costDenomination']
+	})
+	injectItemTags(el, id => index.get(id))
+})
+
+// Inject item property tags into the Items sidebar directory
+Hooks.on('renderItemDirectory', (app, html) => {
+	const el = html instanceof HTMLElement ? html : html[0] || html
+	injectItemTags(el, id => game.items.get(id))
+})
+
+// Re-render item listings when a world/compendium item is updated so tags refresh
+Hooks.on('updateItem', (item) => {
+	if (!item.isEmbedded) ui.items?.render()
+	// Re-render any open Item compendium windows
+	foundry.applications.instances?.forEach(app => {
+		if (app.collection?.documentName === 'Item') app.render()
+	})
+	Object.values(ui.windows).forEach(app => {
+		if (app.collection?.documentName === 'Item') app.render()
+	})
 })
 
