@@ -192,7 +192,8 @@
 		"Immortal": "Immortal",
 		"Encumbrance": {
 			"Title": "Encumbrance",
-			"Method": "Method",
+			"Method": "Encumbrance Method",
+			"MethodHint": "The encumbrance calculation method used for all adventurers.",
 			"Current": "Current",
 			"Max": "Max",
 			"Load": "Load",
@@ -404,14 +405,14 @@
 				"heavy": "Heavy"
 			},
 			"Fit": {
-				"label": "Fit",
+				"label": "Kindred Size",
 				"small": "Small",
 				"medium": "Medium",
 				"large": "Large"
 			},
 			"ArmorType": {
 				"label": "Type",
-				"armor": "Body Armor",
+				"armor": "Body",
 				"shield": "Shield"
 			},
 			"ForagedType": {
