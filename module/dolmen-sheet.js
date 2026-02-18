@@ -878,8 +878,43 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 			// If dropped from another actor or compendium, create a copy
 			if (item.parent !== this.actor) {
-				const itemData = item.toObject()
+				let itemData = item.toObject()
 				itemData.system.equipped = targetList === 'equipped'
+				// Strip trailing "(N)" from name, set quantity
+				const qtyMatch = itemData.name.match(/\s*\((\d+)\)\s*$/)
+				if (qtyMatch) {
+					const qty = parseInt(qtyMatch[1]) || 1
+					const baseName = itemData.name.replace(/\s*\(\d+\)\s*$/, '').trim()
+					// Try to find the base item in the same compendium
+					let found = false
+					const uuid = data.uuid || ''
+					const compMatch = uuid.match(/^Compendium\.([^.]+\.[^.]+)\./)
+					if (compMatch) {
+						const pack = game.packs.get(compMatch[1])
+						if (pack) {
+							const index = pack.index.find(e => e.name === baseName)
+							if (index) {
+								const baseItem = await pack.getDocument(index._id)
+								if (baseItem) {
+									itemData = baseItem.toObject()
+									itemData.system.equipped = targetList === 'equipped'
+									found = true
+								}
+							}
+						}
+					}
+					// Fallback: strip name and divide weight
+					if (!found) {
+						itemData.name = baseName
+						if (qty > 1) {
+							if (itemData.system.weightSlots) itemData.system.weightSlots = +(itemData.system.weightSlots / qty).toFixed(2)
+							if (itemData.system.weightCoins) itemData.system.weightCoins = +(itemData.system.weightCoins / qty).toFixed(2)
+						}
+					}
+					if (itemData.system.quantity !== undefined) {
+						itemData.system.quantity = qty
+					}
+				}
 				await this.actor.createEmbeddedDocuments('Item', [itemData])
 			} else {
 				// If dropped within the same actor, toggle equipped state

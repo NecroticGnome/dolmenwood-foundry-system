@@ -21,6 +21,12 @@
 		</section>
 	</div>
 
+	{{#if enrichedDescription}}
+	<section class="item-description-display boxed-section">
+		<div class="item-description-text">{{{enrichedDescription}}}</div>
+	</section>
+	{{/if}}
+
 	{{#if isGear}}
 	<!-- Common gear fields -->
 	<section class="item-common">
@@ -46,6 +52,10 @@
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.StackSize"}}</label>
 				<input type="number" name="system.stackSize" value="{{system.stackSize}}" min="1">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.Quantity"}}</label>
+				<input type="number" name="system.quantity" value="{{system.quantity}}" min="1">
 			</div>
 		</div>
 	</section>

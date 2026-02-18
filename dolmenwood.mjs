@@ -34,6 +34,13 @@ Hooks.once('init', async function () {
 
 	// Register Handlebars helpers
 	Handlebars.registerHelper('add', (a, b) => (a || 0) + (b || 0))
+	Handlebars.registerHelper('mul', (a, b) => (a || 0) * (b || 1))
+	Handlebars.registerHelper('stackWeight', (weight, qty, stackSize) => {
+		const w = weight || 0
+		const q = qty || 1
+		const s = stackSize || 1
+		return s > 1 ? w * Math.ceil(q / s) : w * q
+	})
 	Handlebars.registerHelper('join', (array, separator) => {
 		if (!array || !Array.isArray(array)) return ''
 		return array.join(separator || ', ')

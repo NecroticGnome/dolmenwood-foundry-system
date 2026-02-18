@@ -25,6 +25,7 @@
 .sheet.dolmen.kindred .tab-content .two-columns.header,
 .sheet.dolmen.class .tab-content .two-columns.header {
 	grid-template-columns: auto 5.5rem;
+	flex-shrink: 0;
 }
 
 .sheet.dolmen.item .boxed-section.portrait-section,
@@ -380,6 +381,21 @@
 	font-family: inherit;
 	resize: vertical;
 	box-sizing: border-box;
+}
+
+/* -------------------------------------------- */
+/*  Read-only description on Stats tab          */
+/* -------------------------------------------- */
+
+.sheet.dolmen.item .tab-content section.item-description-display {
+	padding: 0;
+	min-height: unset;
+}
+
+.sheet.dolmen.item .item-description-text {
+	font-size: 0.85rem;
+	line-height: 1.25;
+	padding: 0 0.5rem;
 }
 
 /* -------------------------------------------- */
