@@ -12,6 +12,7 @@ import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, 
 import { setupDamageContextMenu } from './module/chat-damage.js'
 import { setupSaveLinkListeners } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
+import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -118,6 +119,37 @@ Hooks.once('init', async function () {
 		onChange: applyTheme
 	})
 
+	game.settings.register('dolmenwood', 'showCalendar', {
+		name: 'DOLMEN.Calendar.SettingName',
+		hint: 'DOLMEN.Calendar.SettingHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: toggleWidget
+	})
+
+	game.settings.register('dolmenwood', 'activeUnseason', {
+		scope: 'world',
+		config: false,
+		type: String,
+		default: ''
+	})
+
+	game.settings.register('dolmenwood', 'currentWeather', {
+		scope: 'world',
+		config: false,
+		type: Object,
+		default: { text: '', effects: '', roll: 0 }
+	})
+
+	game.settings.register('dolmenwood', 'calendarNotes', {
+		scope: 'world',
+		config: false,
+		type: Object,
+		default: {}
+	})
+
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
 
 	// Re-apply auto theme when Foundry's own light/dark mode changes
@@ -167,6 +199,11 @@ Hooks.once('ready', async function () {
 	if (game.user.isGM && game.settings.get('dolmenwood', 'showWelcomeDialog')) {
 		new WelcomeDialog().render(true)
 	}
+
+	initCalendarWidget()
+
+	// Socket listener for player calendar note operations
+	game.socket.on('system.dolmenwood', handleCalendarSocket)
 })
 
 // Live-preview theme when dropdown changes in settings
