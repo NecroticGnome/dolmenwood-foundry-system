@@ -38,6 +38,7 @@ Hooks.once('init', async function () {
 	// Register combat system (group initiative, tracker, declarations)
 	registerCombatSystem()
 
+
 	// Register Handlebars helpers
 	Handlebars.registerHelper('add', (a, b) => (a || 0) + (b || 0))
 	Handlebars.registerHelper('mul', (a, b) => (a || 0) * (b || 1))

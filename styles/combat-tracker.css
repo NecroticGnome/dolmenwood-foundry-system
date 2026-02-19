@@ -48,7 +48,7 @@
 	align-items: center;
 	padding: 3px 6px;
 	margin-top: 4px;
-	border-left: 4px solid;
+	border-right: 5px solid;
 	background: var(--color-bg-option, rgba(0, 0, 0, 0.04));
 	font-size: 0.7rem;
 	font-weight: bold;
@@ -71,11 +71,37 @@
 .dolmen-combatant {
 	display: flex;
 	align-items: center;
-	padding: 2px 4px;
-	border-left: 3px solid;
-	gap: 4px;
+	gap: 0;
 	min-height: 30px;
 	transition: background-color 0.15s;
+	margin-top: -4px;
+}
+
+/* Group assign (left of border) */
+.dolmen-combatant>.group-assign {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	font-size: 0.6rem;
+	cursor: pointer;
+	transition: opacity 0.15s;
+}
+
+.dolmen-combatant>.group-assign:hover {
+	opacity: 0.7;
+}
+
+/* Main content area with colored border */
+.dolmen-combatant .combatant-main {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	border-right: 5px solid;
+	padding: 2px 4px;
+	gap: 4px;
+	min-width: 0;
 }
 
 .dolmen-combatant:hover {
@@ -159,8 +185,8 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 22px;
-	height: 22px;
+	width: 1rem;
+	height: 1.25rem;
 	font-size: 0.65rem;
 	cursor: pointer;
 	border-radius: 2px;
