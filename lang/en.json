@@ -112,7 +112,56 @@
 			"AC": "AC",
 			"ACTooltip": "Auto-calculated from equipped armor + DEX modifier + shield. Use Adjustments tab to modify.",
 			"Attack": "Attack",
-			"AttackShort": "Atk"
+			"AttackShort": "Atk",
+			"Encounter": "Encounter",
+			"GroupInitiative": "Group Initiative",
+			"Roll": "Roll",
+			"Group": {
+				"Friendly": "Party",
+				"Neutral": "Neutral",
+				"Hostile": "Enemies",
+				"Assign": "Move to Group"
+			},
+			"Declaration": {
+				"Toggle": "Set Declaration",
+				"Magic": "Magic",
+				"MagicTooltip": "Casting a spell, using a rune, or using a glamour",
+				"Flee": "Flee",
+				"FleeTooltip": "Fleeing from melee combat",
+				"Charge": "Charge",
+				"ChargeTooltip": "Charging: +2 attack, -1 AC for the round",
+				"Parry": "Parry",
+				"ParryTooltip": "Parrying: no attack, bonus to AC",
+				"Clear": "Clear"
+			},
+			"ReactionRoll": "Reaction Roll",
+			"Reaction": {
+				"CHAMod": "CHA Modifier",
+				"Attacks": "Attacks!",
+				"Hostile": "Hostile, may attack",
+				"Uncertain": "Uncertain, confused",
+				"Indifferent": "No attack, uninterested",
+				"Friendly": "Enthusiastically friendly"
+			},
+			"SurpriseRoll": "Surprise Check",
+			"Surprised": "Surprised!",
+			"NotSurprised": "Not surprised",
+			"EncounterDistance": "Encounter Distance",
+			"Distance": {
+				"Environment": "Environment",
+				"Dungeon": "Dungeon",
+				"Outdoors": "Outdoors",
+				"Feet": "feet"
+			},
+			"Settings": {
+				"RerollInitiative": "Initiative Each Round",
+				"RerollInitiativeHint": "How to handle initiative when advancing to the next round.",
+				"RerollKeep": "Keep (do not change)",
+				"RerollReset": "Reset (clear each round)",
+				"RerollReroll": "Reroll (auto-roll each round)",
+				"OptionalRules": "Optional Combat Rules",
+				"OptionalRulesHint": "Enable charge and parry declarations (optional Dolmenwood rules)."
+			}
 		},
 		"MagicResistance": "Magic Res.",
 		"SaveTargets": "Save Targets",
@@ -479,7 +528,8 @@
 			"DC": "DC",
 			"Success": "Success",
 			"Failure": "Failure",
-			"NormalRoll": "Normal Roll"
+			"NormalRoll": "Normal Roll",
+			"Result": "Result"
 		},
 		"Edit": "Edit",
 		"Delete": "Delete",

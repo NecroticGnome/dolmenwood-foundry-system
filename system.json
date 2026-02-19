@@ -111,7 +111,7 @@
     "units": "ft"
   },
   "socket": true,
-  "initiative": "1d20",
+  "initiative": "1d6",
   "primaryTokenAttribute": "hp.value",
   "url": "https://github.com/blaze-sanecki/foundry-dolmenwood",
   "manifest": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.2.1/system.json",
