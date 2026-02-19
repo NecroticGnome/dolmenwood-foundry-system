@@ -46,14 +46,14 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 3px 6px;
 	margin-top: 4px;
 	border-right: 5px solid;
-	background: var(--color-bg-option, rgba(0, 0, 0, 0.04));
+	background: rgba(0, 0, 0, 0.5);
 	font-size: 0.7rem;
 	font-weight: bold;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
+	padding: 6px;
 }
 
 .dolmen-group-header .group-initiative {
@@ -134,7 +134,7 @@
 	height: 100%;
 	object-fit: cover;
 	border-radius: 50%;
-	border: 1px solid var(--color-border-light-tertiary, #999);
+	border: 1px solid var(--color-border-light-tertiary);
 }
 
 .dolmen-combatant .combatant-image .defeated-icon {
@@ -164,13 +164,17 @@
 	text-overflow: ellipsis;
 }
 
-/* Declaration badge (inline next to name) */
+/* Declaration badge (inline next to name, tag style) */
 .dolmen-combatant .declaration-badge {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 0.65rem;
-	color: var(--dolmen-color-roll-trait, #7a5a8a);
+	font-size: var(--font-size-10, 10px);
+	background: var(--dolmen-color-title-background, #4b4a44);
+	color: var(--dolmen-color-title, #f5f5f5);
+	padding: 4px 4px;
+	border-radius: 3px;
+	line-height: 1.2;
 }
 
 /* Controls */
@@ -185,25 +189,19 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 1rem;
-	height: 1.25rem;
-	font-size: 0.65rem;
+	font-size: var(--font-size-10, 10px);
 	cursor: pointer;
-	border-radius: 2px;
-	color: var(--color-text-secondary, #666);
-	transition: color 0.15s;
-}
-
-.dolmen-combatant .combatant-control:hover {
-	color: var(--color-text-primary, #333);
+	min-height: unset;
+	height: 1.25rem;
+	width: 1.25rem;
 }
 
 .dolmen-combatant .combatant-control .active-declaration {
-	color: var(--dolmen-color-roll-trait, #7a5a8a);
+	color: var(--dolmen-color-roll-trait);
 }
 
 .dolmen-combatant .combatant-control .fa-skull.active {
-	color: #c00;
+	color: #f66;
 }
 
 /* ---- Tracker Context Menus (shared base) ---- */

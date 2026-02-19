@@ -69,33 +69,33 @@
 			<div class="combatant-controls">
 				{{#if ../../isGM}}
 				{{!-- Hidden Toggle --}}
-				<a class="combatant-control" data-action="toggleHidden" data-tooltip="{{localize 'COMBAT.ToggleVis'}}">
+				<button type="button" class="combatant-control" data-action="toggleHidden" data-tooltip="{{localize 'COMBAT.ToggleVis'}}">
 					<i class="fas {{#if combatant.hidden}}fa-eye-slash{{else}}fa-eye{{/if}}"></i>
-				</a>
+				</button>
 
 				{{!-- Defeated Toggle --}}
-				<a class="combatant-control" data-action="toggleDefeated" data-tooltip="{{localize 'COMBAT.ToggleDead'}}">
+				<button type="button" class="combatant-control" data-action="toggleDefeated" data-tooltip="{{localize 'COMBAT.ToggleDead'}}">
 					<i class="fas fa-skull {{#if combatant.isDefeated}}active{{/if}}"></i>
-				</a>
+				</button>
 
 				{{!-- Declaration Toggle --}}
-				<a class="combatant-control" data-action="cycleDeclaration" data-tooltip="{{localize 'DOLMEN.Combat.Declaration.Toggle'}}">
+				<button type="button" class="combatant-control" data-action="cycleDeclaration" data-tooltip="{{localize 'DOLMEN.Combat.Declaration.Toggle'}}">
 					{{#if combatant.declaration}}
 					<i class="{{combatant.declarationIcon}} active-declaration"></i>
 					{{else}}
 					<i class="fa-regular fa-question"></i>
 					{{/if}}
-				</a>
+				</button>
 				{{else}}
 				{{!-- Player: Declaration Toggle for own combatants --}}
 				{{#if combatant.isOwner}}
-				<a class="combatant-control" data-action="cycleDeclaration" data-tooltip="{{localize 'DOLMEN.Combat.Declaration.Toggle'}}">
+				<button type="button" class="combatant-control" data-action="cycleDeclaration" data-tooltip="{{localize 'DOLMEN.Combat.Declaration.Toggle'}}">
 					{{#if combatant.declaration}}
 					<i class="{{combatant.declarationIcon}} active-declaration"></i>
 					{{else}}
 					<i class="fa-regular fa-question"></i>
 					{{/if}}
-				</a>
+				</button>
 				{{/if}}
 				{{/if}}
 			</div>
