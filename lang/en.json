@@ -1,4 +1,7 @@
 {
+	"GAME": {
+		"Paused": "Timeout"
+	},
 	"TYPES": {
 		"Actor": {
 			"Adventurer": "Adventurer",

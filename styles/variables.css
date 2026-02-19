@@ -629,3 +629,59 @@
 	--dolmen-color-coin-gold: #c5ac21;
 	--dolmen-color-coin-pellucidium: #c0eae5;
 }
+
+/* ── Custom pause image ── */
+#pause {
+	width: 18rem;
+	height: 13.39rem;
+	background: url('../assets/wooden_board.webp');
+	background-size: cover;
+	left: calc(50% - 9rem);
+	gap: 1rem;
+	padding-bottom: 0.25rem;
+	animation: dolmen-pause-tilt-parent 2s cubic-bezier(0.25, 1, 0.25, 1) infinite;
+	animation-delay: -0.25s;
+	top: 0%;
+	filter: drop-shadow(2px 4px 6px black);
+	transform-origin: 50% 5%;
+
+}
+
+#pause img {
+	content: url('../assets/pause_skull_big.webp');
+	animation: dolmen-pause-tilt 2s ease-in-out infinite;
+	transform-origin: 50% 95%;
+	filter: drop-shadow(0px 0px 3px #3d1e00);
+}
+
+#pause figcaption {
+	font-family: 'IM Fell DW Pica', serif;
+	color: #3d1e00;
+	text-shadow: 0 0 3px #ffe0a0;
+	font-size: 2.5rem;
+	letter-spacing: 0;
+}
+
+@keyframes dolmen-pause-tilt {
+
+	0%,
+	100% {
+		transform: rotate(-8deg);
+	}
+
+	50% {
+		transform: rotate(8deg);
+	}
+}
+
+@keyframes dolmen-pause-tilt-parent {
+
+	0%,
+	100% {
+		transform: rotate(-0.5deg);
+	}
+
+	50% {
+		transform: rotate(0.5deg);
+	}
+}
