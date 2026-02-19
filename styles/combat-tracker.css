@@ -1,0 +1,398 @@
+/* -------------------------------------------- */
+/*  Dolmenwood Combat Tracker                   */
+/* -------------------------------------------- */
+
+/* Group colors (overridable via theme variables) */
+.dolmen-combat-tracker {
+	--dolmen-group-friendly: #4caf50;
+	--dolmen-group-neutral: #9e9e9e;
+	--dolmen-group-hostile: #f44336;
+}
+
+/* ---- Toolbar ---- */
+
+.dolmen-tracker-toolbar {
+	display: flex;
+	justify-content: center;
+	padding: 4px 0;
+	border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);
+	margin-bottom: 2px;
+}
+
+.dolmen-tracker-toolbar .toolbar-buttons {
+	display: flex;
+	gap: 4px;
+}
+
+.dolmen-tracker-toolbar button {
+	background: var(--button-background-color);
+	border: 1px solid var(--button-border-color);
+	border-radius: 3px;
+	padding: 3px 8px;
+	cursor: pointer;
+	font-size: 1rem;
+	width: 2rem;
+	color: var(--color-text-primary, #333);
+	transition: background-color 0.15s;
+}
+
+.dolmen-tracker-toolbar button:hover {
+	background: var(--button-hover-background-color);
+}
+
+/* ---- Group Headers ---- */
+
+.dolmen-group-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 3px 6px;
+	margin-top: 4px;
+	border-left: 4px solid;
+	background: var(--color-bg-option, rgba(0, 0, 0, 0.04));
+	font-size: 0.7rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.dolmen-group-header .group-initiative {
+	font-weight: normal;
+	opacity: 0.8;
+}
+
+.dolmen-group-header .group-initiative i {
+	font-size: 0.65rem;
+	margin-right: 2px;
+}
+
+/* ---- Combatant Rows ---- */
+
+.dolmen-combatant {
+	display: flex;
+	align-items: center;
+	padding: 2px 4px;
+	border-left: 3px solid;
+	gap: 4px;
+	min-height: 30px;
+	transition: background-color 0.15s;
+}
+
+.dolmen-combatant:hover {
+	background: var(--color-bg-option, rgba(0, 0, 0, 0.04));
+}
+
+.dolmen-combatant.active {
+	background: var(--color-bg-option, rgba(0, 0, 0, 0.08));
+}
+
+.dolmen-combatant.defeated {
+	opacity: 0.5;
+}
+
+.dolmen-combatant.hidden-combatant {
+	opacity: 0.6;
+}
+
+/* Token image */
+.dolmen-combatant .combatant-image {
+	position: relative;
+	flex: 0 0 28px;
+	width: 28px;
+	height: 28px;
+	cursor: pointer;
+}
+
+.dolmen-combatant .combatant-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+	border: 1px solid var(--color-border-light-tertiary, #999);
+}
+
+.dolmen-combatant .combatant-image .defeated-icon {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 0.85rem;
+	color: #c00;
+	text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Name + declaration */
+.dolmen-combatant .combatant-info {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.dolmen-combatant .combatant-name {
+	font-size: 0.75rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Declaration badge (inline next to name) */
+.dolmen-combatant .declaration-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.65rem;
+	color: var(--dolmen-color-roll-trait, #7a5a8a);
+}
+
+/* Controls */
+.dolmen-combatant .combatant-controls {
+	flex: 0 0 auto;
+	display: flex;
+	gap: 2px;
+	align-items: center;
+}
+
+.dolmen-combatant .combatant-control {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	font-size: 0.65rem;
+	cursor: pointer;
+	border-radius: 2px;
+	color: var(--color-text-secondary, #666);
+	transition: color 0.15s;
+}
+
+.dolmen-combatant .combatant-control:hover {
+	color: var(--color-text-primary, #333);
+}
+
+.dolmen-combatant .combatant-control .active-declaration {
+	color: var(--dolmen-color-roll-trait, #7a5a8a);
+}
+
+.dolmen-combatant .combatant-control .fa-skull.active {
+	color: #c00;
+}
+
+/* ---- Tracker Context Menus (shared base) ---- */
+
+.dolmen.dolmen-tracker-menu {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-title-background);
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	z-index: 10000;
+	min-width: 130px;
+	overflow: hidden;
+	padding: 0;
+}
+
+/* Clickable menu items */
+.dolmen.dolmen-tracker-menu .tracker-menu-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.4rem 0.5rem;
+	cursor: pointer;
+	transition: background-color 0.1s;
+	color: var(--dolmen-color-text);
+	font-size: 0.8rem;
+}
+
+.dolmen.dolmen-tracker-menu .tracker-menu-item:hover {
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+}
+
+.dolmen.dolmen-tracker-menu .tracker-menu-item i {
+	font-size: 1rem;
+	width: 1.2rem;
+	text-align: center;
+}
+
+.dolmen.dolmen-tracker-menu .tracker-menu-item.active {
+	font-weight: bold;
+	color: var(--dolmen-color-roll-trait);
+}
+
+.dolmen.dolmen-tracker-menu .tracker-menu-item.active:hover {
+	color: var(--dolmen-color-background);
+}
+
+.dolmen.dolmen-tracker-menu .tracker-menu-item.selected {
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	font-weight: bold;
+}
+
+.dolmen.dolmen-tracker-menu .tracker-menu-item.menu-clear {
+	opacity: 0.7;
+}
+
+/* Modifier grid */
+.dolmen.dolmen-tracker-menu .numeric-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 2px;
+	padding: 0.3rem;
+}
+
+.dolmen.dolmen-tracker-menu .numeric-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.25rem 0;
+	cursor: pointer;
+	font-size: 0.75rem;
+	font-weight: bold;
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 2px;
+	background-color: var(--dolmen-color-inner-background);
+	transition: background-color 0.1s;
+	user-select: none;
+	color: var(--dolmen-color-text);
+}
+
+.dolmen.dolmen-tracker-menu .numeric-btn:hover {
+	background-color: var(--dolmen-color-box-background);
+}
+
+.dolmen.dolmen-tracker-menu .numeric-btn.selected {
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	border-color: var(--dolmen-color-title-background);
+}
+
+/* Roll button */
+.dolmen.dolmen-tracker-menu .tracker-roll-btn {
+	padding: 0.3rem;
+}
+
+.dolmen.dolmen-tracker-menu .tracker-roll-btn button {
+	width: 100%;
+	padding: 0.3rem;
+	font-size: 0.8rem;
+	font-weight: bold;
+	cursor: pointer;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-background);
+	border: none;
+	border-radius: 2px;
+	transition: opacity 0.15s;
+}
+
+.dolmen.dolmen-tracker-menu .tracker-roll-btn button:hover {
+	opacity: 0.85;
+}
+
+/* Label text */
+.dolmen.dolmen-tracker-menu .tracker-menu-label {
+	padding: 0.4rem 0.5rem;
+	font-size: 0.8rem;
+	font-weight: bold;
+	color: var(--dolmen-color-text);
+}
+
+/* Manual input row */
+.dolmen.dolmen-tracker-menu .tracker-manual-entry {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.4rem 0.5rem;
+	font-size: 0.8rem;
+	color: var(--dolmen-color-text);
+}
+
+.dolmen.dolmen-tracker-menu .tracker-manual-entry input {
+	width: 3rem;
+	text-align: center;
+	font-size: 0.8rem;
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 2px;
+	background: var(--dolmen-color-inner-background);
+	color: var(--dolmen-color-text);
+}
+
+/* ---- Empty State ---- */
+
+.dolmen-tracker-empty {
+	padding: 8px;
+	text-align: center;
+	font-size: 0.75rem;
+	font-style: italic;
+	opacity: 0.6;
+}
+
+/* ---- Combat Roll Chat Cards ---- */
+
+.dolmen-combat-roll {
+	padding: 4px 8px;
+}
+
+.dolmen-combat-roll h3 {
+	margin: 0 0 4px 0;
+	font-size: 0.85rem;
+	border-bottom: 1px solid var(--color-border-light-tertiary, #ccc);
+	padding-bottom: 2px;
+}
+
+.dolmen-combat-roll h3 i {
+	margin-right: 4px;
+}
+
+.dolmen-combat-roll .dolmen-roll-details {
+	font-size: 0.8rem;
+	line-height: 1.4;
+}
+
+.dolmen-combat-roll .dolmen-roll-result {
+	font-weight: bold;
+	margin-top: 2px;
+	font-size: 0.85rem;
+}
+
+/* Morale results */
+.dolmen-combat-roll .morale-holds {
+	color: var(--dolmen-color-success, #228b22);
+}
+
+.dolmen-combat-roll .morale-breaks {
+	color: var(--dolmen-color-failure, #cc0000);
+}
+
+/* Surprise results */
+.dolmen-combat-roll .surprise-yes {
+	color: var(--dolmen-color-failure, #cc0000);
+	font-weight: bold;
+}
+
+.dolmen-combat-roll .surprise-no {
+	color: var(--dolmen-color-success, #228b22);
+}
+
+/* Reaction categories */
+.dolmen-combat-roll .reaction-attacks {
+	color: #c00;
+}
+
+.dolmen-combat-roll .reaction-hostile {
+	color: #e65100;
+}
+
+.dolmen-combat-roll .reaction-uncertain {
+	color: #f57f17;
+}
+
+.dolmen-combat-roll .reaction-indifferent {
+	color: #2e7d32;
+}
+
+.dolmen-combat-roll .reaction-friendly {
+	color: #1565c0;
+}

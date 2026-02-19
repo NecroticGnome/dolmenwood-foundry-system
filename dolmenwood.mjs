@@ -1,4 +1,4 @@
-/* global CONFIG, game, Hooks, foundry, Handlebars */
+/* global CONFIG, game, Hooks, foundry, Handlebars, ui */
 
 import DOLMENWOOD from './module/config.js'
 import DolmenSheet from './module/dolmen-sheet.js'
@@ -14,6 +14,7 @@ import { setupSaveLinkListeners } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { getFaSymbol } from './module/sheet/data-context.js'
+import { registerCombatSystem } from './module/combat/combat.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -33,6 +34,9 @@ function applyTheme(theme) {
 
 Hooks.once('init', async function () {
 	CONFIG.DOLMENWOOD = DOLMENWOOD
+
+	// Register combat system (group initiative, tracker, declarations)
+	registerCombatSystem()
 
 	// Register Handlebars helpers
 	Handlebars.registerHelper('add', (a, b) => (a || 0) + (b || 0))
