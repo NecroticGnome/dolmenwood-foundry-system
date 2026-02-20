@@ -114,8 +114,8 @@
   "initiative": "1d6",
   "primaryTokenAttribute": "hp.value",
   "url": "https://github.com/blaze-sanecki/foundry-dolmenwood",
-  "manifest": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.3.3/system.json",
-  "download": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.3.3/dolmenwood-foundry-system.zip",
+  "manifest": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.3.4/system.json",
+  "download": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.3.4/dolmenwood-foundry-system.zip",
   "documentTypes": {
     "Actor": {
       "Adventurer": {
