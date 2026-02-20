@@ -11,8 +11,9 @@
 	font-family: var(--dolmen-font-body, sans-serif);
 }
 
-/* Raise above hotbar when hovering the time section so GM controls are accessible */
-#dolmen-calendar-widget:has(.calendar-time:hover) {
+/* Raise above hotbar when hovering time section or while GM controls are active */
+#dolmen-calendar-widget:has(.calendar-time:hover),
+#dolmen-calendar-widget.controls-active {
 	z-index: 69;
 }
 
@@ -295,7 +296,8 @@
 	justify-content: space-between;
 }
 
-.calendar-time:hover .calendar-gm-controls {
+.calendar-time:hover .calendar-gm-controls,
+.controls-active .calendar-gm-controls {
 	opacity: 1;
 	pointer-events: auto;
 }
