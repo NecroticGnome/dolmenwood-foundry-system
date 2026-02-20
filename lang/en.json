@@ -114,6 +114,8 @@
 			"HP": "HP",
 			"AC": "AC",
 			"ACTooltip": "Auto-calculated from equipped armor + DEX modifier + shield. Use Adjustments tab to modify.",
+			"Unarmored": "Unarmored",
+			"Adjustment": "Adjustment",
 			"Attack": "Attack",
 			"AttackShort": "Atk",
 			"Encounter": "Encounter",
