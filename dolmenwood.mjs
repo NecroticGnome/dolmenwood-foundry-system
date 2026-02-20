@@ -61,6 +61,25 @@ Hooks.once('init', async function () {
 		onChange: applyTheme
 	})
 
+	game.settings.register('dolmenwood', 'showCalendar', {
+		name: 'DOLMEN.Calendar.SettingName',
+		hint: 'DOLMEN.Calendar.SettingHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: toggleWidget
+	})
+
+	game.settings.register('dolmenwood', 'autoWeather', {
+		name: 'DOLMEN.Calendar.Weather.AutoSettingName',
+		hint: 'DOLMEN.Calendar.Weather.AutoSettingHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false
+	})
+
 	// Register combat system (group initiative, tracker, declarations)
 	registerCombatSystem()
 
@@ -100,15 +119,6 @@ Hooks.once('init', async function () {
 		Kindred: KindredDataModel,
 		Class: ClassDataModel
 	}
-
-	game.settings.register('dolmenwood', 'showWelcomeDialog', {
-		name: 'DOLMEN.Welcome.SettingName',
-		hint: 'DOLMEN.Welcome.SettingHint',
-		scope: 'client',
-		config: true,
-		type: Boolean,
-		default: true
-	})
 
 	game.settings.register('dolmenwood', 'encumbranceMethod', {
 		name: 'DOLMEN.Encumbrance.Method',
@@ -154,23 +164,13 @@ Hooks.once('init', async function () {
 		}
 	})
 
-	game.settings.register('dolmenwood', 'showCalendar', {
-		name: 'DOLMEN.Calendar.SettingName',
-		hint: 'DOLMEN.Calendar.SettingHint',
-		scope: 'world',
+	game.settings.register('dolmenwood', 'showWelcomeDialog', {
+		name: 'DOLMEN.Welcome.SettingName',
+		hint: 'DOLMEN.Welcome.SettingHint',
+		scope: 'client',
 		config: true,
 		type: Boolean,
-		default: true,
-		onChange: toggleWidget
-	})
-
-	game.settings.register('dolmenwood', 'autoWeather', {
-		name: 'DOLMEN.Calendar.Weather.AutoSettingName',
-		hint: 'DOLMEN.Calendar.Weather.AutoSettingHint',
-		scope: 'world',
-		config: true,
-		type: Boolean,
-		default: false
+		default: true
 	})
 
 	game.settings.register('dolmenwood', 'activeUnseason', {
