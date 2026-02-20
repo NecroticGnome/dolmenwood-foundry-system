@@ -627,6 +627,11 @@ async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, 
 		modifierNames.push(numericMod > 0 ? `+${numericMod}` : `${numericMod}`)
 	}
 
+	// Add exhaustion badge
+	if (sheet.actor.system.exhaustion) {
+		modifierNames.push(`<span title="${sheet.actor.system.exhaustion}">${game.i18n.localize('DOLMEN.Exhaustion')}</span>`)
+	}
+
 	// Attack type name for chat
 	const attackModeName = attackMode !== 'normal'
 		? game.i18n.localize(`DOLMEN.Attack.Type.${attackMode.charAt(0).toUpperCase() + attackMode.slice(1)}`)
@@ -637,6 +642,7 @@ async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, 
 	const finalAttackMod = totalMod + attackModeBonus + modAttackBonus + numericMod + proficiencyPenalty
 
 	// Determine damage formula (melee adds STR modifier; damageOverride already includes STR)
+	const exhaustion = sheet.actor.system.exhaustion || 0
 	let damageFormula
 	if (damageOverride) {
 		damageFormula = damageOverride
@@ -653,6 +659,9 @@ async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, 
 				? `${damageFormula} + ${modDamageBonus}`
 				: `${damageFormula} - ${Math.abs(modDamageBonus)}`
 		}
+	}
+	if (exhaustion !== 0) {
+		damageFormula = `${damageFormula} - ${Math.abs(exhaustion)}`
 	}
 
 	// Special text for push (interactive save link)
@@ -949,6 +958,11 @@ async function executeMissileAttack(sheet, weapon, selectedModifiers, numericMod
 		modifierNames.push(numericMod > 0 ? `+${numericMod}` : `${numericMod}`)
 	}
 
+	// Add exhaustion badge
+	if (sheet.actor.system.exhaustion) {
+		modifierNames.push(`<span title="${sheet.actor.system.exhaustion}">${game.i18n.localize('DOLMEN.Exhaustion')}</span>`)
+	}
+
 	// Compute total attack modifier (includes range modifier)
 	const { totalMod } = getAttackModifiers(sheet, 'missile')
 	const finalAttackMod = totalMod + modAttackBonus + numericMod + rangeMod
@@ -959,6 +973,10 @@ async function executeMissileAttack(sheet, weapon, selectedModifiers, numericMod
 		damageFormula = modDamageBonus > 0
 			? `${damageFormula} + ${modDamageBonus}`
 			: `${damageFormula} - ${Math.abs(modDamageBonus)}`
+	}
+	const exhaustion = sheet.actor.system.exhaustion || 0
+	if (exhaustion !== 0) {
+		damageFormula = `${damageFormula} - ${Math.abs(exhaustion)}`
 	}
 
 	await performAttackRoll(sheet, weapon, 'missile', {

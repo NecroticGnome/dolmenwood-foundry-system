@@ -254,7 +254,7 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 		},
 		ac: computedAC + (adj.ac || 0) + getTraitAdj('ac'),
 		acBreakdown,
-		attack: system.attack + (adj.attack || 0) + getTraitAdj('attack'),
+		attack: system.attack + (adj.attack || 0) + getTraitAdj('attack') + (system.exhaustion || 0),
 		attackMelee: getTraitAdj('attack.melee'),
 		attackMissile: getTraitAdj('attack.missile'),
 		saves: {

@@ -1,8 +1,8 @@
 <section class="tab-content tab-inventory {{tab.cssClass}}" data-group="primary" data-tab="inventory">
 	<section class="two-columns">
-		<!-- Encumbrance Section -->
+		<!-- Encumbrance & Exhaustion Section -->
 		<section class="encumbrance boxed-section">
-			<h2><i class="fas fa-weight-hanging"></i> {{localize "DOLMEN.Encumbrance.Title"}}</h2>
+			<h2><i class="fas fa-weight-hanging"></i> {{localize "DOLMEN.Encumbrance.TitleFull"}}</h2>
 			<div class="encumbrance-grid">
 				<div class="encumbrance-stat">
 					<label>{{localize "DOLMEN.Encumbrance.Method"}}</label>
@@ -23,6 +23,14 @@
 					<span class="encumbrance-value">{{encumbrance.current}} / {{encumbrance.max}}</span>
 				</div>
 				{{/if}}
+				<div class="encumbrance-stat exhaustion-stat">
+					<label>{{localize "DOLMEN.Exhaustion"}}</label>
+					<div class="exhaustion-buttons">
+						{{#each @root.exhaustionValues}}
+						<button type="button" class="exhaustion-btn {{#if this.selected}}selected{{/if}}" data-action="setExhaustion" data-value="{{this.value}}">{{this.label}}</button>
+						{{/each}}
+					</div>
+				</div>
 			</div>
 		</section>
 
