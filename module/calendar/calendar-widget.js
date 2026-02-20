@@ -233,11 +233,22 @@ function renderWidget() {
 
 	// Holiday
 	const holiday = getHoliday(cal.monthKey, cal.day)
-	const holidayHtml = holiday
-		? `<div class="calendar-holiday-stripe">
-				${holiday.split(' & ').map(h => `<div class="calendar-holiday-line"><i class="fa-solid fa-star"></i><span>${h}</span></div>`).join('')}
+	let holidayHtml = ''
+	if (holiday) {
+		const holidays = holiday.split(' & ')
+		if (holidays.length > 1) {
+			const tooltipLines = holidays.map(h => `<div class="calendar-holiday-line"><i class="fa-solid fa-star"></i><span>${h}</span></div>`).join('')
+			holidayHtml = `<div class="calendar-holiday-stripe">
+				<div class="calendar-holiday-line tooltip"><i class="fa-solid fa-star"></i><span>${game.i18n.localize('DOLMEN.Calendar.MultipleHolidays')}</span>
+					<span class="tooltiptext calendar-holiday-tooltip">${tooltipLines}</span>
+				</div>
 			</div>`
-		: ''
+		} else {
+			holidayHtml = `<div class="calendar-holiday-stripe">
+				<div class="calendar-holiday-line"><i class="fa-solid fa-star"></i><span>${holidays[0]}</span></div>
+			</div>`
+		}
+	}
 
 	const arcSvg = renderArc(position, isDay, phaseIcon)
 	const sky = computeSkyOpacities(cal.hour + cal.minute / 60, sunrise, sunset)
@@ -335,15 +346,27 @@ function renderWidget() {
 }
 
 /**
- * Position the widget centered above the hotbar using its bounding rect.
+ * Position the widget below the hotbar with the arc nestled in a gap between slots 5 and 6.
  */
 function updateWidgetPosition(widget) {
 	const hotbar = document.getElementById('hotbar')
 	if (!hotbar) return
-	const rect = hotbar.getBoundingClientRect()
+
+	// Shrink hotbar slots and prevent 2-row collapse
+	hotbar.classList.add('dolmen-calendar-active')
+	hotbar.style.setProperty('--hotbar-size', '50px')
+	const slot6 = hotbar.querySelector('#action-bar .slot:nth-child(6)')
+	if (slot6) slot6.style.marginLeft = `${ARC_WIDTH}px`
+
+	// Push hotbar up above the calendar
+	hotbar.style.marginBottom = '3.5rem'
+
+	// Center widget on the action bar (macro slots), ignoring asymmetric control buttons
+	const actionBar = hotbar.querySelector('#action-bar')
+	if (!actionBar) return
+	const actionRect = actionBar.getBoundingClientRect()
 	const widgetRect = widget.getBoundingClientRect()
-	widget.style.left = `${rect.left + rect.width / 2 - widgetRect.width / 2}px`
-	widget.style.bottom = `${window.innerHeight - rect.top + 4}px`
+	widget.style.left = `${actionRect.left + actionRect.width / 2 - widgetRect.width / 2}px`
 }
 
 /**
@@ -950,7 +973,18 @@ function toggleWidget(visible) {
 		injectWidget()
 	} else if (widget) {
 		widget.classList.toggle('hidden', !visible)
-		if (visible) updateWidgetPosition(widget)
+		if (visible) {
+			updateWidgetPosition(widget)
+		} else {
+			const hotbar = document.getElementById('hotbar')
+			if (hotbar) {
+				hotbar.style.marginBottom = ''
+				hotbar.style.removeProperty('--hotbar-size')
+				hotbar.classList.remove('dolmen-calendar-active')
+				const slot6 = hotbar.querySelector('#action-bar .slot:nth-child(6)')
+				if (slot6) slot6.style.marginLeft = ''
+			}
+		}
 	}
 }
 
@@ -995,6 +1029,9 @@ export function initCalendarWidget() {
 		const dayKey = getNoteKey(cal.year, cal.monthKey, cal.day)
 		if (lastNotifiedDay !== null && dayKey !== lastNotifiedDay) {
 			showDayNoteNotifications(cal.year, cal.monthKey, cal.day)
+			if (game.user.isGM && game.settings.get('dolmenwood', 'autoWeather')) {
+				rollWeather()
+			}
 		}
 		lastNotifiedDay = dayKey
 	})
