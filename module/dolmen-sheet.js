@@ -79,7 +79,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			memorizeSpell: DolmenSheet._onMemorizeSpell,
 			forgetSpell: DolmenSheet._onForgetSpell,
 			memorizeToSlot: DolmenSheet._onMemorizeToSlot,
-			castSpell: DolmenSheet._onCastSpell
+			castSpell: DolmenSheet._onCastSpell,
+			setExhaustion: DolmenSheet._onSetExhaustion
 		},
 		dragDrop: [{ dropSelector: '.item-list' }]
 	}
@@ -217,6 +218,11 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		}
 		context.encumbranceMethod = game.settings.get('dolmenwood', 'encumbranceMethod')
 		context.encumbranceMethodLabel = game.i18n.localize(`DOLMEN.Encumbrance.${context.encumbranceMethod}`)
+		context.exhaustionValues = [0, -1, -2, -3, -4].map(v => ({
+			value: v,
+			label: v === 0 ? '0' : String(v),
+			selected: actor.system.exhaustion === v
+		}))
 		context.monthNameChoices = buildChoicesWithBlank('DOLMEN.Months', CHOICE_KEYS.months)
 		// Build day choices (1-31) for birthday selector
 		const dayChoices = { 0: ' ' }
@@ -867,6 +873,11 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			content,
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
+	}
+
+	static async _onSetExhaustion(_event, target) {
+		const value = Number(target.dataset.value)
+		await this.actor.update({ 'system.exhaustion': value })
 	}
 
 	// Divide item cost by qty, converting to lower denomination if needed

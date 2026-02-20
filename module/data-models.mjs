@@ -510,6 +510,9 @@ export class AdventurerDataModel extends ActorDataModel {
 				max: new NumberField({ required: true, integer: true, min: 0, initial: 40 })
 			}),
 
+			// Exhaustion penalty (0 to -4)
+			exhaustion: new NumberField({ required: true, integer: true, min: -4, max: 0, initial: 0 }),
+
 			// Coins
 			coins: new SchemaField({
 				copper: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
