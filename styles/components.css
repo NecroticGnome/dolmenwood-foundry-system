@@ -244,6 +244,7 @@
 	cursor: pointer;
 	transition: background-color 0.1s;
 	border-bottom: 1px solid var(--dolmen-color-box-background);
+	color: var(--dolmen-color-h3);
 }
 
 .dolmen-weapon-context-menu .weapon-menu-item:last-child {
@@ -252,7 +253,7 @@
 
 .dolmen-weapon-context-menu .weapon-menu-item:hover {
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 }
 
 .dolmen-weapon-context-menu .weapon-menu-item .weapon-icon {

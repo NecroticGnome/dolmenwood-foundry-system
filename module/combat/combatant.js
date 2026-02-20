@@ -9,16 +9,20 @@
 /** Group constants */
 export const GROUPS = {
 	FRIENDLY: 0,
-	NEUTRAL: -1,
-	HOSTILE: -2
+	GROUP_A: -2,
+	GROUP_B: -3,
+	GROUP_C: -4,
+	GROUP_D: -1,
+	GROUP_E: -5,
+	GROUP_F: -6
 }
 
 /** Map token disposition values to group constants */
 const DISPOSITION_TO_GROUP = {
 	[CONST.TOKEN_DISPOSITIONS.FRIENDLY]: GROUPS.FRIENDLY,
-	[CONST.TOKEN_DISPOSITIONS.NEUTRAL]: GROUPS.NEUTRAL,
-	[CONST.TOKEN_DISPOSITIONS.HOSTILE]: GROUPS.HOSTILE,
-	[CONST.TOKEN_DISPOSITIONS.SECRET]: GROUPS.HOSTILE
+	[CONST.TOKEN_DISPOSITIONS.NEUTRAL]: GROUPS.GROUP_D,
+	[CONST.TOKEN_DISPOSITIONS.HOSTILE]: GROUPS.GROUP_A,
+	[CONST.TOKEN_DISPOSITIONS.SECRET]: GROUPS.GROUP_A
 }
 
 export default class DolmenCombatant extends Combatant {
@@ -33,7 +37,7 @@ export default class DolmenCombatant extends Combatant {
 		const manual = this.combat?.getGroupFor?.(this.id)
 		if (manual !== null && manual !== undefined) return manual
 		const disposition = this.token?.disposition ?? CONST.TOKEN_DISPOSITIONS.HOSTILE
-		return DISPOSITION_TO_GROUP[disposition] ?? GROUPS.HOSTILE
+		return DISPOSITION_TO_GROUP[disposition] ?? GROUPS.GROUP_A
 	}
 
 	/**

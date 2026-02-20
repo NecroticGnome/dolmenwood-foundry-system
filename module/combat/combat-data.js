@@ -16,18 +16,38 @@ import { GROUPS } from './combatant.js'
 export const GROUP_CONFIG = {
 	[GROUPS.FRIENDLY]: {
 		labelKey: 'DOLMEN.Combat.Group.Friendly',
-		color: 'var(--dolmen-group-friendly, #4caf50)',
+		color: 'var(--dolmen-group-friendly, #44cc00)',
 		sortOrder: 0
 	},
-	[GROUPS.NEUTRAL]: {
-		labelKey: 'DOLMEN.Combat.Group.Neutral',
-		color: 'var(--dolmen-group-neutral, #9e9e9e)',
+	[GROUPS.GROUP_A]: {
+		labelKey: 'DOLMEN.Combat.Group.GroupA',
+		color: 'var(--dolmen-group-a, #cc4422)',
 		sortOrder: 1
 	},
-	[GROUPS.HOSTILE]: {
-		labelKey: 'DOLMEN.Combat.Group.Hostile',
-		color: 'var(--dolmen-group-hostile, #f44336)',
+	[GROUPS.GROUP_B]: {
+		labelKey: 'DOLMEN.Combat.Group.GroupB',
+		color: 'var(--dolmen-group-b, #cc8822)',
 		sortOrder: 2
+	},
+	[GROUPS.GROUP_C]: {
+		labelKey: 'DOLMEN.Combat.Group.GroupC',
+		color: 'var(--dolmen-group-c, #ddbb00)',
+		sortOrder: 3
+	},
+	[GROUPS.GROUP_D]: {
+		labelKey: 'DOLMEN.Combat.Group.GroupD',
+		color: 'var(--dolmen-group-d, #2288cc)',
+		sortOrder: 4
+	},
+	[GROUPS.GROUP_E]: {
+		labelKey: 'DOLMEN.Combat.Group.GroupE',
+		color: 'var(--dolmen-group-e, #8822cc)',
+		sortOrder: 5
+	},
+	[GROUPS.GROUP_F]: {
+		labelKey: 'DOLMEN.Combat.Group.GroupF',
+		color: 'var(--dolmen-group-f, #cc44cc)',
+		sortOrder: 6
 	}
 }
 
@@ -125,7 +145,7 @@ export function prepareTrackerGroups(combat, optionalRules) {
 	const result = []
 
 	for (const [groupId, combatants] of grouped) {
-		const config = GROUP_CONFIG[groupId] || GROUP_CONFIG[GROUPS.HOSTILE]
+		const config = GROUP_CONFIG[groupId] || GROUP_CONFIG[GROUPS.GROUP_A]
 		const sorted = sortWithinGroup(combatants)
 
 		// Get group initiative (all combatants in a group share one roll)
@@ -142,7 +162,7 @@ export function prepareTrackerGroups(combat, optionalRules) {
 		})
 	}
 
-	// Sort groups by sortOrder
+	// Sort groups by sortOrder (initiative shown via dice icons)
 	result.sort((a, b) => a.sortOrder - b.sortOrder)
 	return result
 }
