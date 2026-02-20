@@ -514,8 +514,8 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			return
 		}
 
-		// No ranges: execute immediately
-		this._executeCreatureAttack(attack, 0, null)
+		// No ranges: open modifier panel
+		this._openCreatureModifierPanel(attack, 0, null, position)
 	}
 
 	_openRangeMenu(attack, position) {
@@ -542,8 +542,53 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				const rangeMod = parseInt(item.dataset.rangeMod)
 				const rangeName = item.dataset.rangeName
 				menu.remove()
-				this._executeCreatureAttack(attack, rangeMod, rangeName)
+				this._openCreatureModifierPanel(attack, rangeMod, rangeName, position)
 			}
+		})
+	}
+
+	_openCreatureModifierPanel(attack, rangeMod, rangeName, position) {
+		// Save-type attacks skip the modifier panel
+		if (attack.attackType === 'save') {
+			this._executeCreatureAttack(attack, rangeMod, rangeName)
+			return
+		}
+
+		const rollLabel = game.i18n.localize('DOLMEN.Attack.Roll')
+
+		let html = `<div class="roll-btn"><i class="fas fa-dice-d20"></i> ${rollLabel}</div>`
+		html += '<div class="menu-separator"></div>'
+		html += '<div class="numeric-grid">'
+		for (const val of [-4, -3, -2, -1]) {
+			html += `<div class="numeric-btn" data-num-mod="${val}">${val}</div>`
+		}
+		for (const val of [1, 2, 3, 4]) {
+			html += `<div class="numeric-btn" data-num-mod="${val}">+${val}</div>`
+		}
+		html += '</div>'
+
+		const panel = createContextMenu(this, {
+			html,
+			position,
+			menuClass: 'dolmen-weapon-context-menu modifier-panel',
+			onItemClick: () => {}
+		})
+
+		// Numeric button behavior (single-select toggle)
+		panel.querySelectorAll('.numeric-btn').forEach(btn => {
+			btn.addEventListener('click', () => {
+				const wasSelected = btn.classList.contains('selected')
+				panel.querySelectorAll('.numeric-btn').forEach(b => b.classList.remove('selected'))
+				if (!wasSelected) btn.classList.add('selected')
+			})
+		})
+
+		// ROLL button
+		panel.querySelector('.roll-btn').addEventListener('click', () => {
+			const selectedNumBtn = panel.querySelector('.numeric-btn.selected')
+			const numericMod = selectedNumBtn ? parseInt(selectedNumBtn.dataset.numMod) : 0
+			panel.remove()
+			this._executeCreatureAttack(attack, rangeMod + numericMod, rangeName)
 		})
 	}
 
