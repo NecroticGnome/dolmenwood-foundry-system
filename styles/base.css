@@ -65,6 +65,9 @@
 span.proficiency-value {
 	line-height: 2rem;
 	margin-left: 0.2rem;
+	background-color: var(--dolmen-color-inner-background);
+	border-radius: 3px;
+	padding: 0.1rem 0.4rem;
 }
 
 /* Rollable Icons */
@@ -103,8 +106,13 @@ span.proficiency-value {
 .sheet.dolmen .tab-content input:not([type="checkbox"]):not([type="radio"]),
 .sheet.dolmen .tab-content select,
 .sheet.dolmen .tab-content textarea {
-	background-color: var(--dolmen-color-background);
+	background-color: var(--dolmen-color-box-background);
 	color: var(--dolmen-color-text);
+}
+
+.sheet.dolmen .tab-content select option {
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-title);
 	border: 1px solid var(--dolmen-color-input-border);
 	border-radius: 2px;
 	padding: 0.25rem;

@@ -6,7 +6,7 @@
  */
 
 import { AdventurerDataModel } from '../data-models.mjs'
-import { computeTraitAdjustments } from './trait-helpers.js'
+import { computeTraitAdjustments, getAllActiveTraits, isWearingHeavyArmor } from './trait-helpers.js'
 
 /**
  * Compute XP modifier from prime abilities.
@@ -206,6 +206,40 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 		: 0
 	const computedAC = bestArmorAC + dexMod + shieldBonus
 
+	// Build AC breakdown for tooltip
+	const acSources = []
+	if (bodyArmor.length > 0) {
+		const bestArmor = bodyArmor.reduce((a, b) => (a.system.ac || 10) >= (b.system.ac || 10) ? a : b)
+		acSources.push({ label: bestArmor.name, value: bestArmor.system.ac })
+	} else {
+		acSources.push({ label: game.i18n.localize('DOLMEN.Combat.Unarmored'), value: 10 })
+	}
+	if (dexMod !== 0) {
+		acSources.push({ label: game.i18n.localize('DOLMEN.Abilities.DexterityShort'), value: dexMod })
+	}
+	if (shields.length > 0) {
+		const bestShield = shields.reduce((a, b) => (a.system.ac || 1) >= (b.system.ac || 1) ? a : b)
+		acSources.push({ label: bestShield.name, value: shieldBonus })
+	}
+	// Trait adjustments to AC
+	const allTraits = getAllActiveTraits(actor)
+	for (const trait of allTraits) {
+		if (trait.traitType !== 'adjustment' || trait.adjustmentType !== 'static') continue
+		if (trait.adjustmentTarget !== 'ac') continue
+		if (trait.minLevel && system.level < trait.minLevel) continue
+		if (trait.requiresNoHeavyArmor && isWearingHeavyArmor(actor)) continue
+		const val = typeof trait.adjustmentValue === 'function' ? trait.adjustmentValue(system.level) : trait.adjustmentValue
+		acSources.push({ label: game.i18n.localize(trait.nameKey), value: val })
+	}
+	// Manual adjustment
+	if (adj.ac) {
+		acSources.push({ label: game.i18n.localize('DOLMEN.Combat.Adjustment'), value: adj.ac })
+	}
+	const acBreakdown = acSources.map((s, i) => {
+		const prefix = i > 0 && s.value >= 0 ? '+' : ''
+		return `<div class="ac-source"><span>${s.label}</span><span>${prefix}${s.value}</span></div>`
+	}).join('')
+
 	return {
 		abilities: {
 			strength: abilityAdjusted('strength'),
@@ -219,6 +253,7 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 			max: system.hp.max + (adj.hp.max || 0) + getTraitAdj('hp.max')
 		},
 		ac: computedAC + (adj.ac || 0) + getTraitAdj('ac'),
+		acBreakdown,
 		attack: system.attack + (adj.attack || 0) + getTraitAdj('attack'),
 		attackMelee: getTraitAdj('attack.melee'),
 		attackMissile: getTraitAdj('attack.missile'),

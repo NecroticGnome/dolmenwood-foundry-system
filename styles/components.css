@@ -43,6 +43,18 @@
 	visibility: visible;
 }
 
+.dolmen .ac-breakdown {
+	min-width: 140px;
+	white-space: nowrap;
+	font-size: 0.85rem;
+}
+
+.dolmen .ac-breakdown .ac-source {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+}
+
 /* -------------------------------------------- */
 /*  Compendium Item Tags                        */
 /* -------------------------------------------- */

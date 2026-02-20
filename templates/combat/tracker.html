@@ -74,9 +74,9 @@
 			<div class="combatant-controls">
 				{{#if ../../isGM}}
 				{{!-- Group Assignment --}}
-				<a class="combatant-control group-assign" data-action="assignGroup" data-tooltip="{{localize 'DOLMEN.Combat.Group.Assign'}}" style="color: {{group.color}}">
+				<button type="button" class="combatant-control group-assign" data-action="assignGroup" data-tooltip="{{localize 'DOLMEN.Combat.Group.Assign'}}" style="color: {{group.color}}">
 					<i class="fa-solid fa-square-small"></i>
-				</a>
+				</button>
 
 				{{!-- Hidden Toggle --}}
 				<button type="button" class="combatant-control" data-action="toggleHidden" data-tooltip="{{localize 'COMBAT.ToggleVis'}}">
