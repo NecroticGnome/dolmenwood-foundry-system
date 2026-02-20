@@ -237,6 +237,16 @@ Hooks.once('ready', async function () {
 
 	initCalendarWidget()
 
+	// Set default turn marker to system frame if not already customized
+	if (game.user.isGM) {
+		const config = game.settings.get('core', 'combatTrackerConfig')
+		if (!config.turnMarker?.src) {
+			await game.settings.set('core', 'combatTrackerConfig', foundry.utils.mergeObject(config, {
+				turnMarker: { src: 'systems/dolmenwood/assets/frame.webp' }
+			}))
+		}
+	}
+
 	// Socket listener for player calendar note operations
 	game.socket.on('system.dolmenwood', handleCalendarSocket)
 })
