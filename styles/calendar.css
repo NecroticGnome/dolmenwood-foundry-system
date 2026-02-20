@@ -2,7 +2,7 @@
 
 #dolmen-calendar-widget {
 	position: fixed;
-	bottom: 1.5rem;
+	bottom: 1rem;
 	z-index: 69;
 	display: flex;
 	flex-direction: column;
@@ -149,7 +149,7 @@
 	-webkit-backdrop-filter: blur(6px);
 	border: 1px solid rgba(139, 101, 8, 0.4);
 	border-radius: 6px;
-	padding: 4px 10px;
+	padding: 0px 0.5rem 2px 0.5rem;
 	color: #c8a0ff;
 	font-size: 11px;
 	white-space: nowrap;
@@ -223,7 +223,7 @@
 	-webkit-backdrop-filter: blur(6px);
 	border: 1px solid rgba(255, 255, 255, 0.12);
 	border-radius: 6px;
-	padding: 4px 10px;
+	padding: 0px 0.5rem 2px 0.5rem;
 	color: #f0c040;
 	font-size: 11px;
 	white-space: nowrap;
