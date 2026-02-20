@@ -768,6 +768,7 @@
 			"Advance10Min": "Advance 10 minutes",
 			"Advance1Hr": "Advance 1 hour",
 			"Advance8Hr": "Advance 8 hours (rest)",
+			"MultipleHolidays": "Multiple (hover to see)",
 			"Unseasons": {
 				"hitching": "Hitching",
 				"vague": "Vague",
@@ -782,7 +783,9 @@
 				"Impeded": "Travel Impeded: Travel Points reduced by 2",
 				"Visibility": "Poor Visibility: encounter distance halved, +1-in-6 lost",
 				"Wet": "Wet Conditions: building a campfire is difficult",
-				"ChatTitle": "Weather"
+				"ChatTitle": "Weather",
+				"AutoSettingName": "Auto Weather",
+				"AutoSettingHint": "Automatically roll for weather each time the day changes."
 			},
 			"Notes": {
 				"Title": "Calendar Notes",

@@ -2,8 +2,7 @@
 
 #dolmen-calendar-widget {
 	position: fixed;
-	bottom: 0;
-	left: 0;
+	bottom: 1rem;
 	z-index: 69;
 	display: flex;
 	flex-direction: column;
@@ -14,6 +13,19 @@
 
 #dolmen-calendar-widget.hidden {
 	display: none;
+}
+
+/* Prevent hotbar from collapsing into 2 rows when calendar is active */
+#hotbar.dolmen-calendar-active.compact,
+#hotbar.dolmen-calendar-active.md.offset,
+#hotbar.dolmen-calendar-active.sm {
+	height: var(--hotbar-size);
+}
+
+#hotbar.dolmen-calendar-active.compact #action-bar,
+#hotbar.dolmen-calendar-active.md.offset #action-bar,
+#hotbar.dolmen-calendar-active.sm #action-bar {
+	width: auto;
 }
 
 .calendar-arc-container {
@@ -121,11 +133,11 @@
 	position: relative;
 }
 
-/* Unseason stripe — positioned above the season section */
+/* Unseason stripe — positioned below the season section */
 
 .calendar-unseason-stripe {
 	position: absolute;
-	bottom: calc(100% + 4px);
+	top: calc(100% + 4px);
 	left: 0;
 	right: 0;
 	display: flex;
@@ -137,12 +149,12 @@
 	-webkit-backdrop-filter: blur(6px);
 	border: 1px solid rgba(139, 101, 8, 0.4);
 	border-radius: 6px;
-	padding: 4px 10px;
+	padding: 0px 0.5rem 2px 0.5rem;
 	color: #c8a0ff;
 	font-size: 11px;
 	white-space: nowrap;
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 }
 
 .calendar-unseason-stripe i {
@@ -195,11 +207,11 @@
 	opacity: 0.85;
 }
 
-/* Holiday stripe — positioned above the date section */
+/* Holiday stripe — positioned below the date section */
 
 .calendar-holiday-stripe {
 	position: absolute;
-	bottom: calc(100% + 4px);
+	top: calc(100% + 4px);
 	left: 0;
 	right: 0;
 	display: flex;
@@ -211,12 +223,34 @@
 	-webkit-backdrop-filter: blur(6px);
 	border: 1px solid rgba(255, 255, 255, 0.12);
 	border-radius: 6px;
-	padding: 4px 10px;
+	padding: 0px 0.5rem 2px 0.5rem;
 	color: #f0c040;
 	font-size: 11px;
 	white-space: nowrap;
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+/* Multiple holidays tooltip */
+.calendar-holiday-line.tooltip {
+	display: flex;
+}
+
+.calendar-holiday-tooltip {
+	min-width: 160px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	bottom: calc(100% + 10px);
+	top: auto;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.calendar-holiday-tooltip::after {
+	top: auto;
+	bottom: -10px;
+	border-color: transparent transparent var(--dolmen-color-h3) transparent;
 }
 
 .calendar-holiday-line {
@@ -545,7 +579,6 @@
 	position: absolute;
 	left: calc(100% + 4px);
 	top: 0;
-	bottom: 0;
 	display: flex;
 	align-items: center;
 	background: rgba(0, 0, 0, 0.75);
