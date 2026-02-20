@@ -723,6 +723,7 @@ export function setupTraitListeners(sheet) {
  */
 export function setupRuneUsageListeners(sheet) {
 	sheet.element.querySelectorAll('.rune-usage-checkbox').forEach(checkbox => {
+		checkbox.addEventListener('click', (e) => e.stopPropagation())
 		checkbox.addEventListener('change', async (event) => {
 			event.stopPropagation()
 			const runeId = event.currentTarget.dataset.runeId

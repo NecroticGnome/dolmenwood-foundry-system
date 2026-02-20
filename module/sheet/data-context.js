@@ -273,7 +273,7 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 		speed: baseSpeed + (adj.speed || 0) + getTraitAdj('speed'),
 		movement: {
 			exploring: (baseSpeed * 3) + (adj.movement.exploring || 0),
-			overland: (baseSpeed * 3 / 5) + (adj.movement.overland || 0)
+			overland: Math.floor((baseSpeed + (adj.speed || 0) + getTraitAdj('speed')) / 5) + (adj.movement.overland || 0)
 		}
 	}
 }

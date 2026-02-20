@@ -72,7 +72,7 @@
 	margin: 0;
 	font-size: 0.8rem;
 	font-family: var(--dolmen-font-header);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	text-transform: uppercase;
 }
 
@@ -173,7 +173,7 @@
 	gap: 0.5rem;
 	padding: 0.5rem;
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	align-items: center;
 }
 
@@ -189,7 +189,7 @@
 	margin: 0;
 	font-size: 0.8rem;
 	font-family: var(--dolmen-font-header);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	text-transform: uppercase;
 }
 
@@ -321,14 +321,14 @@
 .dolmen.trait-roll .trait-header {
 	padding: 0.5rem;
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 }
 
 .dolmen.trait-roll .trait-header h3 {
 	margin: 0;
 	font-size: 0.8rem;
 	font-family: var(--dolmen-font-header);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	text-transform: uppercase;
 }
 
@@ -393,7 +393,7 @@
 	gap: 0.5rem;
 	padding: 0.5rem;
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	align-items: center;
 }
 
@@ -405,7 +405,7 @@
 	margin: 0;
 	font-size: 0.8rem;
 	font-family: var(--dolmen-font-header);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	text-transform: uppercase;
 }
 
@@ -414,6 +414,7 @@
 	margin: 0;
 	padding: 0.5rem;
 	font-size: 0.8rem;
+	color: var(--dolmen-color-text);
 }
 
 .dolmen.rest-card .rest-details li {
@@ -442,7 +443,7 @@
 	gap: 0.5rem;
 	padding: 0.5rem;
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	align-items: center;
 }
 
@@ -450,7 +451,7 @@
 	width: 32px;
 	height: 32px;
 	flex-shrink: 0;
-	background-color: var(--dolmen-color-background);
+	background-color: var(--dolmen-color-title);
 	-webkit-mask-size: cover;
 	mask-size: cover;
 }
@@ -459,7 +460,7 @@
 	margin: 0;
 	font-size: 0.8rem;
 	font-family: var(--dolmen-font-header);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	text-transform: uppercase;
 }
 
@@ -471,6 +472,8 @@
 
 .dolmen.spell-card .spell-body {
 	padding: 0.5rem;
+	background-color: var(--dolmen-color-background);
+	color: var(--dolmen-color-text);
 }
 
 .dolmen.spell-card .spell-field {
@@ -514,7 +517,7 @@
 	gap: 0.5rem;
 	padding: 0.5rem;
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	align-items: center;
 }
 
@@ -526,7 +529,7 @@
 	margin: 0;
 	font-size: 0.8rem;
 	font-family: var(--dolmen-font-header);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	text-transform: uppercase;
 }
 
@@ -580,105 +583,171 @@
 	color: var(--dolmen-color-success);
 }
 
-/* Morale Roll */
-.dolmen-roll.morale-roll {
-	background: var(--dolmen-color-bg);
-	border: 1px solid var(--dolmen-color-border);
+/* -------------------------------------------- */
+/*  Combat Roll Chat Card Styles               */
+/*  (Initiative, Morale, Reaction, Surprise,   */
+/*   Encounter Distance)                        */
+/* -------------------------------------------- */
+
+.dolmen.combat-roll {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-title-background);
 	border-radius: 4px;
-	padding: 0.5rem;
-	margin: 0.25rem 0;
+	overflow: hidden;
 }
 
-.dolmen-roll.morale-roll .roll-header {
+.dolmen.combat-roll .roll-header {
 	display: flex;
-	align-items: center;
 	gap: 0.5rem;
-	padding-bottom: 0.5rem;
-	border-bottom: 1px solid var(--dolmen-color-border);
-	margin-bottom: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-title);
+	align-items: center;
 }
 
-.dolmen-roll.morale-roll .roll-header .roll-label {
-	font-size: 0.9rem;
-	font-weight: bold;
-	color: var(--dolmen-color-h2);
+.dolmen.combat-roll .roll-header i {
+	font-size: 1.25rem;
+}
+
+.dolmen.combat-roll .roll-header .roll-info h3 {
+	margin: 0;
+	font-size: 0.8rem;
+	font-family: var(--dolmen-font-header);
+	color: var(--dolmen-color-title);
 	text-transform: uppercase;
 }
 
-.dolmen-roll.morale-roll .roll-result {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 1rem;
-	margin-bottom: 0.5rem;
+.dolmen.combat-roll .roll-header .roll-type {
+	font-size: 0.7rem;
+	opacity: 0.8;
+	text-transform: uppercase;
 }
 
-.dolmen-roll.morale-roll .dice-result {
+.dolmen.combat-roll .roll-body {
+	padding: 0.5rem;
+	color: var(--dolmen-color-text);
+}
+
+.dolmen.combat-roll .roll-section {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 0.25rem;
+	text-align: center;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-inner-background);
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 4px;
 }
 
-.dolmen-roll.morale-roll .dice-formula {
-	font-size: 0.75rem;
-	color: var(--dolmen-color-text-muted);
-	text-transform: uppercase;
+.dolmen.combat-roll .roll-result {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
-.dolmen-roll.morale-roll .dice-total {
+.dolmen.combat-roll .roll-result .inline-roll {
 	font-size: 1.5rem;
 	font-weight: bold;
-	padding: 0.25rem 0.5rem;
-	border-radius: 3px;
+	color: var(--dolmen-color-h1);
+	background: none;
+	border: none;
+	padding: 0;
 }
 
-.dolmen-roll.morale-roll .dice-total.success {
-	color: var(--dolmen-color-success);
-	background: rgba(var(--dolmen-color-success-rgb), 0.1);
-}
-
-.dolmen-roll.morale-roll .dice-total.failure {
-	color: var(--dolmen-color-failure);
-	background: rgba(var(--dolmen-color-failure-rgb), 0.1);
-}
-
-.dolmen-roll.morale-roll .roll-target {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.25rem;
-}
-
-.dolmen-roll.morale-roll .target-label {
-	font-size: 0.75rem;
-	color: var(--dolmen-color-text-muted);
-	text-transform: uppercase;
-}
-
-.dolmen-roll.morale-roll .target-value {
-	font-size: 1.2rem;
-	font-weight: bold;
+.dolmen.combat-roll .roll-breakdown {
+	font-size: 0.65rem;
 	color: var(--dolmen-color-h3);
+	margin-top: 0.25rem;
 }
 
-.dolmen-roll.morale-roll .roll-outcome {
-	text-align: center;
-	font-size: 0.9rem;
+.dolmen.combat-roll .roll-target {
+	font-size: 0.7rem;
+	color: var(--dolmen-color-text-muted);
+	margin-top: 0.25rem;
+}
+
+.dolmen.combat-roll .roll-label {
+	font-size: 0.75rem;
 	font-weight: bold;
-	padding: 0.5rem;
-	border-radius: 3px;
 	text-transform: uppercase;
+	margin-top: 0.35rem;
+	padding: 0.15rem 0.5rem;
+	border-radius: 0.25rem;
 }
 
-.dolmen-roll.morale-roll .roll-outcome.success {
+.dolmen.combat-roll .roll-value {
+	font-size: 1rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h1);
+	margin-top: 0.25rem;
+}
+
+/* Group rows (initiative, surprise) */
+.dolmen.combat-roll .group-row {
+	padding: 0.35rem 0.5rem;
+	margin: 0.25rem 0;
+	font-size: 0.85rem;
+}
+
+/* Success/failure styling */
+.dolmen.combat-roll .roll-section.success {
+	border-color: var(--dolmen-color-success);
+}
+
+.dolmen.combat-roll .roll-label.success {
+	background-color: rgba(34, 139, 34, 0.15);
 	color: var(--dolmen-color-success);
-	background: rgba(var(--dolmen-color-success-rgb), 0.15);
 }
 
-.dolmen-roll.morale-roll .roll-outcome.failure {
+.dolmen.combat-roll .roll-section.failure {
+	border-color: var(--dolmen-color-failure);
+}
+
+.dolmen.combat-roll .roll-label.failure {
+	background-color: rgba(204, 0, 0, 0.15);
 	color: var(--dolmen-color-failure);
-	background: rgba(var(--dolmen-color-failure-rgb), 0.15);
+}
+
+/* Reaction roll category styling */
+.dolmen.combat-roll .roll-section.reaction-attacks {
+	border-color: var(--dolmen-color-failure);
+}
+
+.dolmen.combat-roll .roll-label.reaction-attacks {
+	background-color: rgba(204, 0, 0, 0.15);
+	color: var(--dolmen-color-failure);
+}
+
+.dolmen.combat-roll .roll-section.reaction-hostile {
+	border-color: var(--dolmen-color-failure);
+}
+
+.dolmen.combat-roll .roll-label.reaction-hostile {
+	background-color: rgba(204, 0, 0, 0.1);
+	color: var(--dolmen-color-failure);
+}
+
+.dolmen.combat-roll .roll-label.reaction-uncertain {
+	background-color: rgba(128, 128, 128, 0.15);
+	color: var(--dolmen-color-text-muted);
+}
+
+.dolmen.combat-roll .roll-section.reaction-indifferent {
+	border-color: var(--dolmen-color-success);
+}
+
+.dolmen.combat-roll .roll-label.reaction-indifferent {
+	background-color: rgba(34, 139, 34, 0.1);
+	color: var(--dolmen-color-success);
+}
+
+.dolmen.combat-roll .roll-section.reaction-friendly {
+	border-color: var(--dolmen-color-success);
+}
+
+.dolmen.combat-roll .roll-label.reaction-friendly {
+	background-color: rgba(34, 139, 34, 0.15);
+	color: var(--dolmen-color-success);
 }
 
 /* Inline Save Link */
