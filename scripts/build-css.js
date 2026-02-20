@@ -27,7 +27,8 @@ const layers = [
 			'notes.css',
 			'settings.css',
 			'creature.css',
-			'calendar.css'
+			'calendar.css',
+			'combat-tracker.css'
 		]
 	}
 ]

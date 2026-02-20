@@ -1,0 +1,123 @@
+{{!-- Dolmenwood Combat Tracker --}}
+<ol class="dolmen-combat-tracker" id="combat-tracker">
+
+	{{!-- GM Toolbar: Pre-combat utility buttons --}}
+	{{#if isGM}}
+	<li class="dolmen-tracker-toolbar">
+		<div class="toolbar-buttons">
+			<button type="button" data-action="rollSurprise" data-tooltip="{{localize 'DOLMEN.Combat.SurpriseRoll'}}">
+				<i class="fa-sharp fa-solid fa-seal-exclamation"></i>
+			</button>
+			<button type="button" data-action="rollEncounterDistance" data-tooltip="{{localize 'DOLMEN.Combat.EncounterDistance'}}">
+				<i class="fa-duotone fa-solid fa-people-arrows"></i>
+			</button>
+			<button type="button" data-action="rollReaction" data-tooltip="{{localize 'DOLMEN.Combat.ReactionRoll'}}">
+				<i class="fa-duotone fa-solid fa-masks-theater"></i>
+			</button>
+			<button type="button" data-action="rollMorale" data-tooltip="{{localize 'DOLMEN.Creature.MoraleCheck'}}">
+				<i class="fa-solid fa-flag"></i>
+			</button>
+		</div>
+	</li>
+	{{/if}}
+
+	{{!-- Grouped Combatant List --}}
+	{{#each groups as |group|}}
+	<li class="dolmen-group-header" style="border-color: {{group.color}}">
+		<span class="group-name"><i class="fa-solid fa-square" style="color: {{group.color}}"></i> {{group.label}}</span>
+		<span class="group-initiative">
+			{{#if group.hasInitiative}}
+			{{#if ../isGM}}
+			<button type="button" class="initiative-roll-btn" data-action="clearGroupInitiative" data-group-id="{{group.groupId}}" data-tooltip="{{localize 'DOLMEN.Combat.ClearInitiative'}}" style="border-color: {{group.color}}">
+				<i class="fa-solid {{group.diceIcon}}"></i>
+			</button>
+			{{else}}
+			<i class="fa-solid {{group.diceIcon}}"></i>
+			{{/if}}
+			{{else}}
+				{{#if group.canRollInitiative}}
+				<button type="button" class="initiative-roll-btn" data-action="rollPlayerInitiative" data-group-id="{{group.groupId}}" data-tooltip="{{localize 'DOLMEN.Combat.RollInitiative'}}" style="border-color: {{group.color}}">
+					<i class="fa-solid fa-dice-d6"></i>
+				</button>
+				{{else}}
+				—
+				{{/if}}
+			{{/if}}
+		</span>
+	</li>
+
+	{{#each group.combatants as |combatant|}}
+	<li class="combatant dolmen-combatant {{#if combatant.isDefeated}}defeated{{/if}} {{#if combatant.hidden}}hidden-combatant{{/if}} {{#if combatant.active}}active{{/if}}" data-combatant-id="{{combatant.id}}">
+
+		{{!-- Main content with colored border --}}
+		<div class="combatant-main" style="border-color: {{group.color}}">
+
+			{{!-- Token Image --}}
+			<div class="combatant-image" data-action="panToCombatant">
+				<img src="{{combatant.img}}" alt="{{combatant.name}}">
+				{{#if combatant.isDefeated}}
+				<i class="fas fa-skull defeated-icon"></i>
+				{{/if}}
+			</div>
+
+			{{!-- Name and Declaration --}}
+			<div class="combatant-info">
+				<span class="combatant-name">{{combatant.name}}</span>
+				{{#if combatant.declarationIcon}}
+				<span class="declaration-badge" data-tooltip="{{combatant.declarationTooltip}}">
+					<i class="{{combatant.declarationIcon}}" style="color: {{group.color}}"></i>
+				</span>
+				{{/if}}
+			</div>
+
+			{{!-- Controls --}}
+			<div class="combatant-controls">
+				{{#if ../../isGM}}
+				{{!-- Group Assignment --}}
+				<button type="button" class="combatant-control group-assign" data-action="assignGroup" data-tooltip="{{localize 'DOLMEN.Combat.Group.Assign'}}" style="color: {{group.color}}">
+					<i class="fa-solid fa-square-small"></i>
+				</button>
+
+				{{!-- Hidden Toggle --}}
+				<button type="button" class="combatant-control" data-action="toggleHidden" data-tooltip="{{localize 'COMBAT.ToggleVis'}}">
+					<i class="fas {{#if combatant.hidden}}fa-eye-slash{{else}}fa-eye{{/if}}"></i>
+				</button>
+
+				{{!-- Defeated Toggle --}}
+				<button type="button" class="combatant-control" data-action="toggleDefeated" data-tooltip="{{localize 'COMBAT.ToggleDead'}}">
+					<i class="fas fa-skull {{#if combatant.isDefeated}}active{{/if}}"></i>
+				</button>
+
+				{{!-- Declaration Toggle --}}
+				<button type="button" class="combatant-control declaration-toggle" data-action="cycleDeclaration" data-tooltip="{{localize 'DOLMEN.Combat.Declaration.Toggle'}}" style="border-color: {{group.color}}">
+					{{#if combatant.declaration}}
+					<i class="{{combatant.declarationIcon}} active-declaration"></i>
+					{{else}}
+					<i class="fa-regular fa-question"></i>
+					{{/if}}
+				</button>
+				{{else}}
+				{{!-- Player: Declaration Toggle for own combatants --}}
+				{{#if combatant.isOwner}}
+				<button type="button" class="combatant-control declaration-toggle" data-action="cycleDeclaration" data-tooltip="{{localize 'DOLMEN.Combat.Declaration.Toggle'}}" style="border-color: {{group.color}}">
+					{{#if combatant.declaration}}
+					<i class="{{combatant.declarationIcon}} active-declaration"></i>
+					{{else}}
+					<i class="fa-regular fa-question"></i>
+					{{/if}}
+				</button>
+				{{/if}}
+				{{/if}}
+			</div>
+		</div>
+	</li>
+	{{/each}}
+	{{/each}}
+
+	{{!-- Empty State --}}
+	{{#unless groups.length}}
+	<li class="dolmen-tracker-empty">
+		{{localize "COMBAT.None"}}
+	</li>
+	{{/unless}}
+</ol>

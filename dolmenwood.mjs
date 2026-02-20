@@ -1,4 +1,4 @@
-/* global CONFIG, game, Hooks, foundry, Handlebars */
+/* global CONFIG, game, Hooks, foundry, Handlebars, ui */
 
 import DOLMENWOOD from './module/config.js'
 import DolmenSheet from './module/dolmen-sheet.js'
@@ -14,6 +14,7 @@ import { setupSaveLinkListeners } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { getFaSymbol } from './module/sheet/data-context.js'
+import { registerCombatSystem } from './module/combat/combat.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -33,6 +34,35 @@ function applyTheme(theme) {
 
 Hooks.once('init', async function () {
 	CONFIG.DOLMENWOOD = DOLMENWOOD
+
+	game.settings.register('dolmenwood', 'colorTheme', {
+		name: 'DOLMEN.Settings.ColorTheme',
+		hint: 'DOLMEN.Settings.ColorThemeHint',
+		scope: 'client',
+		config: true,
+		type: String,
+		default: 'auto',
+		choices: {
+			auto: 'DOLMEN.Settings.ThemeAuto',
+			playerbook: 'DOLMEN.Settings.ThemePlayerbook',
+			drunealtar: 'DOLMEN.Settings.ThemeDruneAltar',
+			wintersdaughter: 'DOLMEN.Settings.ThemeWintersDaughter',
+			coldprince: 'DOLMEN.Settings.ThemeColdPrince',
+			grimalkin: 'DOLMEN.Settings.ThemeGrimalkin',
+			naglord: 'DOLMEN.Settings.ThemeNagLord',
+			woodgrue: 'DOLMEN.Settings.ThemeWoodgrue',
+			mosslingden: 'DOLMEN.Settings.ThemeMosslingDen',
+			bregglehorns: 'DOLMEN.Settings.ThemeBreggleHorns',
+			mortalsend: 'DOLMEN.Settings.ThemeMortalsEnd',
+			silverdagger: 'DOLMEN.Settings.ThemeSilverDagger',
+			coldironaxe: 'DOLMEN.Settings.ThemeColdIronAxe',
+			highcontrast: 'DOLMEN.Settings.ThemeHighContrast'
+		},
+		onChange: applyTheme
+	})
+
+	// Register combat system (group initiative, tracker, declarations)
+	registerCombatSystem()
 
 	// Register Handlebars helpers
 	Handlebars.registerHelper('add', (a, b) => (a || 0) + (b || 0))
@@ -122,32 +152,6 @@ Hooks.once('init', async function () {
 			max: 100,
 			step: 1
 		}
-	})
-
-	game.settings.register('dolmenwood', 'colorTheme', {
-		name: 'DOLMEN.Settings.ColorTheme',
-		hint: 'DOLMEN.Settings.ColorThemeHint',
-		scope: 'client',
-		config: true,
-		type: String,
-		default: 'auto',
-		choices: {
-			auto: 'DOLMEN.Settings.ThemeAuto',
-			playerbook: 'DOLMEN.Settings.ThemePlayerbook',
-			drunealtar: 'DOLMEN.Settings.ThemeDruneAltar',
-			wintersdaughter: 'DOLMEN.Settings.ThemeWintersDaughter',
-			coldprince: 'DOLMEN.Settings.ThemeColdPrince',
-			grimalkin: 'DOLMEN.Settings.ThemeGrimalkin',
-			naglord: 'DOLMEN.Settings.ThemeNagLord',
-			woodgrue: 'DOLMEN.Settings.ThemeWoodgrue',
-			mosslingden: 'DOLMEN.Settings.ThemeMosslingDen',
-			bregglehorns: 'DOLMEN.Settings.ThemeBreggleHorns',
-			mortalsend: 'DOLMEN.Settings.ThemeMortalsEnd',
-			silverdagger: 'DOLMEN.Settings.ThemeSilverDagger',
-			coldironaxe: 'DOLMEN.Settings.ThemeColdIronAxe',
-			highcontrast: 'DOLMEN.Settings.ThemeHighContrast'
-		},
-		onChange: applyTheme
 	})
 
 	game.settings.register('dolmenwood', 'showCalendar', {

@@ -1,3 +1,5 @@
+/* global game */
+
 /**
  * Context Menu Utility
  * Generic factory for creating positioned context menus.
@@ -16,6 +18,9 @@
  * @returns {HTMLElement} The menu element
  */
 export function createContextMenu(target, { html, position, onItemClick, menuClass = 'dolmen-weapon-context-menu', itemSelector = '.weapon-menu-item', excludeFromClose = null }) {
+	// Dismiss any active Foundry tooltip so it doesn't overlap the menu
+	if (typeof game !== 'undefined') game.tooltip?.deactivate()
+
 	// Get target element (support both sheet objects and raw elements)
 	const targetElement = target.element || target
 
