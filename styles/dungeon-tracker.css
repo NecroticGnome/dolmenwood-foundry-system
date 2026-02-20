@@ -1,0 +1,83 @@
+/* ── Dungeon Turn Tracker ── */
+
+#dolmen-dungeon-tracker {
+	position: fixed;
+	top: 8px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 69;
+	pointer-events: none;
+}
+
+.dungeon-tracker-squares {
+	--slide-speed: 0.4s;
+	--slide-ease: ease;
+	display: flex;
+	gap: 6px;
+	transition: transform var(--slide-speed) var(--slide-ease);
+}
+
+.dungeon-tracker-squares.sliding {
+	transform: translateX(calc(-48px - 6px));
+}
+
+.dungeon-tracker-squares.no-transition {
+	transition: none;
+}
+
+.dungeon-square {
+	width: 48px;
+	height: 48px;
+	background: rgba(0, 0, 0, 0.55);
+	border: 2px solid rgba(255, 255, 255, 0.15);
+	border-radius: 4px;
+	opacity: 1;
+	transition: opacity var(--slide-speed, 0.4s) var(--slide-ease, ease);
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.dungeon-square i {
+	font-size: 18px;
+	color: rgba(255, 255, 255, 0.35);
+}
+
+.dungeon-square.faded {
+	opacity: 0;
+}
+
+.dungeon-square.fade-out {
+	opacity: 0;
+}
+
+.dungeon-square.fade-in {
+	opacity: 1;
+}
+
+/* Frame overlay — positioned over 2nd square */
+.dungeon-tracker-frame {
+	position: absolute;
+	top: -6px;
+	/* offset = 1 square (48px) + 1 gap (6px) - 6px border offset */
+	left: 48px;
+	width: 60px;
+	height: 60px;
+	border: 6px solid #c8a020;
+	border-radius: 5px;
+	box-shadow:
+		0 0 6px rgba(200, 160, 32, 0.4),
+		inset 0 0 6px rgba(200, 160, 32, 0.2);
+	pointer-events: none;
+}
+
+/* Encounter check chat results */
+.dolmen-combat-roll .encounter-yes {
+	color: var(--dolmen-color-failure, #cc0000);
+	font-weight: bold;
+}
+
+.dolmen-combat-roll .encounter-no {
+	color: var(--dolmen-color-success, #228b22);
+}
