@@ -146,8 +146,15 @@ function getWeatherIcon(text) {
  * Roll weather from the appropriate season/unseason table (GM only).
  * Saves result to world setting and posts a chat message.
  */
-async function rollWeather() {
+let lastWeatherDay = null
+async function rollWeather(autoRoll = false) {
 	if (!game.user.isGM) return
+	if (autoRoll) {
+		const cal = worldTimeToCalendar(game.time.worldTime)
+		const dayKey = getNoteKey(cal.year, cal.monthKey, cal.day)
+		if (lastWeatherDay === dayKey) return
+		lastWeatherDay = dayKey
+	}
 
 	const cal = worldTimeToCalendar(game.time.worldTime)
 	const season = getSeason(cal.monthKey)
@@ -392,6 +399,7 @@ function attachListeners(widget) {
 	for (const btn of widget.querySelectorAll('.calendar-gm-btn[data-advance]')) {
 		btn.addEventListener('click', (e) => {
 			e.stopPropagation()
+			widget.classList.add('controls-active')
 			const seconds = parseInt(btn.dataset.advance)
 			game.time.advance(seconds)
 		})
@@ -410,6 +418,11 @@ function attachListeners(widget) {
 	const timeSection = widget.querySelector('.calendar-time.gm-clickable')
 	if (timeSection) {
 		timeSection.addEventListener('click', openSetTimeDialog)
+		timeSection.addEventListener('mouseleave', () => {
+			const wasActive = widget.classList.contains('controls-active')
+			widget.classList.remove('controls-active')
+			if (wasActive) injectWidget()
+		})
 	}
 	const seasonSection = widget.querySelector('.calendar-season.gm-clickable')
 	if (seasonSection) {
@@ -1001,9 +1014,10 @@ export function initCalendarWidget() {
 	const enabled = game.settings.get('dolmenwood', 'showCalendar')
 	if (enabled) injectWidget()
 
-	// Initialize day tracking for note notifications
+	// Initialize day tracking for note notifications and weather
 	const initCal = worldTimeToCalendar(game.time.worldTime)
 	lastNotifiedDay = getNoteKey(initCal.year, initCal.monthKey, initCal.day)
+	lastWeatherDay = lastNotifiedDay
 
 	// Re-inject when hotbar renders (position may have changed)
 	Hooks.on('renderHotbar', () => {
@@ -1027,13 +1041,14 @@ export function initCalendarWidget() {
 		}
 		const cal = worldTimeToCalendar(game.time.worldTime)
 		const dayKey = getNoteKey(cal.year, cal.monthKey, cal.day)
-		if (lastNotifiedDay !== null && dayKey !== lastNotifiedDay) {
+		const dayChanged = lastNotifiedDay !== null && dayKey !== lastNotifiedDay
+		lastNotifiedDay = dayKey
+		if (dayChanged) {
 			showDayNoteNotifications(cal.year, cal.monthKey, cal.day)
-			if (game.user.isGM && game.settings.get('dolmenwood', 'autoWeather')) {
-				rollWeather()
+			if (game.user === game.users.activeGM && game.settings.get('dolmenwood', 'autoWeather')) {
+				rollWeather(true)
 			}
 		}
-		lastNotifiedDay = dayKey
 	})
 
 	// Re-render when unseason, weather, or calendar notes setting changes
