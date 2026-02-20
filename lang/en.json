@@ -118,11 +118,17 @@
 			"AttackShort": "Atk",
 			"Encounter": "Encounter",
 			"GroupInitiative": "Group Initiative",
+			"RollInitiative": "Roll Initiative",
+			"ClearInitiative": "Clear Initiative",
 			"Roll": "Roll",
 			"Group": {
 				"Friendly": "Party",
-				"Neutral": "Neutral",
-				"Hostile": "Enemies",
+				"GroupA": "Group A",
+				"GroupB": "Group B",
+				"GroupC": "Group C",
+				"GroupD": "Group D",
+				"GroupE": "Group E",
+				"GroupF": "Group F",
 				"Assign": "Move to Group"
 			},
 			"Declaration": {
@@ -155,6 +161,12 @@
 				"Dungeon": "Dungeon",
 				"Outdoors": "Outdoors",
 				"Feet": "feet"
+			},
+			"ActionOrder": {
+				"Movement": "Movement (no move when casting)",
+				"Missile": "Missile attacks",
+				"Magic": "Magic (spells, runes, glamours, items, turning)",
+				"Melee": "Melee attacks & other actions"
 			},
 			"Settings": {
 				"RerollInitiative": "Initiative Each Round",

@@ -50,7 +50,7 @@
 	--dolmen-color-box-background: #f5eede;
 	--dolmen-color-box-border: #dd6d54;
 
-	--dolmen-color-input-border: #633121aa;
+	--dolmen-color-input-border: #a14a4aaa;
 	--dolmen-color-input-border-focus: #dd6d54;
 	--dolmen-color-header-weapon: #f5d0d0;
 	--dolmen-color-header-armor: #d0e4f0;
@@ -548,14 +548,14 @@
 	--dolmen-color-h3: #a8a8b8;
 
 	--dolmen-color-title: #d8d8e0;
-	--dolmen-color-title-background: #3a3a48;
+	--dolmen-color-title-background: #4e4e67;
 
 	--dolmen-color-inner-background: #222228;
 
 	--dolmen-color-box-background: #121216;
 	--dolmen-color-box-border: #8a8a9a;
 
-	--dolmen-color-input-border: #7a7a8a66;
+	--dolmen-color-input-border: #6e6e9266;
 	--dolmen-color-input-border-focus: #8a8a9a;
 
 	--dolmen-color-header-weapon: #2a1818;
@@ -634,54 +634,40 @@
 #pause {
 	width: 18rem;
 	height: 13.39rem;
-	background: url('../assets/wooden_board.webp');
+	background: url('../assets/stone_board.webp');
 	background-size: cover;
 	left: calc(50% - 9rem);
 	gap: 1rem;
 	padding-bottom: 0.25rem;
-	animation: dolmen-pause-tilt-parent 2s cubic-bezier(0.25, 1, 0.25, 1) infinite;
-	animation-delay: -0.25s;
+	animation: unset;
 	top: 0%;
 	filter: drop-shadow(2px 4px 6px black);
-	transform-origin: 50% 5%;
-
 }
 
 #pause img {
 	content: url('../assets/pause_skull_big.webp');
 	animation: dolmen-pause-tilt 2s ease-in-out infinite;
-	transform-origin: 50% 95%;
-	filter: drop-shadow(0px 0px 3px #3d1e00);
+	transform-origin: 50% 85%;
+	filter: drop-shadow(0px 0px 2px #2d271faa);
 }
 
 #pause figcaption {
 	font-family: 'IM Fell DW Pica', serif;
-	color: #3d1e00;
-	text-shadow: 0 0 3px #ffe0a0;
+	color: #1c2114;
+	text-shadow: 0 0 3px #ffe6b2;
 	font-size: 2.5rem;
 	letter-spacing: 0;
+	opacity: 0.75;
 }
 
 @keyframes dolmen-pause-tilt {
 
 	0%,
 	100% {
-		transform: rotate(-8deg);
+		transform: rotate(-15deg);
 	}
 
 	50% {
-		transform: rotate(8deg);
-	}
-}
-
-@keyframes dolmen-pause-tilt-parent {
-
-	0%,
-	100% {
-		transform: rotate(-0.5deg);
-	}
-
-	50% {
-		transform: rotate(0.5deg);
+		transform: rotate(15deg);
 	}
 }

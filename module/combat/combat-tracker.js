@@ -8,7 +8,7 @@
 
 import { prepareTrackerGroups, DECLARATION_CONFIG, GROUP_CONFIG } from './combat-data.js'
 import { GROUPS } from './combatant.js'
-import { rollMoraleCheck, rollReaction, rollSurprise, rollEncounterDistance } from './combat-rolls.js'
+import { rollMoraleCheck, rollReaction, rollSurprise, rollEncounterDistance, rollInitiativeForGroup, allGroupsRolled } from './combat-rolls.js'
 import { createContextMenu } from '../sheet/context-menu.js'
 
 const { CombatTracker } = foundry.applications.sidebar.tabs
@@ -90,15 +90,18 @@ function openTrackerMenu(element, action, menuConfig) {
 export default class DolmenCombatTracker extends CombatTracker {
 
 	static DEFAULT_OPTIONS = {
+		classes: ['dolmen', 'dolmen-tracker-app'],
 		actions: {
 			rollGroupInitiative: DolmenCombatTracker._onRollGroupInitiative,
+			rollPlayerInitiative: DolmenCombatTracker._onRollPlayerInitiative,
 			assignGroup: DolmenCombatTracker._onAssignGroup,
 			cycleDeclaration: DolmenCombatTracker._onCycleDeclaration,
 			rollMorale: DolmenCombatTracker._onRollMorale,
 			rollSurprise: DolmenCombatTracker._onRollSurprise,
 			rollEncounterDistance: DolmenCombatTracker._onRollEncounterDistance,
 			rollReaction: DolmenCombatTracker._onRollReaction,
-			clearDeclarations: DolmenCombatTracker._onClearDeclarations
+			clearDeclarations: DolmenCombatTracker._onClearDeclarations,
+			clearGroupInitiative: DolmenCombatTracker._onClearGroupInitiative
 		}
 	}
 
@@ -111,6 +114,9 @@ export default class DolmenCombatTracker extends CombatTracker {
 		parts.tracker = {
 			template: 'systems/dolmenwood/templates/combat/tracker.html',
 			scrollable: ['']
+		}
+		parts.actionOrder = {
+			template: 'systems/dolmenwood/templates/combat/action-order.html'
 		}
 		return parts
 	}
@@ -128,13 +134,24 @@ export default class DolmenCombatTracker extends CombatTracker {
 		context.groups = prepareTrackerGroups(combat, optionalRules)
 		context.isGM = game.user.isGM
 
-		// Mark active combatant
-		if (combat?.combatant) {
-			for (const group of context.groups) {
+		// Only highlight active combatant when all groups have rolled initiative
+		const allRolled = context.groups.every(g => g.hasInitiative)
+		const activeCombatant = allRolled
+			? (combat?.combatant || combat?.turns?.[0])
+			: null
+		for (const group of context.groups) {
+			if (activeCombatant) {
 				for (const c of group.combatants) {
-					c.active = c.id === combat.combatant.id
+					c.active = c.id === activeCombatant.id
 				}
 			}
+			// GM can always roll; players can roll for groups where they own a combatant
+			group.canRollInitiative = !group.hasInitiative
+				&& (context.isGM || group.combatants.some(c => combat.combatants.get(c.id)?.isOwner))
+
+			// Map initiative value to dice icon
+			const DICE_ICONS = ['', 'fa-dice-one', 'fa-dice-two', 'fa-dice-three', 'fa-dice-four', 'fa-dice-five', 'fa-dice-six']
+			group.diceIcon = DICE_ICONS[group.initiative] || 'fa-dice-d6'
 		}
 
 		return context
@@ -151,6 +168,17 @@ export default class DolmenCombatTracker extends CombatTracker {
 		this.element?.querySelectorAll('.combatant-control')?.forEach(el => {
 			el.addEventListener('dblclick', e => e.stopPropagation())
 		})
+
+		// Disable combat progression buttons until all groups have rolled initiative
+		const combat = this.viewed
+		if (combat) {
+			const ready = allGroupsRolled(combat)
+			const actions = ['startCombat', 'nextTurn', 'previousTurn', 'nextRound', 'previousRound']
+			for (const action of actions) {
+				const btn = this.element?.querySelector(`.combat-control[data-action="${action}"]`)
+				if (btn) btn.disabled = !ready
+			}
+		}
 
 		// Re-render when actor/token names change during combat
 		if (!this._hooksRegistered) {
@@ -174,6 +202,33 @@ export default class DolmenCombatTracker extends CombatTracker {
 	}
 
 	/**
+	 * Roll initiative for the player's own group.
+	 */
+	static async _onRollPlayerInitiative(event, target) {
+		const combat = this.viewed
+		if (!combat) return
+		const groupId = Number(target.dataset.groupId)
+		if (Number.isNaN(groupId)) return
+		await rollInitiativeForGroup(combat, groupId)
+	}
+
+	/**
+	 * Clear initiative for an entire group by clicking its dice icon.
+	 */
+	static async _onClearGroupInitiative(event, target) {
+		const combat = this.viewed
+		if (!combat) return
+		const groupId = Number(target.dataset.groupId)
+		if (Number.isNaN(groupId)) return
+		const updates = combat.combatants
+			.filter(c => c.dispositionGroup === groupId)
+			.map(c => ({ _id: c.id, initiative: null }))
+		if (updates.length) {
+			await combat.updateEmbeddedDocuments('Combatant', updates)
+		}
+	}
+
+	/**
 	 * Open a context menu to move a combatant to a different group.
 	 * Group assignments are stored on the Combat document, not the token.
 	 */
@@ -189,8 +244,12 @@ export default class DolmenCombatTracker extends CombatTracker {
 		const currentGroup = combatant.dispositionGroup
 		const groupEntries = [
 			{ id: GROUPS.FRIENDLY, config: GROUP_CONFIG[GROUPS.FRIENDLY] },
-			{ id: GROUPS.NEUTRAL, config: GROUP_CONFIG[GROUPS.NEUTRAL] },
-			{ id: GROUPS.HOSTILE, config: GROUP_CONFIG[GROUPS.HOSTILE] }
+			{ id: GROUPS.GROUP_A, config: GROUP_CONFIG[GROUPS.GROUP_A] },
+			{ id: GROUPS.GROUP_B, config: GROUP_CONFIG[GROUPS.GROUP_B] },
+			{ id: GROUPS.GROUP_C, config: GROUP_CONFIG[GROUPS.GROUP_C] },
+			{ id: GROUPS.GROUP_D, config: GROUP_CONFIG[GROUPS.GROUP_D] },
+			{ id: GROUPS.GROUP_E, config: GROUP_CONFIG[GROUPS.GROUP_E] },
+			{ id: GROUPS.GROUP_F, config: GROUP_CONFIG[GROUPS.GROUP_F] }
 		]
 
 		const items = groupEntries.map(({ id, config }) => {
@@ -412,5 +471,31 @@ export default class DolmenCombatTracker extends CombatTracker {
 		const combat = this.viewed
 		if (!combat) return
 		await combat.rollGroupInitiative()
+	}
+
+	/**
+	 * Override context menu to make "Clear Initiative" clear for the whole group.
+	 */
+	_getEntryContextOptions() {
+		const options = super._getEntryContextOptions()
+		const clearOpt = options.find(o => o.name === 'COMBAT.CombatantClear')
+		if (clearOpt) {
+			clearOpt.callback = async (li) => {
+				const combat = this.viewed
+				if (!combat) return
+				const combatant = combat.combatants.get(li.dataset.combatantId)
+				if (!combatant) return
+
+				// Clear initiative for all combatants in the same group
+				const groupId = combatant.dispositionGroup
+				const updates = combat.combatants
+					.filter(c => c.dispositionGroup === groupId)
+					.map(c => ({ _id: c.id, initiative: null }))
+				if (updates.length) {
+					await combat.updateEmbeddedDocuments('Combatant', updates)
+				}
+			}
+		}
+		return options
 	}
 }

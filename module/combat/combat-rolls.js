@@ -10,6 +10,26 @@ import { GROUPS } from './combatant.js'
 import { GROUP_CONFIG, getReactionCategory } from './combat-data.js'
 
 /* -------------------------------------------- */
+/*  Helpers                                     */
+/* -------------------------------------------- */
+
+/**
+ * Check if all disposition groups in a combat have rolled initiative.
+ * @param {Combat} combat - The active combat encounter
+ * @returns {boolean} True if every group has at least one combatant with initiative
+ */
+export function allGroupsRolled(combat) {
+	if (!combat || !combat.combatants.size) return false
+	const groups = new Map()
+	for (const c of combat.combatants) {
+		const g = c.dispositionGroup
+		if (!groups.has(g)) groups.set(g, false)
+		if (c.initiative !== null) groups.set(g, true)
+	}
+	return [...groups.values()].every(v => v)
+}
+
+/* -------------------------------------------- */
 /*  Group Initiative                            */
 /* -------------------------------------------- */
 
@@ -36,7 +56,7 @@ export async function rollGroupInitiativeForCombat(combat) {
 		results[groupId] = roll.total
 
 		const config = GROUP_CONFIG[groupId]
-		const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.Hostile')
+		const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.GroupA')
 		chatParts.push(`<div class="dolmen-initiative-group" style="border-left: 3px solid ${config?.color || '#999'}; padding-left: 6px; margin: 4px 0;"><strong>${label}:</strong> ${roll.total}</div>`)
 
 		for (const c of combatants) {
@@ -46,6 +66,11 @@ export async function rollGroupInitiativeForCombat(combat) {
 
 	if (updates.length) {
 		await combat.updateEmbeddedDocuments('Combatant', updates)
+	}
+
+	// Reset turn to 0 so highest-initiative combatant becomes active
+	if (combat.round >= 1) {
+		await combat.update({ turn: 0 })
 	}
 
 	await ChatMessage.create({
@@ -58,6 +83,42 @@ export async function rollGroupInitiativeForCombat(combat) {
 	})
 
 	return results
+}
+
+/**
+ * Roll 1d6 initiative for a single group in the combat.
+ * @param {Combat} combat - The active combat encounter
+ * @param {number} groupId - The group constant to roll for
+ * @returns {Promise<number>} The roll result
+ */
+export async function rollInitiativeForGroup(combat, groupId) {
+	const combatants = combat.combatants.filter(c => c.dispositionGroup === groupId)
+	if (!combatants.length) return null
+
+	const roll = new Roll('1d6')
+	await roll.evaluate()
+
+	const updates = combatants.map(c => ({ _id: c.id, initiative: roll.total }))
+	await combat.updateEmbeddedDocuments('Combatant', updates)
+
+	// If all groups now have initiative, reset turn to 0
+	if (combat.round >= 1 && allGroupsRolled(combat)) {
+		await combat.update({ turn: 0 })
+	}
+
+	const config = GROUP_CONFIG[groupId]
+	const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.GroupA')
+
+	await ChatMessage.create({
+		content: `<div class="dolmen dolmen-combat-roll">
+			<h3><i class="fa-solid fa-dice-d6"></i> ${game.i18n.localize('DOLMEN.Combat.GroupInitiative')}</h3>
+			<div class="dolmen-initiative-group" style="border-left: 3px solid ${config?.color || '#999'}; padding-left: 6px; margin: 4px 0;"><strong>${label}:</strong> ${roll.total}</div>
+		</div>`,
+		sound: CONFIG.sounds.dice,
+		speaker: { alias: label }
+	})
+
+	return roll.total
 }
 
 /* -------------------------------------------- */
@@ -143,7 +204,7 @@ export async function rollSurprise() {
 	const hostileSurprised = hostileRoll.total <= 2
 
 	const friendlyLabel = game.i18n.localize(GROUP_CONFIG[GROUPS.FRIENDLY].labelKey)
-	const hostileLabel = game.i18n.localize(GROUP_CONFIG[GROUPS.HOSTILE].labelKey)
+	const hostileLabel = game.i18n.localize(GROUP_CONFIG[GROUPS.GROUP_A].labelKey)
 	const surprisedText = game.i18n.localize('DOLMEN.Combat.Surprised')
 	const notSurprisedText = game.i18n.localize('DOLMEN.Combat.NotSurprised')
 
@@ -155,7 +216,7 @@ export async function rollSurprise() {
 					<strong>${friendlyLabel}:</strong> ${friendlyRoll.total}
 					— <span class="${friendlySurprised ? 'surprise-yes' : 'surprise-no'}">${friendlySurprised ? surprisedText : notSurprisedText}</span>
 				</div>
-				<div class="dolmen-surprise-row" style="border-left: 3px solid ${GROUP_CONFIG[GROUPS.HOSTILE].color}; padding-left: 6px; margin: 4px 0;">
+				<div class="dolmen-surprise-row" style="border-left: 3px solid ${GROUP_CONFIG[GROUPS.GROUP_A].color}; padding-left: 6px; margin: 4px 0;">
 					<strong>${hostileLabel}:</strong> ${hostileRoll.total}
 					— <span class="${hostileSurprised ? 'surprise-yes' : 'surprise-no'}">${hostileSurprised ? surprisedText : notSurprisedText}</span>
 				</div>

@@ -6,9 +6,10 @@
  * and round-reset behavior for Dolmenwood's encounter rules.
  */
 
+import { GROUPS } from './combatant.js'
 import DolmenCombatant from './combatant.js'
 import DolmenCombatTracker from './combat-tracker.js'
-import { rollGroupInitiativeForCombat } from './combat-rolls.js'
+import { rollGroupInitiativeForCombat, rollInitiativeForGroup } from './combat-rolls.js'
 
 export default class DolmenCombat extends Combat {
 
@@ -27,14 +28,39 @@ export default class DolmenCombat extends Combat {
 	}
 
 	/**
-	 * Override rollInitiative to use group initiative instead of per-combatant rolls.
-	 * @param {string[]} ids - Combatant IDs (ignored — rolls for all groups)
+	 * Override rollInitiative to use group initiative.
+	 * Rolls only for groups that contain at least one combatant in the ids list.
+	 * @param {string[]} ids - Combatant IDs to roll for
 	 * @param {object} [options] - Roll options
 	 * @returns {Promise<Combat>} This combat instance
 	 */
 	// eslint-disable-next-line no-unused-vars
-	async rollInitiative(_ids, _options = {}) {
-		return this.rollGroupInitiative()
+	async rollInitiative(ids, _options = {}) {
+		if (!ids?.length) return this
+		const idSet = new Set(ids)
+		const groups = new Set()
+		for (const c of this.combatants) {
+			if (idSet.has(c.id)) groups.add(c.dispositionGroup)
+		}
+		for (const groupId of groups) {
+			await rollInitiativeForGroup(this, groupId)
+		}
+		return this
+	}
+
+	/**
+	 * Override rollNPC to exclude the Party group entirely.
+	 * @param {object} [options] - Roll options
+	 * @returns {Promise<Combat>} This combat instance
+	 */
+	async rollNPC(options = {}) {
+		const ids = this.combatants.reduce((acc, c) => {
+			if (c.isOwner && c.isNPC && c.initiative === null && c.dispositionGroup !== GROUPS.FRIENDLY) {
+				acc.push(c.id)
+			}
+			return acc
+		}, [])
+		return this.rollInitiative(ids, options)
 	}
 
 	/* -------------------------------------------- */
