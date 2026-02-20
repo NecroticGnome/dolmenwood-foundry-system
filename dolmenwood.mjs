@@ -246,12 +246,13 @@ Hooks.once('ready', async function () {
 
 	initCalendarWidget()
 
-	// Set default turn marker to system frame if not already customized
+	// Set turn marker to system image
 	if (game.user.isGM) {
+		const markerSrc = 'systems/dolmenwood/assets/turn_tracker.webp'
 		const config = game.settings.get('core', 'combatTrackerConfig')
-		if (!config.turnMarker?.src) {
+		if (!config.turnMarker?.src || config.turnMarker.src.includes('turn_tracker')) {
 			await game.settings.set('core', 'combatTrackerConfig', foundry.utils.mergeObject(config, {
-				turnMarker: { src: 'systems/dolmenwood/assets/turn_tracker.webp' }
+				turnMarker: { src: markerSrc }
 			}))
 		}
 	}

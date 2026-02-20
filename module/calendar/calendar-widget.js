@@ -359,7 +359,7 @@ function updateWidgetPosition(widget) {
 	if (slot6) slot6.style.marginLeft = `${ARC_WIDTH}px`
 
 	// Push hotbar up above the calendar
-	hotbar.style.marginBottom = '3.5rem'
+	hotbar.style.marginBottom = '3rem'
 
 	// Center widget on the action bar (macro slots), ignoring asymmetric control buttons
 	const actionBar = hotbar.querySelector('#action-bar')
