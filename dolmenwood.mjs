@@ -242,7 +242,7 @@ Hooks.once('ready', async function () {
 		const config = game.settings.get('core', 'combatTrackerConfig')
 		if (!config.turnMarker?.src) {
 			await game.settings.set('core', 'combatTrackerConfig', foundry.utils.mergeObject(config, {
-				turnMarker: { src: 'systems/dolmenwood/assets/frame.webp' }
+				turnMarker: { src: 'systems/dolmenwood/assets/turn_tracker.webp' }
 			}))
 		}
 	}
