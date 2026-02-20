@@ -43,6 +43,18 @@
 	visibility: visible;
 }
 
+.dolmen .ac-breakdown {
+	min-width: 140px;
+	white-space: nowrap;
+	font-size: 0.85rem;
+}
+
+.dolmen .ac-breakdown .ac-source {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+}
+
 /* -------------------------------------------- */
 /*  Compendium Item Tags                        */
 /* -------------------------------------------- */
@@ -244,6 +256,7 @@
 	cursor: pointer;
 	transition: background-color 0.1s;
 	border-bottom: 1px solid var(--dolmen-color-box-background);
+	color: var(--dolmen-color-h3);
 }
 
 .dolmen-weapon-context-menu .weapon-menu-item:last-child {
@@ -252,7 +265,7 @@
 
 .dolmen-weapon-context-menu .weapon-menu-item:hover {
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 }
 
 .dolmen-weapon-context-menu .weapon-menu-item .weapon-icon {
