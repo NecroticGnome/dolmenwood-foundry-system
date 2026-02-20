@@ -17,9 +17,10 @@
 
 .sheet.dolmen .tab-content .encumbrance-grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr;
 	gap: 0.5rem;
 	margin: auto 0;
+	align-items: center;
 }
 
 .sheet.dolmen .tab-content .encumbrance-stat .encumbrance-value {
@@ -31,6 +32,44 @@
 
 .sheet.dolmen .tab-content .encumbrance-stat.encumbrance-load {
 	text-align: center;
+}
+
+.sheet.dolmen .tab-content .exhaustion-stat {
+	flex-direction: column;
+	justify-content: center;
+	gap: 0;
+	width: 8.74rem;
+}
+
+.sheet.dolmen .tab-content .exhaustion-buttons {
+	display: flex;
+	gap: 2px;
+}
+
+.sheet.dolmen .tab-content .exhaustion-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.5rem;
+	padding: 0.15rem 0;
+	cursor: pointer;
+	font-size: 0.75rem;
+	font-weight: bold;
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 2px;
+	background-color: var(--dolmen-color-inner-background);
+	color: var(--dolmen-color-text);
+	transition: background-color 0.1s;
+}
+
+.sheet.dolmen .tab-content .exhaustion-btn:hover {
+	background-color: var(--dolmen-color-box-background);
+}
+
+.sheet.dolmen .tab-content .exhaustion-btn.selected {
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-title);
+	border-color: var(--dolmen-color-title-background);
 }
 
 /* -------------------------------------------- */

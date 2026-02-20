@@ -258,6 +258,7 @@
 		"Immortal": "Immortal",
 		"Encumbrance": {
 			"Title": "Encumbrance",
+			"TitleFull": "Encumbrance & Exhaustion",
 			"Method": "Encumbrance Method",
 			"MethodHint": "The encumbrance calculation method used for all adventurers.",
 			"Current": "Current",
@@ -269,6 +270,7 @@
 			"treasure": "Weight (Treasure)",
 			"slots": "Slots"
 		},
+		"Exhaustion": "Exhaustion",
 		"Coins": {
 			"Title": "Coins",
 			"Copper": "Copper",
