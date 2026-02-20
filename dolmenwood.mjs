@@ -164,6 +164,15 @@ Hooks.once('init', async function () {
 		onChange: toggleWidget
 	})
 
+	game.settings.register('dolmenwood', 'autoWeather', {
+		name: 'DOLMEN.Calendar.Weather.AutoSettingName',
+		hint: 'DOLMEN.Calendar.Weather.AutoSettingHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false
+	})
+
 	game.settings.register('dolmenwood', 'activeUnseason', {
 		scope: 'world',
 		config: false,

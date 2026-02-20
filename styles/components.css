@@ -25,7 +25,7 @@
 	align-self: end;
 	justify-self: center;
 	line-height: 1.25rem;
-	box-shadow: black 0 0 3px;
+	filter: drop-shadow(0 0 3px black);
 }
 
 .dolmen .tooltiptext::after {
