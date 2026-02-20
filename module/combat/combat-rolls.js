@@ -57,7 +57,7 @@ export async function rollGroupInitiativeForCombat(combat) {
 
 		const config = GROUP_CONFIG[groupId]
 		const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.GroupA')
-		chatParts.push(`<div class="dolmen-initiative-group" style="border-left: 3px solid ${config?.color || '#999'}; padding-left: 6px; margin: 4px 0;"><strong>${label}:</strong> ${roll.total}</div>`)
+		chatParts.push(`<div class="group-row" style="border-left: 3px solid ${config?.color || '#999'};"><strong>${label}:</strong> ${roll.total}</div>`)
 
 		for (const c of combatants) {
 			updates.push({ _id: c.id, initiative: roll.total })
@@ -74,9 +74,17 @@ export async function rollGroupInitiativeForCombat(combat) {
 	}
 
 	await ChatMessage.create({
-		content: `<div class="dolmen dolmen-combat-roll">
-			<h3><i class="fa-solid fa-dice-d6"></i> ${game.i18n.localize('DOLMEN.Combat.GroupInitiative')}</h3>
-			${chatParts.join('')}
+		content: `
+		<div class="dolmen combat-roll">
+			<div class="roll-header">
+				<i class="fa-solid fa-dice-d6"></i>
+				<div class="roll-info">
+					<h3>${game.i18n.localize('DOLMEN.Combat.GroupInitiative')}</h3>
+				</div>
+			</div>
+			<div class="roll-body">
+				${chatParts.join('')}
+			</div>
 		</div>`,
 		sound: CONFIG.sounds.dice,
 		speaker: { alias: game.i18n.localize('DOLMEN.Combat.Encounter') }
@@ -110,9 +118,17 @@ export async function rollInitiativeForGroup(combat, groupId) {
 	const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.GroupA')
 
 	await ChatMessage.create({
-		content: `<div class="dolmen dolmen-combat-roll">
-			<h3><i class="fa-solid fa-dice-d6"></i> ${game.i18n.localize('DOLMEN.Combat.GroupInitiative')}</h3>
-			<div class="dolmen-initiative-group" style="border-left: 3px solid ${config?.color || '#999'}; padding-left: 6px; margin: 4px 0;"><strong>${label}:</strong> ${roll.total}</div>
+		content: `
+		<div class="dolmen combat-roll">
+			<div class="roll-header">
+				<i class="fa-solid fa-dice-d6"></i>
+				<div class="roll-info">
+					<h3>${game.i18n.localize('DOLMEN.Combat.GroupInitiative')}</h3>
+				</div>
+			</div>
+			<div class="roll-body">
+				<div class="group-row" style="border-left: 3px solid ${config?.color || '#999'};"><strong>${label}:</strong> ${roll.total}</div>
+			</div>
 		</div>`,
 		sound: CONFIG.sounds.dice,
 		speaker: { alias: label }
@@ -136,16 +152,28 @@ export async function rollMoraleCheck(morale) {
 	await roll.evaluate()
 
 	const passed = roll.total <= morale
-	const resultKey = passed ? 'DOLMEN.Creature.MoraleHolds' : 'DOLMEN.Creature.MoraleFlees'
-	const resultClass = passed ? 'morale-holds' : 'morale-breaks'
+	const resultClass = passed ? 'success' : 'failure'
+	const resultLabel = game.i18n.localize(passed ? 'DOLMEN.Creature.MoraleHolds' : 'DOLMEN.Creature.MoraleFlees')
+
+	const anchor = await roll.toAnchor({ classes: ['morale-inline-roll'] })
 
 	await ChatMessage.create({
-		content: `<div class="dolmen dolmen-combat-roll">
-			<h3><i class="fa-solid fa-flag"></i> ${game.i18n.localize('DOLMEN.Creature.MoraleCheck')}</h3>
-			<div class="dolmen-roll-details">
-				<div>${game.i18n.localize('DOLMEN.Creature.Morale')}: ${morale}</div>
-				<div>${game.i18n.localize('DOLMEN.Roll.Result')}: ${roll.total}</div>
-				<div class="dolmen-roll-result ${resultClass}">${game.i18n.localize(resultKey)}</div>
+		content: `
+		<div class="dolmen combat-roll">
+			<div class="roll-header">
+				<i class="fa-solid fa-flag"></i>
+				<div class="roll-info">
+					<h3>${game.i18n.localize('DOLMEN.Creature.MoraleCheck')}</h3>
+				</div>
+			</div>
+			<div class="roll-body">
+				<div class="roll-section ${resultClass}">
+					<div class="roll-result">
+						${anchor.outerHTML}
+					</div>
+					<span class="roll-target">${game.i18n.localize('DOLMEN.Creature.Morale')}: ${morale}</span>
+					<span class="roll-label ${resultClass}">${resultLabel}</span>
+				</div>
 			</div>
 		</div>`,
 		sound: CONFIG.sounds.dice,
@@ -170,13 +198,26 @@ export async function rollReaction(chaMod = 0) {
 	await roll.evaluate()
 
 	const category = getReactionCategory(roll.total)
+	const anchor = await roll.toAnchor({ classes: ['reaction-inline-roll'] })
+	const breakdown = chaMod !== 0 ? `2d6 ${chaMod >= 0 ? '+' : ''}${chaMod}` : '2d6'
 
 	await ChatMessage.create({
-		content: `<div class="dolmen dolmen-combat-roll">
-			<h3><i class="fa-duotone fa-solid fa-masks-theater"></i> ${game.i18n.localize('DOLMEN.Combat.ReactionRoll')}</h3>
-			<div class="dolmen-roll-details">
-				<div>${game.i18n.localize('DOLMEN.Roll.Result')}: ${roll.total}${chaMod !== 0 ? ` (2d6 ${chaMod >= 0 ? '+' : ''}${chaMod})` : ''}</div>
-				<div class="dolmen-roll-result reaction-${category.key}">${game.i18n.localize(category.labelKey)}</div>
+		content: `
+		<div class="dolmen combat-roll">
+			<div class="roll-header">
+				<i class="fa-duotone fa-solid fa-masks-theater"></i>
+				<div class="roll-info">
+					<h3>${game.i18n.localize('DOLMEN.Combat.ReactionRoll')}</h3>
+				</div>
+			</div>
+			<div class="roll-body">
+				<div class="roll-section reaction-${category.key}">
+					<div class="roll-result">
+						${anchor.outerHTML}
+					</div>
+					<span class="roll-breakdown">${breakdown}</span>
+					<span class="roll-label reaction-${category.key}">${game.i18n.localize(category.labelKey)}</span>
+				</div>
 			</div>
 		</div>`,
 		sound: CONFIG.sounds.dice,
@@ -208,17 +249,26 @@ export async function rollSurprise() {
 	const surprisedText = game.i18n.localize('DOLMEN.Combat.Surprised')
 	const notSurprisedText = game.i18n.localize('DOLMEN.Combat.NotSurprised')
 
+	const friendlyAnchor = await friendlyRoll.toAnchor({ classes: ['surprise-inline-roll'] })
+	const hostileAnchor = await hostileRoll.toAnchor({ classes: ['surprise-inline-roll'] })
+
 	await ChatMessage.create({
-		content: `<div class="dolmen dolmen-combat-roll">
-			<h3><i class="fa-sharp fa-solid fa-seal-exclamation"></i> ${game.i18n.localize('DOLMEN.Combat.SurpriseRoll')}</h3>
-			<div class="dolmen-roll-details">
-				<div class="dolmen-surprise-row" style="border-left: 3px solid ${GROUP_CONFIG[GROUPS.FRIENDLY].color}; padding-left: 6px; margin: 4px 0;">
-					<strong>${friendlyLabel}:</strong> ${friendlyRoll.total}
-					— <span class="${friendlySurprised ? 'surprise-yes' : 'surprise-no'}">${friendlySurprised ? surprisedText : notSurprisedText}</span>
+		content: `
+		<div class="dolmen combat-roll">
+			<div class="roll-header">
+				<i class="fa-sharp fa-solid fa-seal-exclamation"></i>
+				<div class="roll-info">
+					<h3>${game.i18n.localize('DOLMEN.Combat.SurpriseRoll')}</h3>
 				</div>
-				<div class="dolmen-surprise-row" style="border-left: 3px solid ${GROUP_CONFIG[GROUPS.GROUP_A].color}; padding-left: 6px; margin: 4px 0;">
-					<strong>${hostileLabel}:</strong> ${hostileRoll.total}
-					— <span class="${hostileSurprised ? 'surprise-yes' : 'surprise-no'}">${hostileSurprised ? surprisedText : notSurprisedText}</span>
+			</div>
+			<div class="roll-body">
+				<div class="group-row" style="border-left: 3px solid ${GROUP_CONFIG[GROUPS.FRIENDLY].color};">
+					<strong>${friendlyLabel}:</strong> <span class="force-d6-icon">${friendlyAnchor.outerHTML}</span>
+					— <span class="roll-label ${friendlySurprised ? 'failure' : 'success'}">${friendlySurprised ? surprisedText : notSurprisedText}</span>
+				</div>
+				<div class="group-row" style="border-left: 3px solid ${GROUP_CONFIG[GROUPS.GROUP_A].color};">
+					<strong>${hostileLabel}:</strong> <span class="force-d6-icon">${hostileAnchor.outerHTML}</span>
+					— <span class="roll-label ${hostileSurprised ? 'failure' : 'success'}">${hostileSurprised ? surprisedText : notSurprisedText}</span>
 				</div>
 			</div>
 		</div>`,
@@ -254,12 +304,26 @@ export async function rollEncounterDistance(environment = 'dungeon') {
 			: 'DOLMEN.Combat.Distance.Dungeon'
 	)
 
+	const anchor = await roll.toAnchor({ classes: ['distance-inline-roll'] })
+
 	await ChatMessage.create({
-		content: `<div class="dolmen dolmen-combat-roll">
-			<h3><i class="fa-duotone fa-solid fa-people-arrows"></i> ${game.i18n.localize('DOLMEN.Combat.EncounterDistance')}</h3>
-			<div class="dolmen-roll-details">
-				<div>${envLabel}: ${roll.total} × ${multiplier}'</div>
-				<div class="dolmen-roll-result">${distance} ${game.i18n.localize('DOLMEN.Combat.Distance.Feet')}</div>
+		content: `
+		<div class="dolmen combat-roll">
+			<div class="roll-header">
+				<i class="fa-duotone fa-solid fa-people-arrows"></i>
+				<div class="roll-info">
+					<h3>${game.i18n.localize('DOLMEN.Combat.EncounterDistance')}</h3>
+					<span class="roll-type">${envLabel}</span>
+				</div>
+			</div>
+			<div class="roll-body">
+				<div class="roll-section">
+					<div class="roll-result">
+						${anchor.outerHTML}
+					</div>
+					<span class="roll-breakdown">${roll.total} × ${multiplier}'</span>
+					<span class="roll-value">${distance} ${game.i18n.localize('DOLMEN.Combat.Distance.Feet')}</span>
+				</div>
 			</div>
 		</div>`,
 		sound: CONFIG.sounds.dice,
