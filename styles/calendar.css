@@ -3,12 +3,17 @@
 #dolmen-calendar-widget {
 	position: fixed;
 	bottom: 1rem;
-	z-index: 69;
+	z-index: 20;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	pointer-events: auto;
 	font-family: var(--dolmen-font-body, sans-serif);
+}
+
+/* Raise above hotbar when hovering the time section so GM controls are accessible */
+#dolmen-calendar-widget:has(.calendar-time:hover) {
+	z-index: 69;
 }
 
 #dolmen-calendar-widget.hidden {
