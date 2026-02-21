@@ -56,14 +56,13 @@
 	gap: 0.5rem;
 	padding: 0.5rem;
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	align-items: center;
 }
 
 .dolmen.attack-roll .attack-header .weapon-icon {
 	width: 32px;
 	height: 32px;
-	border: 2px solid var(--dolmen-color-background);
 	border-radius: 4px;
 	object-fit: cover;
 }
