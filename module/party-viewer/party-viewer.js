@@ -283,9 +283,9 @@ async function addXP() {
 	const result = await DialogV2.prompt({
 		window: { title: game.i18n.localize('DOLMEN.PartyViewer.DivideXP') },
 		content: `
-			<div class="form-group">
-				<label>${label}</label>
-				<input type="number" name="amount" placeholder="0" min="0" autofocus>
+			<div style="display: flex; align-items: center; gap: 0.5rem">
+				<label style="white-space: nowrap">${label}</label>
+				<input type="number" name="amount" placeholder="0" min="0" autofocus style="flex: 1">
 			</div>
 			<div class="distribute-preview">${previewRows}</div>`,
 		ok: {

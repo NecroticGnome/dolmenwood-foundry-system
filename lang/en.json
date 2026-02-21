@@ -122,6 +122,7 @@
 			"GroupInitiative": "Group Initiative",
 			"RollInitiative": "Roll Initiative",
 			"ClearInitiative": "Clear Initiative",
+			"ClearAll": "Clear All",
 			"Roll": "Roll",
 			"Group": {
 				"Friendly": "Party",
