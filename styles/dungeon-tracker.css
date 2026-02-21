@@ -112,6 +112,14 @@
 	padding: 0.5rem;
 }
 
+.dolmen.encounter-roll .roll-body .roll-section {
+	margin-top: 0.5rem;
+}
+
+.dolmen.encounter-roll .roll-body .roll-section:first-child {
+	margin-top: 0;
+}
+
 .dolmen.encounter-roll .roll-section {
 	display: flex;
 	flex-direction: column;
@@ -121,6 +129,10 @@
 	background-color: var(--dolmen-color-inner-background);
 	border: 1px solid var(--dolmen-color-box-border);
 	border-radius: 4px;
+}
+
+.dolmen.encounter-roll .roll-section .fa-solid {
+	color: var(--dolmen-color-title);
 }
 
 .dolmen.encounter-roll .roll-result .inline-roll {
@@ -145,6 +157,7 @@
 	margin-top: 0.35rem;
 	padding: 0.15rem 0.5rem;
 	border-radius: 0.25rem;
+	color: var(--dolmen-color-text);
 }
 
 .dolmen.encounter-roll .roll-section.success {

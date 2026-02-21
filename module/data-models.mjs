@@ -1096,19 +1096,19 @@ export class ClassDataModel extends ItemDataModel {
 			}),
 			// Saving throw progressions by level (indices 1-15)
 			saveProgressions: new SchemaField({
-				doom: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+				doom: new ArrayField(new NumberField({ integer: true, min: 0, max: 19 }), {
 					initial: [0, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6]
 				}),
-				ray: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+				ray: new ArrayField(new NumberField({ integer: true, min: 0, max: 19 }), {
 					initial: [0, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7]
 				}),
-				hold: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+				hold: new ArrayField(new NumberField({ integer: true, min: 0, max: 19 }), {
 					initial: [0, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6]
 				}),
-				blast: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+				blast: new ArrayField(new NumberField({ integer: true, min: 0, max: 19 }), {
 					initial: [0, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8]
 				}),
-				spell: new ArrayField(new NumberField({ integer: true, min: 2, max: 19 }), {
+				spell: new ArrayField(new NumberField({ integer: true, min: 0, max: 19 }), {
 					initial: [0, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8]
 				})
 			}),

@@ -22,7 +22,7 @@ let turnCounter = 1 // turn number under the frame (index 1)
  */
 function getSquareIcon(turnNum) {
 	if (turnNum <= 0) return null
-	if (turnNum % 6 === 0) return 'fa-solid fa-campground'
+	if (turnNum % 6 === 0) return 'fa-solid fa-snooze'
 	if (turnNum % 2 === 0) return 'fa-solid fa-dice'
 	return null
 }
@@ -45,48 +45,72 @@ function createSquare(turnNum, faded) {
 }
 
 /**
- * Roll a random encounter check (d6) and post to chat.
- * Only runs for the GM when the setting is enabled and it's an even turn.
+ * Post a dungeon turn chat message. Handles encounter checks (every 2nd turn),
+ * rest reminders (every 6th turn), or both merged into one card.
  */
-async function rollEncounterCheck(turnNum) {
+async function postTurnMessage(turnNum) {
 	if (!game.user.isGM) return
+
+	const isRestTurn = turnNum > 0 && turnNum % 6 === 0
+	const isEncounterTurn = turnNum > 0 && turnNum % 2 === 0
 	const chance = game.settings.get('dolmenwood', 'encounterChance')
-	if (!chance) return
-	if (turnNum <= 0 || turnNum % 2 !== 0) return
+	const doEncounter = isEncounterTurn && chance > 0
 
-	const roll = new Roll('1d6')
-	await roll.evaluate()
+	if (!doEncounter && !isRestTurn) return
 
-	const encountered = roll.total <= chance
-	const resultClass = encountered ? 'failure' : 'success'
-	const resultLabel = encountered
-		? game.i18n.localize('DOLMEN.DungeonTracker.EncounterYes')
-		: game.i18n.localize('DOLMEN.DungeonTracker.EncounterNo')
-
-	const anchor = await roll.toAnchor({ classes: ['encounter-inline-roll'] })
-
-	await ChatMessage.create({
-		content: `
-		<div class="dolmen encounter-roll">
-			<div class="roll-header">
-				<i class="fa-solid fa-dice"></i>
-				<div class="roll-info">
-					<h3>${game.i18n.localize('DOLMEN.DungeonTracker.EncounterCheck')}</h3>
-					<span class="roll-type">${game.i18n.localize('DOLMEN.DungeonTracker.Turn')} ${turnNum}</span>
-				</div>
-			</div>
-			<div class="roll-body">
+	let encounterHtml = ''
+	let sound = undefined
+	if (doEncounter) {
+		const roll = new Roll('1d6')
+		await roll.evaluate()
+		const encountered = roll.total <= chance
+		const resultClass = encountered ? 'failure' : 'success'
+		const resultLabel = encountered
+			? game.i18n.localize('DOLMEN.DungeonTracker.EncounterYes')
+			: game.i18n.localize('DOLMEN.DungeonTracker.EncounterNo')
+		const anchor = await roll.toAnchor({ classes: ['encounter-inline-roll'] })
+		sound = CONFIG.sounds.dice
+		encounterHtml = `
 				<div class="roll-section ${resultClass}">
 					<div class="roll-result force-d6-icon">
 						${anchor.outerHTML}
 					</div>
 					<span class="roll-target">${chance}-in-6</span>
 					<span class="roll-label ${resultClass}">${resultLabel}</span>
+				</div>`
+	}
+
+	let restHtml = ''
+	if (isRestTurn) {
+		restHtml = `
+				<div class="roll-section rest-reminder">
+					<i class="fa-solid fa-snooze"></i>
+					<span class="roll-label">${game.i18n.localize('DOLMEN.DungeonTracker.RestReminder')}</span>
+				</div>`
+	}
+
+	const icon = isRestTurn && !doEncounter ? 'fa-solid fa-snooze' : 'fa-solid fa-dice'
+	const title = doEncounter
+		? game.i18n.localize('DOLMEN.DungeonTracker.EncounterCheck')
+		: game.i18n.localize('DOLMEN.DungeonTracker.RestTitle')
+
+	await ChatMessage.create({
+		content: `
+		<div class="dolmen encounter-roll">
+			<div class="roll-header">
+				<i class="${icon}"></i>
+				<div class="roll-info">
+					<h3>${title}</h3>
+					<span class="roll-type">${game.i18n.localize('DOLMEN.DungeonTracker.Turn')} ${turnNum}</span>
 				</div>
 			</div>
+			<div class="roll-body">
+				${encounterHtml}
+				${restHtml}
+			</div>
 		</div>`,
-		sound: CONFIG.sounds.dice,
-		speaker: { alias: game.i18n.localize('DOLMEN.DungeonTracker.EncounterCheck') }
+		sound,
+		speaker: { alias: title }
 	})
 }
 
@@ -160,9 +184,9 @@ function animateOneTurn() {
 
 	// 2. After the transition duration, restructure the DOM
 	setTimeout(() => {
-		// Advance the turn counter and check for encounters
+		// Advance the turn counter and check for encounters / rest
 		turnCounter++
-		rollEncounterCheck(turnCounter)
+		postTurnMessage(turnCounter)
 
 		// Suppress the CSS transition so the reset is instant (no snap-back)
 		strip.classList.add('no-transition')

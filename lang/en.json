@@ -743,7 +743,8 @@
 			"EncounterCheck": "Random Encounter",
 			"Turn": "Turn",
 			"EncounterYes": "Encounter!",
-			"EncounterNo": "No encounter"
+			"EncounterNo": "No encounter",
+			"RestReminder": "Rest for one turn or become exhausted!"
 		},
 		"Calendar": {
 			"SettingName": "Show Calendar Widget",
