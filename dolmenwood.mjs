@@ -96,17 +96,38 @@ Hooks.once('init', async function () {
 	})
 
 	game.settings.register('dolmenwood', 'encounterChance', {
-		name: 'DOLMEN.DungeonTracker.EncounterSettingName',
-		hint: 'DOLMEN.DungeonTracker.EncounterSettingHint',
 		scope: 'world',
-		config: true,
+		config: false,
 		type: Number,
-		default: 0,
-		choices: {
-			0: 'DOLMEN.DungeonTracker.EncounterOff',
-			1: '1-in-6', 2: '2-in-6', 3: '3-in-6',
-			4: '4-in-6', 5: '5-in-6', 6: '6-in-6'
-		}
+		default: 0
+	})
+
+	game.settings.register('dolmenwood', 'encounterInterval', {
+		scope: 'world',
+		config: false,
+		type: Number,
+		default: 2
+	})
+
+	game.settings.register('dolmenwood', 'restInterval', {
+		scope: 'world',
+		config: false,
+		type: Number,
+		default: 6
+	})
+
+	game.settings.register('dolmenwood', 'encounterTable', {
+		scope: 'world',
+		config: false,
+		type: String,
+		default: ''
+	})
+
+	game.settings.register('dolmenwood', 'encounterGmOnly', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: false
 	})
 
 	game.settings.register('dolmenwood', 'autoWeather', {

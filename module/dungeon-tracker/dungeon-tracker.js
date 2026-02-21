@@ -1,5 +1,7 @@
 /* global game, Hooks, foundry, Roll, ChatMessage, CONFIG */
 
+import { findRollTable } from '../utils/roll-tables.js'
+
 const { DialogV2 } = foundry.applications.api
 
 const SQUARE_COUNT = 8
@@ -22,12 +24,14 @@ let trackerPaused = true // overwritten by loadTrackerPaused() on init
 
 /**
  * Return the icon class for a given turn number, or null.
- * Every 6th turn: rest icon (takes priority). Every 2nd turn: roll icon.
+ * Rest interval turn: rest icon (takes priority). Encounter interval turn: roll icon.
  */
 function getSquareIcon(turnNum) {
 	if (turnNum <= 0) return null
-	if (turnNum % 6 === 0) return 'fa-solid fa-snooze'
-	if (turnNum % 2 === 0) return 'fa-solid fa-dice'
+	const restInterval = game.settings.get('dolmenwood', 'restInterval')
+	const encounterInterval = game.settings.get('dolmenwood', 'encounterInterval')
+	if (restInterval > 0 && turnNum % restInterval === 0) return 'fa-solid fa-snooze'
+	if (encounterInterval > 0 && turnNum % encounterInterval === 0) return 'fa-solid fa-dice'
 	return null
 }
 
@@ -155,6 +159,86 @@ async function showAddTimerDialog() {
 	}
 }
 
+async function showSettingsDialog() {
+	if (!game.user.isGM) return
+
+	const encounterChance = game.settings.get('dolmenwood', 'encounterChance')
+	const encounterInterval = game.settings.get('dolmenwood', 'encounterInterval')
+	const restInterval = game.settings.get('dolmenwood', 'restInterval')
+	const encounterTable = game.settings.get('dolmenwood', 'encounterTable')
+	const encounterGmOnly = game.settings.get('dolmenwood', 'encounterGmOnly')
+
+	const chanceLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterSettingName')
+	const intervalLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterIntervalLabel')
+	const restLbl = game.i18n.localize('DOLMEN.DungeonTracker.RestIntervalLabel')
+	const tableLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterTableLabel')
+	const gmOnlyLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterGmOnly')
+	const offLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterOff')
+	const noneLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterTableNone')
+
+	const chanceOptions = [`<option value="0"${encounterChance === 0 ? ' selected' : ''}>${offLbl}</option>`]
+	for (let i = 1; i <= 6; i++) {
+		chanceOptions.push(`<option value="${i}"${encounterChance === i ? ' selected' : ''}>${i}-in-6</option>`)
+	}
+
+	const tableOptions = [`<option value=""${!encounterTable ? ' selected' : ''}>${noneLbl}</option>`]
+	for (const table of game.tables) {
+		if (table.name.startsWith('Encounter Table:')) {
+			const sel = encounterTable === table.name ? ' selected' : ''
+			tableOptions.push(`<option value="${table.name}"${sel}>${table.name}</option>`)
+		}
+	}
+
+	const result = await DialogV2.prompt({
+		window: { title: game.i18n.localize('DOLMEN.DungeonTracker.Settings') },
+		content: `
+			<div class="form-group">
+				<label>${chanceLbl}</label>
+				<select name="encounterChance">${chanceOptions.join('')}</select>
+			</div>
+			<div class="form-group">
+				<label>${intervalLbl}</label>
+				<input type="number" name="encounterInterval" value="${encounterInterval}" min="1">
+			</div>
+			<div class="form-group">
+				<label>${tableLbl}</label>
+				<select name="encounterTable">${tableOptions.join('')}</select>
+			</div>
+			<div class="form-group">
+				<label>${gmOnlyLbl}</label>
+				<input type="checkbox" name="encounterGmOnly"${encounterGmOnly ? ' checked' : ''}>
+			</div>
+			<div class="form-group">
+				<label>${restLbl}</label>
+				<input type="number" name="restInterval" value="${restInterval}" min="0">
+			</div>`,
+		ok: {
+			label: game.i18n.localize('DOLMEN.DungeonTracker.SettingsSave'),
+			icon: 'fa-solid fa-check',
+			callback: (event, button) => {
+				const rest = parseInt(button.form.elements.restInterval.value)
+				return {
+					chance: parseInt(button.form.elements.encounterChance.value) || 0,
+					interval: parseInt(button.form.elements.encounterInterval.value) || 2,
+					rest: isNaN(rest) ? 6 : rest,
+					table: button.form.elements.encounterTable.value,
+					gmOnly: button.form.elements.encounterGmOnly.checked
+				}
+			}
+		},
+		rejectClose: false
+	})
+
+	if (result) {
+		await game.settings.set('dolmenwood', 'encounterChance', result.chance)
+		await game.settings.set('dolmenwood', 'encounterInterval', result.interval)
+		await game.settings.set('dolmenwood', 'restInterval', result.rest)
+		await game.settings.set('dolmenwood', 'encounterTable', result.table)
+		await game.settings.set('dolmenwood', 'encounterGmOnly', result.gmOnly)
+		rebuildSquares()
+	}
+}
+
 function removeLightSource(id) {
 	if (!game.user.isGM) return
 	lightSources = lightSources.filter(s => s.id !== id)
@@ -279,9 +363,17 @@ function renderLightPanel() {
 		timerBtn.innerHTML = `<i class="fa-solid fa-hourglass"></i> ${game.i18n.localize('DOLMEN.DungeonTracker.Timer')}`
 		timerBtn.addEventListener('click', () => showAddTimerDialog())
 
+		const settingsBtn = document.createElement('button')
+		settingsBtn.type = 'button'
+		settingsBtn.className = 'tracker-settings-btn'
+		settingsBtn.innerHTML = '<i class="fa-solid fa-gear"></i>'
+		settingsBtn.title = game.i18n.localize('DOLMEN.DungeonTracker.Settings')
+		settingsBtn.addEventListener('click', () => showSettingsDialog())
+
 		controls.appendChild(torchBtn)
 		controls.appendChild(lanternBtn)
 		controls.appendChild(timerBtn)
+		controls.appendChild(settingsBtn)
 		panel.appendChild(controls)
 
 	}
@@ -419,14 +511,16 @@ export function onLightSourcesChanged(value) {
 }
 
 /**
- * Post a dungeon turn chat message. Handles encounter checks (every 2nd turn),
- * rest reminders (every 6th turn), or both merged into one card.
+ * Post a dungeon turn chat message. Handles encounter checks and
+ * rest reminders at configurable intervals.
  */
 async function postTurnMessage(turnNum) {
 	if (!game.user.isGM) return
 
-	const isRestTurn = turnNum > 0 && turnNum % 6 === 0
-	const isEncounterTurn = turnNum > 0 && turnNum % 2 === 0
+	const restInterval = game.settings.get('dolmenwood', 'restInterval')
+	const encounterInterval = game.settings.get('dolmenwood', 'encounterInterval')
+	const isRestTurn = restInterval > 0 && turnNum > 0 && turnNum % restInterval === 0
+	const isEncounterTurn = encounterInterval > 0 && turnNum > 0 && turnNum % encounterInterval === 0
 	const chance = game.settings.get('dolmenwood', 'encounterChance')
 	const doEncounter = isEncounterTurn && chance > 0
 
@@ -452,6 +546,22 @@ async function postTurnMessage(turnNum) {
 					<span class="roll-target">${chance}-in-6</span>
 					<span class="roll-label ${resultClass}">${resultLabel}</span>
 				</div>`
+
+		// Draw from encounter table if configured and encounter triggered
+		if (encountered) {
+			const tableName = game.settings.get('dolmenwood', 'encounterTable')
+			if (tableName) {
+				const table = await findRollTable(tableName)
+				if (table) {
+					const draw = await table.draw({ displayChat: false })
+					if (draw.results.length) {
+						const gmOnly = game.settings.get('dolmenwood', 'encounterGmOnly')
+						const msgOpts = gmOnly ? { rollMode: 'gmroll' } : {}
+						table.toMessage(draw.results, { roll: draw.roll, messageData: { sound: '' }, messageOptions: msgOpts })
+					}
+				}
+			}
+		}
 	}
 
 	let restHtml = ''

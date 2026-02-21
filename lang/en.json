@@ -763,7 +763,7 @@
 			"RestClear": "Clear Tracker",
 			"RestPause": "Pause Tracker",
 			"RestProcess": "Process Turns",
-			"EncounterSettingName": "Auto Roll Encounters",
+			"EncounterSettingName": "Encounter Chance",
 			"EncounterSettingHint": "Automatically roll a random encounter check (d6) every 2 dungeon turns when the tracker advances.",
 			"EncounterOff": "Off",
 			"EncounterCheck": "Random Encounter",
@@ -785,7 +785,14 @@
 			"Pause": "Pause Tracker",
 			"Resume": "Resume Tracker",
 			"Reset": "Reset Tracker",
-			"AdvanceTurn": "Next Turn"
+			"AdvanceTurn": "Next Turn",
+			"Settings": "Tracker Settings",
+			"SettingsSave": "Save",
+			"EncounterIntervalLabel": "Encounter check frequency",
+			"EncounterTableLabel": "Encounter Table",
+			"EncounterTableNone": "None",
+			"EncounterGmOnly": "Show rolled encounter only to GM",
+			"RestIntervalLabel": "Need to rest frequency"
 		},
 		"Calendar": {
 			"SettingName": "Show Calendar Widget",
