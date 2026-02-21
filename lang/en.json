@@ -729,6 +729,28 @@
 			"SettingName": "Show Welcome Message",
 			"SettingHint": "Display the welcome dialog when Foundry loads."
 		},
+		"PartyViewer": {
+			"SettingName": "Show Party Viewer",
+			"DivideXP": "Divide XP",
+			"DivideCoins": "Divide Coins",
+			"AddCurrent": "Add Current",
+			"Remove": "Remove from Party",
+			"NoTokenSelected": "No token selected.",
+			"NotAdventurer": "Only Adventurer actors can be added to the party.",
+			"AlreadyInParty": "This character is already in the party.",
+			"NoMembers": "No party members to distribute to.",
+			"XPAmount": "Total XP to distribute",
+			"DistributeHint": "Split evenly among {count} party members.",
+			"XPDistributed": "{amount} XP distributed among {count} party members.",
+			"CoinsDistributed": "{coins} each distributed to {count} party members.",
+			"DenominateSpare": "Denominate spare coins",
+			"Retainer": "Retainer",
+			"RetainerQuarter": "¼ share",
+			"RetainerHalf": "½ share",
+			"RetainerFull": "Full share",
+			"RetainerHint": "Retainers receive half XP and a configurable share of treasure.",
+			"DistributedRandomly": "distributed randomly"
+		},
 		"DungeonTracker": {
 			"SettingName": "Show Dungeon Tracker",
 			"SettingHint": "Display a dungeon turn tracker at the top of the screen. Squares animate each time 10 minutes pass in-game.",

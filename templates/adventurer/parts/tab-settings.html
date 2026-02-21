@@ -23,4 +23,27 @@
 			<p class="hint">{{localize "DOLMEN.Skills.CustomizeSkillsHint"}}</p>
 		</div>
 	</section>
+
+	<section class="retainer-setting boxed-section">
+		<h2>{{localize "DOLMEN.PartyViewer.Retainer"}}</h2>
+		<div class="unit-toggle">
+			<label class="radio-label">
+				<input type="radio" name="system.retainer" value="" {{#if (eq system.retainer "" )}}checked{{/if}}>
+				{{localize "DOLMEN.None"}}
+			</label>
+			<label class="radio-label">
+				<input type="radio" name="system.retainer" value="quarter" {{#if (eq system.retainer "quarter" )}}checked{{/if}}>
+				{{localize "DOLMEN.PartyViewer.RetainerQuarter"}}
+			</label>
+			<label class="radio-label">
+				<input type="radio" name="system.retainer" value="half" {{#if (eq system.retainer "half" )}}checked{{/if}}>
+				{{localize "DOLMEN.PartyViewer.RetainerHalf"}}
+			</label>
+			<label class="radio-label">
+				<input type="radio" name="system.retainer" value="full" {{#if (eq system.retainer "full" )}}checked{{/if}}>
+				{{localize "DOLMEN.PartyViewer.RetainerFull"}}
+			</label>
+		</div>
+		<p class="hint">{{localize "DOLMEN.PartyViewer.RetainerHint"}}</p>
+	</section>
 </section>

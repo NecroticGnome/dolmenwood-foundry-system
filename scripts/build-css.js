@@ -29,7 +29,8 @@ const layers = [
 			'creature.css',
 			'calendar.css',
 			'combat-tracker.css',
-			'dungeon-tracker.css'
+			'dungeon-tracker.css',
+			'party-viewer.css'
 		]
 	}
 ]
