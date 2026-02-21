@@ -15,7 +15,7 @@ import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { getFaSymbol } from './module/sheet/data-context.js'
 import { registerCombatSystem } from './module/combat/combat.js'
-import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged } from './module/dungeon-tracker/dungeon-tracker.js'
+import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -63,22 +63,18 @@ Hooks.once('init', async function () {
 	})
 
 	game.settings.register('dolmenwood', 'showCalendar', {
-		name: 'DOLMEN.Calendar.SettingName',
-		hint: 'DOLMEN.Calendar.SettingHint',
 		scope: 'world',
-		config: true,
+		config: false,
 		type: Boolean,
 		default: true,
 		onChange: toggleWidget
 	})
 
 	game.settings.register('dolmenwood', 'showDungeonTracker', {
-		name: 'DOLMEN.DungeonTracker.SettingName',
-		hint: 'DOLMEN.DungeonTracker.SettingHint',
 		scope: 'world',
-		config: true,
+		config: false,
 		type: Boolean,
-		default: false,
+		default: true,
 		onChange: toggleDungeonTracker
 	})
 
@@ -225,6 +221,60 @@ Hooks.once('init', async function () {
 		type: Array,
 		default: [],
 		onChange: onLightSourcesChanged
+	})
+
+	game.settings.register('dolmenwood', 'trackerPaused', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true,
+		onChange: onTrackerPausedChanged
+	})
+
+	game.settings.register('dolmenwood', 'trackerTurn', {
+		scope: 'world',
+		config: false,
+		type: Number,
+		default: 1,
+		onChange: onTurnCounterChanged
+	})
+
+	// Add scene control toolbar buttons for calendar and dungeon tracker
+	Hooks.on('getSceneControlButtons', (controls) => {
+		controls.dolmenwood = {
+			name: 'dolmenwood',
+			title: 'DOLMEN.SheetTitle',
+			icon: 'fa-solid fa-tree',
+			visible: game.user.isGM,
+			activeTool: 'select',
+			tools: {
+				select: {
+					name: 'select',
+					title: 'DOLMEN.SheetTitle',
+					icon: 'fa-solid fa-tree'
+				},
+				calendar: {
+					name: 'calendar',
+					title: 'DOLMEN.Calendar.SettingName',
+					icon: 'fa-solid fa-calendar',
+					toggle: true,
+					active: game.settings.get('dolmenwood', 'showCalendar'),
+					onChange: (event, active) => {
+						game.settings.set('dolmenwood', 'showCalendar', active)
+					}
+				},
+				dungeonTracker: {
+					name: 'dungeonTracker',
+					title: 'DOLMEN.DungeonTracker.SettingName',
+					icon: 'fa-solid fa-dungeon',
+					toggle: true,
+					active: game.settings.get('dolmenwood', 'showDungeonTracker'),
+					onChange: (event, active) => {
+						game.settings.set('dolmenwood', 'showDungeonTracker', active)
+					}
+				}
+			}
+		}
 	})
 
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))

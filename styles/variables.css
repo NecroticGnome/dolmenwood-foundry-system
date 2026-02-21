@@ -640,8 +640,12 @@
 	gap: 1rem;
 	padding-bottom: 0.25rem;
 	animation: unset;
-	top: 0%;
+	top: 0;
 	filter: drop-shadow(2px 4px 6px black);
+}
+
+.dungeon-tracker-active #pause {
+	top: 3rem;
 }
 
 #pause img {
