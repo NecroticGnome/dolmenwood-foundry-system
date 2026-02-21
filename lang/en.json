@@ -744,7 +744,20 @@
 			"Turn": "Turn",
 			"EncounterYes": "Encounter!",
 			"EncounterNo": "No encounter",
-			"RestReminder": "Rest for one turn or become exhausted!"
+			"RestReminder": "Rest for one turn or become exhausted!",
+		"Torch": "Torch",
+		"Lantern": "Lantern",
+		"LightExpired": "{type} has burned out!",
+		"LightExpiryTitle": "Light Source",
+		"Extinguish": "Extinguish",
+		"Timer": "Timer",
+		"AddTimer": "Add Timer",
+		"TimerName": "Name",
+		"TimerDuration": "Duration (turns)",
+		"TimerExpired": "{name} has expired!",
+		"Pause": "Pause Tracker",
+		"Resume": "Resume Tracker",
+		"Reset": "Reset Tracker"
 		},
 		"Calendar": {
 			"SettingName": "Show Calendar Widget",

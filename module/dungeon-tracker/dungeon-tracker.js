@@ -7,6 +7,8 @@ const TURN_SECONDS = 600 // 10 minutes
 const REST_THRESHOLD = 48 // 8 hours — prompt instead of auto-animate
 const SLIDE_NORMAL = 400
 const SLIDE_FAST = 150 // 1 hour (6 turns)
+const TORCH_DURATION = 6 // 6 turns = 1 hour
+const LANTERN_DURATION = 24 // 24 turns = 4 hours
 
 let previousWorldTime = null
 let widgetEl = null
@@ -15,6 +17,8 @@ let pendingTurns = 0
 let currentSlideMs = SLIDE_NORMAL
 let batchTotal = 0
 let turnCounter = 1 // turn number under the frame (index 1)
+let lightSources = []
+let trackerPaused = false
 
 /**
  * Return the icon class for a given turn number, or null.
@@ -38,10 +42,359 @@ function createSquare(turnNum, faded) {
 	const icon = getSquareIcon(turnNum)
 	if (icon) {
 		const i = document.createElement('i')
-		i.className = icon
+		i.className = `${icon} square-event`
 		sq.appendChild(i)
 	}
 	return sq
+}
+
+// ── Light Source Management ──
+
+function loadLightSources() {
+	try {
+		lightSources = game.settings.get('dolmenwood', 'lightSources') ?? []
+	} catch {
+		lightSources = []
+	}
+}
+
+function saveLightSources() {
+	if (!game.user.isGM) return
+	game.settings.set('dolmenwood', 'lightSources', lightSources)
+}
+
+function addLightSource(type) {
+	if (!game.user.isGM) return
+	const duration = type === 'torch' ? TORCH_DURATION : LANTERN_DURATION
+	lightSources.push({
+		id: foundry.utils.randomID(),
+		type,
+		remaining: duration,
+		paused: false
+	})
+	saveLightSources()
+	renderLightBars()
+	renderLightPanel()
+}
+
+function addTimer(name, duration) {
+	if (!game.user.isGM) return
+	lightSources.push({
+		id: foundry.utils.randomID(),
+		type: 'timer',
+		remaining: duration,
+		paused: false,
+		name
+	})
+	saveLightSources()
+	renderLightBars()
+	renderLightPanel()
+}
+
+async function showAddTimerDialog() {
+	if (!game.user.isGM) return
+	const nameLabel = game.i18n.localize('DOLMEN.DungeonTracker.TimerName')
+	const durationLabel = game.i18n.localize('DOLMEN.DungeonTracker.TimerDuration')
+
+	const result = await DialogV2.prompt({
+		window: { title: game.i18n.localize('DOLMEN.DungeonTracker.AddTimer') },
+		content: `
+			<div class="form-group">
+				<label>${nameLabel}</label>
+				<input type="text" name="timerName" autofocus>
+			</div>
+			<div class="form-group">
+				<label>${durationLabel}</label>
+				<input type="number" name="timerDuration" value="6" min="1">
+			</div>`,
+		ok: {
+			label: game.i18n.localize('DOLMEN.DungeonTracker.AddTimer'),
+			icon: 'fa-solid fa-hourglass',
+			callback: (event, button) => {
+				const name = button.form.elements.timerName.value.trim()
+				const duration = parseInt(button.form.elements.timerDuration.value)
+				if (!name || !duration || duration < 1) return null
+				return { name, duration }
+			}
+		},
+		rejectClose: false
+	})
+
+	if (result) {
+		addTimer(result.name, result.duration)
+	}
+}
+
+function removeLightSource(id) {
+	if (!game.user.isGM) return
+	lightSources = lightSources.filter(s => s.id !== id)
+	saveLightSources()
+	renderLightBars()
+	renderLightPanel()
+}
+
+function togglePauseLight(id) {
+	if (!game.user.isGM) return
+	const source = lightSources.find(s => s.id === id)
+	if (source) {
+		source.paused = !source.paused
+		saveLightSources()
+		renderLightBars()
+		renderLightPanel()
+	}
+}
+
+/**
+ * Render light bars inside each visible dungeon square.
+ * Each source covers squares from the current turn (offset 0) through
+ * remaining-1 turns ahead, clamped to the 6 visible squares.
+ */
+function renderLightBars() {
+	if (!widgetEl) return
+	const squares = widgetEl.querySelectorAll('.dungeon-square')
+	for (const sq of squares) {
+		const oldBars = sq.querySelector('.light-bars')
+		if (oldBars) oldBars.remove()
+		const oldTimers = sq.querySelector('.timer-end-row')
+		if (oldTimers) oldTimers.remove()
+
+		const turn = parseInt(sq.dataset.turn)
+		const offset = turn - turnCounter // 0 = current, 1 = next, etc.
+
+		// Light source bars (torch/lantern only)
+		const barsForSquare = lightSources.filter(s =>
+			s.type !== 'timer' && offset >= 0 && offset < Math.min(s.remaining, 6)
+		)
+		if (barsForSquare.length > 0) {
+			const barsEl = document.createElement('div')
+			barsEl.className = 'light-bars'
+			for (const source of barsForSquare) {
+				const bar = document.createElement('div')
+				bar.className = `light-bar ${source.type}`
+				if (source.paused) bar.classList.add('paused')
+				if (source.remaining <= 2 && !source.paused) bar.classList.add('warning')
+				barsEl.appendChild(bar)
+			}
+			sq.appendChild(barsEl)
+		}
+
+		// Timer expiry icons (max 3 per square)
+		const timersHere = lightSources.filter(s =>
+			s.type === 'timer' && !s.paused && offset >= 0 && offset === s.remaining - 1
+		)
+		if (timersHere.length > 0) {
+			const row = document.createElement('div')
+			row.className = 'timer-end-row'
+			for (const timer of timersHere.slice(0, 3)) {
+				const icon = document.createElement('i')
+				icon.className = 'fa-solid fa-hourglass-end timer-end'
+				if (timer.remaining <= 2) icon.classList.add('warning')
+				icon.title = timer.name
+				row.appendChild(icon)
+			}
+			sq.appendChild(row)
+		}
+	}
+}
+
+/**
+ * Build/update the light control panel content.
+ */
+function renderLightPanel() {
+	if (!widgetEl) return
+	const panel = widgetEl.querySelector('.dungeon-light-panel')
+	if (!panel) return
+
+	panel.innerHTML = ''
+
+	// Add buttons (GM only)
+	if (game.user.isGM) {
+		const controls = document.createElement('div')
+		controls.className = 'dungeon-light-controls'
+
+		const torchBtn = document.createElement('button')
+		torchBtn.type = 'button'
+		torchBtn.innerHTML = `<i class="fa-solid fa-fire-flame-curved"></i> ${game.i18n.localize('DOLMEN.DungeonTracker.Torch')}`
+		torchBtn.addEventListener('click', () => addLightSource('torch'))
+
+		const lanternBtn = document.createElement('button')
+		lanternBtn.type = 'button'
+		lanternBtn.innerHTML = `<i class="fa-solid fa-lightbulb"></i> ${game.i18n.localize('DOLMEN.DungeonTracker.Lantern')}`
+		lanternBtn.addEventListener('click', () => addLightSource('lantern'))
+
+		const timerBtn = document.createElement('button')
+		timerBtn.type = 'button'
+		timerBtn.innerHTML = `<i class="fa-solid fa-hourglass"></i> ${game.i18n.localize('DOLMEN.DungeonTracker.Timer')}`
+		timerBtn.addEventListener('click', () => showAddTimerDialog())
+
+		controls.appendChild(torchBtn)
+		controls.appendChild(lanternBtn)
+		controls.appendChild(timerBtn)
+		panel.appendChild(controls)
+
+		// Pause / Reset controls
+		const trackerControls = document.createElement('div')
+		trackerControls.className = 'dungeon-tracker-controls'
+
+		const pauseBtn = document.createElement('button')
+		pauseBtn.type = 'button'
+		const pauseIcon = trackerPaused ? 'fa-play' : 'fa-pause'
+		const pauseTitle = trackerPaused
+			? game.i18n.localize('DOLMEN.DungeonTracker.Resume')
+			: game.i18n.localize('DOLMEN.DungeonTracker.Pause')
+		pauseBtn.innerHTML = `<i class="fa-solid ${pauseIcon}"></i>`
+		pauseBtn.title = pauseTitle
+		if (trackerPaused) pauseBtn.classList.add('active')
+		pauseBtn.addEventListener('click', () => {
+			trackerPaused = !trackerPaused
+			renderLightPanel()
+		})
+
+		const resetBtn = document.createElement('button')
+		resetBtn.type = 'button'
+		resetBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>'
+		resetBtn.title = game.i18n.localize('DOLMEN.DungeonTracker.Reset')
+		resetBtn.addEventListener('click', () => {
+			trackerPaused = false
+			resetWidget()
+		})
+
+		trackerControls.appendChild(pauseBtn)
+		trackerControls.appendChild(resetBtn)
+		panel.appendChild(trackerControls)
+	}
+
+	// Active light list
+	if (lightSources.length === 0) return
+
+	const list = document.createElement('div')
+	list.className = 'dungeon-light-list'
+
+	for (const source of lightSources) {
+		const item = document.createElement('div')
+		item.className = 'dungeon-light-item'
+		if (source.paused) item.classList.add('is-paused')
+		if (source.remaining <= 2 && !source.paused) item.classList.add('is-warning')
+
+		let iconClass, label
+		if (source.type === 'timer') {
+			iconClass = 'fa-hourglass'
+			label = source.name
+		} else {
+			iconClass = source.type === 'torch' ? 'fa-fire-flame-curved' : 'fa-lightbulb'
+			label = game.i18n.localize(source.type === 'torch'
+				? 'DOLMEN.DungeonTracker.Torch'
+				: 'DOLMEN.DungeonTracker.Lantern')
+		}
+
+		item.innerHTML = `
+			<i class="fa-solid ${iconClass} light-icon ${source.type}"></i>
+			<span class="light-label">${label}</span>
+			<span class="light-remaining">${source.remaining}</span>`
+
+		// GM controls: pause toggle + delete button
+		if (game.user.isGM) {
+			const pauseIcon = source.paused ? 'fa-play' : 'fa-pause'
+			const pauseBtn = document.createElement('i')
+			pauseBtn.className = `fa-solid ${pauseIcon} light-pause`
+			pauseBtn.addEventListener('click', () => togglePauseLight(source.id))
+			item.appendChild(pauseBtn)
+
+			const deleteBtn = document.createElement('i')
+			deleteBtn.className = 'fa-solid fa-square-xmark light-delete'
+			deleteBtn.addEventListener('click', () => removeLightSource(source.id))
+			item.appendChild(deleteBtn)
+		}
+
+		list.appendChild(item)
+	}
+
+	panel.appendChild(list)
+}
+
+/**
+ * Create and inject the light panel container into the widget.
+ */
+function injectLightPanel() {
+	if (!widgetEl) return
+	const panel = document.createElement('div')
+	panel.className = 'dungeon-light-panel'
+	widgetEl.appendChild(panel)
+}
+
+/**
+ * Decrement remaining turns on non-paused light sources.
+ * Expired sources post a chat message and are removed.
+ */
+function decrementLightSources() {
+	if (!game.user.isGM) return
+	if (lightSources.length === 0) return
+
+	const expired = []
+	for (const source of lightSources) {
+		if (source.paused) continue
+		source.remaining--
+		if (source.remaining <= 0) {
+			expired.push(source)
+		}
+	}
+
+	if (expired.length > 0) {
+		lightSources = lightSources.filter(s => s.remaining > 0)
+		for (const source of expired) {
+			postLightExpiryMessage(source)
+		}
+	}
+
+	saveLightSources()
+}
+
+/**
+ * Post a chat message when a light source burns out.
+ */
+async function postLightExpiryMessage(source) {
+	if (!game.user.isGM) return
+
+	let message, title, icon
+	if (source.type === 'timer') {
+		message = game.i18n.format('DOLMEN.DungeonTracker.TimerExpired', { name: source.name })
+		title = game.i18n.localize('DOLMEN.DungeonTracker.Timer')
+		icon = 'fa-solid fa-hourglass'
+	} else {
+		const typeLabel = game.i18n.localize(source.type === 'torch'
+			? 'DOLMEN.DungeonTracker.Torch'
+			: 'DOLMEN.DungeonTracker.Lantern')
+		message = game.i18n.format('DOLMEN.DungeonTracker.LightExpired', { type: typeLabel })
+		title = game.i18n.localize('DOLMEN.DungeonTracker.LightExpiryTitle')
+		icon = source.type === 'torch' ? 'fa-solid fa-fire-flame-curved' : 'fa-solid fa-lightbulb'
+	}
+
+	await ChatMessage.create({
+		content: `
+		<div class="dolmen encounter-roll">
+			<div class="roll-header">
+				<i class="${icon}"></i>
+				<div class="roll-info">
+					<h3>${title}</h3>
+				</div>
+			</div>
+			<div class="roll-body">
+				<div class="roll-section failure">
+					<span class="roll-label failure">${message}</span>
+				</div>
+			</div>
+		</div>`,
+		speaker: { alias: title }
+	})
+}
+
+/**
+ * Setting onChange handler — updates local state and re-renders.
+ */
+export function onLightSourcesChanged(value) {
+	lightSources = value ?? []
+	renderLightBars()
+	renderLightPanel()
 }
 
 /**
@@ -138,7 +491,10 @@ function injectWidget() {
 
 	widgetEl.appendChild(strip)
 	widgetEl.appendChild(frame)
+	injectLightPanel()
 	document.body.appendChild(widgetEl)
+	renderLightBars()
+	renderLightPanel()
 }
 
 /**
@@ -187,6 +543,7 @@ function animateOneTurn() {
 		// Advance the turn counter and check for encounters / rest
 		turnCounter++
 		postTurnMessage(turnCounter)
+		decrementLightSources()
 
 		// Suppress the CSS transition so the reset is instant (no snap-back)
 		strip.classList.add('no-transition')
@@ -217,6 +574,9 @@ function animateOneTurn() {
 
 		// Append a new invisible square at the tail (6 turns ahead of current)
 		strip.appendChild(createSquare(turnCounter + 6, true))
+
+		renderLightBars()
+		renderLightPanel()
 
 		animating = false
 
@@ -262,6 +622,10 @@ function resetWidget() {
 	animating = false
 	currentSlideMs = SLIDE_NORMAL
 	turnCounter = 1
+
+	lightSources = []
+	if (game.user.isGM) saveLightSources()
+
 	const strip = widgetEl.querySelector('.dungeon-tracker-squares')
 	strip.innerHTML = ''
 	strip.classList.remove('sliding', 'no-transition')
@@ -272,6 +636,8 @@ function resetWidget() {
 		const faded = i === 0 || i === SQUARE_COUNT - 1
 		strip.appendChild(createSquare(turnNum, faded))
 	}
+	renderLightBars()
+	renderLightPanel()
 }
 
 /**
@@ -325,6 +691,8 @@ function onUpdateWorldTime(worldTime) {
 	const delta = worldTime - previousWorldTime
 	previousWorldTime = worldTime
 
+	if (trackerPaused) return
+
 	if (delta <= 0) return
 
 	const turns = Math.floor(delta / TURN_SECONDS)
@@ -353,7 +721,10 @@ export function toggleDungeonTracker(visible) {
  */
 export function initDungeonTracker() {
 	const show = game.settings.get('dolmenwood', 'showDungeonTracker')
-	if (show) injectWidget()
+	if (show) {
+		loadLightSources()
+		injectWidget()
+	}
 
 	previousWorldTime = game.time.worldTime
 

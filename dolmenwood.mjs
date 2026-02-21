@@ -15,7 +15,7 @@ import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { getFaSymbol } from './module/sheet/data-context.js'
 import { registerCombatSystem } from './module/combat/combat.js'
-import { initDungeonTracker, toggleDungeonTracker } from './module/dungeon-tracker/dungeon-tracker.js'
+import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -217,6 +217,14 @@ Hooks.once('init', async function () {
 		config: false,
 		type: Object,
 		default: {}
+	})
+
+	game.settings.register('dolmenwood', 'lightSources', {
+		scope: 'world',
+		config: false,
+		type: Array,
+		default: [],
+		onChange: onLightSourcesChanged
 	})
 
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
