@@ -18,7 +18,7 @@ let currentSlideMs = SLIDE_NORMAL
 let batchTotal = 0
 let turnCounter = 1 // turn number under the frame (index 1)
 let lightSources = []
-let trackerPaused = false
+let trackerPaused = true // overwritten by loadTrackerPaused() on init
 
 /**
  * Return the icon class for a given turn number, or null.
@@ -61,6 +61,24 @@ function loadLightSources() {
 function saveLightSources() {
 	if (!game.user.isGM) return
 	game.settings.set('dolmenwood', 'lightSources', lightSources)
+}
+
+function saveTrackerPaused() {
+	if (!game.user.isGM) return
+	game.settings.set('dolmenwood', 'trackerPaused', trackerPaused)
+}
+
+function saveTurnCounter() {
+	if (!game.user.isGM) return
+	game.settings.set('dolmenwood', 'trackerTurn', turnCounter)
+}
+
+/**
+ * Setting onChange handler — updates local pause state and button.
+ */
+export function onTrackerPausedChanged(value) {
+	trackerPaused = value
+	updatePauseButton()
 }
 
 function addLightSource(type) {
@@ -111,9 +129,8 @@ async function showAddTimerDialog() {
 			label: game.i18n.localize('DOLMEN.DungeonTracker.AddTimer'),
 			icon: 'fa-solid fa-hourglass',
 			callback: (event, button) => {
-				const name = button.form.elements.timerName.value.trim()
-				const duration = parseInt(button.form.elements.timerDuration.value)
-				if (!name || !duration || duration < 1) return null
+				const name = button.form.elements.timerName.value.trim() || game.i18n.localize('DOLMEN.DungeonTracker.Timer')
+				const duration = parseInt(button.form.elements.timerDuration.value) || 6
 				return { name, duration }
 			}
 		},
@@ -142,6 +159,21 @@ function togglePauseLight(id) {
 		renderLightBars()
 		renderLightPanel()
 	}
+}
+
+/**
+ * Update the pause button icon/state to match trackerPaused.
+ */
+function updatePauseButton() {
+	if (!widgetEl) return
+	const btn = widgetEl.querySelector('.tracker-pause-btn')
+	if (!btn) return
+	const icon = trackerPaused ? 'fa-play' : 'fa-pause'
+	btn.innerHTML = `<i class="fa-solid ${icon}"></i>`
+	btn.title = game.i18n.localize(trackerPaused
+		? 'DOLMEN.DungeonTracker.Resume'
+		: 'DOLMEN.DungeonTracker.Pause')
+	btn.classList.toggle('active', trackerPaused)
 }
 
 /**
@@ -232,36 +264,6 @@ function renderLightPanel() {
 		controls.appendChild(timerBtn)
 		panel.appendChild(controls)
 
-		// Pause / Reset controls
-		const trackerControls = document.createElement('div')
-		trackerControls.className = 'dungeon-tracker-controls'
-
-		const pauseBtn = document.createElement('button')
-		pauseBtn.type = 'button'
-		const pauseIcon = trackerPaused ? 'fa-play' : 'fa-pause'
-		const pauseTitle = trackerPaused
-			? game.i18n.localize('DOLMEN.DungeonTracker.Resume')
-			: game.i18n.localize('DOLMEN.DungeonTracker.Pause')
-		pauseBtn.innerHTML = `<i class="fa-solid ${pauseIcon}"></i>`
-		pauseBtn.title = pauseTitle
-		if (trackerPaused) pauseBtn.classList.add('active')
-		pauseBtn.addEventListener('click', () => {
-			trackerPaused = !trackerPaused
-			renderLightPanel()
-		})
-
-		const resetBtn = document.createElement('button')
-		resetBtn.type = 'button'
-		resetBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>'
-		resetBtn.title = game.i18n.localize('DOLMEN.DungeonTracker.Reset')
-		resetBtn.addEventListener('click', () => {
-			trackerPaused = false
-			resetWidget()
-		})
-
-		trackerControls.appendChild(pauseBtn)
-		trackerControls.appendChild(resetBtn)
-		panel.appendChild(trackerControls)
 	}
 
 	// Active light list
@@ -361,10 +363,9 @@ async function postLightExpiryMessage(source) {
 		title = game.i18n.localize('DOLMEN.DungeonTracker.Timer')
 		icon = 'fa-solid fa-hourglass'
 	} else {
-		const typeLabel = game.i18n.localize(source.type === 'torch'
-			? 'DOLMEN.DungeonTracker.Torch'
-			: 'DOLMEN.DungeonTracker.Lantern')
-		message = game.i18n.format('DOLMEN.DungeonTracker.LightExpired', { type: typeLabel })
+		message = game.i18n.localize(source.type === 'torch'
+			? 'DOLMEN.DungeonTracker.TorchExpired'
+			: 'DOLMEN.DungeonTracker.LanternExpired')
 		title = game.i18n.localize('DOLMEN.DungeonTracker.LightExpiryTitle')
 		icon = source.type === 'torch' ? 'fa-solid fa-fire-flame-curved' : 'fa-solid fa-lightbulb'
 	}
@@ -489,8 +490,58 @@ function injectWidget() {
 	const frame = document.createElement('div')
 	frame.className = 'dungeon-tracker-frame'
 
-	widgetEl.appendChild(strip)
-	widgetEl.appendChild(frame)
+	const topRow = document.createElement('div')
+	topRow.className = 'dungeon-tracker-row'
+	topRow.appendChild(strip)
+	topRow.appendChild(frame)
+
+	// GM-only pause/reset buttons beside the strip
+	if (game.user.isGM) {
+		const controls = document.createElement('div')
+		controls.className = 'dungeon-tracker-controls'
+
+		const pauseBtn = document.createElement('button')
+		pauseBtn.type = 'button'
+		pauseBtn.className = `tracker-pause-btn${trackerPaused ? ' active' : ''}`
+		pauseBtn.innerHTML = `<i class="fa-solid ${trackerPaused ? 'fa-play' : 'fa-pause'}"></i>`
+		pauseBtn.title = game.i18n.localize(trackerPaused ? 'DOLMEN.DungeonTracker.Resume' : 'DOLMEN.DungeonTracker.Pause')
+		pauseBtn.addEventListener('click', () => {
+			trackerPaused = !trackerPaused
+			saveTrackerPaused()
+			updatePauseButton()
+			renderLightPanel()
+		})
+
+		const resetBtn = document.createElement('button')
+		resetBtn.type = 'button'
+		resetBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>'
+		resetBtn.title = game.i18n.localize('DOLMEN.DungeonTracker.Reset')
+		resetBtn.addEventListener('click', () => resetWidget())
+
+		const advanceBtn = document.createElement('button')
+		advanceBtn.type = 'button'
+		advanceBtn.className = 'tracker-advance-btn'
+		advanceBtn.innerHTML = '<i class="fa-solid fa-forward-step"></i>'
+		advanceBtn.title = game.i18n.localize('DOLMEN.DungeonTracker.AdvanceTurn')
+		advanceBtn.addEventListener('click', () => {
+			const calendarOn = game.settings.get('dolmenwood', 'showCalendar')
+			if (calendarOn) {
+				// Advance world time by 10 minutes; if not paused the time hook
+				// will also advance the turn, so only directly advance when paused
+				game.time.advance(TURN_SECONDS)
+				if (trackerPaused) advanceTurn(1)
+			} else {
+				advanceTurn(1)
+			}
+		})
+
+		controls.appendChild(pauseBtn)
+		controls.appendChild(resetBtn)
+		topRow.appendChild(controls)
+		topRow.appendChild(advanceBtn)
+	}
+
+	widgetEl.appendChild(topRow)
 	injectLightPanel()
 	document.body.appendChild(widgetEl)
 	renderLightBars()
@@ -586,6 +637,7 @@ function animateOneTurn() {
 			requestAnimationFrame(() => animateOneTurn())
 		} else {
 			currentSlideMs = SLIDE_NORMAL
+			saveTurnCounter()
 		}
 	}, currentSlideMs)
 }
@@ -616,15 +668,14 @@ function advanceTurn(count) {
 /**
  * Reset the widget to its initial 8-square state.
  */
-function resetWidget() {
+/**
+ * Rebuild the square strip from the current turnCounter.
+ */
+function rebuildSquares() {
 	if (!widgetEl) return
 	pendingTurns = 0
 	animating = false
 	currentSlideMs = SLIDE_NORMAL
-	turnCounter = 1
-
-	lightSources = []
-	if (game.user.isGM) saveLightSources()
 
 	const strip = widgetEl.querySelector('.dungeon-tracker-squares')
 	strip.innerHTML = ''
@@ -638,6 +689,17 @@ function resetWidget() {
 	}
 	renderLightBars()
 	renderLightPanel()
+}
+
+function resetWidget() {
+	if (!widgetEl) return
+	turnCounter = 1
+	lightSources = []
+	if (game.user.isGM) {
+		saveLightSources()
+		saveTurnCounter()
+	}
+	rebuildSquares()
 }
 
 /**
@@ -673,7 +735,13 @@ async function showRestDialog(turns) {
 	if (action === 'clear') {
 		resetWidget()
 	} else if (action === 'process') {
-		advanceTurn(turns)
+		// Silently process turns without animation
+		for (let i = 0; i < turns; i++) {
+			turnCounter++
+			decrementLightSources()
+		}
+		saveTurnCounter()
+		rebuildSquares()
 	}
 	// 'pause' and close-without-choice both do nothing
 }
@@ -709,6 +777,7 @@ function onUpdateWorldTime(worldTime) {
  * Toggle widget visibility. Called by setting onChange and on init.
  */
 export function toggleDungeonTracker(visible) {
+	document.body.classList.toggle('dungeon-tracker-active', visible)
 	if (visible) {
 		injectWidget()
 	} else {
@@ -720,8 +789,11 @@ export function toggleDungeonTracker(visible) {
  * Initialize the dungeon tracker. Called from the ready hook.
  */
 export function initDungeonTracker() {
+	trackerPaused = game.settings.get('dolmenwood', 'trackerPaused')
+	turnCounter = game.settings.get('dolmenwood', 'trackerTurn') || 1
 	const show = game.settings.get('dolmenwood', 'showDungeonTracker')
 	if (show) {
+		document.body.classList.add('dungeon-tracker-active')
 		loadLightSources()
 		injectWidget()
 	}
