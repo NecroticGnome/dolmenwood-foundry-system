@@ -72,12 +72,95 @@
 	pointer-events: none;
 }
 
-/* Encounter check chat results */
-.dolmen-combat-roll .encounter-yes {
-	color: var(--dolmen-color-failure, #cc0000);
-	font-weight: bold;
+/* ── Encounter Roll Chat Card ── */
+
+.dolmen.encounter-roll {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-title-background);
+	border-radius: 4px;
+	overflow: hidden;
 }
 
-.dolmen-combat-roll .encounter-no {
-	color: var(--dolmen-color-success, #228b22);
+.dolmen.encounter-roll .roll-header {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-title);
+	align-items: center;
+}
+
+.dolmen.encounter-roll .roll-header i {
+	font-size: 1.25rem;
+}
+
+.dolmen.encounter-roll .roll-header .roll-info h3 {
+	margin: 0;
+	font-size: 0.8rem;
+	font-family: var(--dolmen-font-header);
+	color: var(--dolmen-color-title);
+	text-transform: uppercase;
+}
+
+.dolmen.encounter-roll .roll-header .roll-type {
+	font-size: 0.7rem;
+	opacity: 0.8;
+	text-transform: uppercase;
+}
+
+.dolmen.encounter-roll .roll-body {
+	padding: 0.5rem;
+}
+
+.dolmen.encounter-roll .roll-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-inner-background);
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 4px;
+}
+
+.dolmen.encounter-roll .roll-result .inline-roll {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h1);
+	background: none;
+	border: none;
+	padding: 0;
+}
+
+.dolmen.encounter-roll .roll-target {
+	font-size: 0.7rem;
+	color: var(--dolmen-color-text-muted);
+	margin-top: 0.25rem;
+}
+
+.dolmen.encounter-roll .roll-label {
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin-top: 0.35rem;
+	padding: 0.15rem 0.5rem;
+	border-radius: 0.25rem;
+}
+
+.dolmen.encounter-roll .roll-section.success {
+	border-color: var(--dolmen-color-success);
+}
+
+.dolmen.encounter-roll .roll-label.success {
+	background-color: rgba(34, 139, 34, 0.15);
+	color: var(--dolmen-color-success);
+}
+
+.dolmen.encounter-roll .roll-section.failure {
+	border-color: var(--dolmen-color-failure);
+}
+
+.dolmen.encounter-roll .roll-label.failure {
+	background-color: rgba(204, 0, 0, 0.15);
+	color: var(--dolmen-color-failure);
 }

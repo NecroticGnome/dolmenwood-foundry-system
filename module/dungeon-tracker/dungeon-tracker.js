@@ -58,18 +58,31 @@ async function rollEncounterCheck(turnNum) {
 	await roll.evaluate()
 
 	const encountered = roll.total <= chance
-	const resultKey = encountered
-		? 'DOLMEN.DungeonTracker.EncounterYes'
-		: 'DOLMEN.DungeonTracker.EncounterNo'
-	const resultClass = encountered ? 'encounter-yes' : 'encounter-no'
+	const resultClass = encountered ? 'failure' : 'success'
+	const resultLabel = encountered
+		? game.i18n.localize('DOLMEN.DungeonTracker.EncounterYes')
+		: game.i18n.localize('DOLMEN.DungeonTracker.EncounterNo')
+
+	const anchor = await roll.toAnchor({ classes: ['encounter-inline-roll'] })
 
 	await ChatMessage.create({
-		content: `<div class="dolmen dolmen-combat-roll">
-			<h3><i class="fa-solid fa-dice"></i> ${game.i18n.localize('DOLMEN.DungeonTracker.EncounterCheck')}</h3>
-			<div class="dolmen-roll-details">
-				<div>${game.i18n.localize('DOLMEN.DungeonTracker.Turn')} ${turnNum}</div>
-				<div>${game.i18n.localize('DOLMEN.Roll.Result')}: ${roll.total} / ${chance}</div>
-				<div class="dolmen-roll-result ${resultClass}">${game.i18n.localize(resultKey)}</div>
+		content: `
+		<div class="dolmen encounter-roll">
+			<div class="roll-header">
+				<i class="fa-solid fa-dice"></i>
+				<div class="roll-info">
+					<h3>${game.i18n.localize('DOLMEN.DungeonTracker.EncounterCheck')}</h3>
+					<span class="roll-type">${game.i18n.localize('DOLMEN.DungeonTracker.Turn')} ${turnNum}</span>
+				</div>
+			</div>
+			<div class="roll-body">
+				<div class="roll-section ${resultClass}">
+					<div class="roll-result force-d6-icon">
+						${anchor.outerHTML}
+					</div>
+					<span class="roll-target">${chance}-in-6</span>
+					<span class="roll-label ${resultClass}">${resultLabel}</span>
+				</div>
 			</div>
 		</div>`,
 		sound: CONFIG.sounds.dice,
