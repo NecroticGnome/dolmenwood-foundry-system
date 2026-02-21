@@ -15,6 +15,7 @@ import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { getFaSymbol } from './module/sheet/data-context.js'
 import { registerCombatSystem } from './module/combat/combat.js'
+import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -69,6 +70,30 @@ Hooks.once('init', async function () {
 		type: Boolean,
 		default: true,
 		onChange: toggleWidget
+	})
+
+	game.settings.register('dolmenwood', 'showDungeonTracker', {
+		name: 'DOLMEN.DungeonTracker.SettingName',
+		hint: 'DOLMEN.DungeonTracker.SettingHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false,
+		onChange: toggleDungeonTracker
+	})
+
+	game.settings.register('dolmenwood', 'encounterChance', {
+		name: 'DOLMEN.DungeonTracker.EncounterSettingName',
+		hint: 'DOLMEN.DungeonTracker.EncounterSettingHint',
+		scope: 'world',
+		config: true,
+		type: Number,
+		default: 0,
+		choices: {
+			0: 'DOLMEN.DungeonTracker.EncounterOff',
+			1: '1-in-6', 2: '2-in-6', 3: '3-in-6',
+			4: '4-in-6', 5: '5-in-6', 6: '6-in-6'
+		}
 	})
 
 	game.settings.register('dolmenwood', 'autoWeather', {
@@ -194,6 +219,14 @@ Hooks.once('init', async function () {
 		default: {}
 	})
 
+	game.settings.register('dolmenwood', 'lightSources', {
+		scope: 'world',
+		config: false,
+		type: Array,
+		default: [],
+		onChange: onLightSourcesChanged
+	})
+
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
 
 	// Re-apply auto theme when Foundry's own light/dark mode changes
@@ -245,6 +278,7 @@ Hooks.once('ready', async function () {
 	}
 
 	initCalendarWidget()
+	initDungeonTracker()
 
 	// Set turn marker to system image
 	if (game.user.isGM) {

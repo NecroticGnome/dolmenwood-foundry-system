@@ -1,0 +1,421 @@
+/* ── Dungeon Turn Tracker ── */
+
+#dolmen-dungeon-tracker {
+	position: fixed;
+	top: 8px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 69;
+	pointer-events: auto;
+}
+
+.dungeon-tracker-squares {
+	pointer-events: none;
+	--slide-speed: 0.4s;
+	--slide-ease: ease;
+	display: flex;
+	gap: 6px;
+	transition: transform var(--slide-speed) var(--slide-ease);
+}
+
+.dungeon-tracker-squares.sliding {
+	transform: translateX(calc(-48px - 6px));
+}
+
+.dungeon-tracker-squares.no-transition {
+	transition: none;
+}
+
+.dungeon-square {
+	position: relative;
+	width: 48px;
+	height: 48px;
+	background: linear-gradient(180deg, rgba(30, 28, 35, 0.75), rgba(10, 8, 15, 0.85));
+	border: 2px solid rgba(255, 255, 255, 0.12);
+	border-top-color: rgba(255, 255, 255, 0.2);
+	border-radius: 4px;
+	box-shadow:
+		inset 0 1px 2px rgba(255, 255, 255, 0.05),
+		inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+		0 2px 4px rgba(0, 0, 0, 0.3);
+	opacity: 1;
+	transition: opacity var(--slide-speed, 0.4s) var(--slide-ease, ease);
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.dungeon-square .square-event {
+	font-size: 18px;
+	color: rgba(255, 255, 255, 0.35);
+}
+
+.dungeon-square .timer-end-row {
+	position: absolute;
+	top: 2px;
+	left: 3px;
+	display: flex;
+	gap: 4px;
+	pointer-events: none;
+}
+
+.dungeon-square .timer-end {
+	font-size: 12px;
+	color: rgba(160, 215, 230, 0.7);
+	text-shadow: 0 0 4px rgba(140, 200, 220, 0.5);
+}
+
+.dungeon-square .timer-end.warning {
+	animation: light-pulse 0.8s ease-in-out infinite;
+	color: rgba(140, 200, 220, 0.9);
+}
+
+.dungeon-square.faded {
+	opacity: 0;
+}
+
+.dungeon-square.fade-out {
+	opacity: 0;
+}
+
+.dungeon-square.fade-in {
+	opacity: 1;
+}
+
+/* Frame overlay — positioned over 2nd square */
+.dungeon-tracker-frame {
+	pointer-events: none;
+	position: absolute;
+	top: -4px;
+	/* offset = 1 square (48px) + 1 gap (6px) - 6px border offset */
+	left: 50px;
+	width: 56px;
+	height: 56px;
+	border: 4px solid #c8a020;
+	border-radius: 5px;
+	box-shadow:
+		0 0 8px rgba(200, 160, 32, 0.5),
+		0 0 20px rgba(200, 160, 32, 0.15),
+		inset 0 0 8px rgba(200, 160, 32, 0.3);
+}
+
+/* ── Encounter Roll Chat Card ── */
+
+.dolmen.encounter-roll {
+	background-color: var(--dolmen-color-background);
+	border: 2px solid var(--dolmen-color-title-background);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.dolmen.encounter-roll .roll-header {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-title);
+	align-items: center;
+}
+
+.dolmen.encounter-roll .roll-header i {
+	font-size: 1.25rem;
+}
+
+.dolmen.encounter-roll .roll-header .roll-info h3 {
+	margin: 0;
+	font-size: 0.8rem;
+	font-family: var(--dolmen-font-header);
+	color: var(--dolmen-color-title);
+	text-transform: uppercase;
+}
+
+.dolmen.encounter-roll .roll-header .roll-type {
+	font-size: 0.7rem;
+	opacity: 0.8;
+	text-transform: uppercase;
+}
+
+.dolmen.encounter-roll .roll-body {
+	padding: 0.5rem;
+}
+
+.dolmen.encounter-roll .roll-body .roll-section {
+	margin-top: 0.5rem;
+}
+
+.dolmen.encounter-roll .roll-body .roll-section:first-child {
+	margin-top: 0;
+}
+
+.dolmen.encounter-roll .roll-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-inner-background);
+	border: 1px solid var(--dolmen-color-box-border);
+	border-radius: 4px;
+}
+
+.dolmen.encounter-roll .roll-section .fa-solid {
+	color: var(--dolmen-color-title);
+}
+
+.dolmen.encounter-roll .roll-result .inline-roll {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: var(--dolmen-color-h1);
+	background: none;
+	border: none;
+	padding: 0;
+}
+
+.dolmen.encounter-roll .roll-target {
+	font-size: 0.7rem;
+	color: var(--dolmen-color-text-muted);
+	margin-top: 0.25rem;
+}
+
+.dolmen.encounter-roll .roll-label {
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin-top: 0.35rem;
+	padding: 0.15rem 0.5rem;
+	border-radius: 0.25rem;
+	color: var(--dolmen-color-text);
+}
+
+.dolmen.encounter-roll .roll-section.success {
+	border-color: var(--dolmen-color-success);
+}
+
+.dolmen.encounter-roll .roll-label.success {
+	background-color: rgba(34, 139, 34, 0.15);
+	color: var(--dolmen-color-success);
+}
+
+.dolmen.encounter-roll .roll-section.failure {
+	border-color: var(--dolmen-color-failure);
+}
+
+.dolmen.encounter-roll .roll-label.failure {
+	background-color: rgba(204, 0, 0, 0.15);
+	color: var(--dolmen-color-failure);
+}
+
+/* ── Light Source Bars ── */
+
+.dungeon-square .light-bars {
+	position: absolute;
+	bottom: 2px;
+	left: 4px;
+	right: 4px;
+	display: flex;
+	flex-direction: column-reverse;
+	gap: 1px;
+	pointer-events: none;
+}
+
+.light-bar {
+	height: 3px;
+	border-radius: 1px;
+}
+
+.light-bar.torch {
+	background: #e87020;
+	box-shadow: 0 0 3px rgba(232, 112, 32, 0.6);
+}
+
+.light-bar.lantern {
+	background: #d4a840;
+	box-shadow: 0 0 3px rgba(212, 168, 64, 0.6);
+}
+
+.light-bar.paused {
+	opacity: 0.3;
+	box-shadow: none;
+}
+
+.light-bar.warning {
+	animation: light-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes light-pulse {
+
+	0%,
+	100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.3;
+	}
+}
+
+/* ── Light Control Panel ── */
+
+.dungeon-light-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-top: calc(4px + 0.2rem);
+	padding: 6px 8px;
+	background: linear-gradient(180deg, rgba(30, 28, 35, 0.85), rgba(10, 8, 15, 0.9));
+	border: 2px solid rgba(255, 255, 255, 0.15);
+	border-radius: 4px;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease;
+	width: 318px;
+	margin-left: 54px;
+}
+
+#dolmen-dungeon-tracker:hover .dungeon-light-panel {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.dungeon-light-controls {
+	display: flex;
+	gap: 4px;
+}
+
+.dungeon-light-controls button {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	padding: 3px 6px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
+	background: rgba(255, 255, 255, 0.08);
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 11px;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+
+.dungeon-light-controls button:hover {
+	background: rgba(255, 255, 255, 0.18);
+}
+
+.dungeon-light-controls button .fa-fire-flame-curved {
+	color: #e87020;
+}
+
+.dungeon-light-controls button .fa-lightbulb {
+	color: #d4a840;
+}
+
+.dungeon-light-controls button .fa-hourglass {
+	color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── Tracker Controls (Pause / Reset) ── */
+
+.dungeon-tracker-controls {
+	display: flex;
+	gap: 4px;
+}
+
+.dungeon-tracker-controls button {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 3px 6px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
+	background: rgba(255, 255, 255, 0.08);
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 11px;
+	cursor: pointer;
+	transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.dungeon-tracker-controls button:hover {
+	background: rgba(255, 255, 255, 0.18);
+}
+
+.dungeon-tracker-controls button.active {
+	border-color: #d4a840;
+	color: #d4a840;
+}
+
+.dungeon-light-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.dungeon-light-item {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 2px 4px;
+	border-radius: 2px;
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.dungeon-light-item .light-icon {
+	font-size: 10px;
+	width: 14px;
+	text-align: center;
+}
+
+.dungeon-light-item .light-icon.torch {
+	color: #e87020;
+}
+
+.dungeon-light-item .light-icon.lantern {
+	color: #d4a840;
+}
+
+.dungeon-light-item .light-icon.timer {
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.dungeon-light-item .light-label {
+	flex: 1;
+}
+
+.dungeon-light-item .light-remaining {
+	font-variant-numeric: tabular-nums;
+}
+
+.dungeon-light-item .light-pause {
+	cursor: pointer;
+	opacity: 0.5;
+	font-size: 10px;
+	transition: opacity 0.15s ease;
+}
+
+.dungeon-light-item .light-pause:hover {
+	opacity: 1;
+}
+
+.dungeon-light-item .light-delete {
+	cursor: pointer;
+	opacity: 0.5;
+	font-size: 10px;
+	transition: opacity 0.15s ease;
+}
+
+.dungeon-light-item .light-delete:hover {
+	opacity: 1;
+	color: var(--dolmen-color-failure, #cc4444);
+}
+
+.dungeon-light-item.is-paused {
+	opacity: 0.4;
+}
+
+.dungeon-light-item.is-warning .light-remaining {
+	color: #e87020;
+	animation: light-pulse 0.8s ease-in-out infinite;
+}

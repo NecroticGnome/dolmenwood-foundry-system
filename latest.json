@@ -2,7 +2,7 @@
   "id": "dolmenwood",
   "title": "Dolmenwood",
   "description": "Dolmenwood from Necrotic Gnome",
-  "version": "1.3.7",
+  "version": "1.4.0",
   "compatibility": {
     "maximum": "13.351",
     "minimum": "13.0",
@@ -114,8 +114,8 @@
   "initiative": "1d6",
   "primaryTokenAttribute": "hp.value",
   "url": "https://github.com/blaze-sanecki/foundry-dolmenwood",
-  "manifest": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.3.7/system.json",
-  "download": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.3.7/dolmenwood-foundry-system.zip",
+  "manifest": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.4.0/system.json",
+  "download": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.4.0/dolmenwood-foundry-system.zip",
   "documentTypes": {
     "Actor": {
       "Adventurer": {
