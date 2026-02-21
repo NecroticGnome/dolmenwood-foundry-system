@@ -824,7 +824,7 @@ export class GearDataModel extends ItemDataModel {
 				integer: true,
 				min: 1,
 				initial: 1 }),
-			notes: new StringField({
+			notes: new HTMLField({
 				required: true,
 				blank: true,
 				initial: ""
@@ -837,7 +837,7 @@ export class TreasureDataModel extends GearDataModel {
 	static defineSchema() {
 		return {
 			...super.defineSchema(),
-			effects: new StringField({
+			effects: new HTMLField({
 				required: true,
 				blank: true,
 				initial: ""
@@ -943,7 +943,7 @@ export class ForagedDataModel extends GearDataModel {
 				min: 1,
 				max: 6
 			}),
-			effects: new StringField({
+			effects: new HTMLField({
 				required: true,
 				blank: true,
 				initial: ""
@@ -966,7 +966,7 @@ export class SpellDataModel extends ItemDataModel {
 			}),
 			range: new StringField({ required: true, blank: true, initial: "" }),
 			duration: new StringField({ required: true, blank: true, initial: "" }),
-			description: new StringField({ required: true, blank: true, initial: "" })
+			description: new HTMLField({ required: true, blank: true, initial: "" })
 		}
 	}
 }
@@ -995,7 +995,7 @@ export class GlamourDataModel extends ItemDataModel {
 			range: new StringField({ required: true, blank: true, initial: "" }),
 			duration: new StringField({ required: true, blank: true, initial: "" }),
 			usageFrequency: new StringField({ required: true, blank: true, initial: "" }),
-			description: new StringField({ required: true, blank: true, initial: "" })
+			description: new HTMLField({ required: true, blank: true, initial: "" })
 		}
 	}
 }
@@ -1010,7 +1010,7 @@ export class RuneDataModel extends ItemDataModel {
 				initial: "lesser",
 				choices: CHOICE_KEYS.runeMagnitudes
 			}),
-			description: new StringField({ required: true, blank: true, initial: "" })
+			description: new HTMLField({ required: true, blank: true, initial: "" })
 		}
 	}
 }

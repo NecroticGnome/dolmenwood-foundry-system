@@ -1,8 +1,9 @@
-/* global foundry, game, FilePicker, fromUuid, TextEditor */
+/* global foundry, game, FilePicker, fromUuid */
 import { buildChoices, buildChoicesWithBlank, buildQualityOptions, CHOICE_KEYS } from './utils/choices.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
+const TextEditor = foundry.applications.ux.TextEditor.implementation
 
 class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 	static DEFAULT_OPTIONS = {
