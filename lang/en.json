@@ -791,7 +791,9 @@
 			"EncounterIntervalLabel": "Encounter check frequency",
 			"EncounterTableLabel": "Encounter Table",
 			"EncounterTableNone": "None",
-			"EncounterGmOnly": "Show rolled encounter only to GM",
+			"AutoRoll": "Auto roll",
+			"PublicRoll": "Public roll",
+			"RollEncounterTable": "Roll on Encounter Table",
 			"RestIntervalLabel": "Need to rest frequency"
 		},
 		"Calendar": {

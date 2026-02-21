@@ -166,13 +166,17 @@ async function showSettingsDialog() {
 	const encounterInterval = game.settings.get('dolmenwood', 'encounterInterval')
 	const restInterval = game.settings.get('dolmenwood', 'restInterval')
 	const encounterTable = game.settings.get('dolmenwood', 'encounterTable')
-	const encounterGmOnly = game.settings.get('dolmenwood', 'encounterGmOnly')
+	const encounterAutoRoll = game.settings.get('dolmenwood', 'encounterAutoRoll')
+	const encounterPublicRoll = game.settings.get('dolmenwood', 'encounterPublicRoll')
+	const tableAutoRoll = game.settings.get('dolmenwood', 'tableAutoRoll')
+	const tablePublicRoll = game.settings.get('dolmenwood', 'tablePublicRoll')
 
 	const chanceLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterSettingName')
 	const intervalLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterIntervalLabel')
 	const restLbl = game.i18n.localize('DOLMEN.DungeonTracker.RestIntervalLabel')
 	const tableLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterTableLabel')
-	const gmOnlyLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterGmOnly')
+	const autoRollLbl = game.i18n.localize('DOLMEN.DungeonTracker.AutoRoll')
+	const publicRollLbl = game.i18n.localize('DOLMEN.DungeonTracker.PublicRoll')
 	const offLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterOff')
 	const noneLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterTableNone')
 
@@ -189,6 +193,16 @@ async function showSettingsDialog() {
 		}
 	}
 
+	const hookId = Hooks.once('renderDialogV2', (dialog) => {
+		const el = dialog.element
+		for (const group of el.querySelectorAll('.form-group')) {
+			for (const child of group.children) {
+				child.style.flex = '1'
+				if (child.tagName === 'LABEL') child.style.whiteSpace = 'nowrap'
+			}
+		}
+	})
+
 	const result = await DialogV2.prompt({
 		window: { title: game.i18n.localize('DOLMEN.DungeonTracker.Settings') },
 		content: `
@@ -200,13 +214,17 @@ async function showSettingsDialog() {
 				<label>${intervalLbl}</label>
 				<input type="number" name="encounterInterval" value="${encounterInterval}" min="1">
 			</div>
+			<div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:-0.25rem">
+				<label style="white-space:nowrap;font-size:0.8rem"><input type="checkbox" name="encounterAutoRoll"${encounterAutoRoll ? ' checked' : ''}> ${autoRollLbl}</label>
+				<label style="white-space:nowrap;font-size:0.8rem"><input type="checkbox" name="encounterPublicRoll"${encounterPublicRoll ? ' checked' : ''}> ${publicRollLbl}</label>
+			</div>
 			<div class="form-group">
 				<label>${tableLbl}</label>
 				<select name="encounterTable">${tableOptions.join('')}</select>
 			</div>
-			<div class="form-group">
-				<label>${gmOnlyLbl}</label>
-				<input type="checkbox" name="encounterGmOnly"${encounterGmOnly ? ' checked' : ''}>
+			<div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:-0.25rem">
+				<label style="white-space:nowrap;font-size:0.8rem"><input type="checkbox" name="tableAutoRoll"${tableAutoRoll ? ' checked' : ''}> ${autoRollLbl}</label>
+				<label style="white-space:nowrap;font-size:0.8rem"><input type="checkbox" name="tablePublicRoll"${tablePublicRoll ? ' checked' : ''}> ${publicRollLbl}</label>
 			</div>
 			<div class="form-group">
 				<label>${restLbl}</label>
@@ -222,19 +240,27 @@ async function showSettingsDialog() {
 					interval: parseInt(button.form.elements.encounterInterval.value) || 2,
 					rest: isNaN(rest) ? 6 : rest,
 					table: button.form.elements.encounterTable.value,
-					gmOnly: button.form.elements.encounterGmOnly.checked
+					encounterAutoRoll: button.form.elements.encounterAutoRoll.checked,
+					encounterPublicRoll: button.form.elements.encounterPublicRoll.checked,
+					tableAutoRoll: button.form.elements.tableAutoRoll.checked,
+					tablePublicRoll: button.form.elements.tablePublicRoll.checked
 				}
 			}
 		},
 		rejectClose: false
 	})
 
+	Hooks.off('renderDialogV2', hookId)
+
 	if (result) {
 		await game.settings.set('dolmenwood', 'encounterChance', result.chance)
 		await game.settings.set('dolmenwood', 'encounterInterval', result.interval)
 		await game.settings.set('dolmenwood', 'restInterval', result.rest)
 		await game.settings.set('dolmenwood', 'encounterTable', result.table)
-		await game.settings.set('dolmenwood', 'encounterGmOnly', result.gmOnly)
+		await game.settings.set('dolmenwood', 'encounterAutoRoll', result.encounterAutoRoll)
+		await game.settings.set('dolmenwood', 'encounterPublicRoll', result.encounterPublicRoll)
+		await game.settings.set('dolmenwood', 'tableAutoRoll', result.tableAutoRoll)
+		await game.settings.set('dolmenwood', 'tablePublicRoll', result.tablePublicRoll)
 		rebuildSquares()
 	}
 }
@@ -528,7 +554,8 @@ async function postTurnMessage(turnNum) {
 
 	let encounterHtml = ''
 	let sound = undefined
-	if (doEncounter) {
+	const autoRoll = game.settings.get('dolmenwood', 'encounterAutoRoll')
+	if (doEncounter && autoRoll) {
 		const roll = new Roll('1d6')
 		await roll.evaluate()
 		const encountered = roll.total <= chance
@@ -550,18 +577,31 @@ async function postTurnMessage(turnNum) {
 		// Draw from encounter table if configured and encounter triggered
 		if (encountered) {
 			const tableName = game.settings.get('dolmenwood', 'encounterTable')
-			if (tableName) {
+			const tblAutoRoll = game.settings.get('dolmenwood', 'tableAutoRoll')
+			if (tableName && tblAutoRoll) {
 				const table = await findRollTable(tableName)
 				if (table) {
 					const draw = await table.draw({ displayChat: false })
 					if (draw.results.length) {
-						const gmOnly = game.settings.get('dolmenwood', 'encounterGmOnly')
-						const msgOpts = gmOnly ? { rollMode: 'gmroll' } : {}
+						const tblPublic = game.settings.get('dolmenwood', 'tablePublicRoll')
+						const msgOpts = tblPublic ? {} : { rollMode: 'gmroll' }
 						table.toMessage(draw.results, { roll: draw.roll, messageData: { sound: '' }, messageOptions: msgOpts })
 					}
 				}
+			} else if (tableName) {
+				encounterHtml += `
+				<button type="button" class="roll-encounter-table" data-table="${foundry.utils.escapeHTML(tableName)}">
+					<i class="fa-solid fa-dice"></i> ${game.i18n.localize('DOLMEN.DungeonTracker.RollEncounterTable')}
+				</button>`
 			}
 		}
+	} else if (doEncounter) {
+		encounterHtml = `
+				<div class="roll-section">
+					<i class="fa-solid fa-dice" style="font-size:1.25rem"></i>
+					<span class="roll-label">${game.i18n.localize('DOLMEN.DungeonTracker.EncounterCheck')}</span>
+					<span class="roll-target">${chance}-in-6</span>
+				</div>`
 	}
 
 	let restHtml = ''
@@ -577,6 +617,9 @@ async function postTurnMessage(turnNum) {
 	const title = doEncounter
 		? game.i18n.localize('DOLMEN.DungeonTracker.EncounterCheck')
 		: game.i18n.localize('DOLMEN.DungeonTracker.RestTitle')
+
+	const encPublic = !doEncounter || game.settings.get('dolmenwood', 'encounterPublicRoll')
+	const whisper = encPublic ? [] : game.users.filter(u => u.isGM).map(u => u.id)
 
 	await ChatMessage.create({
 		content: `
@@ -594,7 +637,8 @@ async function postTurnMessage(turnNum) {
 			</div>
 		</div>`,
 		sound,
-		speaker: { alias: title }
+		speaker: { alias: title },
+		whisper
 	})
 }
 
@@ -950,6 +994,22 @@ export function toggleDungeonTracker(visible) {
 }
 
 /**
+ * Handle click on "Roll on Encounter Table" button in chat messages.
+ */
+async function onRollEncounterTableButton(tableName, button) {
+	if (!game.user.isGM) return
+	const table = await findRollTable(tableName)
+	if (!table) return
+	const draw = await table.draw({ displayChat: false })
+	if (draw.results.length) {
+		const tblPublic = game.settings.get('dolmenwood', 'tablePublicRoll')
+		const msgOpts = tblPublic ? {} : { rollMode: 'gmroll' }
+		table.toMessage(draw.results, { roll: draw.roll, messageData: { sound: '' }, messageOptions: msgOpts })
+	}
+	button.disabled = true
+}
+
+/**
  * Initialize the dungeon tracker. Called from the ready hook.
  */
 export function initDungeonTracker() {
@@ -965,6 +1025,13 @@ export function initDungeonTracker() {
 	previousWorldTime = game.time.worldTime
 
 	Hooks.on('updateWorldTime', onUpdateWorldTime)
+
+	Hooks.on('renderChatMessageHTML', (message, html) => {
+		const btn = html.querySelector('.roll-encounter-table')
+		if (btn) {
+			btn.addEventListener('click', () => onRollEncounterTableButton(btn.dataset.table, btn))
+		}
+	})
 
 	// Rebuild squares when returning from a minimized/background tab
 	// to fix any state corrupted by throttled timers during animation

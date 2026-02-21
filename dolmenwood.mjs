@@ -123,11 +123,32 @@ Hooks.once('init', async function () {
 		default: ''
 	})
 
-	game.settings.register('dolmenwood', 'encounterGmOnly', {
+	game.settings.register('dolmenwood', 'encounterAutoRoll', {
 		scope: 'world',
 		config: false,
 		type: Boolean,
-		default: false
+		default: true
+	})
+
+	game.settings.register('dolmenwood', 'encounterPublicRoll', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true
+	})
+
+	game.settings.register('dolmenwood', 'tableAutoRoll', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true
+	})
+
+	game.settings.register('dolmenwood', 'tablePublicRoll', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true
 	})
 
 	game.settings.register('dolmenwood', 'autoWeather', {
