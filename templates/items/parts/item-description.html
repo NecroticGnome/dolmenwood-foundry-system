@@ -1,7 +1,10 @@
 <section class="tab-content item-description {{tab.cssClass}}" data-group="primary" data-tab="description">
-	<div class="form-group notes-group">
-		<label>{{localize "DOLMEN.Item.Description"}}</label>
-		<textarea name="{{descriptionFieldName}}" class="item-notes">{{descriptionFieldValue}}</textarea>
+	<div class="editor-container">
+		{{#if editable}}
+		<prose-mirror name="{{descriptionFieldName}}" button="true" editable="{{editable}}" toggled="true" value="{{descriptionFieldValue}}">{{{enrichedDescription}}}</prose-mirror>
+		{{else}}
+		<div class="editor-content">{{{enrichedDescription}}}</div>
+		{{/if}}
 	</div>
 	<div class="codex-link-row">
 		<div class="form-field codex-field">

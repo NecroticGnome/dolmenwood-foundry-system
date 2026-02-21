@@ -362,7 +362,7 @@
 
 .dolmen.dolmen-tracker-menu .numeric-btn.selected {
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	border-color: var(--dolmen-color-title-background);
 }
 
@@ -378,7 +378,7 @@
 	font-weight: bold;
 	cursor: pointer;
 	background-color: var(--dolmen-color-title-background);
-	color: var(--dolmen-color-background);
+	color: var(--dolmen-color-title);
 	border: none;
 	border-radius: 2px;
 	transition: opacity 0.15s;
