@@ -13,6 +13,8 @@
 .party-controls {
 	display: flex;
 	gap: 2px;
+	width: 7rem;
+	justify-content: space-between;
 }
 
 .party-ctrl-btn {
@@ -49,7 +51,11 @@
 }
 
 .party-ctrl-btn .fa-user-plus {
-	color: rgba(140, 200, 220, 0.8);
+	color: var(--dolmen-color-success);
+}
+
+.party-ctrl-btn .fa-user-xmark {
+	color: var(--dolmen-color-failure);
 }
 
 /* ── Party Member List (vertical) ── */
@@ -58,6 +64,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 3px;
+	width: 7rem;
 }
 
 .party-member-list:empty {

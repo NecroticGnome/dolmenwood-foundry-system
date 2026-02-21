@@ -26,10 +26,20 @@ function getRetainerLabel(actor) {
 }
 
 let widgetEl = null
-let partyMembers = [] // array of actor IDs
+let partyMembers = [] // array of {sceneId, tokenId}
 
 /**
- * Load party member IDs from the world setting.
+ * Resolve a party member entry to a token document.
+ * @param {{ sceneId: string, tokenId: string }} entry
+ * @returns {TokenDocument|null}
+ */
+function resolveToken(entry) {
+	if (!entry?.sceneId || !entry?.tokenId) return null
+	return game.scenes.get(entry.sceneId)?.tokens.get(entry.tokenId) ?? null
+}
+
+/**
+ * Load party members from the world setting.
  */
 function loadParty() {
 	try {
@@ -40,11 +50,13 @@ function loadParty() {
 }
 
 /**
- * Save party member IDs to the world setting.
+ * Save party members to the world setting.
  */
 function saveParty() {
 	if (!game.user.isGM) return
 	game.settings.set('dolmenwood', 'partyMembers', partyMembers)
+	// Re-render combat tracker so "Add Party" button visibility updates
+	ui.combat?.render()
 }
 
 /**
@@ -56,19 +68,22 @@ function renderParty() {
 	if (!list) return
 	list.innerHTML = ''
 
-	for (const actorId of partyMembers) {
-		const actor = game.actors.get(actorId)
+	for (const entry of partyMembers) {
+		const tokenDoc = resolveToken(entry)
+		if (!tokenDoc) continue
+		const actor = tokenDoc.actor
 		if (!actor) continue
 
 		const card = document.createElement('div')
 		card.className = 'party-member-card'
-		card.dataset.actorId = actorId
+		card.dataset.tokenId = entry.tokenId
+		card.dataset.sceneId = entry.sceneId
 
-		// Row 1: Name
+		// Row 1: Name (use token name, which may differ from actor name)
 		const nameEl = document.createElement('span')
 		nameEl.className = 'party-name'
-		nameEl.textContent = actor.name
-		nameEl.title = actor.name
+		nameEl.textContent = tokenDoc.name
+		nameEl.title = tokenDoc.name
 		card.appendChild(nameEl)
 
 		// Row 2-3: Portrait (spanning) + HP/AC stacked
@@ -77,8 +92,8 @@ function renderParty() {
 
 		const img = document.createElement('img')
 		img.className = 'party-portrait'
-		img.src = actor.img || 'icons/svg/mystery-man.svg'
-		img.alt = actor.name
+		img.src = tokenDoc.texture?.src || actor.img || 'icons/svg/mystery-man.svg'
+		img.alt = tokenDoc.name
 		body.appendChild(img)
 
 		const stats = document.createElement('div')
@@ -96,12 +111,16 @@ function renderParty() {
 		body.appendChild(stats)
 		card.appendChild(body)
 
-		// Retainer indicator
-		const retLabel = getRetainerLabel(actor)
-		if (retLabel) {
+		// Retainer / Ally indicator
+		if (actor.type === 'Creature') {
+			const allyEl = document.createElement('span')
+			allyEl.className = 'party-retainer'
+			allyEl.textContent = game.i18n.localize('DOLMEN.PartyViewer.Ally')
+			card.appendChild(allyEl)
+		} else if (actor.system.retainer) {
 			const retainerEl = document.createElement('span')
 			retainerEl.className = 'party-retainer'
-			retainerEl.textContent = retLabel
+			retainerEl.textContent = game.i18n.localize('DOLMEN.PartyViewer.Retainer')
 			card.appendChild(retainerEl)
 		}
 
@@ -114,7 +133,7 @@ function renderParty() {
 			removeBtn.title = game.i18n.localize('DOLMEN.PartyViewer.Remove')
 			removeBtn.addEventListener('click', (e) => {
 				e.stopPropagation()
-				removeMember(actorId)
+				removeMember(entry.sceneId, entry.tokenId)
 			})
 			card.appendChild(removeBtn)
 		}
@@ -129,36 +148,70 @@ function renderParty() {
 }
 
 /**
- * Add the currently selected token's actor to the party.
+ * Add all currently selected tokens to the party.
  */
 function addCurrentToken() {
 	if (!game.user.isGM) return
-	const token = canvas.tokens?.controlled?.[0]
-	if (!token?.actor) {
+	const tokens = canvas.tokens?.controlled
+	if (!tokens?.length) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.PartyViewer.NoTokenSelected'))
 		return
 	}
-	const actor = token.actor
-	if (actor.type !== 'Adventurer') {
-		ui.notifications.warn(game.i18n.localize('DOLMEN.PartyViewer.NotAdventurer'))
-		return
+	let added = 0
+	for (const token of tokens) {
+		if (!token?.document) continue
+		const actor = token.actor
+		if (!actor || (actor.type !== 'Adventurer' && actor.type !== 'Creature')) continue
+		const sceneId = token.document.parent.id
+		const tokenId = token.document.id
+		if (partyMembers.some(e => e.sceneId === sceneId && e.tokenId === tokenId)) continue
+		partyMembers.push({ sceneId, tokenId })
+		added++
 	}
-	if (partyMembers.includes(actor.id)) {
+	if (added === 0) {
 		ui.notifications.info(game.i18n.localize('DOLMEN.PartyViewer.AlreadyInParty'))
 		return
 	}
-	partyMembers.push(actor.id)
 	saveParty()
 	renderParty()
 }
 
 /**
- * Remove a member from the party by actor ID.
+ * Remove a member from the party by scene and token ID.
  */
-function removeMember(actorId) {
-	partyMembers = partyMembers.filter(id => id !== actorId)
+function removeMember(sceneId, tokenId) {
+	partyMembers = partyMembers.filter(e => !(e.sceneId === sceneId && e.tokenId === tokenId))
 	saveParty()
 	renderParty()
+}
+
+/**
+ * Clear all party members.
+ */
+function clearParty() {
+	if (!game.user.isGM) return
+	partyMembers = []
+	saveParty()
+	renderParty()
+}
+
+/**
+ * Resolve party members to Adventurer actors for XP/coin distribution.
+ * @returns {Actor[]}
+ */
+function resolveAdventurers() {
+	const actors = []
+	const seen = new Set()
+	for (const entry of partyMembers) {
+		const tokenDoc = resolveToken(entry)
+		const actor = tokenDoc?.actor
+		if (!actor || actor.type !== 'Adventurer') continue
+		// Avoid duplicates (same actor from different tokens)
+		if (seen.has(actor.id)) continue
+		seen.add(actor.id)
+		actors.push(actor)
+	}
+	return actors
 }
 
 /**
@@ -181,7 +234,7 @@ function attachPreviewListener(dialog, updatePreview) {
  */
 async function addXP() {
 	if (!game.user.isGM) return
-	const validActors = partyMembers.map(id => game.actors.get(id)).filter(a => a)
+	const validActors = resolveAdventurers()
 	if (validActors.length === 0) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.PartyViewer.NoMembers'))
 		return
@@ -328,7 +381,7 @@ function formatCoins(bag) {
  */
 async function addCoins() {
 	if (!game.user.isGM) return
-	const validActors = partyMembers.map(id => game.actors.get(id)).filter(a => a)
+	const validActors = resolveAdventurers()
 	if (validActors.length === 0) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.PartyViewer.NoMembers'))
 		return
@@ -487,6 +540,7 @@ function injectWidget() {
 	if (widgetEl) return
 	widgetEl = document.createElement('div')
 	widgetEl.id = 'dolmen-party-viewer'
+	widgetEl.classList.add('dolmen')
 
 	// GM control buttons (icon-only, compact)
 	if (game.user.isGM) {
@@ -514,13 +568,21 @@ function injectWidget() {
 		addBtn.title = game.i18n.localize('DOLMEN.PartyViewer.AddCurrent')
 		addBtn.addEventListener('click', addCurrentToken)
 
+		const clearBtn = document.createElement('button')
+		clearBtn.type = 'button'
+		clearBtn.className = 'party-ctrl-btn'
+		clearBtn.innerHTML = '<i class="fa-solid fa-user-xmark"></i>'
+		clearBtn.title = game.i18n.localize('DOLMEN.PartyViewer.Clear')
+		clearBtn.addEventListener('click', clearParty)
+
 		controls.appendChild(xpBtn)
 		controls.appendChild(gpBtn)
 		controls.appendChild(addBtn)
+		controls.appendChild(clearBtn)
 		widgetEl.appendChild(controls)
 	}
 
-	// Party member list (horizontal)
+	// Party member list
 	const list = document.createElement('div')
 	list.className = 'party-member-list'
 	widgetEl.appendChild(list)
@@ -561,9 +623,20 @@ export function togglePartyViewer(visible) {
  */
 function onUpdateActor(actor) {
 	if (!widgetEl) return
-	if (partyMembers.includes(actor.id)) {
-		renderParty()
-	}
+	const inParty = partyMembers.some(entry => {
+		const tokenDoc = resolveToken(entry)
+		return tokenDoc?.actorId === actor.id
+	})
+	if (inParty) renderParty()
+}
+
+/**
+ * Handle updateToken hook — refresh party cards if the token is in the party.
+ */
+function onUpdateToken(tokenDoc) {
+	if (!widgetEl) return
+	const inParty = partyMembers.some(e => e.sceneId === tokenDoc.parent?.id && e.tokenId === tokenDoc.id)
+	if (inParty) renderParty()
 }
 
 /**
@@ -585,6 +658,7 @@ export function initPartyViewer() {
 	}
 
 	Hooks.on('updateActor', onUpdateActor)
+	Hooks.on('updateToken', onUpdateToken)
 }
 
 /**
