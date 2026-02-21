@@ -25,7 +25,7 @@ import {
 } from './sheet/listeners.js'
 import { openAddSkillDialog, removeSkill } from './sheet/dialogs.js'
 
-const TextEditor = foundry.applications.ux.TextEditor
+const TextEditor = foundry.applications.ux.TextEditor.implementation
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets
 
