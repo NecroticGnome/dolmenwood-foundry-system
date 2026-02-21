@@ -135,15 +135,33 @@
       }
     },
     "Item": {
-      "Item": {},
-      "Treasure": {},
-      "Armor": {},
-      "Weapon": {},
-      "Foraged": {},
-      "Spell": {},
-      "HolySpell": {},
-      "Glamour": {},
-      "Rune": {},
+      "Item": {
+        "htmlFields": ["notes"]
+      },
+      "Treasure": {
+        "htmlFields": ["notes", "effects"]
+      },
+      "Armor": {
+        "htmlFields": ["notes"]
+      },
+      "Weapon": {
+        "htmlFields": ["notes"]
+      },
+      "Foraged": {
+        "htmlFields": ["notes", "effects"]
+      },
+      "Spell": {
+        "htmlFields": ["description"]
+      },
+      "HolySpell": {
+        "htmlFields": ["description"]
+      },
+      "Glamour": {
+        "htmlFields": ["description"]
+      },
+      "Rune": {
+        "htmlFields": ["description"]
+      },
       "Kindred": {},
       "Class": {}
     }
