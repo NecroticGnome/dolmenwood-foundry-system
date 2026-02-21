@@ -143,6 +143,17 @@ function renderParty() {
 			actor.sheet.render(true)
 		})
 
+		// Right-click card to pan camera to token
+		card.addEventListener('contextmenu', (e) => {
+			e.preventDefault()
+			if (canvas.scene?.id !== entry.sceneId) return
+			const token = tokenDoc.object
+			if (token) {
+				canvas.animatePan({ x: token.center.x, y: token.center.y, duration: 250 })
+				canvas.ping(token.center)
+			}
+		})
+
 		list.appendChild(card)
 	}
 }
