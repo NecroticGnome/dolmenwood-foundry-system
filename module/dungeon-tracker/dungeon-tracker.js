@@ -81,6 +81,19 @@ export function onTrackerPausedChanged(value) {
 	updatePauseButton()
 }
 
+/**
+ * Setting onChange handler — syncs turn counter from GM to players.
+ */
+export function onTurnCounterChanged(value) {
+	if (game.user.isGM) return
+	turnCounter = value
+	rebuildSquares()
+}
+
+export function isDungeonTrackerAnimating() {
+	return animating
+}
+
 function addLightSource(type) {
 	if (!game.user.isGM) return
 	const duration = type === 'torch' ? TORCH_DURATION : LANTERN_DURATION
@@ -238,6 +251,13 @@ function renderLightPanel() {
 	if (!panel) return
 
 	panel.innerHTML = ''
+
+	// Hide panel for non-GM users when there are no light sources
+	if (!game.user.isGM && lightSources.length === 0) {
+		panel.classList.add('empty')
+		return
+	}
+	panel.classList.remove('empty')
 
 	// Add buttons (GM only)
 	if (game.user.isGM) {
@@ -524,6 +544,11 @@ function injectWidget() {
 		advanceBtn.innerHTML = '<i class="fa-solid fa-forward-step"></i>'
 		advanceBtn.title = game.i18n.localize('DOLMEN.DungeonTracker.AdvanceTurn')
 		advanceBtn.addEventListener('click', () => {
+			if (animating) {
+				// Force-stop a runaway animation
+				pendingTurns = 0
+				return
+			}
 			const calendarOn = game.settings.get('dolmenwood', 'showCalendar')
 			if (calendarOn) {
 				// Advance world time by 10 minutes; if not paused the time hook
@@ -567,6 +592,22 @@ function removeWidget() {
 function animateOneTurn() {
 	if (!widgetEl) return
 	animating = true
+
+	// Tab is backgrounded — browsers throttle timers, skip animation
+	if (document.hidden) {
+		const total = pendingTurns + 1
+		for (let i = 0; i < total; i++) {
+			turnCounter++
+			postTurnMessage(turnCounter)
+			decrementLightSources()
+		}
+		pendingTurns = 0
+		animating = false
+		currentSlideMs = SLIDE_NORMAL
+		saveTurnCounter()
+		rebuildSquares()
+		return
+	}
 
 	const strip = widgetEl.querySelector('.dungeon-tracker-squares')
 	const squares = Array.from(strip.querySelectorAll('.dungeon-square'))
@@ -626,6 +667,17 @@ function animateOneTurn() {
 		// Append a new invisible square at the tail (6 turns ahead of current)
 		strip.appendChild(createSquare(turnCounter + 6, true))
 
+		// Sanity check — if square count is wrong, abort and rebuild
+		const count = strip.querySelectorAll('.dungeon-square').length
+		if (count !== SQUARE_COUNT) {
+			pendingTurns = 0
+			animating = false
+			currentSlideMs = SLIDE_NORMAL
+			saveTurnCounter()
+			rebuildSquares()
+			return
+		}
+
 		renderLightBars()
 		renderLightPanel()
 
@@ -656,7 +708,7 @@ function pickSpeed(totalTurns) {
 function advanceTurn(count) {
 	if (count <= 0) return
 	if (animating) {
-		pendingTurns += count
+		pendingTurns = Math.min(pendingTurns + count, REST_THRESHOLD)
 		return
 	}
 	pendingTurns += count - 1
@@ -766,8 +818,10 @@ function onUpdateWorldTime(worldTime) {
 	const turns = Math.floor(delta / TURN_SECONDS)
 	if (turns <= 0) return
 
-	if (turns >= REST_THRESHOLD && game.user.isGM && widgetEl) {
-		showRestDialog(turns)
+	if (turns >= REST_THRESHOLD) {
+		// Large jump — GM gets a dialog, players wait for the GM's choice
+		// to propagate via the trackerTurn setting onChange
+		if (game.user.isGM && widgetEl) showRestDialog(turns)
 	} else {
 		advanceTurn(turns)
 	}
@@ -801,4 +855,16 @@ export function initDungeonTracker() {
 	previousWorldTime = game.time.worldTime
 
 	Hooks.on('updateWorldTime', onUpdateWorldTime)
+
+	// Rebuild squares when returning from a minimized/background tab
+	// to fix any state corrupted by throttled timers during animation
+	document.addEventListener('visibilitychange', () => {
+		if (!document.hidden && widgetEl) {
+			if (!game.user.isGM) {
+				turnCounter = game.settings.get('dolmenwood', 'trackerTurn') || 1
+				loadLightSources()
+			}
+			rebuildSquares()
+		}
+	})
 }

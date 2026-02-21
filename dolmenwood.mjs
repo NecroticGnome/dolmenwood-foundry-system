@@ -15,7 +15,7 @@ import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { getFaSymbol } from './module/sheet/data-context.js'
 import { registerCombatSystem } from './module/combat/combat.js'
-import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged } from './module/dungeon-tracker/dungeon-tracker.js'
+import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -235,7 +235,8 @@ Hooks.once('init', async function () {
 		scope: 'world',
 		config: false,
 		type: Number,
-		default: 1
+		default: 1,
+		onChange: onTurnCounterChanged
 	})
 
 	// Add scene control toolbar buttons for calendar and dungeon tracker

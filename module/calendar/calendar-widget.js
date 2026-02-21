@@ -6,6 +6,7 @@ import {
 	getCelestialPosition, ordinalDay, getDayName, getHoliday
 } from './calendar-time.js'
 import { drawFromTableRaw } from '../utils/roll-tables.js'
+import { isDungeonTrackerAnimating } from '../dungeon-tracker/dungeon-tracker.js'
 
 const { DialogV2 } = foundry.applications.api
 
@@ -399,6 +400,7 @@ function attachListeners(widget) {
 	for (const btn of widget.querySelectorAll('.calendar-gm-btn[data-advance]')) {
 		btn.addEventListener('click', (e) => {
 			e.stopPropagation()
+			if (isDungeonTrackerAnimating()) return
 			widget.classList.add('controls-active')
 			const seconds = parseInt(btn.dataset.advance)
 			game.time.advance(seconds)

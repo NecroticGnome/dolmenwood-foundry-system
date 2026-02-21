@@ -281,7 +281,7 @@
 	margin-left: 54px;
 }
 
-#dolmen-dungeon-tracker:hover .dungeon-light-panel {
+#dolmen-dungeon-tracker:hover .dungeon-light-panel:not(.empty) {
 	opacity: 1;
 	pointer-events: auto;
 }
