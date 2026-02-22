@@ -788,13 +788,13 @@
 			"AdvanceTurn": "Next Turn",
 			"Settings": "Tracker Settings",
 			"SettingsSave": "Save",
-			"EncounterIntervalLabel": "Encounter check frequency",
+			"EncounterIntervalLabel": "Encounter check every",
 			"EncounterTableLabel": "Encounter Table",
 			"EncounterTableNone": "None",
 			"AutoRoll": "Auto roll",
 			"PublicRoll": "Public roll",
 			"RollEncounterTable": "Roll on Encounter Table",
-			"RestIntervalLabel": "Need to rest frequency"
+			"RestIntervalLabel": "Need to rest every"
 		},
 		"Calendar": {
 			"SettingName": "Show Calendar Widget",

@@ -99,7 +99,7 @@ Hooks.once('init', async function () {
 		scope: 'world',
 		config: false,
 		type: Number,
-		default: 0
+		default: 1
 	})
 
 	game.settings.register('dolmenwood', 'encounterInterval', {

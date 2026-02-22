@@ -177,10 +177,9 @@ async function showSettingsDialog() {
 	const tableLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterTableLabel')
 	const autoRollLbl = game.i18n.localize('DOLMEN.DungeonTracker.AutoRoll')
 	const publicRollLbl = game.i18n.localize('DOLMEN.DungeonTracker.PublicRoll')
-	const offLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterOff')
 	const noneLbl = game.i18n.localize('DOLMEN.DungeonTracker.EncounterTableNone')
 
-	const chanceOptions = [`<option value="0"${encounterChance === 0 ? ' selected' : ''}>${offLbl}</option>`]
+	const chanceOptions = []
 	for (let i = 1; i <= 6; i++) {
 		chanceOptions.push(`<option value="${i}"${encounterChance === i ? ' selected' : ''}>${i}-in-6</option>`)
 	}
@@ -201,18 +200,42 @@ async function showSettingsDialog() {
 				if (child.tagName === 'LABEL') child.style.whiteSpace = 'nowrap'
 			}
 		}
+		const encInterval = el.querySelector('[name="encounterInterval"]')
+		const encChance = el.querySelector('[name="encounterChance"]')
+		const encAuto = el.querySelector('[name="encounterAutoRoll"]')
+		const encPublic = el.querySelector('[name="encounterPublicRoll"]')
+		const tblSelect = el.querySelector('[name="encounterTable"]')
+		const tblAuto = el.querySelector('[name="tableAutoRoll"]')
+		const tblPublic = el.querySelector('[name="tablePublicRoll"]')
+		const syncDisabled = () => {
+			const intervalOff = parseInt(encInterval.value) === 0
+			encChance.disabled = intervalOff
+			encAuto.disabled = intervalOff
+			encPublic.disabled = intervalOff
+			const tableOff = intervalOff || !encAuto.checked
+			tblSelect.disabled = tableOff
+			tblAuto.disabled = tableOff
+			tblPublic.disabled = tableOff
+		}
+		syncDisabled()
+		encInterval.addEventListener('input', syncDisabled)
+		encAuto.addEventListener('change', syncDisabled)
 	})
 
 	const result = await DialogV2.prompt({
 		window: { title: game.i18n.localize('DOLMEN.DungeonTracker.Settings') },
 		content: `
 			<div class="form-group">
-				<label>${chanceLbl}</label>
-				<select name="encounterChance">${chanceOptions.join('')}</select>
+				<label>${restLbl}</label>
+				<input type="number" name="restInterval" value="${restInterval}" min="0">
 			</div>
 			<div class="form-group">
 				<label>${intervalLbl}</label>
-				<input type="number" name="encounterInterval" value="${encounterInterval}" min="1">
+				<input type="number" name="encounterInterval" value="${encounterInterval}" min="0">
+			</div>
+			<div class="form-group">
+				<label>${chanceLbl}</label>
+				<select name="encounterChance">${chanceOptions.join('')}</select>
 			</div>
 			<div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:-0.25rem">
 				<label style="white-space:nowrap;font-size:0.8rem"><input type="checkbox" name="encounterAutoRoll"${encounterAutoRoll ? ' checked' : ''}> ${autoRollLbl}</label>
@@ -225,19 +248,16 @@ async function showSettingsDialog() {
 			<div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:-0.25rem">
 				<label style="white-space:nowrap;font-size:0.8rem"><input type="checkbox" name="tableAutoRoll"${tableAutoRoll ? ' checked' : ''}> ${autoRollLbl}</label>
 				<label style="white-space:nowrap;font-size:0.8rem"><input type="checkbox" name="tablePublicRoll"${tablePublicRoll ? ' checked' : ''}> ${publicRollLbl}</label>
-			</div>
-			<div class="form-group">
-				<label>${restLbl}</label>
-				<input type="number" name="restInterval" value="${restInterval}" min="0">
 			</div>`,
 		ok: {
 			label: game.i18n.localize('DOLMEN.DungeonTracker.SettingsSave'),
 			icon: 'fa-solid fa-check',
 			callback: (event, button) => {
 				const rest = parseInt(button.form.elements.restInterval.value)
+				const interval = parseInt(button.form.elements.encounterInterval.value)
 				return {
-					chance: parseInt(button.form.elements.encounterChance.value) || 0,
-					interval: parseInt(button.form.elements.encounterInterval.value) || 2,
+					chance: parseInt(button.form.elements.encounterChance.value) || 1,
+					interval: isNaN(interval) ? 2 : interval,
 					rest: isNaN(rest) ? 6 : rest,
 					table: button.form.elements.encounterTable.value,
 					encounterAutoRoll: button.form.elements.encounterAutoRoll.checked,
