@@ -328,8 +328,10 @@ function renderWidget() {
 				<div class="calendar-divider"></div>
 				<div class="calendar-section calendar-time${isGM ? ' gm-clickable' : ''}">
 					${gmControls}
+					<i class="fa-solid fa-angles-up"></i>
 					<i class="fa-solid fa-clock"></i>
 					<span>${timeStr}</span>
+					<i class="fa-solid fa-angles-up"></i>
 				</div>
 				<div class="calendar-divider"></div>
 				<div class="calendar-section calendar-season${isGM ? ' gm-clickable' : ''}">

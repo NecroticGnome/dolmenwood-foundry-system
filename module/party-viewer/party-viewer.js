@@ -123,6 +123,15 @@ function renderParty() {
 		body.appendChild(stats)
 		card.appendChild(body)
 
+		// HP bar at bottom of card
+		const hpBar = document.createElement('div')
+		hpBar.className = 'party-hp-bar'
+		const hpFill = document.createElement('div')
+		hpFill.className = `party-hp-bar-fill ${hpClass}`
+		hpFill.style.width = `${Math.max(0, Math.min(100, hpRatio * 100))}%`
+		hpBar.appendChild(hpFill)
+		card.appendChild(hpBar)
+
 		// Remove button (GM only)
 		if (game.user.isGM) {
 			const removeBtn = document.createElement('button')
