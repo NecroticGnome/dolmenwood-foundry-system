@@ -1,4 +1,4 @@
-/* global game, foundry, Hooks */
+/* global game, foundry, Hooks, canvas, Combat */
 
 /**
  * DolmenCombatTracker
@@ -101,7 +101,9 @@ export default class DolmenCombatTracker extends CombatTracker {
 			rollEncounterDistance: DolmenCombatTracker._onRollEncounterDistance,
 			rollReaction: DolmenCombatTracker._onRollReaction,
 			clearDeclarations: DolmenCombatTracker._onClearDeclarations,
-			clearGroupInitiative: DolmenCombatTracker._onClearGroupInitiative
+			clearGroupInitiative: DolmenCombatTracker._onClearGroupInitiative,
+			addParty: DolmenCombatTracker._onAddParty,
+			clearParty: DolmenCombatTracker._onClearParty
 		}
 	}
 
@@ -152,6 +154,17 @@ export default class DolmenCombatTracker extends CombatTracker {
 			// Map initiative value to dice icon
 			const DICE_ICONS = ['', 'fa-dice-one', 'fa-dice-two', 'fa-dice-three', 'fa-dice-four', 'fa-dice-five', 'fa-dice-six']
 			group.diceIcon = DICE_ICONS[group.initiative] || 'fa-dice-d6'
+		}
+
+		// Show "Add Party" button if party viewer is enabled and has members on this scene
+		try {
+			const sceneId = canvas.scene?.id
+			const entries = game.settings.get('dolmenwood', 'partyMembers') || []
+			context.showAddParty = context.isGM
+				&& game.settings.get('dolmenwood', 'showPartyViewer')
+				&& entries.some(e => e.sceneId === sceneId)
+		} catch {
+			context.showAddParty = false
 		}
 
 		return context
@@ -462,6 +475,56 @@ export default class DolmenCombatTracker extends CombatTracker {
 		if (updates.length) {
 			await combat.updateEmbeddedDocuments('Combatant', updates)
 		}
+	}
+
+	/**
+	 * Add all party viewer members to combat in the Friendly group.
+	 * Uses stored token references directly.
+	 */
+	static async _onAddParty() {
+		let combat = this.viewed
+		const scene = canvas.scene
+		if (!scene) return
+
+		if (!combat) {
+			combat = await Combat.create({ scene: scene.id })
+		}
+
+		const partyEntries = game.settings.get('dolmenwood', 'partyMembers') || []
+		const existingTokenIds = new Set(combat.combatants.map(c => c.tokenId))
+
+		const toCreate = []
+		for (const entry of partyEntries) {
+			// Only add tokens from the current scene
+			if (entry.sceneId !== scene.id) continue
+			if (existingTokenIds.has(entry.tokenId)) continue
+			const tokenDoc = scene.tokens.get(entry.tokenId)
+			if (!tokenDoc) continue
+			toCreate.push({
+				tokenId: tokenDoc.id,
+				sceneId: scene.id,
+				actorId: tokenDoc.actorId
+			})
+		}
+
+		if (toCreate.length === 0) return
+
+		const created = await combat.createEmbeddedDocuments('Combatant', toCreate)
+
+		// Assign all new combatants to the Friendly group
+		for (const c of created) {
+			await combat.setGroupFor(c.id, GROUPS.FRIENDLY)
+		}
+	}
+
+	/**
+	 * Remove all combatants from the current combat encounter.
+	 */
+	static async _onClearParty() {
+		const combat = this.viewed
+		if (!combat) return
+		const ids = combat.combatants.map(c => c.id)
+		if (ids.length) await combat.deleteEmbeddedDocuments('Combatant', ids)
 	}
 
 	/**

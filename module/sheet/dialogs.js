@@ -134,7 +134,7 @@ export function openCoinDialog(sheet) {
 			<div class="coin-adjust-row">
 				<label>${label}</label>
 				<span class="coin-current">${coins[denom] || 0}</span>
-				<input type="number" id="coin-${denom}" value="0" min="0">
+				<input type="number" id="coin-${denom}" placeholder="0" min="0">
 			</div>
 		`
 	}).join('')

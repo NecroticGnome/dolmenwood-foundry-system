@@ -72,8 +72,8 @@
 
 .dolmen-tracker-toolbar {
 	display: flex;
-	justify-content: center;
-	padding: 4px 0;
+	justify-content: space-between;
+	padding: 4px;
 	margin-bottom: 0;
 }
 
@@ -90,6 +90,14 @@
 	font-size: 1rem;
 	width: 2rem;
 	transition: background-color 0.15s;
+}
+
+.dolmen-tracker-toolbar button[data-action="addParty"] i {
+	color: var(--dolmen-color-success);
+}
+
+.dolmen-tracker-toolbar button[data-action="clearParty"] i {
+	color: var(--dolmen-color-failure);
 }
 
 /* ---- Group Headers ---- */

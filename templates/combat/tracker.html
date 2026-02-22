@@ -18,6 +18,16 @@
 				<i class="fa-solid fa-flag"></i>
 			</button>
 		</div>
+		{{#if showAddParty}}
+		<div class="toolbar-buttons">
+			<button type="button" data-action="addParty" data-tooltip="{{localize 'DOLMEN.PartyViewer.AddParty'}}">
+				<i class="fa-solid fa-user-plus"></i>
+			</button>
+			<button type="button" data-action="clearParty" data-tooltip="{{localize 'DOLMEN.Combat.ClearAll'}}">
+				<i class="fa-solid fa-user-xmark"></i>
+			</button>
+		</div>
+		{{/if}}
 	</li>
 	{{/if}}
 

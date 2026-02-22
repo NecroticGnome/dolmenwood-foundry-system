@@ -16,6 +16,7 @@ import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module
 import { getFaSymbol } from './module/sheet/data-context.js'
 import { registerCombatSystem } from './module/combat/combat.js'
 import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged } from './module/dungeon-tracker/dungeon-tracker.js'
+import { initPartyViewer, togglePartyViewer, onPartyMembersChanged } from './module/party-viewer/party-viewer.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -78,18 +79,76 @@ Hooks.once('init', async function () {
 		onChange: toggleDungeonTracker
 	})
 
-	game.settings.register('dolmenwood', 'encounterChance', {
-		name: 'DOLMEN.DungeonTracker.EncounterSettingName',
-		hint: 'DOLMEN.DungeonTracker.EncounterSettingHint',
+	game.settings.register('dolmenwood', 'showPartyViewer', {
 		scope: 'world',
-		config: true,
+		config: false,
+		type: Boolean,
+		default: false,
+		onChange: togglePartyViewer
+	})
+
+	game.settings.register('dolmenwood', 'partyMembers', {
+		scope: 'world',
+		config: false,
+		type: Array,
+		default: [],
+		onChange: onPartyMembersChanged
+	})
+
+	game.settings.register('dolmenwood', 'encounterChance', {
+		scope: 'world',
+		config: false,
 		type: Number,
-		default: 0,
-		choices: {
-			0: 'DOLMEN.DungeonTracker.EncounterOff',
-			1: '1-in-6', 2: '2-in-6', 3: '3-in-6',
-			4: '4-in-6', 5: '5-in-6', 6: '6-in-6'
-		}
+		default: 1
+	})
+
+	game.settings.register('dolmenwood', 'encounterInterval', {
+		scope: 'world',
+		config: false,
+		type: Number,
+		default: 2
+	})
+
+	game.settings.register('dolmenwood', 'restInterval', {
+		scope: 'world',
+		config: false,
+		type: Number,
+		default: 6
+	})
+
+	game.settings.register('dolmenwood', 'encounterTable', {
+		scope: 'world',
+		config: false,
+		type: String,
+		default: ''
+	})
+
+	game.settings.register('dolmenwood', 'encounterAutoRoll', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true
+	})
+
+	game.settings.register('dolmenwood', 'encounterPublicRoll', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true
+	})
+
+	game.settings.register('dolmenwood', 'tableAutoRoll', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true
+	})
+
+	game.settings.register('dolmenwood', 'tablePublicRoll', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true
 	})
 
 	game.settings.register('dolmenwood', 'autoWeather', {
@@ -272,6 +331,16 @@ Hooks.once('init', async function () {
 					onChange: (event, active) => {
 						game.settings.set('dolmenwood', 'showDungeonTracker', active)
 					}
+				},
+				partyViewer: {
+					name: 'partyViewer',
+					title: 'DOLMEN.PartyViewer.SettingName',
+					icon: 'fa-solid fa-users',
+					toggle: true,
+					active: game.settings.get('dolmenwood', 'showPartyViewer'),
+					onChange: (event, active) => {
+						game.settings.set('dolmenwood', 'showPartyViewer', active)
+					}
 				}
 			}
 		}
@@ -329,6 +398,7 @@ Hooks.once('ready', async function () {
 
 	initCalendarWidget()
 	initDungeonTracker()
+	initPartyViewer()
 
 	// Set turn marker to system image
 	if (game.user.isGM) {

@@ -54,9 +54,20 @@
 	justify-content: center;
 }
 
+.dungeon-square .square-number {
+	position: absolute;
+	top: 2px;
+	right: 4px;
+	font-size: 10px;
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.35);
+	font-variant-numeric: tabular-nums;
+	pointer-events: none;
+}
+
 .dungeon-square .square-event {
 	font-size: 18px;
-	color: rgba(255, 255, 255, 0.35);
+	color: rgba(255, 255, 255, 0.55);
 }
 
 .dungeon-square .timer-end-row {
@@ -100,7 +111,7 @@
 	left: 50px;
 	width: 56px;
 	height: 56px;
-	border: 4px solid #c8a020;
+	border: 4px solid var(--dolmen-gold-dim);
 	border-radius: 5px;
 	box-shadow:
 		0 0 8px rgba(200, 160, 32, 0.5),
@@ -214,6 +225,34 @@
 	color: var(--dolmen-color-failure);
 }
 
+.dolmen.encounter-roll .roll-encounter-table {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	width: 100%;
+	margin-top: 0.5rem;
+	padding: 0.35rem 0.5rem;
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	cursor: pointer;
+	background: var(--dolmen-color-background);
+	border-color: var(--dolmen-color-box-border);
+	color: var(--dolmen-color-h3);
+	border-radius: 4px;
+}
+
+.dolmen.encounter-roll .roll-encounter-table:hover:not(:disabled) {
+	background: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-title);
+}
+
+.dolmen.encounter-roll .roll-encounter-table:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
 /* ── Light Source Bars ── */
 
 .dungeon-square .light-bars {
@@ -238,7 +277,7 @@
 }
 
 .light-bar.lantern {
-	background: #d4a840;
+	background: var(--dolmen-gold);
 	box-shadow: 0 0 3px rgba(212, 168, 64, 0.6);
 }
 
@@ -302,7 +341,7 @@
 	border-radius: 3px;
 	background: rgba(255, 255, 255, 0.08);
 	color: rgba(255, 255, 255, 0.8);
-	font-size: 11px;
+	font-size: 12px;
 	cursor: pointer;
 	transition: background 0.15s ease;
 }
@@ -316,11 +355,21 @@
 }
 
 .dungeon-light-controls button .fa-lightbulb {
-	color: #d4a840;
+	color: var(--dolmen-gold);
 }
 
 .dungeon-light-controls button .fa-hourglass {
 	color: rgba(255, 255, 255, 0.8);
+}
+
+.dungeon-light-controls .tracker-settings-btn {
+	flex: 0 0 auto;
+	width: 28px;
+	padding: 3px 0;
+}
+
+.dungeon-light-controls .tracker-settings-btn .fa-gear {
+	color: rgba(255, 255, 255, 0.6);
 }
 
 /* ── Tracker Controls (Pause / Reset) ── */
@@ -348,8 +397,8 @@
 		inset 0 1px 2px rgba(255, 255, 255, 0.05),
 		inset 0 -2px 4px rgba(0, 0, 0, 0.3),
 		0 2px 4px rgba(0, 0, 0, 0.3);
-	color: rgba(255, 255, 255, 0.5);
-	font-size: 10px;
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 11px;
 	cursor: pointer;
 	transition: color 0.15s ease, border-color 0.15s ease;
 }
@@ -360,8 +409,8 @@
 }
 
 .dungeon-tracker-controls button.active {
-	border-color: #d4a840;
-	color: #d4a840;
+	border-color: var(--dolmen-gold);
+	color: var(--dolmen-gold);
 }
 
 .tracker-advance-btn {
@@ -381,7 +430,7 @@
 	gap: 6px;
 	padding: 2px 4px;
 	border-radius: 2px;
-	font-size: 11px;
+	font-size: 12px;
 	color: rgba(255, 255, 255, 0.8);
 }
 
@@ -396,7 +445,7 @@
 }
 
 .dungeon-light-item .light-icon.lantern {
-	color: #d4a840;
+	color: var(--dolmen-gold);
 }
 
 .dungeon-light-item .light-icon.timer {

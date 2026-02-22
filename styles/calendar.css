@@ -68,7 +68,8 @@
 	background: rgba(0, 0, 0, 0.75);
 	backdrop-filter: blur(6px);
 	-webkit-backdrop-filter: blur(6px);
-	border: 1px solid rgba(255, 255, 255, 0.12);
+	border: 2px solid rgba(255, 255, 255, 0.12);
+	border-top-color: rgba(255, 255, 255, 0.2);
 	border-radius: 6px;
 	padding: 4px;
 	color: #e0e0e0;
@@ -105,12 +106,14 @@
 }
 
 .calendar-day-name.wysenday {
-	color: #f0c040;
+	color: var(--dolmen-gold-bright);
 }
 
 .calendar-date {
 	position: relative;
 	min-width: 200px;
+	font-weight: 600;
+	font-size: 13px;
 }
 
 .calendar-time {
@@ -130,8 +133,9 @@
 }
 
 .calendar-time span {
-	font-family: "Courier New", Courier, monospace;
-	letter-spacing: 0.5px;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: 0.3px;
+	font-weight: 600;
 }
 
 .calendar-season {
@@ -230,7 +234,7 @@
 	border: 1px solid rgba(255, 255, 255, 0.12);
 	border-radius: 6px;
 	padding: 0px 0.5rem 2px 0.5rem;
-	color: #f0c040;
+	color: var(--dolmen-gold-bright);
 	font-size: 11px;
 	white-space: nowrap;
 	border-top-left-radius: 0;
@@ -303,21 +307,22 @@
 }
 
 .calendar-gm-btn {
-	background: rgba(255, 255, 255, 0.08);
-	border: 1px solid rgba(255, 255, 255, 0.12);
-	border-radius: 3px;
-	color: #ccc;
+	background: linear-gradient(180deg, rgba(30, 28, 35, 0.75), rgba(10, 8, 15, 0.85));
+	border: 2px solid rgba(255, 255, 255, 0.12);
+	border-top-color: rgba(255, 255, 255, 0.2);
+	border-radius: 4px;
+	color: rgba(255, 255, 255, 0.7);
 	font-size: 10px;
 	padding: 2px 6px;
 	cursor: pointer;
 	line-height: 1.4;
 	font-family: var(--dolmen-font-body, sans-serif);
-	transition: background 0.15s;
+	transition: color 0.15s, border-color 0.15s;
 }
 
 .calendar-gm-btn:hover {
-	background: rgba(255, 255, 255, 0.18);
-	color: #fff;
+	color: rgba(255, 255, 255, 0.9);
+	border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* Clickable date/time sections for GMs */
@@ -326,6 +331,30 @@
 .calendar-time.gm-clickable {
 	cursor: pointer;
 	transition: background 0.15s;
+}
+
+/* Subtle chevron hint above GM time controls */
+.calendar-time.gm-clickable .fa-angles-up {
+	position: absolute;
+	left: 0;
+	transform: translateX(50%);
+	font-size: 12px;
+	color: rgba(255, 255, 255, 0.25);
+	transition: opacity 0.15s;
+}
+
+.calendar-time.gm-clickable .fa-angles-up:last-child {
+	position: absolute;
+	left: unset;
+	right: 0;
+	transform: translateX(-50%);
+	font-size: 12px;
+	color: rgba(255, 255, 255, 0.25);
+	transition: opacity 0.15s;
+}
+
+.calendar-time.gm-clickable:hover .fa-angles-up {
+	opacity: 0;
 }
 
 .calendar-date.clickable:hover,
@@ -513,7 +542,9 @@
 	background: rgba(0, 0, 0, 0.75);
 	backdrop-filter: blur(6px);
 	-webkit-backdrop-filter: blur(6px);
-	border: 1px solid rgba(255, 255, 255, 0.12);
+	border: 2px solid rgba(255, 255, 255, 0.12);
+	border-top-color: rgba(255, 255, 255, 0.2);
+	border-left-color: rgba(140, 180, 220, 0.4);
 	border-radius: 6px;
 	padding: 4px;
 	padding-right: 2px;
@@ -544,7 +575,7 @@
 
 .weather-badge-I {
 	background: rgba(217, 161, 40, 0.35);
-	color: #f0c040;
+	color: var(--dolmen-gold-bright);
 }
 
 .weather-badge-V {
@@ -591,7 +622,8 @@
 	background: rgba(0, 0, 0, 0.75);
 	backdrop-filter: blur(6px);
 	-webkit-backdrop-filter: blur(6px);
-	border: 1px solid rgba(255, 255, 255, 0.12);
+	border: 2px solid rgba(255, 255, 255, 0.12);
+	border-top-color: rgba(255, 255, 255, 0.2);
 	border-radius: 6px;
 	padding: 4px;
 	color: #e0e0e0;

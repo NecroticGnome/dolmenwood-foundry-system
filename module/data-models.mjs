@@ -513,6 +513,9 @@ export class AdventurerDataModel extends ActorDataModel {
 			// Exhaustion penalty (0 to -4)
 			exhaustion: new NumberField({ required: true, integer: true, min: -4, max: 0, initial: 0 }),
 
+			// Retainer treasure share: "" = not a retainer, "quarter" = 1/4, "half" = 1/2, "full" = full share
+			retainer: new StringField({ required: true, initial: '', blank: true }),
+
 			// Coins
 			coins: new SchemaField({
 				copper: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),

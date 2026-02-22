@@ -34,6 +34,13 @@
 	--dolmen-font-body: "Poly", serif;
 }
 
+/* Widget accent colors (HUD overlays, not theme-dependent) */
+:root {
+	--dolmen-gold: #d4a840;
+	--dolmen-gold-bright: #f0c040;
+	--dolmen-gold-dim: #c8a020;
+}
+
 /* ── 1. Dolmenwood Playerbook (default light theme) ── */
 [data-dolmen-theme="playerbook"] .dolmen {
 	--dolmen-color-background: #ffffff;
