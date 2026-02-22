@@ -748,6 +748,7 @@
 			"DenominateSpare": "Denominate spare coins",
 			"AddParty": "Add Party to Combat",
 			"Retainer": "Retainer",
+			"RetainerNone": "Not a retainer",
 			"RetainerQuarter": "¼ share",
 			"RetainerHalf": "½ share",
 			"RetainerFull": "Full share",

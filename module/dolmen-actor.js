@@ -319,24 +319,30 @@ class DolmenActor extends Actor {
 		if (!kindredId) return
 
 		const existing = this.getKindredItem()
+
+		// Find the kindred: system compendium > "New Player Options" packs > world items
+		let kindredDoc = null
 		const pack = game.packs.get('dolmenwood.kindreds')
-		if (!pack) {
-			ui.notifications.error('Kindreds compendium not found')
-			return
+		if (pack) {
+			const index = await pack.getIndex({ fields: ['system.kindredId'] })
+			const entry = index.find(e => e.system?.kindredId === kindredId)
+			if (entry) kindredDoc = await pack.getDocument(entry._id)
 		}
-
-		// Find the kindred in the compendium by kindredId
-		const index = await pack.getIndex({ fields: ['system.kindredId'] })
-		const entry = index.find(e => e.system?.kindredId === kindredId)
-
-		if (!entry) {
-			ui.notifications.warn(`Kindred "${kindredId}" not found in compendium`)
-			return
-		}
-
-		const kindredDoc = await pack.getDocument(entry._id)
 		if (!kindredDoc) {
-			ui.notifications.error(`Failed to load kindred "${kindredId}"`)
+			for (const p of game.packs.filter(p => p.metadata.label === 'New Player Options' && p.metadata.type === 'Item')) {
+				const index = await p.getIndex({ fields: ['system.kindredId'] })
+				const entry = index.find(e => e.type === 'Kindred' && e.system?.kindredId === kindredId)
+				if (entry) {
+					kindredDoc = await p.getDocument(entry._id)
+					break
+				}
+			}
+		}
+		if (!kindredDoc) {
+			kindredDoc = game.items.find(i => i.type === 'Kindred' && i.system?.kindredId === kindredId)
+		}
+		if (!kindredDoc) {
+			ui.notifications.warn(`Kindred "${kindredId}" not found`)
 			return
 		}
 
@@ -380,24 +386,30 @@ class DolmenActor extends Actor {
 		if (!classId) return
 
 		const existing = this.getClassItem()
+
+		// Find the class: system compendium > "New Player Options" packs > world items
+		let classDoc = null
 		const pack = game.packs.get('dolmenwood.classes')
-		if (!pack) {
-			ui.notifications.error('Classes compendium not found')
-			return
+		if (pack) {
+			const index = await pack.getIndex({ fields: ['system.classId'] })
+			const entry = index.find(e => e.system?.classId === classId)
+			if (entry) classDoc = await pack.getDocument(entry._id)
 		}
-
-		// Find the class in the compendium by classId
-		const index = await pack.getIndex({ fields: ['system.classId'] })
-		const entry = index.find(e => e.system?.classId === classId)
-
-		if (!entry) {
-			ui.notifications.warn(`Class "${classId}" not found in compendium`)
-			return
-		}
-
-		const classDoc = await pack.getDocument(entry._id)
 		if (!classDoc) {
-			ui.notifications.error(`Failed to load class "${classId}"`)
+			for (const p of game.packs.filter(p => p.metadata.label === 'New Player Options' && p.metadata.type === 'Item')) {
+				const index = await p.getIndex({ fields: ['system.classId'] })
+				const entry = index.find(e => e.type === 'Class' && e.system?.classId === classId)
+				if (entry) {
+					classDoc = await p.getDocument(entry._id)
+					break
+				}
+			}
+		}
+		if (!classDoc) {
+			classDoc = game.items.find(i => i.type === 'Class' && i.system?.classId === classId)
+		}
+		if (!classDoc) {
+			ui.notifications.warn(`Class "${classId}" not found`)
 			return
 		}
 
