@@ -13,13 +13,13 @@
 .party-controls {
 	display: flex;
 	gap: 2px;
-	width: 7rem;
+	width: 9rem;
 	justify-content: space-between;
 }
 
 .party-ctrl-btn {
-	width: 26px;
-	height: 26px;
+	width: 34px;
+	height: 34px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -33,7 +33,7 @@
 		inset 0 -2px 4px rgba(0, 0, 0, 0.3),
 		0 2px 4px rgba(0, 0, 0, 0.3);
 	color: rgba(255, 255, 255, 0.5);
-	font-size: 11px;
+	font-size: 14px;
 	cursor: pointer;
 	transition: color 0.15s ease, border-color 0.15s ease;
 }
@@ -64,7 +64,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 3px;
-	width: 7rem;
+	width: 9rem;
 }
 
 .party-member-list:empty {
@@ -97,11 +97,11 @@
 
 /* Row 1: Name */
 .party-name {
-	font-size: 10px;
+	font-size: 13px;
 	font-weight: bold;
 	color: rgba(255, 255, 255, 0.9);
 	line-height: 1.2;
-	max-width: 90px;
+	max-width: 117px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -116,8 +116,8 @@
 }
 
 .party-portrait {
-	width: 30px;
-	height: 30px;
+	width: 39px;
+	height: 39px;
 	border-radius: 3px;
 	object-fit: cover;
 	border: 1px solid rgba(255, 255, 255, 0.15);
@@ -128,12 +128,12 @@
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
-	font-size: 10px;
+	font-size: 13px;
 	color: rgba(255, 255, 255, 0.7);
 }
 
 .party-stats i {
-	font-size: 9px;
+	font-size: 12px;
 	margin-right: 2px;
 }
 
@@ -179,13 +179,17 @@
 	color: rgba(140, 180, 220, 0.7);
 }
 
-/* Retainer tag */
-.party-retainer {
-	font-size: 9px;
-	color: rgba(200, 180, 120, 0.9);
-	text-transform: uppercase;
-	text-align: center;
-	line-height: 1;
+/* Name color coding by role */
+.party-name.name-player {
+	color: rgba(100, 200, 100, 0.9);
+}
+
+.party-name.name-retainer {
+	color: rgb(234 214 98 / 90%);
+}
+
+.party-name.name-ally {
+	color: rgb(166 166 166 / 90%);
 }
 
 /* Remove button */
@@ -193,8 +197,8 @@
 	position: absolute;
 	top: 2px;
 	right: 2px;
-	width: 14px;
-	height: 14px;
+	width: 18px;
+	height: 18px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -203,7 +207,7 @@
 	border-radius: 2px;
 	background: transparent;
 	color: rgba(255, 255, 255, 0.3);
-	font-size: 9px;
+	font-size: 12px;
 	cursor: pointer;
 	transition: color 0.15s ease, background 0.15s ease;
 	opacity: 0;

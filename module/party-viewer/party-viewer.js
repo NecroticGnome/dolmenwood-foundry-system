@@ -68,20 +68,32 @@ function renderParty() {
 	if (!list) return
 	list.innerHTML = ''
 
+	const resolved = []
 	for (const entry of partyMembers) {
 		const tokenDoc = resolveToken(entry)
 		if (!tokenDoc) continue
 		const actor = tokenDoc.actor
 		if (!actor) continue
+		let sort = 0 // player
+		if (actor.type === 'Creature') sort = 2 // ally
+		else if (actor.system.retainer) sort = 1 // retainer
+		resolved.push({ entry, tokenDoc, actor, sort })
+	}
+	resolved.sort((a, b) => a.sort - b.sort)
+
+	for (const { entry, tokenDoc, actor } of resolved) {
 
 		const card = document.createElement('div')
 		card.className = 'party-member-card'
 		card.dataset.tokenId = entry.tokenId
 		card.dataset.sceneId = entry.sceneId
 
-		// Row 1: Name (use token name, which may differ from actor name)
+		// Row 1: Name (color-coded by role)
 		const nameEl = document.createElement('span')
-		nameEl.className = 'party-name'
+		let nameClass = 'party-name name-player'
+		if (actor.type === 'Creature') nameClass = 'party-name name-ally'
+		else if (actor.system.retainer) nameClass = 'party-name name-retainer'
+		nameEl.className = nameClass
 		nameEl.textContent = tokenDoc.name
 		nameEl.title = tokenDoc.name
 		card.appendChild(nameEl)
@@ -110,19 +122,6 @@ function renderParty() {
 			+ `<span class="party-ac"><i class="fa-solid fa-shield"></i> ${actor.system.ac}</span>`
 		body.appendChild(stats)
 		card.appendChild(body)
-
-		// Retainer / Ally indicator
-		if (actor.type === 'Creature') {
-			const allyEl = document.createElement('span')
-			allyEl.className = 'party-retainer'
-			allyEl.textContent = game.i18n.localize('DOLMEN.PartyViewer.Ally')
-			card.appendChild(allyEl)
-		} else if (actor.system.retainer) {
-			const retainerEl = document.createElement('span')
-			retainerEl.className = 'party-retainer'
-			retainerEl.textContent = game.i18n.localize('DOLMEN.PartyViewer.Retainer')
-			card.appendChild(retainerEl)
-		}
 
 		// Remove button (GM only)
 		if (game.user.isGM) {
