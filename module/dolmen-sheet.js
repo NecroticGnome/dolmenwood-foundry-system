@@ -183,31 +183,83 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.kindredName = kindredItem?.system?.kindredId || null
 		context.className = classItem?.system?.classId || null
 
-		// Build dropdown choices from compendia (kindredId/classId → localized name)
+		// Build dropdown choices from compendia, module packs, and world items
+		// Priority: system compendium > "New Player Options" packs from modules > world items
+		const playerOptionPacks = game.packs.filter(p =>
+			p.metadata.label === 'New Player Options' && p.metadata.type === 'Item'
+		)
+
+		const kindredMap = new Map()
 		const kindredPack = game.packs.get('dolmenwood.kindreds')
 		if (kindredPack) {
 			const kindredIndex = await kindredPack.getIndex({ fields: ['system.kindredId'] })
-			context.kindredChoices = Object.fromEntries(
-				kindredIndex
-					.filter(e => e.system?.kindredId)
-					.map(e => [e.system.kindredId, game.i18n.localize(`DOLMEN.Kindreds.${e.system.kindredId}`)])
-					.sort((a, b) => a[1].localeCompare(b[1]))
-			)
-		} else {
-			context.kindredChoices = {}
+			for (const e of kindredIndex) {
+				if (e.system?.kindredId) {
+					kindredMap.set(e.system.kindredId, game.i18n.localize(`DOLMEN.Kindreds.${e.system.kindredId}`))
+				}
+			}
 		}
+		for (const pack of playerOptionPacks) {
+			const index = await pack.getIndex({ fields: ['system.kindredId'] })
+			for (const e of index.filter(e => e.type === 'Kindred' && e.system?.kindredId)) {
+				if (!kindredMap.has(e.system.kindredId)) {
+					const locKey = `DOLMEN.Kindreds.${e.system.kindredId}`
+					const localized = game.i18n.localize(locKey)
+					kindredMap.set(e.system.kindredId, localized !== locKey ? localized : e.name)
+				}
+			}
+		}
+		for (const item of game.items.filter(i => i.type === 'Kindred')) {
+			if (item.system?.kindredId && !kindredMap.has(item.system.kindredId)) {
+				const locKey = `DOLMEN.Kindreds.${item.system.kindredId}`
+				const localized = game.i18n.localize(locKey)
+				kindredMap.set(item.system.kindredId, localized !== locKey ? localized : item.name)
+			}
+		}
+		context.kindredChoices = Object.fromEntries(
+			[...kindredMap.entries()].sort((a, b) => a[1].localeCompare(b[1]))
+		)
 
+		const classMap = new Map()
 		const classPack = game.packs.get('dolmenwood.classes')
 		if (classPack) {
 			const classIndex = await classPack.getIndex({ fields: ['system.classId', 'system.requiredKindred'] })
-			const classEntries = classIndex
-				.filter(e => e.system?.classId)
-				.map(e => ({ id: e.system.classId, label: game.i18n.localize(`DOLMEN.Classes.${e.system.classId}`), isKindredClass: !!e.system.requiredKindred }))
-				.sort((a, b) => a.isKindredClass === b.isKindredClass ? a.label.localeCompare(b.label) : a.isKindredClass ? 1 : -1)
-			context.classChoices = Object.fromEntries(classEntries.map(e => [e.id, e.label]))
-		} else {
-			context.classChoices = {}
+			for (const e of classIndex) {
+				if (e.system?.classId) {
+					classMap.set(e.system.classId, {
+						label: game.i18n.localize(`DOLMEN.Classes.${e.system.classId}`),
+						isKindredClass: !!e.system.requiredKindred
+					})
+				}
+			}
 		}
+		for (const pack of playerOptionPacks) {
+			const index = await pack.getIndex({ fields: ['system.classId', 'system.requiredKindred'] })
+			for (const e of index.filter(e => e.type === 'Class' && e.system?.classId)) {
+				if (!classMap.has(e.system.classId)) {
+					const locKey = `DOLMEN.Classes.${e.system.classId}`
+					const localized = game.i18n.localize(locKey)
+					classMap.set(e.system.classId, {
+						label: localized !== locKey ? localized : e.name,
+						isKindredClass: !!e.system.requiredKindred
+					})
+				}
+			}
+		}
+		for (const item of game.items.filter(i => i.type === 'Class')) {
+			if (item.system?.classId && !classMap.has(item.system.classId)) {
+				const locKey = `DOLMEN.Classes.${item.system.classId}`
+				const localized = game.i18n.localize(locKey)
+				classMap.set(item.system.classId, {
+					label: localized !== locKey ? localized : item.name,
+					isKindredClass: !!item.system.requiredKindred
+				})
+			}
+		}
+		const classEntries = [...classMap.entries()]
+			.map(([id, v]) => ({ id, label: v.label, isKindredClass: v.isKindredClass }))
+			.sort((a, b) => a.isKindredClass === b.isKindredClass ? a.label.localeCompare(b.label) : a.isKindredClass ? 1 : -1)
+		context.classChoices = Object.fromEntries(classEntries.map(e => [e.id, e.label]))
 
 		// Apply alignment restrictions from traits
 		const alignRestrictions = getAlignmentRestrictions(actor)
