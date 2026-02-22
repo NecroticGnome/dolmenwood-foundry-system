@@ -17,7 +17,7 @@
 
 .sheet.dolmen .tab-content .encumbrance-grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: max-content auto auto max-content;
 	gap: 0.5rem;
 	margin: auto 0;
 	align-items: center;
@@ -32,6 +32,7 @@
 
 .sheet.dolmen .tab-content .encumbrance-stat.encumbrance-load {
 	text-align: center;
+	grid-column-end: span 2;
 }
 
 .sheet.dolmen .tab-content .exhaustion-stat {
