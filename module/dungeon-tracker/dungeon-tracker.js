@@ -43,6 +43,10 @@ function createSquare(turnNum, faded) {
 	sq.className = 'dungeon-square'
 	sq.dataset.turn = turnNum
 	if (faded) sq.classList.add('faded')
+	const numEl = document.createElement('span')
+	numEl.className = 'square-number'
+	numEl.textContent = turnNum
+	sq.appendChild(numEl)
 	const icon = getSquareIcon(turnNum)
 	if (icon) {
 		const i = document.createElement('i')
