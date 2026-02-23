@@ -196,8 +196,7 @@
 .sheet.dolmen .tab-magic .spell-row .spell-image {
 	width: 16px;
 	height: 16px;
-	mask-size: contain;
-	background-color: var(--dolmen-color-h3);
+	object-fit: contain;
 	margin: auto;
 }
 
