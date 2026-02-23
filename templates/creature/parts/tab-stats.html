@@ -145,7 +145,7 @@
 		<section class="creature-attacks boxed-section">
 			<h2>{{localize "DOLMEN.Creature.Attacks"}}</h2>
 			{{#each enrichedAttacks}}
-			<div class="attack-row" data-attack-index="{{@index}}">
+			<div class="attack-row" data-attack-index="{{@index}}" {{#if this.attackGroup}}style="border-left-color:var(--dolmen-group-{{this.attackGroup}})" {{/if}}>
 				<span class="attack-label">{{this.attackName}}{{#if (gt this.numAttacks 1)}} (&times;{{this.numAttacks}}){{/if}}</span>
 				{{#if (eq this.attackType "save")}}
 				<span class="attack-bonus"></span>

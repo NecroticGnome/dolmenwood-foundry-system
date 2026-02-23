@@ -675,7 +675,13 @@ export class CreatureDataModel extends ActorDataModel {
 				}),
 				rangeShort: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 				rangeMedium: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
-				rangeLong: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
+				rangeLong: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+				attackGroup: new StringField({
+					required: true,
+					blank: true,
+					initial: "",
+					choices: ["", "a", "b", "c", "d", "e", "f"]
+				})
 			}), { initial: [] }),
 
 			// Morale (2-12, checked with 2d6)

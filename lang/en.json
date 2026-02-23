@@ -369,6 +369,7 @@
 			"RangeShort": "Short",
 			"RangeMedium": "Medium",
 			"RangeLong": "Long",
+			"AttackGroup": "Group",
 			"Movement": {
 				"swim": "Swim",
 				"fly": "Fly",

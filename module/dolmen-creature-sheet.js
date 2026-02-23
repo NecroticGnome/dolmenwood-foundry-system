@@ -346,6 +346,18 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 						<input type="number" id="range-long" value="${attack.rangeLong || 0}" min="0">
 					</div>
 				</div>
+				<div class="form-group">
+					<label>${game.i18n.localize('DOLMEN.Creature.AttackGroup')}</label>
+					<select id="attack-group">
+						<option value="" ${!attack.attackGroup ? 'selected' : ''}>${game.i18n.localize('DOLMEN.None')}</option>
+						<option value="a" ${attack.attackGroup === 'a' ? 'selected' : ''} style="color:var(--dolmen-group-a)">A</option>
+						<option value="b" ${attack.attackGroup === 'b' ? 'selected' : ''} style="color:var(--dolmen-group-b)">B</option>
+						<option value="c" ${attack.attackGroup === 'c' ? 'selected' : ''} style="color:var(--dolmen-group-c)">C</option>
+						<option value="d" ${attack.attackGroup === 'd' ? 'selected' : ''} style="color:var(--dolmen-group-d)">D</option>
+						<option value="e" ${attack.attackGroup === 'e' ? 'selected' : ''} style="color:var(--dolmen-group-e)">E</option>
+						<option value="f" ${attack.attackGroup === 'f' ? 'selected' : ''} style="color:var(--dolmen-group-f)">F</option>
+					</select>
+				</div>
 				<div class="form-group full-width">
 					<label>${game.i18n.localize('DOLMEN.Creature.SaveEffect')}</label>
 					<textarea id="attack-effect">${attack.attackEffect || ''}</textarea>
@@ -375,7 +387,8 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 							attackType: el.querySelector('input[name="attackType"]:checked')?.value || 'attack',
 							rangeShort: parseInt(el.querySelector('#range-short').value) || 0,
 							rangeMedium: parseInt(el.querySelector('#range-medium').value) || 0,
-							rangeLong: parseInt(el.querySelector('#range-long').value) || 0
+							rangeLong: parseInt(el.querySelector('#range-long').value) || 0,
+							attackGroup: el.querySelector('#attack-group').value || ''
 						}
 						this.actor.update({ 'system.attacks': attacks })
 					}

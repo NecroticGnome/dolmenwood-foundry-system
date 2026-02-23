@@ -105,12 +105,15 @@ function cleanAttackName(name) {
 function parseAttacks(attackStr) {
 	if (!attackStr.trim() || attackStr.trim() === '\u2014') return []
 
-	// Normalize separators: replace " or " / " and " between attacks with a delimiter
-	// that won't interfere with regex parsing
-	attackStr = attackStr.replace(/\)\s+(?:or|and)\s+/gi, ') | ')
+	// Strip square brackets used for grouping attacks
+	attackStr = attackStr.replace(/[[\]]/g, '')
+	// Normalize separators: preserve or/and distinction for group assignment
+	// "|" = or (new group), "&" = and (same group)
+	attackStr = attackStr.replace(/\)\s+or\s+/gi, ') | ')
+	attackStr = attackStr.replace(/\)\s+and\s+/gi, ') & ')
 	attackStr = attackStr.replace(/^\s*(?:or|and)\s+/i, '')
 
-	const attacks = []
+	const attacks = [] // each entry gets a temporary _pos for ordering
 
 	// Pass 1: Match standard attacks — [N] name (+bonus, damage)
 	const attackRe = /(\d+)?\s*([a-zA-Z][a-zA-Z ]*?)\s*\(([+-]?\d+),\s*(.+?)\)/g
@@ -147,16 +150,19 @@ function parseAttacks(attackStr) {
 			const mountedNote = 'When mounted'
 			effect = effect ? effect + '\n' + mountedNote : mountedNote
 		}
-		// Extract range (e.g. "range 20'/40'/60'" or "range 20′/40′/60′")
+		// Extract range (e.g. "range 20'/40'/60'" or "range 20′/40′/60′") from damage or effect
 		let rangeShort = 0, rangeMedium = 0, rangeLong = 0
-		const rangeMatch = damage.match(/,?\s*range\s+(\d+)[′']\s*\/\s*(\d+)[′']\s*\/\s*(\d+)[′']/i)
+		const rangeRe = /,?\s*range\s+(\d+)[′']\s*\/\s*(\d+)[′']\s*\/\s*(\d+)[′']/i
+		const rangeMatch = damage.match(rangeRe) || effect.match(rangeRe)
 		if (rangeMatch) {
 			rangeShort = parseInt(rangeMatch[1])
 			rangeMedium = parseInt(rangeMatch[2])
 			rangeLong = parseInt(rangeMatch[3])
-			damage = damage.slice(0, rangeMatch.index).trim()
+			damage = damage.replace(rangeRe, '').trim()
+			effect = effect.replace(rangeRe, '').trim()
 		}
 		attacks.push({
+			_pos: m.index,
 			numAttacks: m[1] ? parseInt(m[1]) : 1,
 			attackName: cleanAttackName(m[2]),
 			attackBonus: parseInt(m[3]),
@@ -165,7 +171,8 @@ function parseAttacks(attackStr) {
 			attackType: 'attack',
 			rangeShort,
 			rangeMedium,
-			rangeLong
+			rangeLong,
+			attackGroup: ''
 		})
 		// Blank out matched portion so pass 2 skips it
 		remaining = remaining.slice(0, m.index) + ' '.repeat(m[0].length) + remaining.slice(m.index + m[0].length)
@@ -177,15 +184,17 @@ function parseAttacks(attackStr) {
 		const damage = m[3].trim()
 		const extra = m[4] ? m[4].trim() : ''
 		attacks.push({
+			_pos: m.index,
 			numAttacks: m[1] ? parseInt(m[1]) : 1,
 			attackName: cleanAttackName(m[2]),
 			attackBonus: 0,
 			attackDamage: damage,
 			attackEffect: extra,
-			attackType: 'attack',
+			attackType: 'save',
 			rangeShort: 0,
 			rangeMedium: 0,
-			rangeLong: 0
+			rangeLong: 0,
+			attackGroup: ''
 		})
 		remaining = remaining.slice(0, m.index) + ' '.repeat(m[0].length) + remaining.slice(m.index + m[0].length)
 	}
@@ -198,6 +207,7 @@ function parseAttacks(attackStr) {
 		// "Weapon (+3)" — generic weapon attack with bonus only
 		if (name.toLowerCase() === 'weapon' && /^[+-]?\d+$/.test(inner)) {
 			attacks.push({
+				_pos: m.index,
 				numAttacks: 1,
 				attackName: name,
 				attackBonus: parseInt(inner),
@@ -206,11 +216,13 @@ function parseAttacks(attackStr) {
 				attackType: 'attack',
 				rangeShort: 0,
 				rangeMedium: 0,
-				rangeLong: 0
+				rangeLong: 0,
+				attackGroup: ''
 			})
 		} else {
 			const effectText = enrichSaveLinks(inner)
 			attacks.push({
+				_pos: m.index,
 				numAttacks: 1,
 				attackName: name,
 				attackBonus: 0,
@@ -219,9 +231,25 @@ function parseAttacks(attackStr) {
 				attackType: 'save',
 				rangeShort: 0,
 				rangeMedium: 0,
-				rangeLong: 0
+				rangeLong: 0,
+				attackGroup: ''
 			})
 		}
+	}
+
+	// Assign group colors based on separator: "or" (|) = new group, "and" (&) = same group
+	const groups = ['a', 'b', 'c', 'd', 'e', 'f']
+	attacks.sort((a, b) => a._pos - b._pos)
+	let groupIdx = 0
+	for (let i = 0; i < attacks.length; i++) {
+		attacks[i].attackGroup = groups[groupIdx % groups.length]
+		// Check if next attack was preceded by "|" (or) → advance group
+		if (i < attacks.length - 1) {
+			const nextPos = attacks[i + 1]._pos
+			const between = attackStr.slice(attacks[i]._pos, nextPos)
+			if (between.includes('|')) groupIdx++
+		}
+		delete attacks[i]._pos
 	}
 
 	return attacks
@@ -241,7 +269,7 @@ function parseSpecialAbilities(lines) {
 
 	for (const line of lines) {
 		// Detect new ability: "Name:" or "Name (usage):" followed by description
-		const m = line.match(/^([A-Z][A-Za-z' ]{0,40}(?:\s*\([^)]*\))?):\s+(.*)$/)
+		const m = line.match(/^([A-Z][A-Za-z' -]{0,40}(?:\s*\([^)]*\))?):\s+(.*)$/)
 		if (m) {
 			if (current) abilities.push(current)
 			current = { name: m[1].trim(), description: m[2].trim() }
@@ -408,7 +436,7 @@ export function parseStatblock(text) {
 			continue
 		}
 		// Check if this is a new ability (not a stat line and not a metadata continuation)
-		const isAbility = /^[A-Z][A-Za-z' ]{0,40}(?:\s*\([^)]*\))?:\s+/.test(line)
+		const isAbility = /^[A-Z][A-Za-z' -]{0,40}(?:\s*\([^)]*\))?:\s+/.test(line)
 		const isStatLine = /^(?:Att|Speed|Morale|XP|Enc)\b/i.test(line)
 			|| /^(?:or|and)\s+/i.test(line) // continuation of attack line like "or 2 bramble darts..." or "or gaze (...)"
 		if (isStatLine) {
@@ -479,13 +507,17 @@ export function parseStatblock(text) {
 	// Compare ignoring parenthetical parts, e.g. effect "command" matches "Commanding bleat (thrice a day)"
 	// Also: if effect is "see below", match by attack name instead
 	for (const attack of attacks) {
-		if (!attack.attackEffect) continue
-		const effectLower = attack.attackEffect.trim().toLowerCase()
+		const effectLower = (attack.attackEffect || '').trim().toLowerCase()
 		const isSeeBelow = effectLower === 'see below'
 		const attackNameLower = attack.attackName.trim().toLowerCase()
 
 		// Try matching effect text to ability name first, then fall back to attack name
-		const lookupKeys = isSeeBelow ? [attackNameLower] : [effectLower, attackNameLower]
+		// Last resort: try "effect+ing attackName" e.g. "command" + "bleat" → "commanding bleat"
+		const lookupKeys = (!effectLower || isSeeBelow) ? [attackNameLower] : [effectLower, attackNameLower]
+		const compoundKey = effectLower && !isSeeBelow
+			? (effectLower.endsWith('ing') ? effectLower : effectLower + 'ing') + ' ' + attackNameLower
+			: null
+		if (compoundKey) lookupKeys.push(compoundKey)
 		let matched = false
 		for (const key of lookupKeys) {
 			for (const ability of specialAbilities) {
