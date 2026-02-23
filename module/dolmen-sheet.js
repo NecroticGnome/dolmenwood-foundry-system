@@ -911,7 +911,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const content = `
 			<div class="dolmen spell-card">
 				<div class="spell-header">
-					<div style="mask-image:url('${item.img}'); -webkit-mask-image: url('${item.img}');" class="spell-card-image"></div>
+					<img src="${item.img}" class="spell-card-image">
 					<div class="spell-info">
 						<h3>${item.name}</h3>
 						<span class="spell-type-label">${typeLabel}</span>

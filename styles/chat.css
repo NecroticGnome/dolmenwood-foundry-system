@@ -450,9 +450,7 @@
 	width: 32px;
 	height: 32px;
 	flex-shrink: 0;
-	background-color: var(--dolmen-color-title);
-	-webkit-mask-size: cover;
-	mask-size: cover;
+	object-fit: cover;
 }
 
 .dolmen.spell-card .spell-info h3 {
