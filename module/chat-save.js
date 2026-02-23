@@ -14,6 +14,23 @@ export function parseSaveLinks(text) {
 }
 
 /**
+ * TextEditor enricher callback for save links.
+ * Used by CONFIG.TextEditor.enrichers to process [text](save:key) in
+ * enriched text fields (journal entries, item descriptions, etc.).
+ * @param {RegExpMatchArray} match - Regex match with [1]=label, [2]=saveKey
+ * @returns {HTMLElement} Anchor element with inline-save-link class
+ */
+export function createSaveLinkEnricher(match) {
+	const label = match[1]
+	const saveKey = match[2]
+	const a = document.createElement('a')
+	a.classList.add('inline-save-link')
+	a.dataset.save = saveKey
+	a.textContent = label
+	return a
+}
+
+/**
  * Roll a saving throw for controlled tokens.
  * @param {string} saveKey - The save type (doom, ray, hold, blast, spell)
  */
