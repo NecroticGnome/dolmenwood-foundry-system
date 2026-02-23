@@ -144,7 +144,7 @@
 		<!-- Attacks -->
 		<section class="creature-attacks boxed-section">
 			<h2>{{localize "DOLMEN.Creature.Attacks"}}</h2>
-			{{#each system.attacks}}
+			{{#each enrichedAttacks}}
 			<div class="attack-row" data-attack-index="{{@index}}">
 				<span class="attack-label">{{this.attackName}}{{#if (gt this.numAttacks 1)}} (&times;{{this.numAttacks}}){{/if}}</span>
 				{{#if (eq this.attackType "save")}}
@@ -154,7 +154,7 @@
 				{{/if}}
 				<span class="attack-damage">{{#unless (eq this.attackType "save")}}{{this.attackDamage}}{{/unless}}</span>
 				{{#if this.attackEffect}}
-				<span class="attack-note"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.attackEffect}}</span></i></span>
+				<span class="attack-note"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.tooltipEffect}}</span></i></span>
 				{{else}}
 				<span class="attack-note">-</span>
 				{{/if}}

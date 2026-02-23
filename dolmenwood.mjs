@@ -17,6 +17,7 @@ import { getFaSymbol } from './module/sheet/data-context.js'
 import { registerCombatSystem } from './module/combat/combat.js'
 import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 import { initPartyViewer, togglePartyViewer, onPartyMembersChanged } from './module/party-viewer/party-viewer.js'
+import { openCreatureImportDialog } from './module/creature-importer.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -568,6 +569,21 @@ Hooks.on('renderCompendium', async (app, html) => {
 Hooks.on('renderItemDirectory', (app, html) => {
 	const el = html instanceof HTMLElement ? html : html[0] || html
 	injectItemTags(el, id => game.items.get(id))
+})
+
+// Add "Import Statblock" button to Actors directory (GM only)
+Hooks.on('renderActorDirectory', (app, html) => {
+	if (!game.user.isGM) return
+	const el = html instanceof HTMLElement ? html : html[0] || html
+	if (el.querySelector('.import-statblock')) return
+	const actions = el.querySelector('.header-actions')
+	if (!actions) return
+	const btn = document.createElement('button')
+	btn.type = 'button'
+	btn.className = 'import-statblock'
+	btn.innerHTML = `<i class="fas fa-file-import"></i> ${game.i18n.localize('DOLMEN.CreatureImport.ImportStatblock')}`
+	btn.addEventListener('click', () => openCreatureImportDialog())
+	actions.appendChild(btn)
 })
 
 // Re-render item listings when a world/compendium item is updated so tags refresh

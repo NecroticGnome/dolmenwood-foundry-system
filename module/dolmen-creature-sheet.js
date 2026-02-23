@@ -105,6 +105,26 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			}
 		}
 
+		// Enrich special ability descriptions for inline save links
+		context.enrichedAbilities = await Promise.all(
+			(actor.system.specialAbilities || []).map(async (ability) => ({
+				name: ability.name,
+				description: ability.description,
+				enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(ability.description, { async: true })
+			}))
+		)
+
+		// Enrich attack effects for inline save links
+		context.enrichedAttacks = await Promise.all(
+			(actor.system.attacks || []).map(async (attack) => ({
+				...attack,
+				enrichedEffect: attack.attackEffect
+					? await foundry.applications.ux.TextEditor.implementation.enrichHTML(attack.attackEffect, { async: true })
+					: '',
+				tooltipEffect: (attack.attackEffect || '').replace(/\[([^\]]+)\]\(save:\w+\)/g, '$1')
+			}))
+		)
+
 		return context
 	}
 

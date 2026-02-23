@@ -356,7 +356,7 @@
 			"AbilityDescription": "Description",
 			"NotesDetails": "Profile",
 			"Encounters": "No. Encountered",
-			"LairChance": "Lair Chance",
+			"LairChance": "Lair Chance (%)",
 			"Behaviour": "Behaviour",
 			"Speech": "Speech",
 			"Possessions": "Possessions",
@@ -375,6 +375,16 @@
 				"climb": "Climb",
 				"burrow": "Burrow"
 			}
+		},
+		"CreatureImport": {
+			"Title": "Import Creature Statblock",
+			"Hint": "Paste a creature statblock from the Dolmenwood book or PDF below.",
+			"Placeholder": "Paste statblock text here...",
+			"Button": "Import",
+			"ImportStatblock": "Import Statblock",
+			"Success": "Successfully imported creature: {name}",
+			"ParseError": "Failed to parse statblock",
+			"EmptyWarning": "Please paste a statblock first."
 		},
 		"Alignments": {
 			"lawful": "Lawful",
