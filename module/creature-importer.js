@@ -43,7 +43,8 @@ const ALIGNMENT_MAP = {
 	'lawful': 'lawful',
 	'neutral': 'neutral',
 	'chaotic': 'chaotic',
-	'any alignment': 'neutral'
+	'any alignment': 'neutral',
+	'alignment by individual': 'neutral'
 }
 
 // --- Helpers ---
@@ -68,6 +69,16 @@ function enrichSaveLinks(text) {
 		(match, saveKey) => `[${match}](save:${saveKey.toLowerCase()})`)
 }
 
+/**
+ * Convert dice roll formulas (e.g. "1d6", "2d8+1") into Foundry inline rolls.
+ * E.g. "1d6" → "[[/r 1d6]]"
+ * @param {string} text
+ * @returns {string}
+ */
+function enrichRollFormulas(text) {
+	return text.replace(/\b(\d+d\d+(?:[+-]\d+)?)\b/g, '[[/r $1]]')
+}
+
 // --- Attack Parser ---
 
 /**
@@ -87,12 +98,17 @@ function capitalize(str) {
  * Clean an attack name: strip leading "or"/"and", capitalize first letter.
  */
 function cleanAttackName(name) {
-	name = name.replace(/^(?:or|and)\s+/i, '').trim()
+	name = name.trim().replace(/^(?:or|and)\s+/i, '').trim()
 	return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
 function parseAttacks(attackStr) {
 	if (!attackStr.trim() || attackStr.trim() === '\u2014') return []
+
+	// Normalize separators: replace " or " / " and " between attacks with a delimiter
+	// that won't interfere with regex parsing
+	attackStr = attackStr.replace(/\)\s+(?:or|and)\s+/gi, ') | ')
+	attackStr = attackStr.replace(/^\s*(?:or|and)\s+/i, '')
 
 	const attacks = []
 
@@ -124,6 +140,13 @@ function parseAttacks(attackStr) {
 			const altNote = `Alternative damage: ${altMatch[2].trim()} (check abilities)`
 			effect = effect ? effect + '\n' + altNote : altNote
 		}
+		// Extract "when mounted" from damage into effect
+		const mountedMatch = damage.match(/,?\s*when mounted/i)
+		if (mountedMatch) {
+			damage = damage.slice(0, mountedMatch.index).trim()
+			const mountedNote = 'When mounted'
+			effect = effect ? effect + '\n' + mountedNote : mountedNote
+		}
 		// Extract range (e.g. "range 20'/40'/60'" or "range 20′/40′/60′")
 		let rangeShort = 0, rangeMedium = 0, rangeLong = 0
 		const rangeMatch = damage.match(/,?\s*range\s+(\d+)[′']\s*\/\s*(\d+)[′']\s*\/\s*(\d+)[′']/i)
@@ -145,6 +168,25 @@ function parseAttacks(attackStr) {
 			rangeLong
 		})
 		// Blank out matched portion so pass 2 skips it
+		remaining = remaining.slice(0, m.index) + ' '.repeat(m[0].length) + remaining.slice(m.index + m[0].length)
+	}
+
+	// Pass 1b: Match damage-only attacks — name (damage[, extra]) with no +bonus
+	const dmgOnlyRe = /(\d+)?\s*([a-zA-Z][a-zA-Z ]*?)\s*\((\d+d\d+(?:[+-]\d+)?)\s*(?:,\s*(.+?))?\)/g
+	while ((m = dmgOnlyRe.exec(remaining)) !== null) {
+		const damage = m[3].trim()
+		const extra = m[4] ? m[4].trim() : ''
+		attacks.push({
+			numAttacks: m[1] ? parseInt(m[1]) : 1,
+			attackName: cleanAttackName(m[2]),
+			attackBonus: 0,
+			attackDamage: damage,
+			attackEffect: extra,
+			attackType: 'attack',
+			rangeShort: 0,
+			rangeMedium: 0,
+			rangeLong: 0
+		})
 		remaining = remaining.slice(0, m.index) + ' '.repeat(m[0].length) + remaining.slice(m.index + m[0].length)
 	}
 
@@ -198,8 +240,8 @@ function parseSpecialAbilities(lines) {
 	let current = null
 
 	for (const line of lines) {
-		// Detect new ability: starts with capitalized name (letters, spaces, apostrophes), colon, then content
-		const m = line.match(/^([A-Z][A-Za-z' ]{0,40}):\s+(.*)$/)
+		// Detect new ability: "Name:" or "Name (usage):" followed by description
+		const m = line.match(/^([A-Z][A-Za-z' ]{0,40}(?:\s*\([^)]*\))?):\s+(.*)$/)
 		if (m) {
 			if (current) abilities.push(current)
 			current = { name: m[1].trim(), description: m[2].trim() }
@@ -212,6 +254,7 @@ function parseSpecialAbilities(lines) {
 	if (current) abilities.push(current)
 	for (const ability of abilities) {
 		ability.description = enrichSaveLinks(ability.description)
+		ability.description = enrichRollFormulas(ability.description)
 	}
 	return abilities
 }
@@ -253,7 +296,7 @@ export function parseStatblock(text) {
 		const dashes = (lines[i].match(/\u2014/g) || []).length
 		if (dashes >= 2) {
 			const lower = lines[i].toLowerCase()
-			if (['lawful', 'neutral', 'chaotic', 'any alignment'].some(a => lower.includes(a))) {
+			if (['lawful', 'neutral', 'chaotic', 'any alignment', 'alignment by individual'].some(a => lower.includes(a))) {
 				typeLineIndex = i
 				break
 			}
@@ -365,9 +408,9 @@ export function parseStatblock(text) {
 			continue
 		}
 		// Check if this is a new ability (not a stat line and not a metadata continuation)
-		const isAbility = /^[A-Z][A-Za-z' ]{0,40}:\s+/.test(line)
+		const isAbility = /^[A-Z][A-Za-z' ]{0,40}(?:\s*\([^)]*\))?:\s+/.test(line)
 		const isStatLine = /^(?:Att|Speed|Morale|XP|Enc)\b/i.test(line)
-			|| /^(?:or|and)\s+\d/i.test(line) // continuation of attack line like "or 2 bramble darts..."
+			|| /^(?:or|and)\s+/i.test(line) // continuation of attack line like "or 2 bramble darts..." or "or gaze (...)"
 		if (isStatLine) {
 			if (currentMeta) {
 				metadata[currentMeta.key] = currentMeta.value; currentMeta = null 
@@ -416,10 +459,11 @@ export function parseStatblock(text) {
 	const morale = moraleMatch ? parseInt(moraleMatch[1]) : 7
 	const xpAward = xpMatch ? parseInt(xpMatch[1].replace(/,/g, '')) : 0
 
-	// Encounters and lair chance — "Encounters 2d6 (25% in lair)"
-	const encMatch = statsRemainder.match(/Enc(?:ounters?)?\s+(\S+)(?:\s+\((\d+)%\s+in\s+lair\))?/i)
+	// Encounters and lair chance — "Encounters 2d6 (25% in lair)" or "(always in lair)"
+	const encMatch = statsRemainder.match(/Enc(?:ounters?)?\s+(\S+)(?:\s+\((\d+)%\s+in\s+lair\)|\s+\(always\s+in\s+lair\))?/i)
 	const encounters = encMatch ? encMatch[1] : ''
-	const lairChance = encMatch && encMatch[2] ? parseInt(encMatch[2]) : 0
+	const alwaysInLair = encMatch && /always\s+in\s+lair/i.test(statsRemainder)
+	const lairChance = alwaysInLair ? 100 : (encMatch && encMatch[2] ? parseInt(encMatch[2]) : 0)
 
 	// Metadata fields
 	const behaviour = metadata.behaviour || ''
@@ -432,14 +476,32 @@ export function parseStatblock(text) {
 	const specialAbilities = parseSpecialAbilities(abilityLines)
 
 	// Replace attack effects that match a special ability name with the ability description
+	// Compare ignoring parenthetical parts, e.g. effect "command" matches "Commanding bleat (thrice a day)"
+	// Also: if effect is "see below", match by attack name instead
 	for (const attack of attacks) {
 		if (!attack.attackEffect) continue
 		const effectLower = attack.attackEffect.trim().toLowerCase()
-		for (const ability of specialAbilities) {
-			if (effectLower === ability.name.trim().toLowerCase()) {
-				attack.attackEffect = ability.description
-				break
+		const isSeeBelow = effectLower === 'see below'
+		const attackNameLower = attack.attackName.trim().toLowerCase()
+
+		// Try matching effect text to ability name first, then fall back to attack name
+		const lookupKeys = isSeeBelow ? [attackNameLower] : [effectLower, attackNameLower]
+		let matched = false
+		for (const key of lookupKeys) {
+			for (const ability of specialAbilities) {
+				const parenMatch = ability.name.match(/\s*\(([^)]*)\)/)
+				const nameBase = ability.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase()
+				if (key === nameBase || key + 's' === nameBase || key === nameBase + 's') {
+					const prefix = parenMatch ? `(${capitalize(parenMatch[1])}) ` : ''
+					attack.attackEffect = prefix + ability.description
+					matched = true
+					break
+				}
 			}
+			if (matched) break
+		}
+		if (!matched && isSeeBelow) {
+			attack.attackEffect = 'See special abilities'
 		}
 	}
 
