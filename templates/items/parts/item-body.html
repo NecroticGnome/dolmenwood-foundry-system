@@ -2,7 +2,7 @@
 	<!-- Header: Details + Portrait -->
 	<div class="two-columns header">
 		<section class="details boxed-section">
-			<h2>{{localize "DOLMEN.Details"}}</h2>
+			<h2>{{localize "DOLMEN.NameType"}}</h2>
 			<div class="header-details">
 				<div class="header-field">
 					<label>{{localize "DOLMEN.Item.Name"}}</label>
@@ -20,6 +20,92 @@
 			</div>
 		</section>
 	</div>
+
+	{{#if isSpell}}
+	<!-- Arcane Spell fields -->
+	<section class="item-spell">
+		<h2>{{localize "DOLMEN.Item.SpellDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field" style="flex: 0.5;">
+				<label>{{localize "DOLMEN.Magic.SpellRank"}}</label>
+				<input type="number" name="system.rank" value="{{system.rank}}" min="1" max="6">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.SpellRange"}}</label>
+				<input type="text" name="system.range" value="{{system.range}}">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.SpellDuration"}}</label>
+				<input type="text" name="system.duration" value="{{system.duration}}">
+			</div>
+		</div>
+	</section>
+	{{/if}}
+
+	{{#if isHolySpell}}
+	<!-- Holy Spell fields -->
+	<section class="item-spell">
+		<h2>{{localize "DOLMEN.Item.HolySpellDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field" style="flex: 0.5;">
+				<label>{{localize "DOLMEN.Magic.SpellRank"}}</label>
+				<input type="number" name="system.rank" value="{{system.rank}}" min="1" max="5">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.SpellRange"}}</label>
+				<input type="text" name="system.range" value="{{system.range}}">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.SpellDuration"}}</label>
+				<input type="text" name="system.duration" value="{{system.duration}}">
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.PrayerName"}}</label>
+				<input type="text" name="system.prayerName" value="{{system.prayerName}}">
+			</div>
+		</div>
+	</section>
+	{{/if}}
+
+	{{#if isGlamour}}
+	<!-- Glamour fields -->
+	<section class="item-spell">
+		<h2>{{localize "DOLMEN.Item.GlamourDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.SpellRange"}}</label>
+				<input type="text" name="system.range" value="{{system.range}}">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.SpellDuration"}}</label>
+				<input type="text" name="system.duration" value="{{system.duration}}">
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.UsageFrequency"}}</label>
+				<input type="text" name="system.usageFrequency" value="{{system.usageFrequency}}">
+			</div>
+		</div>
+	</section>
+	{{/if}}
+
+	{{#if isRune}}
+	<!-- Rune fields -->
+	<section class="item-spell">
+		<h2>{{localize "DOLMEN.Item.RuneDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Magic.Fairy.Magnitude"}}</label>
+				<select name="system.magnitude">
+					{{selectOptions @root.runeMagnitudeChoices selected=system.magnitude}}
+				</select>
+			</div>
+		</div>
+	</section>
+	{{/if}}
 
 	{{#if enrichedDescription}}
 	<section class="item-description-display boxed-section">
@@ -176,89 +262,4 @@
 	</section>
 	{{/if}}
 
-	{{#if isSpell}}
-	<!-- Arcane Spell fields -->
-	<section class="item-spell">
-		<h2>{{localize "DOLMEN.Item.SpellDetails"}}</h2>
-		<div class="form-row">
-			<div class="form-field" style="flex: 0.5;">
-				<label>{{localize "DOLMEN.Magic.SpellRank"}}</label>
-				<input type="number" name="system.rank" value="{{system.rank}}" min="1" max="6">
-			</div>
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.SpellRange"}}</label>
-				<input type="text" name="system.range" value="{{system.range}}">
-			</div>
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.SpellDuration"}}</label>
-				<input type="text" name="system.duration" value="{{system.duration}}">
-			</div>
-		</div>
-	</section>
-	{{/if}}
-
-	{{#if isHolySpell}}
-	<!-- Holy Spell fields -->
-	<section class="item-spell">
-		<h2>{{localize "DOLMEN.Item.HolySpellDetails"}}</h2>
-		<div class="form-row">
-			<div class="form-field" style="flex: 0.5;">
-				<label>{{localize "DOLMEN.Magic.SpellRank"}}</label>
-				<input type="number" name="system.rank" value="{{system.rank}}" min="1" max="5">
-			</div>
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.SpellRange"}}</label>
-				<input type="text" name="system.range" value="{{system.range}}">
-			</div>
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.SpellDuration"}}</label>
-				<input type="text" name="system.duration" value="{{system.duration}}">
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.PrayerName"}}</label>
-				<input type="text" name="system.prayerName" value="{{system.prayerName}}">
-			</div>
-		</div>
-	</section>
-	{{/if}}
-
-	{{#if isGlamour}}
-	<!-- Glamour fields -->
-	<section class="item-spell">
-		<h2>{{localize "DOLMEN.Item.GlamourDetails"}}</h2>
-		<div class="form-row">
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.SpellRange"}}</label>
-				<input type="text" name="system.range" value="{{system.range}}">
-			</div>
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.SpellDuration"}}</label>
-				<input type="text" name="system.duration" value="{{system.duration}}">
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.UsageFrequency"}}</label>
-				<input type="text" name="system.usageFrequency" value="{{system.usageFrequency}}">
-			</div>
-		</div>
-	</section>
-	{{/if}}
-
-	{{#if isRune}}
-	<!-- Rune fields -->
-	<section class="item-spell">
-		<h2>{{localize "DOLMEN.Item.RuneDetails"}}</h2>
-		<div class="form-row">
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Magic.Fairy.Magnitude"}}</label>
-				<select name="system.magnitude">
-					{{selectOptions @root.runeMagnitudeChoices selected=system.magnitude}}
-				</select>
-			</div>
-		</div>
-	</section>
-	{{/if}}
 </section>

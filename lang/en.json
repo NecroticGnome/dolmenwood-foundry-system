@@ -44,6 +44,7 @@
 			"Other": "Other"
 		},
 		"Details": "Details",
+		"NameType": "Definition",
 		"RolledKindredDetails": "Rolled details for new kindred ({kindred})",
 		"KindredClassIncompatible": "Changing kindred to {newKindred} is incompatible with your current kindred-class ({className}). Class changed to Fighter.",
 		"Name": "Name",
