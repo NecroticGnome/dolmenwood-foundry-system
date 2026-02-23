@@ -151,18 +151,35 @@ function parseAttacks(attackStr) {
 	// Pass 2: Match effect-only attacks — name (effect) with no comma inside parens
 	const effectRe = /([a-zA-Z][a-zA-Z ]*?)\s*\(([^,)]+)\)/g
 	while ((m = effectRe.exec(remaining)) !== null) {
-		const effectText = enrichSaveLinks(m[2].trim())
-		attacks.push({
-			numAttacks: 1,
-			attackName: cleanAttackName(m[1]),
-			attackBonus: 0,
-			attackDamage: '\u2014',
-			attackEffect: capitalize(effectText),
-			attackType: 'save',
-			rangeShort: 0,
-			rangeMedium: 0,
-			rangeLong: 0
-		})
+		const name = cleanAttackName(m[1])
+		const inner = m[2].trim()
+		// "Weapon (+3)" — generic weapon attack with bonus only
+		if (name.toLowerCase() === 'weapon' && /^[+-]?\d+$/.test(inner)) {
+			attacks.push({
+				numAttacks: 1,
+				attackName: name,
+				attackBonus: parseInt(inner),
+				attackDamage: '1d6',
+				attackEffect: '(Replace the damage formula with the weapon damage)',
+				attackType: 'attack',
+				rangeShort: 0,
+				rangeMedium: 0,
+				rangeLong: 0
+			})
+		} else {
+			const effectText = enrichSaveLinks(inner)
+			attacks.push({
+				numAttacks: 1,
+				attackName: name,
+				attackBonus: 0,
+				attackDamage: '\u2014',
+				attackEffect: capitalize(effectText),
+				attackType: 'save',
+				rangeShort: 0,
+				rangeMedium: 0,
+				rangeLong: 0
+			})
+		}
 	}
 
 	return attacks
