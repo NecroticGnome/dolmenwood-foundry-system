@@ -10,7 +10,7 @@ import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
 import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel } from './module/data-models.mjs'
 import { setupDamageContextMenu } from './module/chat-damage.js'
-import { setupSaveLinkListeners } from './module/chat-save.js'
+import { rollSaveForControlled, createSaveLinkEnricher } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { getFaSymbol } from './module/sheet/data-context.js'
@@ -162,6 +162,12 @@ Hooks.once('init', async function () {
 
 	// Register combat system (group initiative, tracker, declarations)
 	registerCombatSystem()
+
+	// Register custom text enricher for save links: [text](save:saveKey)
+	CONFIG.TextEditor.enrichers.push({
+		pattern: /\[([^\]]+)\]\(save:(\w+)\)/g,
+		enricher: createSaveLinkEnricher
+	})
 
 	// Register Handlebars helpers
 	Handlebars.registerHelper('add', (a, b) => (a || 0) + (b || 0))
@@ -429,10 +435,19 @@ Hooks.on('renderSettingsConfig', (app, html) => {
 	})
 })
 
-// Add context menu to damage rolls and save link listeners in chat
+// Add context menu to damage rolls in chat
 Hooks.on('renderChatMessageHTML', (message, html) => {
 	setupDamageContextMenu(html)
-	setupSaveLinkListeners(html)
+})
+
+// Global delegated listener for inline save links (chat, journals, item descriptions, etc.)
+document.addEventListener('click', (event) => {
+	const link = event.target.closest('.inline-save-link')
+	if (!link) return
+	event.preventDefault()
+	event.stopPropagation()
+	const saveKey = link.dataset.save
+	if (saveKey) rollSaveForControlled(saveKey)
 })
 
 // Sync embedded Kindred/Class items when source items are updated (world or compendium)

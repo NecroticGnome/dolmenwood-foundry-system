@@ -94,7 +94,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row weapon" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{#if (eq this.system.materialType "cold-iron")}}<i class="fas fa-snowflake"></i> {{/if}}{{#if (eq this.system.materialType "silver")}}<i class="fas fa-star-christmas"></i> {{/if}}{{this.name}}</span>
 						<span class="item-qualities">{{{this.qualitiesDisplay}}}</span>
 						<span class="item-damage">{{this.system.damage}}</span>
@@ -129,7 +129,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row armor" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						<span class="item-bulk">{{this.bulkDisplay}}</span>
 						<span class="item-ac">{{this.system.ac}}</span>
@@ -162,7 +162,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row item" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
@@ -194,7 +194,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row treasure" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
@@ -229,7 +229,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row foraged" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
@@ -282,7 +282,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row weapon" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						<span class="item-qualities">{{{this.qualitiesDisplay}}}</span>
 						<span class="item-damage">{{this.system.damage}}</span>
@@ -317,7 +317,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row armor" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						<span class="item-bulk">{{this.bulkDisplay}}</span>
 						<span class="item-ac">{{this.system.ac}}</span>
@@ -350,7 +350,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row item" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 						<span class="item-quantity">
@@ -382,7 +382,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row treasure" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
@@ -417,7 +417,7 @@
 					</div>
 					{{#each this.items}}
 					<div class="item-row foraged" data-item-id="{{this.id}}" data-action="openItem">
-						<div style="mask-image:url('{{this.img}}'); -webkit-mask-image: url('{{this.img}}');" class="item-image"></div>
+						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
 						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
