@@ -131,6 +131,7 @@
 	margin-left: -0.5rem;
 	margin-right: -0.5rem;
 	transition: background-color 0.1s;
+	border-left: 4px solid var(--dolmen-color-box-highlight);
 }
 
 .sheet.dolmen.creature .attack-row:hover {
@@ -164,6 +165,18 @@
 	text-align: center;
 	font-weight: 700;
 	font-size: 0.85rem;
+}
+
+.sheet.dolmen.creature .attack-row .attack-note .tooltiptext {
+	width: max-content;
+	max-width: 400px;
+	right: 1.75rem;
+	margin-left: 0;
+}
+
+.sheet.dolmen.creature .attack-row .attack-note .tooltiptext::after {
+	left: auto;
+	right: 10px;
 }
 
 .sheet.dolmen.creature .attack-row .remove-attack {
@@ -276,6 +289,8 @@
 	grid-row: 1;
 	grid-column: 2;
 	grid-row-end: span 2;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .sheet.dolmen.creature .creature-abilities h2 {

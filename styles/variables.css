@@ -39,6 +39,14 @@
 	--dolmen-gold: #d4a840;
 	--dolmen-gold-bright: #f0c040;
 	--dolmen-gold-dim: #c8a020;
+
+	--dolmen-group-friendly: #44cc00;
+	--dolmen-group-a: #cc4422;
+	--dolmen-group-b: #cc8822;
+	--dolmen-group-c: #ddbb00;
+	--dolmen-group-d: #2288cc;
+	--dolmen-group-e: #8822cc;
+	--dolmen-group-f: #cc44cc;
 }
 
 /* ── 1. Dolmenwood Playerbook (default light theme) ── */
@@ -74,10 +82,7 @@
 
 	--dolmen-color-success: #228b22;
 	--dolmen-color-failure: #cc0000;
-	--dolmen-color-roll-ability: #4a6fa5;
-	--dolmen-color-roll-save: #6b4c9a;
-	--dolmen-color-roll-skill: #4a8f6f;
-	--dolmen-color-roll-trait: #7a5a8a;
+	--dolmen-color-neutral: #4a6fa5;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -120,10 +125,7 @@
 
 	--dolmen-color-success: #228b22;
 	--dolmen-color-failure: #cc0000;
-	--dolmen-color-roll-ability: #4a6fa5;
-	--dolmen-color-roll-save: #6b4c9a;
-	--dolmen-color-roll-skill: #4a8f6f;
-	--dolmen-color-roll-trait: #7a5a8a;
+	--dolmen-color-roll-neutral: #4a6fa5;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -166,10 +168,7 @@
 
 	--dolmen-color-success: #2e7d32;
 	--dolmen-color-failure: #c62828;
-	--dolmen-color-roll-ability: #3a80c0;
-	--dolmen-color-roll-save: #6a5aaa;
-	--dolmen-color-roll-skill: #3a9a7a;
-	--dolmen-color-roll-trait: #7a6aaa;
+	--dolmen-color-roll-neutral: #3a80c0;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -212,10 +211,7 @@
 
 	--dolmen-color-success: #4caf50;
 	--dolmen-color-failure: #ef5350;
-	--dolmen-color-roll-ability: #5a9ad9;
-	--dolmen-color-roll-save: #7a6ab0;
-	--dolmen-color-roll-skill: #4aaa8a;
-	--dolmen-color-roll-trait: #8a7aaa;
+	--dolmen-color-roll-neutral: #5a9ad9;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -258,10 +254,7 @@
 
 	--dolmen-color-success: #2e7d32;
 	--dolmen-color-failure: #c62828;
-	--dolmen-color-roll-ability: #5a7ab0;
-	--dolmen-color-roll-save: #8a5aaa;
-	--dolmen-color-roll-skill: #5a9a7a;
-	--dolmen-color-roll-trait: #aa5a8a;
+	--dolmen-color-roll-neutral: #5a7ab0;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -304,10 +297,7 @@
 
 	--dolmen-color-success: #27ae60;
 	--dolmen-color-failure: #e74c3c;
-	--dolmen-color-roll-ability: #5a8fcc;
-	--dolmen-color-roll-save: #8a6abc;
-	--dolmen-color-roll-skill: #5aaa7a;
-	--dolmen-color-roll-trait: #9a7abc;
+	--dolmen-color-roll-neutral: #5a8fcc;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -350,10 +340,7 @@
 
 	--dolmen-color-success: #2e7d32;
 	--dolmen-color-failure: #c62828;
-	--dolmen-color-roll-ability: #5a7a9a;
-	--dolmen-color-roll-save: #7a6a8a;
-	--dolmen-color-roll-skill: #4a8a5a;
-	--dolmen-color-roll-trait: #7a6a7a;
+	--dolmen-color-roll-neutral: #5a7a9a;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -396,10 +383,7 @@
 
 	--dolmen-color-success: #4caf50;
 	--dolmen-color-failure: #ef5350;
-	--dolmen-color-roll-ability: #5a8fb0;
-	--dolmen-color-roll-save: #7a6a9a;
-	--dolmen-color-roll-skill: #5a9a6a;
-	--dolmen-color-roll-trait: #8a7a9a;
+	--dolmen-color-roll-neutral: #5a8fb0;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -442,10 +426,7 @@
 
 	--dolmen-color-success: #2e7d32;
 	--dolmen-color-failure: #b71c1c;
-	--dolmen-color-roll-ability: #4a6fa5;
-	--dolmen-color-roll-save: #6b4c9a;
-	--dolmen-color-roll-skill: #4a8f6f;
-	--dolmen-color-roll-trait: #7a5a8a;
+	--dolmen-color-roll-neutral: #4a6fa5;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -488,10 +469,7 @@
 
 	--dolmen-color-success: #5a9a3a;
 	--dolmen-color-failure: #cc4444;
-	--dolmen-color-roll-ability: #6a8aaa;
-	--dolmen-color-roll-save: #8a7a6a;
-	--dolmen-color-roll-skill: #6a9a6a;
-	--dolmen-color-roll-trait: #9a8a6a;
+	--dolmen-color-roll-neutral: #6a8aaa;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -534,10 +512,7 @@
 
 	--dolmen-color-success: #2e7d32;
 	--dolmen-color-failure: #c62828;
-	--dolmen-color-roll-ability: #4a6a9a;
-	--dolmen-color-roll-save: #6a5a8a;
-	--dolmen-color-roll-skill: #4a8a6a;
-	--dolmen-color-roll-trait: #7a6a8a;
+	--dolmen-color-roll-neutral: #4a6a9a;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -580,10 +555,7 @@
 
 	--dolmen-color-success: #4caf50;
 	--dolmen-color-failure: #ef5350;
-	--dolmen-color-roll-ability: #5a8ab0;
-	--dolmen-color-roll-save: #7a6a9a;
-	--dolmen-color-roll-skill: #5a9a6a;
-	--dolmen-color-roll-trait: #8a7a9a;
+	--dolmen-color-roll-neutral: #5a8ab0;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;
@@ -626,10 +598,7 @@
 
 	--dolmen-color-success: #00ff00;
 	--dolmen-color-failure: #ff0000;
-	--dolmen-color-roll-ability: #66aaff;
-	--dolmen-color-roll-save: #aa88ff;
-	--dolmen-color-roll-skill: #66ffaa;
-	--dolmen-color-roll-trait: #cc88ff;
+	--dolmen-color-roll-neutral: #66aaff;
 
 	--dolmen-color-coin-copper: #a77445;
 	--dolmen-color-coin-silver: #8e8e8e;

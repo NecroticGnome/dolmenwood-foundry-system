@@ -1,4 +1,4 @@
-/* global game, foundry, canvas, ui, Hooks, ChatMessage */
+/* global game, foundry, canvas, ui, Hooks, ChatMessage, Actor */
 
 import { computeXPModifier, computeAdjustedValues } from '../sheet/data-context.js'
 
@@ -111,15 +111,17 @@ function renderParty() {
 		const stats = document.createElement('div')
 		stats.className = 'party-stats'
 
+		const adjusted = actor.type === 'Adventurer' ? computeAdjustedValues(actor) : null
 		const hp = actor.system.hp
-		const hpRatio = hp.max > 0 ? hp.value / hp.max : 0
+		const hpMax = adjusted?.hp?.max ?? hp.max
+		const hpRatio = hpMax > 0 ? hp.value / hpMax : 0
 		let hpClass = 'hp-healthy'
 		if (hpRatio <= 0) hpClass = 'hp-dead'
 		else if (hpRatio <= 0.25) hpClass = 'hp-critical'
 		else if (hpRatio <= 0.5) hpClass = 'hp-wounded'
 
-		stats.innerHTML = `<span class="party-hp ${hpClass}"><i class="fa-solid fa-heart"></i> ${hp.value}/${hp.max}</span>`
-			+ `<span class="party-ac"><i class="fa-solid fa-shield"></i> ${actor.system.ac}</span>`
+		stats.innerHTML = `<span class="party-hp ${hpClass}"><i class="fa-solid fa-heart"></i> ${hp.value}/${hpMax}</span>`
+			+ `<span class="party-ac"><i class="fa-solid fa-shield"></i> ${adjusted?.ac ?? actor.system.ac}</span>`
 		body.appendChild(stats)
 		card.appendChild(body)
 
@@ -650,6 +652,21 @@ function onUpdateActor(actor) {
 }
 
 /**
+ * Handle updateItem hook — refresh party cards if the item's parent actor is in the party.
+ * Catches AC changes from equipping/unequipping armor, etc.
+ */
+function onUpdateItem(item) {
+	if (!widgetEl) return
+	const actor = item.parent
+	if (!actor || !(actor instanceof Actor)) return
+	const inParty = partyMembers.some(entry => {
+		const tokenDoc = resolveToken(entry)
+		return tokenDoc?.actorId === actor.id
+	})
+	if (inParty) renderParty()
+}
+
+/**
  * Handle updateToken hook — refresh party cards if the token is in the party.
  */
 function onUpdateToken(tokenDoc) {
@@ -677,6 +694,7 @@ export function initPartyViewer() {
 	}
 
 	Hooks.on('updateActor', onUpdateActor)
+	Hooks.on('updateItem', onUpdateItem)
 	Hooks.on('updateToken', onUpdateToken)
 }
 

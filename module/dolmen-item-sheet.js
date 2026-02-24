@@ -119,7 +119,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			context.descriptionFieldValue = this.item.system.description
 		}
 		context.enrichedDescription = context.descriptionFieldValue
-			? await TextEditor.enrichHTML(context.descriptionFieldValue)
+			? await TextEditor.enrichHTML(context.descriptionFieldValue, { secrets: game.user.isGM })
 			: ''
 
 		// Weapon choices

@@ -40,6 +40,10 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			template: 'systems/dolmenwood/templates/creature/parts/tab-stats.html',
 			scrollable: ['']
 		},
+		description: {
+			template: 'systems/dolmenwood/templates/creature/parts/tab-description.html',
+			scrollable: ['']
+		},
 		notes: {
 			template: 'systems/dolmenwood/templates/creature/parts/tab-notes.html',
 			scrollable: ['']
@@ -50,7 +54,8 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		primary: {
 			tabs: [
 				{ id: 'stats', icon: 'fas fa-dragon', label: 'DOLMEN.Tabs.Stats' },
-				{ id: 'notes', icon: 'fas fa-note-sticky', label: 'DOLMEN.Tabs.Notes' }
+				{ id: 'notes', icon: 'fas fa-eye', label: 'DOLMEN.Tabs.Details' },
+				{ id: 'description', icon: 'fas fa-book-open', label: 'DOLMEN.Tabs.Description' }
 			],
 			initial: 'stats'
 		}
@@ -105,17 +110,44 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			}
 		}
 
+		// Enrich special ability descriptions for inline save links
+		context.enrichedAbilities = await Promise.all(
+			(actor.system.specialAbilities || []).map(async (ability) => ({
+				name: ability.name,
+				description: ability.description,
+				enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(ability.description, { async: true, secrets: game.user.isGM })
+			}))
+		)
+
+		// Enrich attack effects for inline save links
+		context.enrichedAttacks = await Promise.all(
+			(actor.system.attacks || []).map(async (attack) => ({
+				...attack,
+				enrichedEffect: attack.attackEffect
+					? await foundry.applications.ux.TextEditor.implementation.enrichHTML(attack.attackEffect, { async: true, secrets: game.user.isGM })
+					: '',
+				tooltipEffect: (attack.attackEffect || '')
+					.replace(/\[([^\]]+)\]\(save:\w+\)/g, '$1')
+					.replace(/\[\[\/r (\d+d\d+(?:[+-]\d+)?)\]\]/g, '$1')
+			}))
+		)
+
 		return context
 	}
 
 	async _preparePartContext(partId, context) {
 		context = await super._preparePartContext(partId, context)
-		const tabIds = ['stats', 'notes']
+		const tabIds = ['stats', 'description', 'notes']
 		if (tabIds.includes(partId)) {
 			context.tab = context.tabs?.primary?.[partId] || {
 				id: partId,
 				cssClass: this.tabGroups.primary === partId ? 'active' : ''
 			}
+		}
+		if (partId === 'description') {
+			context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.description || '', { async: true, secrets: game.user.isGM }
+			)
 		}
 		return context
 	}
@@ -324,6 +356,18 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 						<input type="number" id="range-long" value="${attack.rangeLong || 0}" min="0">
 					</div>
 				</div>
+				<div class="form-group">
+					<label>${game.i18n.localize('DOLMEN.Creature.AttackGroup')}</label>
+					<select id="attack-group">
+						<option value="" ${!attack.attackGroup ? 'selected' : ''}>${game.i18n.localize('DOLMEN.None')}</option>
+						<option value="a" ${attack.attackGroup === 'a' ? 'selected' : ''} style="color:var(--dolmen-group-a)">A</option>
+						<option value="b" ${attack.attackGroup === 'b' ? 'selected' : ''} style="color:var(--dolmen-group-b)">B</option>
+						<option value="c" ${attack.attackGroup === 'c' ? 'selected' : ''} style="color:var(--dolmen-group-c)">C</option>
+						<option value="d" ${attack.attackGroup === 'd' ? 'selected' : ''} style="color:var(--dolmen-group-d)">D</option>
+						<option value="e" ${attack.attackGroup === 'e' ? 'selected' : ''} style="color:var(--dolmen-group-e)">E</option>
+						<option value="f" ${attack.attackGroup === 'f' ? 'selected' : ''} style="color:var(--dolmen-group-f)">F</option>
+					</select>
+				</div>
 				<div class="form-group full-width">
 					<label>${game.i18n.localize('DOLMEN.Creature.SaveEffect')}</label>
 					<textarea id="attack-effect">${attack.attackEffect || ''}</textarea>
@@ -353,7 +397,8 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 							attackType: el.querySelector('input[name="attackType"]:checked')?.value || 'attack',
 							rangeShort: parseInt(el.querySelector('#range-short').value) || 0,
 							rangeMedium: parseInt(el.querySelector('#range-medium').value) || 0,
-							rangeLong: parseInt(el.querySelector('#range-long').value) || 0
+							rangeLong: parseInt(el.querySelector('#range-long').value) || 0,
+							attackGroup: el.querySelector('#attack-group').value || ''
 						}
 						this.actor.update({ 'system.attacks': attacks })
 					}

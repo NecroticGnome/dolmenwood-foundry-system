@@ -675,7 +675,13 @@ export class CreatureDataModel extends ActorDataModel {
 				}),
 				rangeShort: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 				rangeMedium: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
-				rangeLong: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
+				rangeLong: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+				attackGroup: new StringField({
+					required: true,
+					blank: true,
+					initial: "",
+					choices: ["", "a", "b", "c", "d", "e", "f"]
+				})
 			}), { initial: [] }),
 
 			// Morale (2-12, checked with 2d6)
@@ -704,6 +710,9 @@ export class CreatureDataModel extends ActorDataModel {
 			behaviour: new StringField({ required: true, blank: true }),
 			speech: new StringField({ required: true, blank: true }),
 			possessions: new StringField({ required: true, blank: true }),
+
+			// Rich-text description (lore / flavour text)
+			description: new HTMLField({ required: true, blank: true, initial: "" }),
 
 			// Special abilities (structured list)
 			specialAbilities: new ArrayField(new SchemaField({

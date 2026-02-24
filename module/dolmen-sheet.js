@@ -473,7 +473,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		// Enrich notes HTML for editor
 		context.enrichedNotes = await TextEditor.enrichHTML(actor.system.background.notes || '', {
 			relativeTo: actor,
-			async: true
+			async: true,
+			secrets: game.user.isGM
 		})
 
 		// Prepare detail roll tooltips (show RollTable name)

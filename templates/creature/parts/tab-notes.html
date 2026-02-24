@@ -39,9 +39,9 @@
 
 		<section class="creature-abilities boxed-section">
 			<h2>{{localize "DOLMEN.Creature.SpecialAbilities"}}</h2>
-			{{#each system.specialAbilities}}
+			{{#each enrichedAbilities}}
 			<div class="ability-row" data-ability-index="{{@index}}">
-				<span class="ability-text"><b>{{this.name}}:</b> {{this.description}}</span>
+				<span class="ability-text"><b>{{this.name}}:</b> {{{this.enrichedDescription}}}</span>
 				<a class="remove-ability rollable" data-action="removeAbility" data-ability-index="{{@index}}" title="{{localize 'DOLMEN.Creature.RemoveAbility'}}"><i class="fas fa-square-x"></i></a>
 			</div>
 			{{/each}}
