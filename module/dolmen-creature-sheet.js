@@ -115,7 +115,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			(actor.system.specialAbilities || []).map(async (ability) => ({
 				name: ability.name,
 				description: ability.description,
-				enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(ability.description, { async: true })
+				enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(ability.description, { async: true, secrets: game.user.isGM })
 			}))
 		)
 
@@ -124,7 +124,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			(actor.system.attacks || []).map(async (attack) => ({
 				...attack,
 				enrichedEffect: attack.attackEffect
-					? await foundry.applications.ux.TextEditor.implementation.enrichHTML(attack.attackEffect, { async: true })
+					? await foundry.applications.ux.TextEditor.implementation.enrichHTML(attack.attackEffect, { async: true, secrets: game.user.isGM })
 					: '',
 				tooltipEffect: (attack.attackEffect || '')
 					.replace(/\[([^\]]+)\]\(save:\w+\)/g, '$1')
@@ -146,7 +146,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		}
 		if (partId === 'description') {
 			context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-				this.actor.system.description || '', { async: true }
+				this.actor.system.description || '', { async: true, secrets: game.user.isGM }
 			)
 		}
 		return context
