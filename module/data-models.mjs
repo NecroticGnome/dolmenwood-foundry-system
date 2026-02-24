@@ -711,6 +711,9 @@ export class CreatureDataModel extends ActorDataModel {
 			speech: new StringField({ required: true, blank: true }),
 			possessions: new StringField({ required: true, blank: true }),
 
+			// Rich-text description (lore / flavour text)
+			description: new HTMLField({ required: true, blank: true, initial: "" }),
+
 			// Special abilities (structured list)
 			specialAbilities: new ArrayField(new SchemaField({
 				name: new StringField({ required: true, blank: false, initial: "Ability" }),

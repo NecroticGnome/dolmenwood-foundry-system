@@ -40,6 +40,10 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			template: 'systems/dolmenwood/templates/creature/parts/tab-stats.html',
 			scrollable: ['']
 		},
+		description: {
+			template: 'systems/dolmenwood/templates/creature/parts/tab-description.html',
+			scrollable: ['']
+		},
 		notes: {
 			template: 'systems/dolmenwood/templates/creature/parts/tab-notes.html',
 			scrollable: ['']
@@ -50,7 +54,8 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		primary: {
 			tabs: [
 				{ id: 'stats', icon: 'fas fa-dragon', label: 'DOLMEN.Tabs.Stats' },
-				{ id: 'notes', icon: 'fas fa-note-sticky', label: 'DOLMEN.Tabs.Notes' }
+				{ id: 'notes', icon: 'fas fa-eye', label: 'DOLMEN.Tabs.Details' },
+				{ id: 'description', icon: 'fas fa-book-open', label: 'DOLMEN.Tabs.Description' }
 			],
 			initial: 'stats'
 		}
@@ -132,12 +137,17 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 	async _preparePartContext(partId, context) {
 		context = await super._preparePartContext(partId, context)
-		const tabIds = ['stats', 'notes']
+		const tabIds = ['stats', 'description', 'notes']
 		if (tabIds.includes(partId)) {
 			context.tab = context.tabs?.primary?.[partId] || {
 				id: partId,
 				cssClass: this.tabGroups.primary === partId ? 'active' : ''
 			}
+		}
+		if (partId === 'description') {
+			context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.description || '', { async: true }
+			)
 		}
 		return context
 	}

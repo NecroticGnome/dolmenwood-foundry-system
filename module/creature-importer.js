@@ -334,8 +334,9 @@ export function parseStatblock(text) {
 		throw new Error('Could not find type line (expected format: "size type\u2014intelligence\u2014alignment")')
 	}
 
-	// --- Name (description lines before type line are ignored) ---
+	// --- Name + Description ---
 	const name = titleCase(lines[0])
+	const description = lines.slice(1, typeLineIndex).join(' ').trim()
 
 	// --- Parse Type Line ---
 	const typeParts = lines[typeLineIndex].split('\u2014').map(s => s.trim().toLowerCase())
@@ -538,11 +539,351 @@ export function parseStatblock(text) {
 	}
 
 	return {
-		name, size, monsterType, intelligence, alignment,
+		name, description, size, monsterType, intelligence, alignment,
 		level, ac, hpDice, hpValue, saves,
 		attacks, speed, movement,
 		morale, xpAward, encounters, lairChance, treasureType,
 		behaviour, speech, possessions,
+		specialAbilities
+	}
+}
+
+// --- OSE Statblock Parser ---
+
+// Bullet styles used in OSE ability lines
+const OSE_BULLET_CHARS = '-▶*•►▸▪·‣‒–—>'
+
+/**
+ * Parse an OSE-format creature statblock into the same data structure as parseStatblock().
+ *
+ * Expected format:
+ *   Name
+ *   Optional description text...
+ *   AC X [Y], HD X (N hp), Att ..., THAC0 X [+Y], MV X' (Y'), SV DX WX PX BX SX, ML X, AL X, XP X, NA X (Y), TT X
+ *   ▶ Ability Name: Description text...
+ *
+ * @param {string} text - Raw OSE statblock text
+ * @returns {object} Parsed creature data (same shape as parseStatblock output)
+ */
+export function parseOSEStatblock(text) {
+	// Normalize text
+	text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+	text = text.replace(/[""]/g, '"')
+	text = text.replace(/[''′]/g, "'")
+	text = text.replace(/\u00d7/g, '×')
+	text = text.replace(/\s*×\s*/g, ' x ')
+	text = text.replace(/\u2013|\u2014/g, '-')
+	text = text.replace(/['`]/g, "'")
+	text = text.replace(/\s+$/g, '')
+	text = text.replace(/[ \t]+\n/g, '\n')
+	text = text.replace(/\n{2,}/g, '\n')
+
+	const lines = text.trim().split('\n').map(l => l.trim()).filter(Boolean)
+	if (lines.length < 2) {
+		throw new Error('Statblock too short — need at least name and stats')
+	}
+
+	// Line 1 = name
+	const name = titleCase(lines[0])
+
+	// Find the stats line (starts with AC)
+	let statsStartIdx = -1
+	for (let i = 1; i < lines.length; i++) {
+		if (/^AC\s*-?\d+/i.test(lines[i])) {
+			statsStartIdx = i
+			break
+		}
+	}
+	if (statsStartIdx === -1) {
+		throw new Error('Could not find stats line (expected to start with "AC")')
+	}
+
+	// Lines between name and stats = description
+	const description = lines.slice(1, statsStartIdx).join(' ').trim()
+
+	// Combine stats lines (everything from AC line until first ability)
+	// Abilities can be bulleted (▶ Name:) or plain (Name:)
+	const bulletAbilityRe = new RegExp(`^[${OSE_BULLET_CHARS}]\\s*[^:]+\\s*:`, 'i')
+	const plainAbilityRe = /^[A-Z][A-Za-z' -]+(?:\s*\([^)]*\))?:\s/
+	let combinedStats = ''
+	let abilityStartIdx = lines.length
+
+	for (let i = statsStartIdx; i < lines.length; i++) {
+		if (bulletAbilityRe.test(lines[i]) || (i > statsStartIdx && plainAbilityRe.test(lines[i]))) {
+			abilityStartIdx = i
+			break
+		}
+		// Line continuation: strip trailing hyphen
+		if (combinedStats.endsWith('-')) {
+			combinedStats = combinedStats.slice(0, -1) + lines[i]
+		} else {
+			combinedStats += (combinedStats ? ' ' : '') + lines[i]
+		}
+	}
+
+	// --- Parse stats from combined line ---
+
+	// AC: use ascending AC from brackets
+	const acMatch = combinedStats.match(/\bAC\s*(-?\d+)\s*\[([+-]?\d+)]?/i)
+	let ac = 10
+	if (acMatch) {
+		if (acMatch[2]) {
+			ac = parseInt(acMatch[2].replace('\u2011', '-'), 10)
+		} else {
+			// No ascending AC — convert from descending: ascending = 19 - descending
+			ac = 19 - (parseInt(acMatch[1], 10) || 0)
+		}
+	}
+
+	// HD: dice and hp value
+	const hdMatch = combinedStats.match(/\bHD\s+(\d+)([+-]\d+)?(?:\*+)?(?:\s*\((\d+)\s*hp\))?/i)
+	let level = 1
+	let hpDice = '1d8'
+	let hpValue = 4
+	if (hdMatch) {
+		const hdNum = parseInt(hdMatch[1], 10)
+		level = Math.max(1, hdNum)
+		hpDice = hdNum >= 1 ? `${hdNum}d8` : '1d4'
+		if (hdMatch[2]) {
+			const mod = parseInt(hdMatch[2].replace('\u2011', '-'), 10)
+			if (mod !== 0) hpDice += mod > 0 ? `+${mod}` : `${mod}`
+		}
+		if (hdMatch[3]) {
+			hpValue = parseInt(hdMatch[3], 10)
+		}
+	}
+
+	// THAC0: extract attack bonus
+	const thac0Match = combinedStats.match(/THAC0\s+(\d+)(?:\s*\[([+-]?\d+)])?/i)
+	let attackBonus = 0
+	if (thac0Match) {
+		if (thac0Match[2]) {
+			attackBonus = parseInt(thac0Match[2].replace('\u2011', '-'), 10)
+		} else {
+			attackBonus = 19 - parseInt(thac0Match[1], 10)
+		}
+	}
+
+	// Saves: D W P B S → doom ray hold blast spell
+	const savesMatch = combinedStats.match(/SV\s+D(\d+)\s+W(\d+)\s+P(\d+)\s+B(\d+)\s+S(\d+)/i)
+	const saves = {
+		doom: savesMatch ? parseInt(savesMatch[1]) : 10,
+		ray: savesMatch ? parseInt(savesMatch[2]) : 10,
+		hold: savesMatch ? parseInt(savesMatch[3]) : 10,
+		blast: savesMatch ? parseInt(savesMatch[4]) : 10,
+		spell: savesMatch ? parseInt(savesMatch[5]) : 10
+	}
+
+	// Movement: parse encounter speeds for each type
+	// e.g. "120' (40')" or "120' (40') / 360' (120') flying"
+	let speed = 40
+	const movement = { swim: 0, fly: 0, climb: 0, burrow: 0 }
+	const mvMatch = combinedStats.match(/\bMV\s+([^,;]+?)(?=[,;]\s*SV\b|$)/i)
+	if (mvMatch) {
+		const mvText = mvMatch[1].trim()
+		// Parse movement segments separated by /
+		const segments = mvText.split('/')
+		for (let i = 0; i < segments.length; i++) {
+			const seg = segments[i].trim()
+			// Extract encounter speed from parentheses
+			const encMatch = seg.match(/\((\d+)'?\)/)
+			const encSpeed = encMatch ? parseInt(encMatch[1], 10) : 0
+			if (i === 0) {
+				// First segment = ground speed
+				speed = encSpeed || Math.round((parseInt(seg, 10) || 120) / 3)
+			} else {
+				// Additional segments: check for type keyword
+				const segLower = seg.toLowerCase()
+				const spd = encSpeed || Math.round((parseInt(seg, 10) || 0) / 3)
+				if (/fly|flying/.test(segLower)) movement.fly = spd
+				else if (/swim|swimming/.test(segLower)) movement.swim = spd
+				else if (/climb|climbing/.test(segLower)) movement.climb = spd
+				else if (/burrow|burrowing/.test(segLower)) movement.burrow = spd
+			}
+		}
+	}
+
+	// Morale
+	const moraleMatch = combinedStats.match(/\bML\s+(\d+)/i)
+	const morale = moraleMatch ? parseInt(moraleMatch[1], 10) : 7
+
+	// Alignment
+	const alignMatch = combinedStats.match(/\bAL\s+([^,;]+)/i)
+	const alignText = alignMatch ? alignMatch[1].trim().toLowerCase() : 'neutral'
+	const alignment = ALIGNMENT_MAP[alignText] || 'neutral'
+
+	// XP
+	const xpMatch = combinedStats.match(/\bXP\s+([\d,]+)/i)
+	const xpAward = xpMatch ? parseInt(xpMatch[1].replace(/,/g, ''), 10) : 0
+
+	// Number Appearing: use wilderness value (in parentheses)
+	const naMatch = combinedStats.match(/\bNA\s+(\S+)\s*(?:\(([^)]+)\))?/i)
+	const encounters = naMatch && naMatch[2] ? naMatch[2].trim() : (naMatch ? naMatch[1].trim() : '')
+
+	// Treasure Type
+	const ttMatch = combinedStats.match(/\bTT\s+([^,;\n]+)/i)
+	const treasureType = ttMatch ? ttMatch[1].trim() : ''
+
+	// --- Parse attacks ---
+	const attMatch = combinedStats.match(/\bAtt\s+(.*?)(?=[,;]\s*THAC0\b)/i)
+	const attacks = []
+
+	if (attMatch) {
+		const attText = attMatch[1].trim()
+
+		// Split on top-level commas and "or" (respecting parentheses)
+		const segments = []
+		let buf = ''
+		let depth = 0
+		for (let i = 0; i < attText.length; i++) {
+			const ch = attText[i]
+			if (ch === '(') depth++
+			else if (ch === ')') depth = Math.max(0, depth - 1)
+			if (ch === ',' && depth === 0) {
+				segments.push({ text: buf.trim(), sep: ',' })
+				buf = ''
+				continue
+			}
+			// Check for top-level " or "
+			if (depth === 0 && attText.slice(i, i + 4).toLowerCase() === ' or ') {
+				segments.push({ text: buf.trim(), sep: 'or' })
+				buf = ''
+				i += 3
+				continue
+			}
+			buf += ch
+		}
+		if (buf.trim()) segments.push({ text: buf.trim(), sep: null })
+
+		const groups = ['a', 'b', 'c', 'd', 'e', 'f']
+		let groupIdx = 0
+
+		for (const seg of segments) {
+			const expr = seg.text
+			if (!expr) continue
+
+			// Parse: [N x] name (bracket_content)
+			const atkMatch = expr.match(/^(?:(\d+)\s*x\s*)?(.+?)\s*(?:\((.+?)\))?\s*$/i)
+			if (!atkMatch) continue
+
+			const count = atkMatch[1] ? parseInt(atkMatch[1], 10) : 1
+			const rawName = atkMatch[2].trim()
+			const attackName = rawName.replace(/\b\w/g, c => c.toUpperCase())
+			const bracket = atkMatch[3] ? atkMatch[3].trim() : ''
+
+			// Determine damage and effect from bracket content
+			let attackDamage = '\u2014'
+			let attackEffect = ''
+			let attackType = 'attack'
+
+			if (bracket) {
+				const hasDice = /\d+d\d+/i.test(bracket)
+				if (hasDice) {
+					// Extract dice formula as damage
+					const diceMatch = bracket.match(/^(\d+d\d+(?:\s*[+*x-]\s*\d+)*)/i)
+					if (diceMatch) {
+						attackDamage = diceMatch[1].replace(/\s+/g, '').replace(/x/gi, '*')
+						const remaining = bracket.slice(diceMatch[0].length).trim().replace(/^[,+]\s*/, '')
+						if (remaining) {
+							attackEffect = enrichSaveLinks(capitalize(remaining))
+						}
+					} else {
+						attackDamage = bracket.replace(/\s+/g, '')
+					}
+				} else {
+					// No dice — effect-only (save type)
+					attackEffect = enrichSaveLinks(capitalize(bracket))
+					attackType = 'save'
+				}
+			}
+
+			attacks.push({
+				numAttacks: count,
+				attackName,
+				attackBonus,
+				attackDamage,
+				attackEffect,
+				attackType,
+				rangeShort: 0,
+				rangeMedium: 0,
+				rangeLong: 0,
+				attackGroup: groups[groupIdx % groups.length]
+			})
+
+			// "or" separator → advance group
+			if (seg.sep === 'or') groupIdx++
+		}
+	}
+
+	// --- Parse special abilities ---
+	const abilityLines = lines.slice(abilityStartIdx)
+	const specialAbilities = []
+	let currentAbility = null
+	// Match bulleted abilities (▶ Name: text) or plain (Name: text)
+	const bulletLineRe = new RegExp(`^[${OSE_BULLET_CHARS}]\\s*([^:]+)\\s*:(.*)$`, 'i')
+	const plainLineRe = /^([A-Z][A-Za-z' -]+(?:\s*\([^)]*\))?):\s+(.*)$/
+
+	for (const line of abilityLines) {
+		const m = line.match(bulletLineRe) || line.match(plainLineRe)
+		if (m) {
+			if (currentAbility) specialAbilities.push(currentAbility)
+			currentAbility = {
+				name: m[1].trim().replace(/\b\w/g, c => c.toUpperCase()),
+				description: (m[2] || '').trim()
+			}
+		} else if (currentAbility) {
+			// Continuation line
+			if (currentAbility.description.endsWith('-')) {
+				currentAbility.description = currentAbility.description.slice(0, -1) + line
+			} else {
+				currentAbility.description += (currentAbility.description ? ' ' : '') + line
+			}
+		}
+	}
+	if (currentAbility) specialAbilities.push(currentAbility)
+
+	// Enrich save links and dice formulas in abilities
+	for (const ability of specialAbilities) {
+		ability.description = enrichSaveLinks(ability.description)
+		ability.description = enrichRollFormulas(ability.description)
+	}
+
+	// Post-process: match attack effects to special abilities (same as Dolmenwood parser)
+	for (const attack of attacks) {
+		const effectLower = (attack.attackEffect || '').trim().toLowerCase()
+		const isSeeBelow = effectLower === 'see below'
+		const attackNameLower = attack.attackName.trim().toLowerCase()
+
+		const lookupKeys = (!effectLower || isSeeBelow) ? [attackNameLower] : [effectLower, attackNameLower]
+		const compoundKey = effectLower && !isSeeBelow
+			? (effectLower.endsWith('ing') ? effectLower : effectLower + 'ing') + ' ' + attackNameLower
+			: null
+		if (compoundKey) lookupKeys.push(compoundKey)
+		let matched = false
+		for (const key of lookupKeys) {
+			for (const ability of specialAbilities) {
+				const parenMatch = ability.name.match(/\s*\(([^)]*)/)
+				const nameBase = ability.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase()
+				if (key === nameBase || key + 's' === nameBase || key === nameBase + 's') {
+					const prefix = parenMatch ? `(${capitalize(parenMatch[1])}) ` : ''
+					attack.attackEffect = prefix + ability.description
+					matched = true
+					break
+				}
+			}
+			if (matched) break
+		}
+		if (!matched && isSeeBelow) {
+			attack.attackEffect = 'See special abilities'
+		}
+	}
+
+	return {
+		name, description, size: 'medium', monsterType: 'mortal', intelligence: 'animal', alignment,
+		level, ac, hpDice, hpValue, saves,
+		attacks, speed, movement,
+		morale, xpAward, encounters, lairChance: 0, treasureType,
+		behaviour: '', speech: '', possessions: '',
 		specialAbilities
 	}
 }
@@ -552,10 +893,16 @@ export function parseStatblock(text) {
 /**
  * Parse a statblock and create a Creature actor.
  * @param {string} text - Raw statblock text
+ * @param {string} format - 'dolmenwood' or 'ose'
  * @returns {Actor} The created Creature actor
  */
-export async function importCreatureStatblock(text) {
-	const data = parseStatblock(text)
+export async function importCreatureStatblock(text, format = 'dolmenwood') {
+	const data = format === 'ose' ? parseOSEStatblock(text) : parseStatblock(text)
+
+	// Wrap leading "Source X" in parentheses
+	if (data.description) {
+		data.description = data.description.replace(/^(Source\s+\S+)\s*/, '($1) ')
+	}
 
 	const actorData = {
 		name: data.name,
@@ -578,6 +925,7 @@ export async function importCreatureStatblock(text) {
 			lairChance: data.lairChance,
 			movement: data.movement,
 			treasureType: data.treasureType,
+			description: data.description || '',
 			specialAbilities: data.specialAbilities,
 			behaviour: data.behaviour,
 			speech: data.speech,
@@ -599,19 +947,28 @@ export async function openCreatureImportDialog() {
 	const content = `
 		<div class="import-creature-dialog">
 			<p>${game.i18n.localize('DOLMEN.CreatureImport.Hint')}</p>
+			<div style="display:flex;gap:1rem;margin-bottom:0.5rem;">
+				<label style="font-size:0.85rem;"><input type="radio" name="format" value="dolmenwood" checked> ${game.i18n.localize('DOLMEN.CreatureImport.FormatDolmenwood')}</label>
+				<label style="font-size:0.85rem;"><input type="radio" name="format" value="ose"> ${game.i18n.localize('DOLMEN.CreatureImport.FormatOSE')}</label>
+			</div>
 			<textarea id="creature-statblock" rows="15" placeholder="${game.i18n.localize('DOLMEN.CreatureImport.Placeholder')}" style="width:100%;font-family:monospace;font-size:12px;"></textarea>
 		</div>`
 
 	const result = await DialogV2.wait({
 		window: { title: game.i18n.localize('DOLMEN.CreatureImport.Title') },
+		position: { width: 560 },
 		content,
 		buttons: [
 			{
 				action: 'import',
 				label: game.i18n.localize('DOLMEN.CreatureImport.Button'),
 				icon: 'fas fa-file-import',
-				callback: (event, button) => button.form?.closest('.dialog')?.querySelector('#creature-statblock')?.value
-					|| button.closest('.dialog')?.querySelector('#creature-statblock')?.value || ''
+				callback: (event, button) => {
+					const dialog = button.form?.closest('.dialog') || button.closest('.dialog')
+					const text = dialog?.querySelector('#creature-statblock')?.value || ''
+					const format = dialog?.querySelector('input[name="format"]:checked')?.value || 'dolmenwood'
+					return { text, format }
+				}
 			},
 			{
 				action: 'cancel',
@@ -625,14 +982,15 @@ export async function openCreatureImportDialog() {
 
 	if (result === 'cancel' || result === null || result === undefined) return
 
-	const rawText = typeof result === 'string' ? result.trim() : ''
+	const rawText = typeof result === 'object' ? (result.text || '').trim() : ''
+	const format = typeof result === 'object' ? (result.format || 'dolmenwood') : 'dolmenwood'
 	if (!rawText) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.CreatureImport.EmptyWarning'))
 		return
 	}
 
 	try {
-		const actor = await importCreatureStatblock(rawText)
+		const actor = await importCreatureStatblock(rawText, format)
 		ui.notifications.info(game.i18n.format('DOLMEN.CreatureImport.Success', { name: actor.name }))
 	} catch (err) {
 		console.error('Creature statblock import failed:', err)

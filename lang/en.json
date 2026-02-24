@@ -29,6 +29,7 @@
 		"CreatureSheetTitle": "Dolmenwood Creature Sheet",
 		"Tabs": {
 			"Stats": "Stats",
+			"Description": "Description",
 			"Inventory": "Inventory",
 			"Notes": "Notes",
 			"Magic": "Magic",
@@ -379,13 +380,16 @@
 		},
 		"CreatureImport": {
 			"Title": "Import Creature Statblock",
-			"Hint": "Paste a creature statblock from the Dolmenwood book or PDF below.",
+			"Hint": "Paste a creature statblock below.",
 			"Placeholder": "Paste statblock text here...",
 			"Button": "Import",
 			"ImportStatblock": "Import Statblock",
 			"Success": "Successfully imported creature: {name}",
 			"ParseError": "Failed to parse statblock",
-			"EmptyWarning": "Please paste a statblock first."
+			"EmptyWarning": "Please paste a statblock first.",
+			"FormatLabel": "Format",
+			"FormatDolmenwood": "Dolmenwood",
+			"FormatOSE": "OSE"
 		},
 		"Alignments": {
 			"lawful": "Lawful",
