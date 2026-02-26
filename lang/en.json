@@ -429,6 +429,7 @@
 			"UsageFrequency": "Usage",
 			"Description": "Description",
 			"Effects": "Effects",
+			"EffectsSummary": "Effects Summary",
 			"TabStats": "Stats",
 			"TabDescription": "Description",
 			"CodexLink": "Journal Entry",
@@ -507,6 +508,14 @@
 				"pipeleaf": "Pipeleaf"
 			},
 			"Availability": "Availability",
+			"Availabilities": {
+				"1": "1-in-6",
+				"2": "2-in-6",
+				"3": "3-in-6",
+				"4": "4-in-6",
+				"5": "5-in-6",
+				"6": "Always"
+			},
 			"Notes": "Notes",
 			"Value": "Val",
 			"Quantity": "Qty",

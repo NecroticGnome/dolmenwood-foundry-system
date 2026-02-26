@@ -1,149 +1,144 @@
 {
-  "name": "Cleric",
+  "name": "Friar",
   "type": "Class",
-  "_id": "ac2d0e3910d241b4",
-  "img": "systems/dolmenwood/assets/classes/cleric.webp",
+  "_id": "5eaf6939b103923f",
+  "img": "systems/dolmenwood/assets/classes/friar.webp",
   "system": {
     "codexUuid": "",
-    "classId": "cleric",
+    "classId": "friar",
     "requiredKindred": "",
     "primeAbilities": [
+      "intelligence",
       "wisdom"
     ],
     "hitDice": {
-      "die": "1d6",
+      "die": "1d4",
       "flat": 1
     },
     "xpThresholds": [
       0,
-      1500,
-      3000,
-      6000,
-      12000,
-      24000,
-      48000,
-      96000,
-      190000,
-      290000,
-      390000,
-      490000,
-      590000,
-      690000,
-      790000
+      1750,
+      3500,
+      7000,
+      14000,
+      28000,
+      56000,
+      112000,
+      220000,
+      340000,
+      460000,
+      580000,
+      700000,
+      820000,
+      940000
     ],
     "attackProgression": [
       0,
       0,
+      0,
+      1,
       1,
       1,
       2,
       2,
+      2,
+      3,
       3,
       3,
       4,
       4,
-      5,
-      5,
-      6,
-      6,
-      7
+      4
     ],
     "saveProgressions": {
       "doom": [
         11,
         11,
+        11,
+        10,
         10,
         10,
         9,
         9,
+        9,
+        8,
         8,
         8,
         7,
         7,
-        6,
-        6,
-        5,
-        5,
-        4
+        7
       ],
       "ray": [
         12,
         12,
+        12,
+        11,
         11,
         11,
         10,
         10,
+        10,
+        9,
         9,
         9,
         8,
         8,
-        7,
-        7,
-        6,
-        6,
-        5
+        8
       ],
       "hold": [
         13,
         13,
+        13,
+        12,
         12,
         12,
         11,
         11,
+        11,
+        10,
         10,
         10,
         9,
         9,
-        8,
-        8,
-        7,
-        7,
-        6
+        9
       ],
       "blast": [
         16,
         16,
+        16,
+        15,
         15,
         15,
         14,
         14,
+        14,
+        13,
         13,
         13,
         12,
         12,
-        11,
-        11,
-        10,
-        10,
-        9
+        12
       ],
       "spell": [
         14,
         14,
+        14,
+        13,
         13,
         13,
         12,
         12,
+        12,
+        11,
         11,
         11,
         10,
         10,
-        9,
-        9,
-        8,
-        8,
-        7
+        10
       ]
     },
     "skillProgressions": {},
     "spellProgression": [
       [
-        0,
-        0,
-        0,
-        0
-      ],
-      [
         1,
         0,
         0,
@@ -172,16 +167,9 @@
         0
       ],
       [
-        2,
-        2,
-        1,
-        0,
-        0
-      ],
-      [
         3,
         2,
-        2,
+        1,
         0,
         0
       ],
@@ -197,19 +185,12 @@
         3,
         2,
         1,
-        0
-      ],
-      [
-        3,
-        3,
-        2,
-        2,
         0
       ],
       [
         4,
         3,
-        3,
+        2,
         2,
         0
       ],
@@ -228,7 +209,7 @@
         2
       ],
       [
-        4,
+        5,
         4,
         3,
         3,
@@ -240,17 +221,41 @@
         4,
         3,
         2
+      ],
+      [
+        5,
+        5,
+        4,
+        3,
+        3
+      ],
+      [
+        6,
+        5,
+        4,
+        4,
+        3
+      ],
+      [
+        6,
+        5,
+        5,
+        4,
+        3
       ]
     ],
     "spellType": "holy",
-    "combatAptitude": "semi-martial",
+    "combatAptitude": "non-martial",
     "weaponsProficiency": [
-      "any"
+      "club",
+      "dagger",
+      "holyWater",
+      "oil",
+      "sling",
+      "staff",
+      "torch"
     ],
-    "armorProficiency": [
-      "any",
-      "shields"
-    ],
+    "armorProficiency": [],
     "classSkills": [],
     "canTwoWeaponFight": false,
     "hasBackstab": false,
@@ -265,66 +270,49 @@
           "traitType": "active",
           "rollable": true,
           "rollFormula": "2d6"
-        },
-        {
-          "id": "detectHolyMagic",
-          "nameKey": "DOLMEN.Traits.DetectHolyMagic",
-          "descKey": "DOLMEN.Traits.DetectHolyMagicDesc",
-          "traitType": "active"
-        },
-        {
-          "id": "orderPower",
-          "nameKey": "DOLMEN.Traits.OrderPower",
-          "descKey": "",
-          "traitType": "active",
-          "requiresSelection": "holyOrder",
-          "selectionType": "single",
-          "unlockLevels": [
-            2
-          ],
-          "minLevel": 2
         }
       ],
       "passive": [
         {
-          "id": "stFaxis",
-          "nameKey": "DOLMEN.Traits.Orders.stFaxis",
-          "descKey": "DOLMEN.Traits.Orders.stFaxisDesc",
-          "traitType": "info",
-          "parentTrait": "holyOrder",
-          "hideFromTraitTab": true
-        },
-        {
-          "id": "stSedge",
-          "nameKey": "DOLMEN.Traits.Orders.stSedge",
-          "descKey": "DOLMEN.Traits.Orders.stSedgeDesc",
-          "traitType": "info",
-          "parentTrait": "holyOrder",
-          "hideFromTraitTab": true
-        },
-        {
-          "id": "stSignis",
-          "nameKey": "DOLMEN.Traits.Orders.stSignis",
-          "descKey": "DOLMEN.Traits.Orders.stSignisDesc",
+          "id": "armorOfFaith",
+          "nameKey": "DOLMEN.Traits.ArmorOfFaith",
+          "descKey": "DOLMEN.Traits.ArmorOfFaithDesc",
           "traitType": "adjustment",
-          "adjustmentType": "rollOption",
-          "adjustmentTarget": "attack.melee",
-          "adjustmentValue": 1,
-          "parentTrait": "holyOrder",
-          "hideFromTraitTab": true
+          "adjustmentType": "static",
+          "adjustmentTarget": "ac"
+        },
+        {
+          "id": "herbalism",
+          "nameKey": "DOLMEN.Traits.Herbalism",
+          "descKey": "DOLMEN.Traits.HerbalismDesc",
+          "traitType": "info"
+        }
+      ],
+      "info": [
+        {
+          "id": "culinaryImplements",
+          "nameKey": "DOLMEN.Traits.CulinaryImplements",
+          "descKey": "DOLMEN.Traits.CulinaryImplementsDesc",
+          "traitType": "info"
+        },
+        {
+          "id": "forageSkill",
+          "nameKey": "DOLMEN.Traits.ForageSkill",
+          "descKey": "DOLMEN.Traits.ForageSkillDesc",
+          "traitType": "info"
         }
       ],
       "restrictions": [
         {
-          "id": "clericTenets",
-          "nameKey": "DOLMEN.Traits.ClericTenets",
-          "descKey": "DOLMEN.Traits.ClericTenetsDesc",
+          "id": "friarTenets",
+          "nameKey": "DOLMEN.Traits.FriarTenets",
+          "descKey": "DOLMEN.Traits.FriarTenetsDesc",
           "traitType": "info"
         },
         {
-          "id": "noMagicEquipment",
-          "nameKey": "DOLMEN.Traits.NoMagicEquipment",
-          "descKey": "DOLMEN.Traits.NoMagicEquipmentDesc",
+          "id": "povertyVows",
+          "nameKey": "DOLMEN.Traits.PovertyVows",
+          "descKey": "DOLMEN.Traits.PovertyVowsDesc",
           "traitType": "info"
         }
       ]
@@ -347,5 +335,5 @@
     "modifiedTime": 0,
     "lastModifiedBy": null
   },
-  "_key": "!items!ac2d0e3910d241b4"
+  "_key": "!items!5eaf6939b103923f"
 }

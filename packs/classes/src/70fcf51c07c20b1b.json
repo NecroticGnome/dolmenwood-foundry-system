@@ -1,15 +1,15 @@
 {
-  "name": "Enchanter",
+  "name": "Bard",
   "type": "Class",
-  "_id": "9da58069c7b2c325",
-  "img": "systems/dolmenwood/assets/classes/enchanter.webp",
+  "_id": "70fcf51c07c20b1b",
+  "img": "systems/dolmenwood/assets/classes/bard.webp",
   "system": {
     "codexUuid": "",
-    "classId": "enchanter",
+    "classId": "bard",
     "requiredKindred": "",
     "primeAbilities": [
       "charisma",
-      "intelligence"
+      "dexterity"
     ],
     "hitDice": {
       "die": "1d6",
@@ -51,6 +51,10 @@
     ],
     "saveProgressions": {
       "doom": [
+        13,
+        13,
+        12,
+        12,
         11,
         11,
         10,
@@ -61,13 +65,13 @@
         8,
         7,
         7,
-        6,
-        6,
-        5,
-        5,
-        4
+        6
       ],
       "ray": [
+        14,
+        14,
+        13,
+        13,
         12,
         12,
         11,
@@ -78,11 +82,7 @@
         9,
         8,
         8,
-        7,
-        7,
-        6,
-        6,
-        5
+        7
       ],
       "hold": [
         13,
@@ -102,8 +102,6 @@
         6
       ],
       "blast": [
-        16,
-        16,
         15,
         15,
         14,
@@ -116,9 +114,13 @@
         11,
         10,
         10,
-        9
+        9,
+        9,
+        8
       ],
       "spell": [
+        15,
+        15,
         14,
         14,
         13,
@@ -131,12 +133,79 @@
         10,
         9,
         9,
-        8,
-        8,
-        7
+        8
       ]
     },
-    "skillProgressions": {},
+    "skillProgressions": {
+      "listen": [
+        5,
+        5,
+        5,
+        5,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2
+      ],
+      "decipherDocument": [
+        6,
+        5,
+        5,
+        5,
+        5,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        2,
+        2,
+        2
+      ],
+      "legerdemain": [
+        6,
+        6,
+        6,
+        5,
+        5,
+        5,
+        5,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        2
+      ],
+      "monsterLore": [
+        5,
+        5,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
     "spellProgression": [],
     "spellType": "none",
     "combatAptitude": "semi-martial",
@@ -148,21 +217,37 @@
       "light",
       "medium"
     ],
-    "classSkills": [],
+    "classSkills": [
+      "decipherDocument",
+      "legerdemain",
+      "monsterLore"
+    ],
     "canTwoWeaponFight": false,
     "hasBackstab": false,
-    "skillPointsBase": 0,
-    "skillPointsPerLevel": 0,
+    "skillPointsBase": 2,
+    "skillPointsPerLevel": 1,
     "traits": {
-      "passive": [
+      "active": [
         {
-          "id": "holySpellFailure",
-          "nameKey": "DOLMEN.Traits.HolySpellFailure",
-          "descKey": "DOLMEN.Traits.HolySpellFailureDesc",
+          "id": "counterCharm",
+          "nameKey": "DOLMEN.Traits.CounterCharm",
+          "descKey": "DOLMEN.Traits.CounterCharmDesc",
+          "traitType": "active"
+        },
+        {
+          "id": "enchantment",
+          "nameKey": "DOLMEN.Traits.Enchantment",
+          "descKey": "DOLMEN.Traits.EnchantmentDesc",
           "traitType": "active",
-          "rollable": true,
-          "rollFormula": "1d6",
-          "rollTarget": 2
+          "usageFrequency": "DOLMEN.Traits.UsesPerDay"
+        }
+      ],
+      "info": [
+        {
+          "id": "bardSkills",
+          "nameKey": "DOLMEN.Traits.BardSkills",
+          "descKey": "DOLMEN.Traits.BardSkillsDesc",
+          "traitType": "info"
         }
       ]
     }
@@ -184,5 +269,5 @@
     "modifiedTime": 0,
     "lastModifiedBy": null
   },
-  "_key": "!items!9da58069c7b2c325"
+  "_key": "!items!70fcf51c07c20b1b"
 }

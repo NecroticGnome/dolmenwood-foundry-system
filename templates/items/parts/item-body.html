@@ -233,7 +233,7 @@
 	<section class="item-treasure">
 		<h2>{{localize "DOLMEN.Item.TreasureDetails"}}</h2>
 		<div class="form-group">
-			<label>{{localize "DOLMEN.Item.Effects"}}</label>
+			<label>{{localize "DOLMEN.Item.EffectsSummary"}}</label>
 			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
 		</div>
 	</section>
@@ -252,11 +252,13 @@
 			</div>
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.Availability"}}</label>
-				<input type="number" name="system.availability" value="{{system.availability}}" min="1" max="6">
+				<select name="system.availability">
+					{{selectOptions @root.availabilityChoices selected=system.availability}}
+				</select>
 			</div>
 		</div>
 		<div class="form-group">
-			<label>{{localize "DOLMEN.Item.Effects"}}</label>
+			<label>{{localize "DOLMEN.Item.EffectsSummary"}}</label>
 			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
 		</div>
 	</section>

@@ -579,7 +579,10 @@ export function prepareItemData(item) {
 		isWeapon: item.type === 'Weapon',
 		isArmor: item.type === 'Armor',
 		cssClass: item.type.toLowerCase(),
-		hasEffects: ['Treasure', 'Foraged'].includes(item.type) && !!(item.system?.effects)
+		hasEffects: ['Treasure', 'Foraged'].includes(item.type) && !!(item.system?.effects),
+		tooltipEffects: (item.system?.effects || '')
+			.replace(/\[([^\]]+)\]\(save:\w+\)/g, '$1')
+			.replace(/\[\[\/r (\d+d\d+(?:[+-]\d+)?)\]\]/g, '$1')
 	}
 
 	// Add weapon qualities display

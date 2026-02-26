@@ -1,157 +1,46 @@
 {
   "name": "Breggle",
-  "type": "Class",
-  "_id": "2dcd501fb8882393",
-  "img": "systems/dolmenwood/assets/classes/breggle.webp",
+  "type": "Kindred",
+  "_id": "a56a6345d41f23b1",
+  "img": "systems/dolmenwood/assets/kindreds/breggle.webp",
   "system": {
     "codexUuid": "",
-    "classId": "breggle",
-    "requiredKindred": "breggle",
-    "primeAbilities": [
-      "strength",
-      "intelligence"
+    "kindredId": "breggle",
+    "size": "medium",
+    "creatureType": "mortal",
+    "hasFur": true,
+    "ageFormula": "15 + 2d10",
+    "lifespanFormula": "50 + 2d20",
+    "heightFormula": "64 + 2d6",
+    "weightFormula": "120 + 6d10",
+    "languages": [
+      "woldish",
+      "gaffe",
+      "caprice"
     ],
-    "hitDice": {
-      "die": "1d6",
-      "flat": 2
-    },
-    "xpThresholds": [
-      0,
-      2000,
-      4000,
-      8000,
-      16000,
-      32000,
-      64000,
-      128000,
-      260000,
-      380000,
-      500000,
-      620000,
-      740000,
-      860000,
-      980000
+    "nameRollGroups": [
+      {
+        "label": "DOLMEN.NameRoll.Male",
+        "rolls": [
+          "Male",
+          "Surname"
+        ]
+      },
+      {
+        "label": "DOLMEN.NameRoll.Female",
+        "rolls": [
+          "Female",
+          "Surname"
+        ]
+      },
+      {
+        "label": "DOLMEN.NameRoll.Unisex",
+        "rolls": [
+          "Unisex",
+          "Surname"
+        ]
+      }
     ],
-    "attackProgression": [
-      1,
-      1,
-      2,
-      3,
-      3,
-      4,
-      5,
-      5,
-      6,
-      7,
-      7,
-      8,
-      9,
-      9,
-      10
-    ],
-    "saveProgressions": {
-      "doom": [
-        12,
-        12,
-        11,
-        10,
-        10,
-        9,
-        8,
-        8,
-        7,
-        6,
-        6,
-        5,
-        4,
-        4,
-        3
-      ],
-      "ray": [
-        13,
-        13,
-        12,
-        11,
-        11,
-        10,
-        9,
-        9,
-        8,
-        7,
-        7,
-        6,
-        5,
-        5,
-        4
-      ],
-      "hold": [
-        14,
-        14,
-        13,
-        12,
-        12,
-        11,
-        10,
-        10,
-        9,
-        8,
-        8,
-        7,
-        6,
-        6,
-        5
-      ],
-      "blast": [
-        15,
-        15,
-        14,
-        13,
-        13,
-        12,
-        11,
-        11,
-        10,
-        9,
-        9,
-        8,
-        7,
-        7,
-        6
-      ],
-      "spell": [
-        16,
-        16,
-        15,
-        14,
-        14,
-        13,
-        12,
-        12,
-        11,
-        10,
-        10,
-        9,
-        8,
-        8,
-        7
-      ]
-    },
-    "skillProgressions": {},
-    "spellProgression": [],
-    "spellType": "arcane",
-    "combatAptitude": "martial",
-    "weaponsProficiency": [
-      "any"
-    ],
-    "armorProficiency": [
-      "any",
-      "shields"
-    ],
-    "classSkills": [],
-    "canTwoWeaponFight": true,
-    "hasBackstab": false,
-    "skillPointsBase": 0,
-    "skillPointsPerLevel": 0,
     "traits": {
       "active": [
         {
@@ -232,5 +121,5 @@
     "modifiedTime": 0,
     "lastModifiedBy": null
   },
-  "_key": "!items!2dcd501fb8882393"
+  "_key": "!items!a56a6345d41f23b1"
 }
