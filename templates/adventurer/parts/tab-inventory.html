@@ -196,7 +196,7 @@
 					<div class="item-row treasure" data-item-id="{{this.id}}" data-action="openItem">
 						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
-						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
+						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.tooltipEffects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
 						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
@@ -231,7 +231,7 @@
 					<div class="item-row foraged" data-item-id="{{this.id}}" data-action="openItem">
 						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
-						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
+						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.tooltipEffects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
 						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
@@ -384,7 +384,7 @@
 					<div class="item-row treasure" data-item-id="{{this.id}}" data-action="openItem">
 						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
-						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
+						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.tooltipEffects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
 						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
@@ -419,7 +419,7 @@
 					<div class="item-row foraged" data-item-id="{{this.id}}" data-action="openItem">
 						<img src="{{this.img}}" class="item-image">
 						<span class="item-name">{{this.name}}</span>
-						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.system.effects}}</span></i></span>
+						{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.tooltipEffects}}</span></i></span>
 						{{else}}<span class="item-notes">-</span>
 						{{/if}}
 						<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>

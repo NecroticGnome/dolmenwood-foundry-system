@@ -135,6 +135,9 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 		// Foraged choices
 		context.foragedTypeChoices = buildChoices('DOLMEN.Item.ForagedType', CHOICE_KEYS.foragedTypes)
+		context.availabilityChoices = Object.fromEntries(
+			[1, 2, 3, 4, 5, 6].map(n => [n, game.i18n.localize(`DOLMEN.Item.Availabilities.${n}`)])
+		)
 
 		// Rune choices
 		context.runeMagnitudeChoices = buildChoices('DOLMEN.Magic.Fairy.Magnitudes', CHOICE_KEYS.runeMagnitudes)
