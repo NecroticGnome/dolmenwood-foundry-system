@@ -2,12 +2,12 @@
 
 /**
  * Convert Foundry worldTime (seconds) to a Dolmenwood calendar date.
- * Epoch: worldTime=0 → Year 1, 1st Grimvold, 00:00
+ * Epoch: worldTime=0 → BASE_YEAR, 1st Grimvold, 00:00
  */
 export function worldTimeToCalendar(worldTime) {
-	const { DAYS_PER_YEAR, SECONDS_PER_DAY, months, monthOffsets } = CONFIG.DOLMENWOOD
+	const { BASE_YEAR, DAYS_PER_YEAR, SECONDS_PER_DAY, months, monthOffsets } = CONFIG.DOLMENWOOD
 	const totalDays = Math.floor(worldTime / SECONDS_PER_DAY)
-	const year = Math.floor(totalDays / DAYS_PER_YEAR) + 1
+	const year = Math.floor(totalDays / DAYS_PER_YEAR) + BASE_YEAR
 	const dayOfYear = (totalDays % DAYS_PER_YEAR) + 1
 	const remainderSeconds = worldTime % SECONDS_PER_DAY
 	const hour = Math.floor(remainderSeconds / 3600)
@@ -32,9 +32,9 @@ export function worldTimeToCalendar(worldTime) {
  * Convert calendar components back to Foundry worldTime (seconds).
  */
 export function calendarToWorldTime(year, monthKey, day, hour, minute) {
-	const { DAYS_PER_YEAR, SECONDS_PER_DAY, monthOffsets } = CONFIG.DOLMENWOOD
+	const { BASE_YEAR, DAYS_PER_YEAR, SECONDS_PER_DAY, monthOffsets } = CONFIG.DOLMENWOOD
 	const dayOfYear = monthOffsets[monthKey] + day
-	const totalDays = (year - 1) * DAYS_PER_YEAR + (dayOfYear - 1)
+	const totalDays = (year - BASE_YEAR) * DAYS_PER_YEAR + (dayOfYear - 1)
 	return totalDays * SECONDS_PER_DAY + hour * 3600 + minute * 60
 }
 
@@ -148,4 +148,23 @@ export function getHoliday(monthKey, day) {
 	const monthHolidays = CONFIG.DOLMENWOOD.holidays[monthKey]
 	if (!monthHolidays) return null
 	return monthHolidays[day] ?? null
+}
+
+/**
+ * Get the days within a month where a moon phase transition occurs.
+ * A transition is the first day of a new moonSignTable entry.
+ * Returns Map<dayOfMonth, { moon, phase }>.
+ */
+export function getMoonChangesForMonth(monthKey) {
+	const { months, monthOffsets, moonSignTable } = CONFIG.DOLMENWOOD
+	const offset = monthOffsets[monthKey]
+	const startDoy = offset + 1
+	const endDoy = offset + months[monthKey].days
+	const changes = new Map()
+	for (const [start, , moon, phase] of moonSignTable) {
+		if (start >= startDoy && start <= endDoy) {
+			changes.set(start - offset, { moon, phase })
+		}
+	}
+	return changes
 }
