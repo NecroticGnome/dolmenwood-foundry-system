@@ -104,6 +104,7 @@ DOLMENWOOD.unseasons = {
 	colliggwyld: { icon: 'fa-solid fa-mushroom', months: ['iggwyld'] },
 	chame: { icon: 'fa-solid fa-snake', months: ['haelhold'] }
 }
+DOLMENWOOD.BASE_YEAR = 1089
 DOLMENWOOD.DAYS_PER_YEAR = 352
 DOLMENWOOD.SECONDS_PER_DAY = 86400
 DOLMENWOOD.monthToSeason = {}

@@ -3,7 +3,8 @@
 import {
 	worldTimeToCalendar, calendarToWorldTime,
 	getSeason, getDaylightHours, getMoonForDay,
-	getCelestialPosition, ordinalDay, getDayName, getHoliday
+	getCelestialPosition, ordinalDay, getDayName, getHoliday,
+	getMoonChangesForMonth
 } from './calendar-time.js'
 import { drawFromTableRaw } from '../utils/roll-tables.js'
 import { isDungeonTrackerAnimating } from '../dungeon-tracker/dungeon-tracker.js'
@@ -450,6 +451,7 @@ function buildPickerContent(year, monthKey, selectedDay, { noteDays, readOnly } 
 	const holidays = CONFIG.DOLMENWOOD.holidays[monthKey] || {}
 	const wysendays = CONFIG.DOLMENWOOD.wysendays[monthKey]
 	const yearLabel = game.i18n.localize('DOLMEN.Calendar.Year')
+	const moonChanges = getMoonChangesForMonth(monthKey)
 
 	// Weekday headers
 	const headers = weekDays.map(key => {
@@ -467,8 +469,17 @@ function buildPickerContent(year, monthKey, selectedDay, { noteDays, readOnly } 
 			const holiday = holidays[day]
 			const holidayClass = holiday ? ' holiday' : ''
 			const hasNotes = noteDays?.has(day) ? ' has-notes' : ''
-			const titleAttr = holiday ? ` title="${holiday}"` : ''
-			cells += `<td><div class="calendar-picker-day${selected}${holidayClass}${hasNotes}" data-calendar-day="${day}"${titleAttr}>${day}</div></td>`
+			const moonChange = moonChanges.get(day)
+			const moonDot = moonChange ? '<span class="moon-change-dot"></span>' : ''
+			const titleParts = []
+			if (moonChange) {
+				const mn = game.i18n.localize(`DOLMEN.MoonNames.${moonChange.moon}`)
+				const mp = game.i18n.localize(`DOLMEN.MoonPhases.${moonChange.phase}`)
+				titleParts.push(`${mn} (${mp})`)
+			}
+			if (holiday) titleParts.push(holiday)
+			const titleAttr = titleParts.length ? ` title="${titleParts.join(' | ')}"` : ''
+			cells += `<td><div class="calendar-picker-day${selected}${holidayClass}${hasNotes}" data-calendar-day="${day}"${titleAttr}>${day}${moonDot}</div></td>`
 		}
 		gridRows += `<tr>${cells}</tr>`
 	}
@@ -482,8 +493,17 @@ function buildPickerContent(year, monthKey, selectedDay, { noteDays, readOnly } 
 			const holiday = holidays[day]
 			const holidayClass = holiday ? ' holiday' : ''
 			const hasNotes = noteDays?.has(day) ? ' has-notes' : ''
-			const titleAttr = holiday ? ` title="${holiday}"` : ''
-			return `<div class="calendar-picker-wysenday${selected}${holidayClass}${hasNotes}" data-calendar-day="${day}"${titleAttr}>${name}</div>`
+			const moonChange = moonChanges.get(day)
+			const moonDot = moonChange ? '<span class="moon-change-dot"></span>' : ''
+			const titleParts = []
+			if (moonChange) {
+				const mn = game.i18n.localize(`DOLMEN.MoonNames.${moonChange.moon}`)
+				const mp = game.i18n.localize(`DOLMEN.MoonPhases.${moonChange.phase}`)
+				titleParts.push(`${mn} (${mp})`)
+			}
+			if (holiday) titleParts.push(holiday)
+			const titleAttr = titleParts.length ? ` title="${titleParts.join(' | ')}"` : ''
+			return `<div class="calendar-picker-wysenday${selected}${holidayClass}${hasNotes}" data-calendar-day="${day}"${titleAttr}>${name}${moonDot}</div>`
 		}).join('')
 		wysendayHtml = `<div class="calendar-picker-wysendays">${pills}</div>`
 	}
@@ -773,6 +793,18 @@ function buildNotesPanel(year, monthKey, day) {
 	const dayNotes = (notes[key] || []).filter(n => isGM || !n.gmOnly)
 	const monthName = game.i18n.localize(`DOLMEN.Months.${monthKey}`)
 
+	// Moon info for selected day
+	const dayOfYear = CONFIG.DOLMENWOOD.monthOffsets[monthKey] + day
+	const { moon, phase, phaseIcon } = getMoonForDay(dayOfYear)
+	const moonName = game.i18n.localize(`DOLMEN.MoonNames.${moon}`)
+	const phaseName = game.i18n.localize(`DOLMEN.MoonPhases.${phase}`)
+	const moonInfoHtml = `
+		<div class="calendar-note-moon">
+			<img class="calendar-note-moon-icon" src="systems/dolmenwood/assets/calendar/${phaseIcon}.webp" alt="${phaseName}">
+			<span class="calendar-note-moon-text">${moonName} (${phaseName})</span>
+		</div>
+	`
+
 	// Holidays for this day (shown before user notes, not deletable)
 	const holidays = CONFIG.DOLMENWOOD.holidays[monthKey] || {}
 	const holiday = holidays[day]
@@ -812,6 +844,7 @@ function buildNotesPanel(year, monthKey, day) {
 
 	return `
 		<div class="calendar-notes-header">${ordinalDay(day)} ${monthName}</div>
+		${moonInfoHtml}
 		<div class="calendar-notes-list">${holidayHtml}${notesList}</div>
 		${addForm}
 	`
