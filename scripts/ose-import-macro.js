@@ -545,29 +545,107 @@ async function importOSEData() {
 	}
 
 	// ---------------------------------------------------------------
-	// Create import folders (only for types that have data)
+	// Recreate folder structure under a "OSE Import" root folder
 	// ---------------------------------------------------------------
-	const folders = {}
-	const folderDefs = [
-		{ key: "actors",    type: "Actor",        name: "Imported OSE Actors",    hasData: allOseActors.length > 0 },
-		{ key: "items",     type: "Item",         name: "Imported OSE Items",     hasData: allOseItems.length > 0 },
-		{ key: "scenes",    type: "Scene",        name: "Imported OSE Scenes",    hasData: allOseScenes.length > 0 },
-		{ key: "journals",  type: "JournalEntry", name: "Imported OSE Journals",  hasData: allOseJournals.length > 0 },
-		{ key: "tables",    type: "RollTable",    name: "Imported OSE Tables",    hasData: allOseTables.length > 0 },
-		{ key: "macros",    type: "Macro",        name: "Imported OSE Macros",    hasData: allOseMacros.length > 0 },
-		{ key: "playlists", type: "Playlist",     name: "Imported OSE Playlists", hasData: allOsePlaylists.length > 0 },
-		{ key: "cards",     type: "Cards",        name: "Imported OSE Cards",     hasData: allOseCards.length > 0 },
-	]
 
-	const foldersToCreate = folderDefs.filter(f => f.hasData)
-	if (foldersToCreate.length > 0) {
-		const created = await Folder.createDocuments(
-			foldersToCreate.map(f => ({ name: f.name, type: f.type, sorting: "a" })),
-			{ keepId: false }
-		)
-		for (let i = 0; i < created.length; i++) {
-			folders[foldersToCreate[i].key] = created[i].id
+	// Map from old folder ID → new folder ID
+	const oldToNewFolderId = new Map()
+
+	// Determine which document types have data
+	const typeHasData = {
+		Actor: allOseActors.length > 0,
+		Item: allOseItems.length > 0,
+		Scene: allOseScenes.length > 0,
+		JournalEntry: allOseJournals.length > 0,
+		RollTable: allOseTables.length > 0,
+		Macro: allOseMacros.length > 0,
+		Playlist: allOsePlaylists.length > 0,
+		Cards: allOseCards.length > 0,
+	}
+
+	// Collect exported folders grouped by type
+	const oseFolders = data.world.folders || []
+	const foldersByType = {}
+	for (const f of oseFolders) {
+		if (!foldersByType[f.type]) foldersByType[f.type] = []
+		foldersByType[f.type].push(f)
+	}
+
+	// Also count types with data but no exported folders (they still need a root)
+	const typesWithData = Object.entries(typeHasData)
+		.filter(([, has]) => has)
+		.map(([type]) => type)
+
+	// Create "OSE Import" root folders for each document type that has data
+	const rootFolders = {}
+	if (typesWithData.length > 0) {
+		const rootDefs = typesWithData.map(type => ({
+			name: "OSE Import", type, sorting: "a",
+		}))
+		const createdRoots = await Folder.createDocuments(rootDefs, { keepId: false })
+		for (let i = 0; i < createdRoots.length; i++) {
+			rootFolders[typesWithData[i]] = createdRoots[i].id
 		}
+	}
+
+	// Recreate the original folder hierarchy under each "OSE Import" root.
+	// Process level by level (top-level first, then children) to ensure
+	// parent folders exist before their children are created.
+	for (const type of typesWithData) {
+		const typeFolders = foldersByType[type] || []
+		if (typeFolders.length === 0) continue
+
+		// Build a lookup of old folders by ID
+		const oldFolderMap = new Map(typeFolders.map(f => [f._id, f]))
+
+		// Sort into levels: top-level first (folder === null), then children
+		const queue = typeFolders.filter(f => !f.folder)
+		const visited = new Set()
+
+		while (queue.length > 0) {
+			const batch = [...queue]
+			queue.length = 0
+
+			const toCreate = batch.map(f => {
+				// Determine new parent: if top-level, parent is the "OSE Import" root;
+				// otherwise, map through oldToNewFolderId
+				const newParent = !f.folder
+					? rootFolders[type]
+					: (oldToNewFolderId.get(f.folder) ?? rootFolders[type])
+
+				return {
+					name: f.name,
+					type: f.type,
+					folder: newParent,
+					sorting: f.sorting || "a",
+					color: f.color || null,
+				}
+			})
+
+			const created = await Folder.createDocuments(toCreate, { keepId: false })
+			for (let i = 0; i < created.length; i++) {
+				oldToNewFolderId.set(batch[i]._id, created[i].id)
+				visited.add(batch[i]._id)
+			}
+
+			// Enqueue children whose parents were just created
+			for (const f of typeFolders) {
+				if (!visited.has(f._id) && f.folder && visited.has(f.folder)) {
+					queue.push(f)
+				}
+			}
+		}
+	}
+
+	/**
+	 * Resolve the new folder ID for an imported document.
+	 * Falls back to the "OSE Import" root for that type.
+	 */
+	function resolveFolder(oldFolderId, docType) {
+		if (oldFolderId && oldToNewFolderId.has(oldFolderId)) {
+			return oldToNewFolderId.get(oldFolderId)
+		}
+		return rootFolders[docType] || null
 	}
 
 	// ---------------------------------------------------------------
@@ -581,7 +659,7 @@ async function importOSEData() {
 		for (const oseActor of allOseActors) {
 			try {
 				const converted = convertActor(oseActor)
-				converted.folder = folders.actors || null
+				converted.folder = resolveFolder(oseActor.folder, "Actor")
 				// Store the old ID for scene token remapping
 				converted._oseOriginalId = oseActor._id
 				actorData.push(converted)
@@ -622,7 +700,7 @@ async function importOSEData() {
 		for (const oseItem of allOseItems) {
 			try {
 				const converted = convertItem(oseItem)
-				converted.folder = folders.items || null
+				converted.folder = resolveFolder(oseItem.folder, "Item")
 				itemData.push(converted)
 			} catch (err) {
 				warnings.push(`Failed to convert item "${oseItem.name}": ${err.message}`)
@@ -646,7 +724,7 @@ async function importOSEData() {
 		for (const oseScene of allOseScenes) {
 			const converted = { ...oseScene }
 			delete converted._id
-			converted.folder = folders.scenes || null
+			converted.folder = resolveFolder(oseScene.folder, "Scene")
 
 			// Remap tokens
 			if (Array.isArray(converted.tokens)) {
@@ -685,7 +763,7 @@ async function importOSEData() {
 		const journalData = allOseJournals.map(j => {
 			const copy = { ...j }
 			delete copy._id
-			copy.folder = folders.journals || null
+			copy.folder = resolveFolder(j.folder, "JournalEntry")
 			// Strip _id from pages to let Foundry assign new ones
 			if (Array.isArray(copy.pages)) {
 				copy.pages = copy.pages.map(p => {
@@ -713,7 +791,7 @@ async function importOSEData() {
 		const tableData = allOseTables.map(t => {
 			const copy = { ...t }
 			delete copy._id
-			copy.folder = folders.tables || null
+			copy.folder = resolveFolder(t.folder, "RollTable")
 			if (Array.isArray(copy.results)) {
 				copy.results = copy.results.map(r => {
 					const rc = { ...r }
@@ -740,7 +818,7 @@ async function importOSEData() {
 		const macroData = allOseMacros.map(m => {
 			const copy = { ...m }
 			delete copy._id
-			copy.folder = folders.macros || null
+			copy.folder = resolveFolder(m.folder, "Macro")
 			return copy
 		})
 
@@ -756,7 +834,7 @@ async function importOSEData() {
 		const playlistData = allOsePlaylists.map(p => {
 			const copy = { ...p }
 			delete copy._id
-			copy.folder = folders.playlists || null
+			copy.folder = resolveFolder(p.folder, "Playlist")
 			if (Array.isArray(copy.sounds)) {
 				copy.sounds = copy.sounds.map(s => {
 					const sc = { ...s }
@@ -779,7 +857,7 @@ async function importOSEData() {
 		const cardsData = allOseCards.map(c => {
 			const copy = { ...c }
 			delete copy._id
-			copy.folder = folders.cards || null
+			copy.folder = resolveFolder(c.folder, "Cards")
 			if (Array.isArray(copy.cards)) {
 				copy.cards = copy.cards.map(card => {
 					const cc = { ...card }

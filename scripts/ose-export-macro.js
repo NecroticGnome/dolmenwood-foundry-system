@@ -60,6 +60,7 @@ async function exportOSEWorld() {
 
 	// Serialize world-level collections
 	const world = {
+		folders: game.folders.contents.map(f => f.toObject()),
 		actors: game.actors.contents.map(a => a.toObject()),
 		items: game.items.contents.map(i => i.toObject()),
 		scenes: game.scenes.contents.map(s => s.toObject()),
