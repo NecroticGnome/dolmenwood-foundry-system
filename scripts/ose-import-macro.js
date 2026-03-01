@@ -382,6 +382,281 @@ function convertCharacter(ose) {
 	}
 }
 
+// ---------------------------------------------------------------------------
+// PDF Pager character converter
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse "Kindred & Class" field into separate kindred and class keys.
+ * Examples: "Human Thief", "Elf Magician", "Breggle Hunter",
+ *           "Human Fighter (Mercenary)", "Shorthorn Breggle Magician"
+ */
+function parseKindredClass(raw) {
+	if (!raw) return { kindred: "human", class: "fighter" }
+	const text = raw.toLowerCase().trim()
+
+	const kindredMap = {
+		breggle: "breggle", elf: "elf", grimalkin: "grimalkin",
+		human: "human", mossling: "mossling", woodgrue: "woodgrue",
+	}
+	const classMap = {
+		bard: "bard", cleric: "cleric", enchanter: "enchanter",
+		fighter: "fighter", friar: "friar", hunter: "hunter",
+		knight: "knight", magician: "magician", thief: "thief",
+	}
+
+	// Strip common prefixes like "Shorthorn", "Longhorn" (Breggle variants)
+	const stripped = text.replace(/\b(shorthorn|longhorn)\b/g, "").trim()
+
+	let kindred = "human"
+	let cls = "fighter"
+
+	for (const [key] of Object.entries(kindredMap)) {
+		if (stripped.includes(key)) {
+			kindred = key; break 
+		}
+	}
+	for (const [key] of Object.entries(classMap)) {
+		if (stripped.includes(key)) {
+			cls = key; break 
+		}
+	}
+
+	return { kindred, class: cls }
+}
+
+/**
+ * Parse extra skill text like "Pick Lock: 5" or "CLIMB WALL 4" into
+ * { id, target } matching Dolmenwood skill IDs.
+ */
+function parseExtraSkill(raw) {
+	if (!raw) return null
+	const text = raw.toLowerCase().trim()
+	if (!text) return null
+
+	const skillMap = {
+		"pick lock": "pickLock",
+		"picklock": "pickLock",
+		"climb wall": "climbWall",
+		"climb": "climbWall",
+		"detect magic": "detectMagic",
+		"decipher doc": "decipherDocument",
+		"decipher document": "decipherDocument",
+		"decipher": "decipherDocument",
+		"legerdemain": "legerdemain",
+		"stealth": "stealth",
+		"stalking": "stalking",
+		"tracking": "tracking",
+		"disarm mech": "disarmMechanism",
+		"disarm mechanism": "disarmMechanism",
+		"disarm": "disarmMechanism",
+		"alertness": "alertness",
+		"monster lore": "monsterLore",
+	}
+
+	let id = null
+	for (const [pattern, skillId] of Object.entries(skillMap)) {
+		if (text.includes(pattern)) {
+			id = skillId; break 
+		}
+	}
+	if (!id) return null
+
+	// Extract target number
+	const numMatch = text.match(/(\d+)\s*$/)
+	const target = numMatch ? clamp(parseInt(numMatch[1], 10), 2, 6) : 6
+
+	return { id, target }
+}
+
+/**
+ * Build notes HTML from the text fields on page 2 of the PDF.
+ */
+function buildPdfNotes(f) {
+	const sections = []
+	if (f["Kindred & Class Traits 1"]) sections.push(`<h3>Kindred & Class Traits</h3><p>${f["Kindred & Class Traits 1"].replace(/\n/g, "<br>")}</p>`)
+	if (f["Kindred & Class Traits 2"]) sections.push(`<p>${f["Kindred & Class Traits 2"].replace(/\n/g, "<br>")}</p>`)
+	if (f["Tiny Items"]) sections.push(`<h3>Tiny Items</h3><p>${f["Tiny Items"].replace(/\n/g, "<br>")}</p>`)
+	if (f["Notes"]) sections.push(`<h3>Notes</h3><p>${f["Notes"].replace(/\n/g, "<br>")}</p>`)
+	if (f["Other Notes"]) sections.push(`<h3>Other Notes</h3><p>${f["Other Notes"].replace(/\n/g, "<br>")}</p>`)
+	if (f["Moon Sign"]) sections.push(`<h3>Moon Sign</h3><p>${f["Moon Sign"]}</p>`)
+	return sections.join("\n")
+}
+
+/**
+ * Convert a character actor using PDF Pager form data.
+ * The fieldText contains Dolmenwood-native field names.
+ */
+function convertPdfPagerCharacter(ose) {
+	const f = ose.flags["pdf-pager"].fieldText
+
+	// Identity
+	const { kindred, class: cls } = parseKindredClass(f["Kindred & Class"])
+
+	// Ability scores
+	const strScore = clamp(safeInt(f["Strength"], 10), 3, 18)
+	const intScore = clamp(safeInt(f["Intelligence"], 10), 3, 18)
+	const wisScore = clamp(safeInt(f["Wisdom"], 10), 3, 18)
+	const dexScore = clamp(safeInt(f["Dexterity"], 10), 3, 18)
+	const conScore = clamp(safeInt(f["Constitution"], 10), 3, 18)
+	const chaScore = clamp(safeInt(f["Charisma"], 10), 3, 18)
+
+	// Saves
+	const saves = {
+		doom:  clamp(safeInt(f["Doom"], 14), 2, 20),
+		ray:   clamp(safeInt(f["Ray"], 14), 2, 20),
+		hold:  clamp(safeInt(f["Hold"], 14), 2, 20),
+		blast: clamp(safeInt(f["Blast"], 14), 2, 20),
+		spell: clamp(safeInt(f["Spell"], 14), 2, 20),
+	}
+
+	// Combat
+	const ac = safeInt(f["Armour Class"], 10)
+	const attackRaw = (f["Attack"] || "0").replace(/\+/g, "")
+	const attack = safeInt(attackRaw.split("/")[0], 0)
+	const speed = safeInt(f["Speed"], 40)
+	const magicResistance = safeInt((f["Magic Resistance"] || "0").replace(/\+/g, ""), 0)
+
+	// HP — prefer PDF fields (Dolmenwood: "Hit Points"/"Max Hit Points",
+	// OSE: "HP"/"Max HP"), fall back to OSE system data
+	const sys = ose.system || {}
+	const hpValue = (f["Hit Points"] || f["HP"])
+		? safeInt(f["Hit Points"] || f["HP"], 4)
+		: safeInt(sys.hp?.value, 4)
+	const hpMax = (f["Max Hit Points"] || f["Max HP"])
+		? safeInt(f["Max Hit Points"] || f["Max HP"], hpValue)
+		: safeInt(sys.hp?.max, hpValue)
+
+	// Level — prefer PDF field, fall back to OSE system data
+	const level = f["Level"]
+		? clamp(safeInt(f["Level"], 1), 1, 15)
+		: clamp(safeInt(sys.details?.level, 1), 1, 15)
+
+	// Alignment — prefer PDF field, fall back to OSE system data
+	const alignment = f["Alignment"]
+		? normalizeAlignment(f["Alignment"])
+		: normalizeAlignment(sys.details?.alignment)
+
+	// Skills
+	const skills = {
+		listen:   clamp(safeInt(f["Listen"], 6), 2, 6),
+		search:   clamp(safeInt(f["Search"], 6), 2, 6),
+		survival: clamp(safeInt(f["Survival"], 6), 2, 6),
+	}
+
+	// Extra skills
+	const extraSkills = []
+	for (let i = 1; i <= 6; i++) {
+		const parsed = parseExtraSkill(f[`Extra Skill ${i}`])
+		if (parsed) extraSkills.push(parsed)
+	}
+
+	// Movement
+	const exploring = safeInt(f["Exploring"], 120)
+	const overland = safeInt(f["Overland"], 24)
+
+	// Coins
+	const coins = {
+		copper:      safeInt(f["Copper Pieces"], 0),
+		silver:      safeInt(f["Silver Pieces"], 0),
+		gold:        safeInt(f["Gold Pieces"], 0),
+		pellucidium: safeInt(f["Pellucidium Pieces"], 0),
+	}
+
+	// Languages
+	const languages = []
+	for (let i = 1; i <= 2; i++) {
+		const raw = f[`Languages ${i}`]
+		if (raw) {
+			for (const lang of raw.split(/[,;]/)) {
+				const trimmed = lang.trim()
+				if (trimmed) languages.push(trimmed)
+			}
+		}
+	}
+
+	// Items — create from equipped and stowed slots
+	const items = []
+	for (let i = 1; i <= 10; i++) {
+		const name = (f[`Equipped Item ${i}`] || "").trim()
+		if (name && !name.startsWith(">")) {
+			items.push({
+				name,
+				type: "Item",
+				img: "icons/svg/item-bag.svg",
+				system: {
+					cost: 0, costDenomination: "gp",
+					weightCoins: safeInt(f[`Equipped Item Weight ${i}`], 0),
+					equipped: true, quantity: 1, notes: "",
+				},
+			})
+		}
+	}
+	for (let i = 1; i <= 16; i++) {
+		const name = (f[`Stowed Item ${i}`] || "").trim()
+		if (name && !name.startsWith(">")) {
+			items.push({
+				name,
+				type: "Item",
+				img: "icons/svg/item-bag.svg",
+				system: {
+					cost: 0, costDenomination: "gp",
+					weightCoins: safeInt(f[`Stowed Item Weight ${i}`], 0),
+					equipped: false, quantity: 1, notes: "",
+				},
+			})
+		}
+	}
+
+	// Build background notes from PDF text fields
+	const backgroundNotes = buildPdfNotes(f)
+
+	return {
+		name: ose.name,
+		type: "Adventurer",
+		img: ose.img || "icons/svg/mystery-man.svg",
+		items,
+		system: {
+			level,
+			hp: { value: hpValue, max: hpMax },
+			ac,
+			attack,
+			saves,
+			speed,
+			size: kindred === "mossling" ? "small" : "medium",
+			alignment,
+			kindred,
+			class: cls,
+			magicResistance,
+			abilities: {
+				strength:     { score: strScore, mod: abilityMod(strScore) },
+				intelligence: { score: intScore, mod: abilityMod(intScore) },
+				wisdom:       { score: wisScore, mod: abilityMod(wisScore) },
+				dexterity:    { score: dexScore, mod: abilityMod(dexScore) },
+				constitution: { score: conScore, mod: abilityMod(conScore) },
+				charisma:     { score: chaScore, mod: abilityMod(chaScore) },
+			},
+			skills,
+			extraSkills,
+			customizeSkills: true,
+			movement: { exploring, overland },
+			coins,
+			languages: languages.length > 0 ? languages : ["Woldish"],
+			background: {
+				profession: f["Background"] || "",
+				notes: backgroundNotes,
+			},
+			affiliation: f["Affiliation"] || "",
+			xp: {
+				value: safeInt(f["XP"], 0),
+				nextLevel: safeInt(f["XP For Next Level"] || f["XP for Next Level"], 2000),
+			},
+		},
+		prototypeToken: ose.prototypeToken || {},
+		flags: ose.flags || {},
+	}
+}
+
 /**
  * Convert a single OSE actor (monster or character) to Dolmenwood format.
  * Returns the converted actor data ready for Actor.createDocuments().
@@ -389,6 +664,10 @@ function convertCharacter(ose) {
 function convertActor(ose) {
 	const oseType = (ose.type || "").toLowerCase()
 	if (oseType === "monster") return convertMonster(ose)
+	// Characters with PDF Pager data get the richer Dolmenwood conversion
+	if (oseType === "character" && ose.flags?.["pdf-pager"]?.fieldText) {
+		return convertPdfPagerCharacter(ose)
+	}
 	if (oseType === "character") return convertCharacter(ose)
 	// Unknown type — return as Creature with minimal conversion
 	return convertMonster(ose)
@@ -398,9 +677,18 @@ function convertActor(ose) {
 // Convert token delta system data (for unlinked tokens with overrides)
 // ---------------------------------------------------------------------------
 
-function convertTokenDelta(delta) {
+function convertTokenDelta(delta, baseActorItems) {
 	if (!delta || typeof delta !== "object") return delta
 	const converted = { ...delta }
+
+	// Build a lookup of base actor items by _id so we can fill in
+	// missing fields on partial delta overrides
+	const baseItemMap = new Map()
+	if (Array.isArray(baseActorItems)) {
+		for (const item of baseActorItems) {
+			if (item._id) baseItemMap.set(item._id, item)
+		}
+	}
 
 	// If the delta has system data, convert OSE fields to Dolmenwood
 	if (converted.system) {
@@ -449,9 +737,24 @@ function convertTokenDelta(delta) {
 		converted.system = newSys
 	}
 
-	// Convert embedded item overrides in the delta
+	// Convert embedded item overrides in the delta.
+	// Delta items may be partial — fill in missing fields from the base item.
+	// Items with _tombstone are deletions and should be skipped.
 	if (Array.isArray(converted.items)) {
-		converted.items = converted.items.map(item => convertItem(item))
+		converted.items = converted.items.map(item => {
+			if (item._tombstone) return null
+			const base = baseItemMap.get(item._id)
+			if (base) {
+				const merged = {
+					...base,
+					...item,
+					system: { ...(base.system || {}), ...(item.system || {}) },
+				}
+				return convertItem(merged)
+			}
+			if (!item.name) return null
+			return convertItem(item)
+		}).filter(Boolean)
 	}
 
 	return converted
@@ -519,6 +822,42 @@ async function importOSEData() {
 	const warnings = []
 	const stats = { actors: 0, items: 0, scenes: 0, journals: 0, tables: 0, macros: 0, playlists: 0, cards: 0 }
 
+	// Batch creation helper — creates documents in groups with a short delay
+	// between batches to avoid overwhelming Foundry's database backend.
+	const BATCH_SIZE = 10
+	const BATCH_DELAY = 100 // ms between batches
+	async function createInBatches(DocClass, items, { onCreated, label = "documents" } = {}) {
+		let created = 0
+		for (let i = 0; i < items.length; i += BATCH_SIZE) {
+			const batch = items.slice(i, i + BATCH_SIZE)
+			try {
+				const docs = await DocClass.createDocuments(batch, { keepId: false })
+				created += docs.length
+				if (onCreated) {
+					for (const doc of docs) onCreated(doc)
+				}
+			} catch (batchErr) {
+				// If a batch fails, fall back to one-at-a-time for that batch
+				for (const datum of batch) {
+					try {
+						const docs = await DocClass.createDocuments([datum], { keepId: false })
+						created += docs.length
+						if (onCreated) {
+							for (const doc of docs) onCreated(doc)
+						}
+					} catch (err) {
+						warnings.push(`Failed to create ${label} "${datum.name}": ${err.message}`)
+					}
+				}
+			}
+			// Brief pause between batches to let the DB breathe
+			if (i + BATCH_SIZE < items.length) {
+				await new Promise(r => setTimeout(r, BATCH_DELAY))
+			}
+		}
+		return created
+	}
+
 	// Combine world-level and compendium pack data into unified lists
 	const allOseActors = [...(data.world.actors || [])]
 	const allOseItems = [...(data.world.items || [])]
@@ -582,9 +921,23 @@ async function importOSEData() {
 		const rootDefs = typesWithData.map(type => ({
 			name: "OSE Import", type, sorting: "a",
 		}))
-		const createdRoots = await Folder.createDocuments(rootDefs, { keepId: false })
-		for (let i = 0; i < createdRoots.length; i++) {
-			rootFolders[typesWithData[i]] = createdRoots[i].id
+		try {
+			const createdRoots = await Folder.createDocuments(rootDefs, { keepId: false })
+			for (let i = 0; i < createdRoots.length; i++) {
+				rootFolders[typesWithData[i]] = createdRoots[i].id
+			}
+		} catch (err) {
+			// If batch fails, create root folders one at a time
+			for (const type of typesWithData) {
+				try {
+					const created = await Folder.createDocuments([{
+						name: "OSE Import", type, sorting: "a",
+					}], { keepId: false })
+					rootFolders[type] = created[0].id
+				} catch (innerErr) {
+					warnings.push(`Failed to create root folder for ${type}: ${innerErr.message}`)
+				}
+			}
 		}
 	}
 
@@ -689,16 +1042,37 @@ async function importOSEData() {
 			}
 		}
 
-		// Create actors one at a time to prevent one failure from killing the batch
-		for (const actorDatum of actorData) {
-			const oldId = actorDatum._oseOriginalId
-			delete actorDatum._oseOriginalId
+		// Strip _oseOriginalId into a parallel array before creation
+		const oldActorIds = actorData.map(d => {
+			const oldId = d._oseOriginalId
+			delete d._oseOriginalId
+			return oldId
+		})
+
+		// Create actors in batches (special handling for old→new ID mapping)
+		for (let i = 0; i < actorData.length; i += BATCH_SIZE) {
+			const batch = actorData.slice(i, i + BATCH_SIZE)
+			const batchOldIds = oldActorIds.slice(i, i + BATCH_SIZE)
 			try {
-				const created = await Actor.createDocuments([actorDatum], { keepId: false })
-				if (oldId) oldToNewActorId.set(oldId, created[0].id)
-				stats.actors++
-			} catch (err) {
-				warnings.push(`Failed to create actor "${actorDatum.name}": ${err.message}`)
+				const docs = await Actor.createDocuments(batch, { keepId: false })
+				for (let j = 0; j < docs.length; j++) {
+					if (batchOldIds[j]) oldToNewActorId.set(batchOldIds[j], docs[j].id)
+					stats.actors++
+				}
+			} catch (batchErr) {
+				// Fall back to one-at-a-time for this batch
+				for (let j = 0; j < batch.length; j++) {
+					try {
+						const docs = await Actor.createDocuments([batch[j]], { keepId: false })
+						if (batchOldIds[j]) oldToNewActorId.set(batchOldIds[j], docs[0].id)
+						stats.actors++
+					} catch (err) {
+						warnings.push(`Failed to create actor "${batch[j].name}": ${err.message}`)
+					}
+				}
+			}
+			if (i + BATCH_SIZE < actorData.length) {
+				await new Promise(r => setTimeout(r, BATCH_DELAY))
 			}
 		}
 	}
@@ -719,19 +1093,19 @@ async function importOSEData() {
 			}
 		}
 
-		for (const datum of itemData) {
-			try {
-				await Item.createDocuments([datum], { keepId: false })
-				stats.items++
-			} catch (err) {
-				warnings.push(`Failed to create item "${datum.name}": ${err.message}`)
-			}
-		}
+		stats.items = await createInBatches(Item, itemData, { label: "item" })
 	}
 
 	// ---------------------------------------------------------------
 	// Import scenes (remap token actorIds)
 	// ---------------------------------------------------------------
+
+	// Build a lookup of original OSE actors by ID for delta item merging
+	const oseActorById = new Map()
+	for (const oseActor of allOseActors) {
+		if (oseActor._id) oseActorById.set(oseActor._id, oseActor)
+	}
+
 	if (allOseScenes.length > 0) {
 		ui.notifications.info(`Importing ${allOseScenes.length} scenes...`)
 		const sceneData = []
@@ -743,6 +1117,7 @@ async function importOSEData() {
 			// Remap tokens
 			if (Array.isArray(converted.tokens)) {
 				for (const token of converted.tokens) {
+					const originalActorId = token.actorId
 					if (token.actorId) {
 						const newId = oldToNewActorId.get(token.actorId)
 						if (newId) {
@@ -751,9 +1126,10 @@ async function importOSEData() {
 							warnings.push(`Scene "${oseScene.name}" token "${token.name || "(unnamed)"}" references unknown actor ${token.actorId}`)
 						}
 					}
-					// Convert token delta system data
+					// Convert token delta system data, merging with base actor items
 					if (token.delta) {
-						token.delta = convertTokenDelta(token.delta)
+						const baseActor = oseActorById.get(originalActorId)
+						token.delta = convertTokenDelta(token.delta, baseActor?.items || [])
 					}
 				}
 			}
@@ -761,12 +1137,16 @@ async function importOSEData() {
 			sceneData.push(converted)
 		}
 
-		for (const datum of sceneData) {
+		// Scenes are large documents — create one at a time with delay
+		for (let i = 0; i < sceneData.length; i++) {
 			try {
-				await Scene.createDocuments([datum], { keepId: false })
+				await Scene.createDocuments([sceneData[i]], { keepId: false })
 				stats.scenes++
 			} catch (err) {
-				warnings.push(`Failed to create scene "${datum.name}": ${err.message}`)
+				warnings.push(`Failed to create scene "${sceneData[i].name}": ${err.message}`)
+			}
+			if (i < sceneData.length - 1) {
+				await new Promise(r => setTimeout(r, BATCH_DELAY))
 			}
 		}
 	}
@@ -791,14 +1171,7 @@ async function importOSEData() {
 			return copy
 		})
 
-		for (const datum of journalData) {
-			try {
-				await JournalEntry.createDocuments([datum], { keepId: false })
-				stats.journals++
-			} catch (err) {
-				warnings.push(`Failed to create journal "${datum.name}": ${err.message}`)
-			}
-		}
+		stats.journals = await createInBatches(JournalEntry, journalData, { label: "journal" })
 	}
 
 	// ---------------------------------------------------------------
@@ -820,14 +1193,7 @@ async function importOSEData() {
 			return copy
 		})
 
-		for (const datum of tableData) {
-			try {
-				await RollTable.createDocuments([datum], { keepId: false })
-				stats.tables++
-			} catch (err) {
-				warnings.push(`Failed to create table "${datum.name}": ${err.message}`)
-			}
-		}
+		stats.tables = await createInBatches(RollTable, tableData, { label: "table" })
 	}
 
 	// ---------------------------------------------------------------
@@ -842,14 +1208,7 @@ async function importOSEData() {
 			return copy
 		})
 
-		for (const datum of macroData) {
-			try {
-				await Macro.createDocuments([datum], { keepId: false })
-				stats.macros++
-			} catch (err) {
-				warnings.push(`Failed to create macro "${datum.name}": ${err.message}`)
-			}
-		}
+		stats.macros = await createInBatches(Macro, macroData, { label: "macro" })
 	}
 
 	// ---------------------------------------------------------------
@@ -871,14 +1230,7 @@ async function importOSEData() {
 			return copy
 		})
 
-		for (const datum of playlistData) {
-			try {
-				await Playlist.createDocuments([datum], { keepId: false })
-				stats.playlists++
-			} catch (err) {
-				warnings.push(`Failed to create playlist "${datum.name}": ${err.message}`)
-			}
-		}
+		stats.playlists = await createInBatches(Playlist, playlistData, { label: "playlist" })
 	}
 
 	// ---------------------------------------------------------------
@@ -900,14 +1252,7 @@ async function importOSEData() {
 			return copy
 		})
 
-		for (const datum of cardsData) {
-			try {
-				await Cards.createDocuments([datum], { keepId: false })
-				stats.cards++
-			} catch (err) {
-				warnings.push(`Failed to create card stack "${datum.name}": ${err.message}`)
-			}
-		}
+		stats.cards = await createInBatches(Cards, cardsData, { label: "card stack" })
 	}
 
 	// ---------------------------------------------------------------
