@@ -595,37 +595,36 @@ async function importOSEData() {
 		const typeFolders = foldersByType[type] || []
 		if (typeFolders.length === 0) continue
 
-		// Build a lookup of old folders by ID
-		const oldFolderMap = new Map(typeFolders.map(f => [f._id, f]))
-
-		// Sort into levels: top-level first (folder === null), then children
+		// Sort into levels: top-level first (folder === null/undefined), then children
 		const queue = typeFolders.filter(f => !f.folder)
 		const visited = new Set()
+		let maxIterations = typeFolders.length + 1
 
-		while (queue.length > 0) {
+		while (queue.length > 0 && maxIterations-- > 0) {
 			const batch = [...queue]
 			queue.length = 0
 
-			const toCreate = batch.map(f => {
+			for (const f of batch) {
 				// Determine new parent: if top-level, parent is the "OSE Import" root;
 				// otherwise, map through oldToNewFolderId
 				const newParent = !f.folder
 					? rootFolders[type]
 					: (oldToNewFolderId.get(f.folder) ?? rootFolders[type])
 
-				return {
-					name: f.name,
-					type: f.type,
-					folder: newParent,
-					sorting: f.sorting || "a",
-					color: f.color || null,
+				try {
+					const created = await Folder.createDocuments([{
+						name: f.name,
+						type: f.type,
+						folder: newParent,
+						sorting: f.sorting || "a",
+						color: f.color || null,
+					}], { keepId: false })
+					oldToNewFolderId.set(f._id, created[0].id)
+					visited.add(f._id)
+				} catch (err) {
+					warnings.push(`Failed to create folder "${f.name}": ${err.message}`)
+					visited.add(f._id)
 				}
-			})
-
-			const created = await Folder.createDocuments(toCreate, { keepId: false })
-			for (let i = 0; i < created.length; i++) {
-				oldToNewFolderId.set(batch[i]._id, created[i].id)
-				visited.add(batch[i]._id)
 			}
 
 			// Enqueue children whose parents were just created
@@ -633,6 +632,24 @@ async function importOSEData() {
 				if (!visited.has(f._id) && f.folder && visited.has(f.folder)) {
 					queue.push(f)
 				}
+			}
+		}
+
+		// Safety net: any folders not yet processed (orphaned parents, cycles)
+		// get created directly under the "OSE Import" root
+		for (const f of typeFolders) {
+			if (visited.has(f._id)) continue
+			try {
+				const created = await Folder.createDocuments([{
+					name: f.name,
+					type: f.type,
+					folder: rootFolders[type],
+					sorting: f.sorting || "a",
+					color: f.color || null,
+				}], { keepId: false })
+				oldToNewFolderId.set(f._id, created[0].id)
+			} catch (err) {
+				warnings.push(`Failed to create folder "${f.name}": ${err.message}`)
 			}
 		}
 	}
@@ -672,21 +689,16 @@ async function importOSEData() {
 			}
 		}
 
-		// Create in batches to avoid overwhelming the server
-		const BATCH_SIZE = 20
-		for (let i = 0; i < actorData.length; i += BATCH_SIZE) {
-			const batch = actorData.slice(i, i + BATCH_SIZE)
-			// Extract old IDs before Foundry strips unknown fields
-			const oldIds = batch.map(a => a._oseOriginalId)
-			// Remove the temporary field before creating
-			for (const a of batch) delete a._oseOriginalId
-
-			const created = await Actor.createDocuments(batch, { keepId: false })
-			for (let j = 0; j < created.length; j++) {
-				if (oldIds[j]) {
-					oldToNewActorId.set(oldIds[j], created[j].id)
-				}
+		// Create actors one at a time to prevent one failure from killing the batch
+		for (const actorDatum of actorData) {
+			const oldId = actorDatum._oseOriginalId
+			delete actorDatum._oseOriginalId
+			try {
+				const created = await Actor.createDocuments([actorDatum], { keepId: false })
+				if (oldId) oldToNewActorId.set(oldId, created[0].id)
 				stats.actors++
+			} catch (err) {
+				warnings.push(`Failed to create actor "${actorDatum.name}": ${err.message}`)
 			}
 		}
 	}
@@ -707,11 +719,13 @@ async function importOSEData() {
 			}
 		}
 
-		const BATCH_SIZE = 50
-		for (let i = 0; i < itemData.length; i += BATCH_SIZE) {
-			const batch = itemData.slice(i, i + BATCH_SIZE)
-			const created = await Item.createDocuments(batch, { keepId: false })
-			stats.items += created.length
+		for (const datum of itemData) {
+			try {
+				await Item.createDocuments([datum], { keepId: false })
+				stats.items++
+			} catch (err) {
+				warnings.push(`Failed to create item "${datum.name}": ${err.message}`)
+			}
 		}
 	}
 
@@ -747,11 +761,13 @@ async function importOSEData() {
 			sceneData.push(converted)
 		}
 
-		const BATCH_SIZE = 5
-		for (let i = 0; i < sceneData.length; i += BATCH_SIZE) {
-			const batch = sceneData.slice(i, i + BATCH_SIZE)
-			const created = await Scene.createDocuments(batch, { keepId: false })
-			stats.scenes += created.length
+		for (const datum of sceneData) {
+			try {
+				await Scene.createDocuments([datum], { keepId: false })
+				stats.scenes++
+			} catch (err) {
+				warnings.push(`Failed to create scene "${datum.name}": ${err.message}`)
+			}
 		}
 	}
 
@@ -775,11 +791,13 @@ async function importOSEData() {
 			return copy
 		})
 
-		const BATCH_SIZE = 20
-		for (let i = 0; i < journalData.length; i += BATCH_SIZE) {
-			const batch = journalData.slice(i, i + BATCH_SIZE)
-			const created = await JournalEntry.createDocuments(batch, { keepId: false })
-			stats.journals += created.length
+		for (const datum of journalData) {
+			try {
+				await JournalEntry.createDocuments([datum], { keepId: false })
+				stats.journals++
+			} catch (err) {
+				warnings.push(`Failed to create journal "${datum.name}": ${err.message}`)
+			}
 		}
 	}
 
@@ -802,11 +820,13 @@ async function importOSEData() {
 			return copy
 		})
 
-		const BATCH_SIZE = 20
-		for (let i = 0; i < tableData.length; i += BATCH_SIZE) {
-			const batch = tableData.slice(i, i + BATCH_SIZE)
-			const created = await RollTable.createDocuments(batch, { keepId: false })
-			stats.tables += created.length
+		for (const datum of tableData) {
+			try {
+				await RollTable.createDocuments([datum], { keepId: false })
+				stats.tables++
+			} catch (err) {
+				warnings.push(`Failed to create table "${datum.name}": ${err.message}`)
+			}
 		}
 	}
 
@@ -822,8 +842,14 @@ async function importOSEData() {
 			return copy
 		})
 
-		const created = await Macro.createDocuments(macroData, { keepId: false })
-		stats.macros += created.length
+		for (const datum of macroData) {
+			try {
+				await Macro.createDocuments([datum], { keepId: false })
+				stats.macros++
+			} catch (err) {
+				warnings.push(`Failed to create macro "${datum.name}": ${err.message}`)
+			}
+		}
 	}
 
 	// ---------------------------------------------------------------
@@ -845,8 +871,14 @@ async function importOSEData() {
 			return copy
 		})
 
-		const created = await Playlist.createDocuments(playlistData, { keepId: false })
-		stats.playlists += created.length
+		for (const datum of playlistData) {
+			try {
+				await Playlist.createDocuments([datum], { keepId: false })
+				stats.playlists++
+			} catch (err) {
+				warnings.push(`Failed to create playlist "${datum.name}": ${err.message}`)
+			}
+		}
 	}
 
 	// ---------------------------------------------------------------
@@ -868,8 +900,14 @@ async function importOSEData() {
 			return copy
 		})
 
-		const created = await Cards.createDocuments(cardsData, { keepId: false })
-		stats.cards += created.length
+		for (const datum of cardsData) {
+			try {
+				await Cards.createDocuments([datum], { keepId: false })
+				stats.cards++
+			} catch (err) {
+				warnings.push(`Failed to create card stack "${datum.name}": ${err.message}`)
+			}
+		}
 	}
 
 	// ---------------------------------------------------------------
