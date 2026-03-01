@@ -836,17 +836,20 @@ async function importOSEData() {
 				if (onCreated) {
 					for (const doc of docs) onCreated(doc)
 				}
-			} catch (batchErr) {
-				// If a batch fails, fall back to one-at-a-time for that batch
-				for (const datum of batch) {
+			} catch (_batchErr) {
+				// If a batch fails, fall back to one-at-a-time with delays
+				for (let j = 0; j < batch.length; j++) {
 					try {
-						const docs = await DocClass.createDocuments([datum], { keepId: false })
+						const docs = await DocClass.createDocuments([batch[j]], { keepId: false })
 						created += docs.length
 						if (onCreated) {
 							for (const doc of docs) onCreated(doc)
 						}
 					} catch (err) {
-						warnings.push(`Failed to create ${label} "${datum.name}": ${err.message}`)
+						warnings.push(`Failed to create ${label} "${batch[j].name}": ${err.message}`)
+					}
+					if (j < batch.length - 1) {
+						await new Promise(r => setTimeout(r, BATCH_DELAY))
 					}
 				}
 			}
@@ -884,23 +887,11 @@ async function importOSEData() {
 	}
 
 	// ---------------------------------------------------------------
-	// Recreate folder structure under a "OSE Import" root folder
+	// Recreate folder structure (1:1 copy of original hierarchy)
 	// ---------------------------------------------------------------
 
 	// Map from old folder ID → new folder ID
 	const oldToNewFolderId = new Map()
-
-	// Determine which document types have data
-	const typeHasData = {
-		Actor: allOseActors.length > 0,
-		Item: allOseItems.length > 0,
-		Scene: allOseScenes.length > 0,
-		JournalEntry: allOseJournals.length > 0,
-		RollTable: allOseTables.length > 0,
-		Macro: allOseMacros.length > 0,
-		Playlist: allOsePlaylists.length > 0,
-		Cards: allOseCards.length > 0,
-	}
 
 	// Collect exported folders grouped by type
 	const oseFolders = data.world.folders || []
@@ -910,45 +901,17 @@ async function importOSEData() {
 		foldersByType[f.type].push(f)
 	}
 
-	// Also count types with data but no exported folders (they still need a root)
-	const typesWithData = Object.entries(typeHasData)
-		.filter(([, has]) => has)
-		.map(([type]) => type)
+	// Document types that have actual data to import
+	const importableTypes = new Set(["Actor", "Item", "Scene", "JournalEntry", "RollTable", "Macro", "Playlist", "Cards"])
 
-	// Create "OSE Import" root folders for each document type that has data
-	const rootFolders = {}
-	if (typesWithData.length > 0) {
-		const rootDefs = typesWithData.map(type => ({
-			name: "OSE Import", type, sorting: "a",
-		}))
-		try {
-			const createdRoots = await Folder.createDocuments(rootDefs, { keepId: false })
-			for (let i = 0; i < createdRoots.length; i++) {
-				rootFolders[typesWithData[i]] = createdRoots[i].id
-			}
-		} catch (err) {
-			// If batch fails, create root folders one at a time
-			for (const type of typesWithData) {
-				try {
-					const created = await Folder.createDocuments([{
-						name: "OSE Import", type, sorting: "a",
-					}], { keepId: false })
-					rootFolders[type] = created[0].id
-				} catch (innerErr) {
-					warnings.push(`Failed to create root folder for ${type}: ${innerErr.message}`)
-				}
-			}
-		}
-	}
-
-	// Recreate the original folder hierarchy under each "OSE Import" root.
+	// Recreate the original folder hierarchy exactly.
 	// Process level by level (top-level first, then children) to ensure
 	// parent folders exist before their children are created.
-	for (const type of typesWithData) {
-		const typeFolders = foldersByType[type] || []
-		if (typeFolders.length === 0) continue
+	for (const type of Object.keys(foldersByType)) {
+		if (!importableTypes.has(type)) continue
+		const typeFolders = foldersByType[type]
 
-		// Sort into levels: top-level first (folder === null/undefined), then children
+		// Start with top-level folders (no parent)
 		const queue = typeFolders.filter(f => !f.folder)
 		const visited = new Set()
 		let maxIterations = typeFolders.length + 1
@@ -957,28 +920,50 @@ async function importOSEData() {
 			const batch = [...queue]
 			queue.length = 0
 
-			for (const f of batch) {
-				// Determine new parent: if top-level, parent is the "OSE Import" root;
-				// otherwise, map through oldToNewFolderId
-				const newParent = !f.folder
-					? rootFolders[type]
-					: (oldToNewFolderId.get(f.folder) ?? rootFolders[type])
+			// Build folder data for this level, keyed by name+parent for matching
+			const levelData = batch.map(f => ({
+				name: f.name,
+				type: f.type,
+				folder: f.folder ? (oldToNewFolderId.get(f.folder) ?? null) : null,
+				sorting: f.sorting || "a",
+				color: f.color || null,
+			}))
+			// Parallel array of old IDs (same indices as levelData)
+			const oldIds = batch.map(f => f._id)
 
-				try {
-					const created = await Folder.createDocuments([{
-						name: f.name,
-						type: f.type,
-						folder: newParent,
-						sorting: f.sorting || "a",
-						color: f.color || null,
-					}], { keepId: false })
-					oldToNewFolderId.set(f._id, created[0].id)
-					visited.add(f._id)
-				} catch (err) {
-					warnings.push(`Failed to create folder "${f.name}": ${err.message}`)
-					visited.add(f._id)
+			// Batch-create the entire level at once
+			try {
+				const created = await Folder.createDocuments(levelData, { keepId: false })
+				// Match created folders back by name+parent (order not guaranteed).
+				// doc.folder is a Folder object (not a string), so use .id
+				const createdByKey = new Map()
+				for (const doc of created) {
+					const parentId = doc.folder?.id ?? doc.folder ?? ""
+					createdByKey.set(`${doc.name}::${parentId}`, doc.id)
+				}
+				for (let k = 0; k < levelData.length; k++) {
+					const key = `${levelData[k].name}::${levelData[k].folder ?? ""}`
+					const newId = createdByKey.get(key)
+					if (newId) {
+						oldToNewFolderId.set(oldIds[k], newId)
+					}
+					visited.add(oldIds[k])
+				}
+			} catch (_batchErr) {
+				// Fall back to one-at-a-time if batch fails
+				for (let k = 0; k < levelData.length; k++) {
+					try {
+						const created = await Folder.createDocuments([levelData[k]], { keepId: false })
+						oldToNewFolderId.set(oldIds[k], created[0].id)
+					} catch (err) {
+						warnings.push(`Failed to create folder "${levelData[k].name}": ${err.message}`)
+					}
+					visited.add(oldIds[k])
 				}
 			}
+
+			// Brief pause between levels to let the DB breathe
+			await new Promise(r => setTimeout(r, BATCH_DELAY))
 
 			// Enqueue children whose parents were just created
 			for (const f of typeFolders) {
@@ -989,33 +974,52 @@ async function importOSEData() {
 		}
 
 		// Safety net: any folders not yet processed (orphaned parents, cycles)
-		// get created directly under the "OSE Import" root
-		for (const f of typeFolders) {
-			if (visited.has(f._id)) continue
-			try {
-				const created = await Folder.createDocuments([{
+		// get created at the root level
+		if (typeFolders.some(f => !visited.has(f._id))) {
+			const orphanData = []
+			const orphanOldIds = []
+			for (const f of typeFolders) {
+				if (visited.has(f._id)) continue
+				orphanOldIds.push(f._id)
+				orphanData.push({
 					name: f.name,
 					type: f.type,
-					folder: rootFolders[type],
+					folder: null,
 					sorting: f.sorting || "a",
 					color: f.color || null,
-				}], { keepId: false })
-				oldToNewFolderId.set(f._id, created[0].id)
-			} catch (err) {
-				warnings.push(`Failed to create folder "${f.name}": ${err.message}`)
+				})
+			}
+			try {
+				const created = await Folder.createDocuments(orphanData, { keepId: false })
+				// Match by name (all orphans are root-level so name is sufficient)
+				const createdByName = new Map()
+				for (const doc of created) createdByName.set(doc.name, doc.id)
+				for (let k = 0; k < orphanData.length; k++) {
+					const newId = createdByName.get(orphanData[k].name)
+					if (newId) oldToNewFolderId.set(orphanOldIds[k], newId)
+				}
+			} catch (_batchErr) {
+				for (let k = 0; k < orphanData.length; k++) {
+					try {
+						const created = await Folder.createDocuments([orphanData[k]], { keepId: false })
+						oldToNewFolderId.set(orphanOldIds[k], created[0].id)
+					} catch (err) {
+						warnings.push(`Failed to create folder "${orphanData[k].name}": ${err.message}`)
+					}
+				}
 			}
 		}
 	}
 
 	/**
 	 * Resolve the new folder ID for an imported document.
-	 * Falls back to the "OSE Import" root for that type.
+	 * Falls back to the world root (no folder).
 	 */
-	function resolveFolder(oldFolderId, docType) {
+	function resolveFolder(oldFolderId) {
 		if (oldFolderId && oldToNewFolderId.has(oldFolderId)) {
 			return oldToNewFolderId.get(oldFolderId)
 		}
-		return rootFolders[docType] || null
+		return null
 	}
 
 	// ---------------------------------------------------------------
@@ -1029,7 +1033,7 @@ async function importOSEData() {
 		for (const oseActor of allOseActors) {
 			try {
 				const converted = convertActor(oseActor)
-				converted.folder = resolveFolder(oseActor.folder, "Actor")
+				converted.folder = resolveFolder(oseActor.folder)
 				// Store the old ID for scene token remapping
 				converted._oseOriginalId = oseActor._id
 				actorData.push(converted)
@@ -1059,7 +1063,7 @@ async function importOSEData() {
 					if (batchOldIds[j]) oldToNewActorId.set(batchOldIds[j], docs[j].id)
 					stats.actors++
 				}
-			} catch (batchErr) {
+			} catch (_batchErr) {
 				// Fall back to one-at-a-time for this batch
 				for (let j = 0; j < batch.length; j++) {
 					try {
@@ -1077,6 +1081,9 @@ async function importOSEData() {
 		}
 	}
 
+	// Pause between sections to let the DB settle
+	await new Promise(r => setTimeout(r, BATCH_DELAY))
+
 	// ---------------------------------------------------------------
 	// Import items (convert OSE → Dolmenwood)
 	// ---------------------------------------------------------------
@@ -1086,7 +1093,7 @@ async function importOSEData() {
 		for (const oseItem of allOseItems) {
 			try {
 				const converted = convertItem(oseItem)
-				converted.folder = resolveFolder(oseItem.folder, "Item")
+				converted.folder = resolveFolder(oseItem.folder)
 				itemData.push(converted)
 			} catch (err) {
 				warnings.push(`Failed to convert item "${oseItem.name}": ${err.message}`)
@@ -1096,8 +1103,131 @@ async function importOSEData() {
 		stats.items = await createInBatches(Item, itemData, { label: "item" })
 	}
 
+	// Pause between sections to let the DB settle
+	await new Promise(r => setTimeout(r, BATCH_DELAY))
+
 	// ---------------------------------------------------------------
-	// Import scenes (remap token actorIds)
+	// Import journals (1:1 copy)
+	// ---------------------------------------------------------------
+	if (allOseJournals.length > 0) {
+		ui.notifications.info(`Importing ${allOseJournals.length} journal entries...`)
+		const journalData = allOseJournals.map(j => {
+			const copy = { ...j }
+			delete copy._id
+			copy.folder = resolveFolder(j.folder)
+			// Strip _id from pages to let Foundry assign new ones
+			if (Array.isArray(copy.pages)) {
+				copy.pages = copy.pages.map(p => {
+					const pc = { ...p }
+					delete pc._id
+					return pc
+				})
+			}
+			return copy
+		})
+
+		stats.journals = await createInBatches(JournalEntry, journalData, { label: "journal" })
+	}
+
+	// Pause between sections to let the DB settle
+	await new Promise(r => setTimeout(r, BATCH_DELAY))
+
+	// ---------------------------------------------------------------
+	// Import rollable tables (1:1 copy)
+	// ---------------------------------------------------------------
+	if (allOseTables.length > 0) {
+		ui.notifications.info(`Importing ${allOseTables.length} rollable tables...`)
+		const tableData = allOseTables.map(t => {
+			const copy = { ...t }
+			delete copy._id
+			copy.folder = resolveFolder(t.folder)
+			if (Array.isArray(copy.results)) {
+				copy.results = copy.results.map(r => {
+					const rc = { ...r }
+					delete rc._id
+					return rc
+				})
+			}
+			return copy
+		})
+
+		stats.tables = await createInBatches(RollTable, tableData, { label: "table" })
+	}
+
+	// Pause between sections to let the DB settle
+	await new Promise(r => setTimeout(r, BATCH_DELAY))
+
+	// ---------------------------------------------------------------
+	// Import macros (1:1 copy)
+	// ---------------------------------------------------------------
+	if (allOseMacros.length > 0) {
+		ui.notifications.info(`Importing ${allOseMacros.length} macros...`)
+		const macroData = allOseMacros.map(m => {
+			const copy = { ...m }
+			delete copy._id
+			copy.folder = resolveFolder(m.folder)
+			return copy
+		})
+
+		stats.macros = await createInBatches(Macro, macroData, { label: "macro" })
+	}
+
+	// Pause between sections to let the DB settle
+	await new Promise(r => setTimeout(r, BATCH_DELAY))
+
+	// ---------------------------------------------------------------
+	// Import playlists (1:1 copy)
+	// ---------------------------------------------------------------
+	if (allOsePlaylists.length > 0) {
+		ui.notifications.info(`Importing ${allOsePlaylists.length} playlists...`)
+		const playlistData = allOsePlaylists.map(p => {
+			const copy = { ...p }
+			delete copy._id
+			copy.folder = resolveFolder(p.folder)
+			if (Array.isArray(copy.sounds)) {
+				copy.sounds = copy.sounds.map(s => {
+					const sc = { ...s }
+					delete sc._id
+					return sc
+				})
+			}
+			return copy
+		})
+
+		stats.playlists = await createInBatches(Playlist, playlistData, { label: "playlist" })
+	}
+
+	// Pause between sections to let the DB settle
+	await new Promise(r => setTimeout(r, BATCH_DELAY))
+
+	// ---------------------------------------------------------------
+	// Import card stacks (1:1 copy)
+	// ---------------------------------------------------------------
+	if (allOseCards.length > 0) {
+		ui.notifications.info(`Importing ${allOseCards.length} card stacks...`)
+		const cardsData = allOseCards.map(c => {
+			const copy = { ...c }
+			delete copy._id
+			copy.folder = resolveFolder(c.folder)
+			if (Array.isArray(copy.cards)) {
+				copy.cards = copy.cards.map(card => {
+					const cc = { ...card }
+					delete cc._id
+					return cc
+				})
+			}
+			return copy
+		})
+
+		stats.cards = await createInBatches(Cards, cardsData, { label: "card stack" })
+	}
+
+	// Pause between sections to let the DB settle
+	await new Promise(r => setTimeout(r, BATCH_DELAY))
+
+	// ---------------------------------------------------------------
+	// Import scenes last (Foundry auto-loads scenes on creation,
+	// so importing them earlier could cause DB pressure mid-import)
 	// ---------------------------------------------------------------
 
 	// Build a lookup of original OSE actors by ID for delta item merging
@@ -1112,7 +1242,7 @@ async function importOSEData() {
 		for (const oseScene of allOseScenes) {
 			const converted = { ...oseScene }
 			delete converted._id
-			converted.folder = resolveFolder(oseScene.folder, "Scene")
+			converted.folder = resolveFolder(oseScene.folder)
 
 			// Remap tokens
 			if (Array.isArray(converted.tokens)) {
@@ -1149,110 +1279,6 @@ async function importOSEData() {
 				await new Promise(r => setTimeout(r, BATCH_DELAY))
 			}
 		}
-	}
-
-	// ---------------------------------------------------------------
-	// Import journals (1:1 copy)
-	// ---------------------------------------------------------------
-	if (allOseJournals.length > 0) {
-		ui.notifications.info(`Importing ${allOseJournals.length} journal entries...`)
-		const journalData = allOseJournals.map(j => {
-			const copy = { ...j }
-			delete copy._id
-			copy.folder = resolveFolder(j.folder, "JournalEntry")
-			// Strip _id from pages to let Foundry assign new ones
-			if (Array.isArray(copy.pages)) {
-				copy.pages = copy.pages.map(p => {
-					const pc = { ...p }
-					delete pc._id
-					return pc
-				})
-			}
-			return copy
-		})
-
-		stats.journals = await createInBatches(JournalEntry, journalData, { label: "journal" })
-	}
-
-	// ---------------------------------------------------------------
-	// Import rollable tables (1:1 copy)
-	// ---------------------------------------------------------------
-	if (allOseTables.length > 0) {
-		ui.notifications.info(`Importing ${allOseTables.length} rollable tables...`)
-		const tableData = allOseTables.map(t => {
-			const copy = { ...t }
-			delete copy._id
-			copy.folder = resolveFolder(t.folder, "RollTable")
-			if (Array.isArray(copy.results)) {
-				copy.results = copy.results.map(r => {
-					const rc = { ...r }
-					delete rc._id
-					return rc
-				})
-			}
-			return copy
-		})
-
-		stats.tables = await createInBatches(RollTable, tableData, { label: "table" })
-	}
-
-	// ---------------------------------------------------------------
-	// Import macros (1:1 copy)
-	// ---------------------------------------------------------------
-	if (allOseMacros.length > 0) {
-		ui.notifications.info(`Importing ${allOseMacros.length} macros...`)
-		const macroData = allOseMacros.map(m => {
-			const copy = { ...m }
-			delete copy._id
-			copy.folder = resolveFolder(m.folder, "Macro")
-			return copy
-		})
-
-		stats.macros = await createInBatches(Macro, macroData, { label: "macro" })
-	}
-
-	// ---------------------------------------------------------------
-	// Import playlists (1:1 copy)
-	// ---------------------------------------------------------------
-	if (allOsePlaylists.length > 0) {
-		ui.notifications.info(`Importing ${allOsePlaylists.length} playlists...`)
-		const playlistData = allOsePlaylists.map(p => {
-			const copy = { ...p }
-			delete copy._id
-			copy.folder = resolveFolder(p.folder, "Playlist")
-			if (Array.isArray(copy.sounds)) {
-				copy.sounds = copy.sounds.map(s => {
-					const sc = { ...s }
-					delete sc._id
-					return sc
-				})
-			}
-			return copy
-		})
-
-		stats.playlists = await createInBatches(Playlist, playlistData, { label: "playlist" })
-	}
-
-	// ---------------------------------------------------------------
-	// Import card stacks (1:1 copy)
-	// ---------------------------------------------------------------
-	if (allOseCards.length > 0) {
-		ui.notifications.info(`Importing ${allOseCards.length} card stacks...`)
-		const cardsData = allOseCards.map(c => {
-			const copy = { ...c }
-			delete copy._id
-			copy.folder = resolveFolder(c.folder, "Cards")
-			if (Array.isArray(copy.cards)) {
-				copy.cards = copy.cards.map(card => {
-					const cc = { ...card }
-					delete cc._id
-					return cc
-				})
-			}
-			return copy
-		})
-
-		stats.cards = await createInBatches(Cards, cardsData, { label: "card stack" })
 	}
 
 	// ---------------------------------------------------------------
