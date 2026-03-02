@@ -236,7 +236,7 @@ export function buildClassSkillOptions(currentSkills = []) {
 // Pre-defined choice key arrays for common dropdowns
 export const CHOICE_KEYS = {
 	alignments: ['lawful', 'neutral', 'chaotic'],
-	encumbranceMethods: ['weight', 'treasure', 'slots'],
+	encumbranceMethods: ['weight', 'treasure', 'slots', 'disabled'],
 	moonNames: ['grinning', 'dead', 'beast', 'squamous', 'knights', 'rotting', 'maidens', 'witch', 'robbers', 'goat', 'narrow', 'black'],
 	moonPhases: ['waxing', 'full', 'waning'],
 	months: ['grimvold', 'lymewald', 'haggryme', 'symswald', 'harchment', 'iggwyld', 'chysting', 'lillipythe', 'haelhold', 'reedwryme', 'obthryme', 'braghold'],

@@ -1,4 +1,4 @@
-/* global foundry, game, FilePicker, Roll, ChatMessage, CONST, fromUuid */
+/* global foundry, game, FilePicker, Roll, ChatMessage, CONST, CONFIG, fromUuid */
 
 const { DialogV2 } = foundry.applications.api
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
@@ -507,7 +507,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor }),
 			content: chatContent,
-			rolls: [roll],
+			sound: CONFIG.sounds.dice,
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	}
@@ -668,18 +668,15 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		}
 
 		// Attack type: roll attack and damage dice
-		const rolls = []
 		const totalBonus = attack.attackBonus + rangeMod
 		const modSign = totalBonus >= 0 ? '+' : ''
 		const atkFormula = `1d20${modSign}${totalBonus}`
 		const atkRoll = new Roll(atkFormula)
 		await atkRoll.evaluate()
-		rolls.push(atkRoll)
 
 		const dmgRoll = new Roll(attack.attackDamage)
 		await dmgRoll.evaluate()
 		if (dmgRoll.total < 1) dmgRoll._total = 1
-		rolls.push(dmgRoll)
 
 		const atkAnchor = await atkRoll.toAnchor({ classes: ['attack-inline-roll'] })
 		const dmgAnchor = await dmgRoll.toAnchor({ classes: ['damage-inline-roll'] })
@@ -712,7 +709,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 			content,
-			rolls,
+			sound: CONFIG.sounds.dice,
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	}

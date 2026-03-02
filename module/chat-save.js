@@ -1,5 +1,4 @@
-/* global game, canvas, ui, ChatMessage, Roll, CONST */
-import { computeAdjustedValues } from './sheet/data-context.js'
+/* global game, canvas, ui, ChatMessage, Roll, CONST, CONFIG */
 
 /**
  * Parse markdown-style save links into clickable HTML anchors.
@@ -58,8 +57,7 @@ async function performSaveRollForActor(actor, saveKey) {
 	// Get save target - different for adventurers (with adjustments) vs creatures
 	let saveTarget
 	if (actor.type === 'Adventurer') {
-		const adjusted = computeAdjustedValues(actor)
-		saveTarget = adjusted.saves[saveKey]
+		saveTarget = actor.system.final?.saves[saveKey]
 	} else {
 		// Creature - use saves directly
 		saveTarget = actor.system.saves?.[saveKey]
@@ -106,7 +104,7 @@ async function performSaveRollForActor(actor, saveKey) {
 	await ChatMessage.create({
 		speaker: ChatMessage.getSpeaker({ actor }),
 		content: chatContent,
-		rolls: [roll],
+		sound: CONFIG.sounds.dice,
 		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }

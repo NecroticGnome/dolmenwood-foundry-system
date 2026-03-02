@@ -14,7 +14,7 @@ export default [
 	pluginJs.configs.recommended,
 	{
 		rules: {
-			"no-unused-vars": "warn",
+			"no-unused-vars": ["warn", { "caughtErrors": "all", "caughtErrorsIgnorePattern": "^_" }],
 			"no-undef": "warn",
 			"semi": ["error", "never"],
 			"indent": ["warn", "tab"],

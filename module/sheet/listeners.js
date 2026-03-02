@@ -46,6 +46,13 @@ export function setupAdjustableInputListeners(sheet) {
 			input.value = adjustedValue
 		})
 	})
+
+	// Show notification when clicking readonly skill inputs
+	sheet.element.querySelectorAll('input.skill-target[readonly]').forEach(input => {
+		input.addEventListener('mousedown', () => {
+			ui.notifications.info(game.i18n.localize('DOLMEN.Skills.CustomizeRequired'))
+		})
+	})
 }
 
 /**
@@ -362,7 +369,6 @@ export function setupDetailsRollListeners(sheet) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor}`,
-			rolls: [roll],
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
@@ -379,7 +385,6 @@ export function setupDetailsRollListeners(sheet) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor}`,
-			rolls: [roll],
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
@@ -411,7 +416,6 @@ export function setupDetailsRollListeners(sheet) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor} — ${birthDay} ${monthLabel}`,
-			rolls: [roll],
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
@@ -436,7 +440,6 @@ export function setupDetailsRollListeners(sheet) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor} — ${heightFeet} / ${heightCm} cm`,
-			rolls: [roll],
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
@@ -458,7 +461,6 @@ export function setupDetailsRollListeners(sheet) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 			content: `<strong>${label}:</strong> ${rollAnchor} — ${weightLbs} lbs / ${weightKg} kg`,
-			rolls: [roll],
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	})
@@ -595,7 +597,6 @@ async function rollNameGroup(sheet, tableName, group) {
 	await ChatMessage.create({
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: `<strong>${tableName}</strong>${labelSuffix}<br>${anchors.join('<br>')}`,
-		rolls: draws.map(d => d.draw.roll),
 		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }

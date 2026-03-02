@@ -4,7 +4,7 @@ import { parseSaveLinks } from './chat-save.js'
 
 // Sheet module imports
 import {
-	computeXPModifier, computeMoonSign, computeEncumbrance, computeAdjustedValues,
+	computeXPModifier, computeMoonSign,
 	prepareSpellSlots, prepareKnackAbilities, prepareSpellData,
 	groupSpellsByRank, prepareMemorizedSlots, groupRunesByMagnitude,
 	groupItemsByType, prepareItemData, getRuneUsage, computeSkillPoints
@@ -451,9 +451,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		// Build generic custom sections (combat talents, holy orders, etc.) from trait metadata
 		context.customSections = buildCustomSections(actor)
 
-		// Compute encumbrance and adjusted values (base + adjustment)
-		context.encumbrance = computeEncumbrance(actor)
-		context.adjusted = computeAdjustedValues(actor, context.encumbrance.speed)
+		// Read precomputed final values from prepareDerivedData
+		context.encumbrance = actor.system.encumbranceResult || { current: 0, max: 0, speed: null }
+		context.adjusted = actor.system.final || {}
 
 		// Compute XP modifier from prime abilities + custom adjustment
 		const baseXPMod = computeXPModifier(actor, context.adjusted.abilities)

@@ -7,7 +7,7 @@ const { DialogV2 } = foundry.applications.api
  * All functions receive the sheet instance as the first parameter.
  */
 
-import { computeAdjustedValues, computeXPModifier } from './data-context.js'
+import { computeXPModifier } from './data-context.js'
 import { getDieIconFromFormula } from './attack-rolls.js'
 
 /**
@@ -16,7 +16,7 @@ import { getDieIconFromFormula } from './attack-rolls.js'
  */
 export function openXPDialog(sheet) {
 	const currentXP = sheet.actor.system.xp.value || 0
-	const adjusted = computeAdjustedValues(sheet.actor)
+	const adjusted = sheet.actor.system.final
 	const baseXPMod = computeXPModifier(sheet.actor, adjusted.abilities)
 	const xpModAdj = sheet.actor.system.adjustments.xpModifier || 0
 	const modifier = baseXPMod + xpModAdj
@@ -303,14 +303,12 @@ export async function levelUp(sheet) {
 		let formula = ''
 		const conMod = sys.abilities.constitution.mod
 		let rollBody = ''
-		let rolls = []
 
 		if (newLevel <= 10) {
 			// Roll hit die + CON modifier, minimum 1
 			formula = hitDice.die
 			const roll = await new Roll(formula).evaluate()
 			hpGain = Math.max(1, roll.total + conMod)
-			rolls = [roll]
 
 			const rollAnchor = (await roll.toAnchor()).outerHTML
 			const conLabel = conMod >= 0 ? `+${conMod}` : String(conMod)
@@ -349,7 +347,6 @@ export async function levelUp(sheet) {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor }),
 			content,
-			rolls,
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 

@@ -1,5 +1,6 @@
 /*global Actor, ui, game, Roll, ChatMessage, CONST, CONFIG */
 import { drawFromTableSilent } from './utils/roll-tables.js'
+import { computeEncumbrance, computeAdjustedValues } from './sheet/data-context.js'
 
 class DolmenActor extends Actor {
 
@@ -18,6 +19,17 @@ class DolmenActor extends Actor {
 				'prototypeToken.displayBars': CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER
 			})
 		}
+	}
+
+	/** @override */
+	prepareDerivedData() {
+		super.prepareDerivedData()
+		if (this.type !== 'Adventurer') return
+		if (!game?.settings) return
+		const encumbrance = computeEncumbrance(this)
+		const adjusted = computeAdjustedValues(this, encumbrance.speed)
+		this.system.final = adjusted
+		this.system.encumbranceResult = encumbrance
 	}
 
 	/** @override */
@@ -255,7 +267,7 @@ class DolmenActor extends Actor {
 		await ChatMessage.create({
 			speaker: ChatMessage.getSpeaker({ actor: this }),
 			content,
-			rolls: healRoll ? [healRoll] : [],
+			sound: healRoll ? CONFIG.sounds.dice : undefined,
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
 	}

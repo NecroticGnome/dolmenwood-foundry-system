@@ -253,19 +253,19 @@
 				<div class="skill">
 					<label>{{localize "DOLMEN.Skills.Listen"}}</label>
 					<input type="hidden" name="system.skills.listen" value="{{system.skills.listen}}">
-					<input type="number" class="adjustable" value="{{adjusted.skills.listen}}" data-base="{{system.skills.listen}}" data-adjusted="{{adjusted.skills.listen}}" data-manual-adj="{{system.adjustments.skills.listen}}" data-target="system.skills.listen" min="2" max="6">
+					<input type="number" class="adjustable skill-target" value="{{adjusted.skills.listen}}" data-base="{{system.skills.listen}}" data-adjusted="{{adjusted.skills.listen}}" data-manual-adj="{{system.adjustments.skills.listen}}" data-target="system.skills.listen" min="2" max="6" {{#unless system.customizeSkills}}readonly{{/unless}}>
 					<i class="fa fa-dice-d6 rollable skill-roll" data-skill="listen" title="{{localize 'DOLMEN.Roll.SkillCheck'}}"></i>
 				</div>
 				<div class="skill">
 					<label>{{localize "DOLMEN.Skills.Search"}}</label>
 					<input type="hidden" name="system.skills.search" value="{{system.skills.search}}">
-					<input type="number" class="adjustable" value="{{adjusted.skills.search}}" data-base="{{system.skills.search}}" data-adjusted="{{adjusted.skills.search}}" data-manual-adj="{{system.adjustments.skills.search}}" data-target="system.skills.search" min="2" max="6">
+					<input type="number" class="adjustable skill-target" value="{{adjusted.skills.search}}" data-base="{{system.skills.search}}" data-adjusted="{{adjusted.skills.search}}" data-manual-adj="{{system.adjustments.skills.search}}" data-target="system.skills.search" min="2" max="6" {{#unless system.customizeSkills}}readonly{{/unless}}>
 					<i class="fa fa-dice-d6 rollable skill-roll" data-skill="search" title="{{localize 'DOLMEN.Roll.SkillCheck'}}"></i>
 				</div>
 				<div class="skill">
 					<label>{{localize "DOLMEN.Skills.Survival"}}</label>
 					<input type="hidden" name="system.skills.survival" value="{{system.skills.survival}}">
-					<input type="number" class="adjustable" value="{{adjusted.skills.survival}}" data-base="{{system.skills.survival}}" data-adjusted="{{adjusted.skills.survival}}" data-manual-adj="{{system.adjustments.skills.survival}}" data-target="system.skills.survival" min="2" max="6">
+					<input type="number" class="adjustable skill-target" value="{{adjusted.skills.survival}}" data-base="{{system.skills.survival}}" data-adjusted="{{adjusted.skills.survival}}" data-manual-adj="{{system.adjustments.skills.survival}}" data-target="system.skills.survival" min="2" max="6" {{#unless system.customizeSkills}}readonly{{/unless}}>
 					<i class="fa fa-dice-d6 rollable skill-roll" data-skill="survival" title="{{localize 'DOLMEN.Roll.SkillCheck'}}"></i>
 				</div>
 				{{#each system.extraSkills}}
@@ -273,7 +273,7 @@
 					<label>{{localize (concat "DOLMEN.Skills." this.id)}}</label>
 					<input type="hidden" name="system.extraSkills.{{@index}}.id" value="{{this.id}}">
 					<input type="hidden" name="system.extraSkills.{{@index}}.target" value="{{this.target}}">
-					<input type="number" class="adjustable extra-skill-target" value="{{add this.target (lookup @root.system.adjustments.skills this.id)}}" data-base="{{this.target}}" data-adjusted="{{add this.target (lookup @root.system.adjustments.skills this.id)}}" data-manual-adj="{{lookup @root.system.adjustments.skills this.id}}" data-target="system.extraSkills.{{@index}}.target" min="2" max="6">
+					<input type="number" class="adjustable extra-skill-target skill-target" value="{{add this.target (lookup @root.system.adjustments.skills this.id)}}" data-base="{{this.target}}" data-adjusted="{{add this.target (lookup @root.system.adjustments.skills this.id)}}" data-manual-adj="{{lookup @root.system.adjustments.skills this.id}}" data-target="system.extraSkills.{{@index}}.target" min="2" max="6" {{#unless @root.system.customizeSkills}}readonly{{/unless}}>
 					<button type="button" class="remove-skill-btn" data-skill-index="{{@index}}" title="{{localize 'DOLMEN.RemoveSkill'}}">
 						<i class="fas fa-square-xmark"></i>
 					</button>
@@ -295,20 +295,17 @@
 			<div class="movement-grid">
 				<div class="movement-stat">
 					<label>{{localize "DOLMEN.Movement.Speed"}}</label>
-					<input type="hidden" name="system.speed" value="{{system.speed}}">
-					<input type="number" class="adjustable" value="{{adjusted.speed}}" data-base="{{system.speed}}" data-adjusted="{{adjusted.speed}}" data-manual-adj="{{system.adjustments.speed}}" data-target="system.speed" min="0">
+					<span class="stat-value">{{adjusted.speed}}</span>
 					<span class="unit">{{localize "DOLMEN.Movement.FeetPerRound"}}</span>
 				</div>
 				<div class="movement-stat">
 					<label>{{localize "DOLMEN.Movement.Exploring"}}</label>
-					<input type="hidden" name="system.movement.exploring" value="{{system.movement.exploring}}">
-					<input type="number" class="adjustable" value="{{adjusted.movement.exploring}}" data-base="{{system.movement.exploring}}" data-adjusted="{{adjusted.movement.exploring}}" data-manual-adj="{{system.adjustments.movement.exploring}}" data-target="system.movement.exploring" min="0">
+					<span class="stat-value">{{adjusted.movement.exploring}}</span>
 					<span class="unit">{{localize "DOLMEN.Movement.FeetPerTurn"}}</span>
 				</div>
 				<div class="movement-stat">
 					<label>{{localize "DOLMEN.Movement.Overland"}}</label>
-					<input type="hidden" name="system.movement.overland" value="{{system.movement.overland}}">
-					<input type="number" class="adjustable" value="{{adjusted.movement.overland}}" data-base="{{system.movement.overland}}" data-adjusted="{{adjusted.movement.overland}}" data-manual-adj="{{system.adjustments.movement.overland}}" data-target="system.movement.overland" min="0">
+					<span class="stat-value">{{adjusted.movement.overland}}</span>
 					<span class="unit">{{localize "DOLMEN.Movement.TravelPoints"}}</span>
 				</div>
 			</div>

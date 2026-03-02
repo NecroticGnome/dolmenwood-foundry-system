@@ -217,7 +217,8 @@ Hooks.once('init', async function () {
 		choices: {
 			weight: 'DOLMEN.Encumbrance.weight',
 			treasure: 'DOLMEN.Encumbrance.treasure',
-			slots: 'DOLMEN.Encumbrance.slots'
+			slots: 'DOLMEN.Encumbrance.slots',
+			disabled: 'DOLMEN.Encumbrance.disabled'
 		},
 		onChange: () => {
 			ui.items?.render()
