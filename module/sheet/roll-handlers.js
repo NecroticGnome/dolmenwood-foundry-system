@@ -1,4 +1,4 @@
-/* global game, Roll, ChatMessage, CONST */
+/* global game, Roll, ChatMessage, CONST, CONFIG */
 /**
  * Roll Handlers
  * Ability check, saving throw, skill check, and trait roll functions.
@@ -7,7 +7,6 @@
 
 import { AdventurerDataModel } from '../data-models.mjs'
 import { createContextMenu } from './context-menu.js'
-import { computeAdjustedValues } from './data-context.js'
 import { getTraitRollOptions } from './trait-helpers.js'
 import { getDieIconFromFormula } from './attack-rolls.js'
 
@@ -97,7 +96,7 @@ export function onAbilityRoll(sheet, abilityKey, event) {
  * @param {string} [traitName] - Name of the trait providing bonus
  */
 async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0, traitName = null) {
-	const adjusted = computeAdjustedValues(sheet.actor)
+	const adjusted = sheet.actor.system.final
 	const baseScore = adjusted.abilities[abilityKey]?.score
 	const baseMod = adjusted.abilities[abilityKey]?.mod
 	if (baseScore === undefined) return
@@ -168,7 +167,7 @@ async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0, trait
 	await ChatMessage.create({
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
-		rolls: [roll],
+		sound: CONFIG.sounds.dice,
 		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }
@@ -184,30 +183,150 @@ async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0, trait
  * @param {Event} event - The click event for positioning
  */
 export function onSaveRoll(sheet, saveKey, event) {
-	const rollOptions = getTraitRollOptions(sheet.actor, `saves.${saveKey}`)
+	const modifiers = getTraitRollOptions(sheet.actor, `saves.${saveKey}`)
 
-	if (rollOptions.length === 0) {
-		performSavingThrow(sheet, saveKey, 0)
-	} else {
-		const position = event ? {
-			top: event.currentTarget.getBoundingClientRect().top,
-			left: event.currentTarget.getBoundingClientRect().left
-		} : { top: 100, left: 100 }
-
-		openTraitRollContextMenu(sheet, saveKey, 'save', rollOptions, position)
+	// Add Magic Resistance option if actor has MR > 0 (adventurers only)
+	if (sheet.actor.type === 'Adventurer') {
+		const adjusted = sheet.actor.system.final
+		if (adjusted.magicResistance > 0) {
+			modifiers.push({
+				id: 'magicResistance',
+				name: game.i18n.localize('DOLMEN.Traits.MagicResistance'),
+				bonus: adjusted.magicResistance,
+				condition: null
+			})
+		}
 	}
+
+	const position = event ? {
+		top: event.currentTarget.getBoundingClientRect().top,
+		left: event.currentTarget.getBoundingClientRect().left
+	} : { top: 100, left: 100 }
+
+	openSaveModifierPanel(sheet, saveKey, modifiers, position)
+}
+
+/**
+ * Open a modifier panel for saving throws (multi-select bonuses + numeric grid).
+ * @param {DolmenSheet} sheet - The sheet instance
+ * @param {string} saveKey - The save key
+ * @param {object[]} modifiers - Available modifier options
+ * @param {object} position - Screen position for the panel
+ */
+function openSaveModifierPanel(sheet, saveKey, modifiers, position) {
+	// Remove any existing context menu
+	document.querySelector('.dolmen-weapon-context-menu')?.remove()
+
+	const rollLabel = game.i18n.localize('DOLMEN.Attack.Roll')
+
+	// Build HTML
+	let html = `<div class="roll-btn"><i class="fas fa-dice-d20"></i> ${rollLabel}</div>`
+
+	// Modifier toggles (multi-select)
+	if (modifiers.length > 0) {
+		html += '<div class="menu-separator"></div>'
+		for (const mod of modifiers) {
+			const bonusStr = mod.bonus >= 0 ? `+${mod.bonus}` : `${mod.bonus}`
+			html += `
+				<div class="modifier-item" data-mod-id="${mod.id}">
+					<span class="mod-check"></span>
+					<span class="mod-name">${mod.name}</span>
+					<span class="mod-bonus">${bonusStr}</span>
+				</div>
+			`
+		}
+	}
+
+	// Numeric modifier grid
+	html += '<div class="menu-separator"></div>'
+	html += '<div class="numeric-grid">'
+	for (const val of [-4, -3, -2, -1]) {
+		html += `<div class="numeric-btn" data-num-mod="${val}">${val}</div>`
+	}
+	for (const val of [1, 2, 3, 4]) {
+		html += `<div class="numeric-btn" data-num-mod="${val}">+${val}</div>`
+	}
+	html += '</div>'
+
+	// Create panel element
+	const panel = document.createElement('div')
+	panel.className = 'dolmen-weapon-context-menu modifier-panel'
+	panel.innerHTML = html
+	panel.style.position = 'fixed'
+	panel.style.top = `${position.top}px`
+	panel.style.left = `${position.left}px`
+	sheet.element.appendChild(panel)
+
+	// Adjust position (appear to left of click)
+	const panelRect = panel.getBoundingClientRect()
+	panel.style.left = `${position.left - panelRect.width - 5}px`
+
+	// Modifier toggle behavior (multi-select)
+	panel.querySelectorAll('.modifier-item').forEach(item => {
+		item.addEventListener('click', () => {
+			item.classList.toggle('selected')
+			const check = item.querySelector('.mod-check')
+			check.textContent = item.classList.contains('selected') ? '\u2713' : ''
+		})
+	})
+
+	// Numeric button behavior (single-select toggle)
+	panel.querySelectorAll('.numeric-btn').forEach(btn => {
+		btn.addEventListener('click', () => {
+			const wasSelected = btn.classList.contains('selected')
+			panel.querySelectorAll('.numeric-btn').forEach(b => b.classList.remove('selected'))
+			if (!wasSelected) btn.classList.add('selected')
+		})
+	})
+
+	// Close panel when clicking outside
+	const closePanel = (e) => {
+		if (!panel.contains(e.target)) {
+			panel.remove()
+			document.removeEventListener('click', closePanel)
+		}
+	}
+
+	// ROLL button
+	panel.querySelector('.roll-btn').addEventListener('click', () => {
+		// Gather selected modifiers
+		const selectedNames = []
+		let totalBonus = 0
+		panel.querySelectorAll('.modifier-item.selected').forEach(item => {
+			const mod = modifiers.find(m => m.id === item.dataset.modId)
+			if (mod) {
+				totalBonus += mod.bonus
+				selectedNames.push(mod.name)
+			}
+		})
+
+		// Gather numeric modifier
+		const selectedNumBtn = panel.querySelector('.numeric-btn.selected')
+		const numericMod = selectedNumBtn ? parseInt(selectedNumBtn.dataset.numMod) : 0
+		totalBonus += numericMod
+		if (numericMod !== 0) {
+			selectedNames.push(numericMod > 0 ? `+${numericMod}` : `${numericMod}`)
+		}
+
+		panel.remove()
+		document.removeEventListener('click', closePanel)
+		performSavingThrow(sheet, saveKey, totalBonus, selectedNames)
+	})
+
+	setTimeout(() => document.addEventListener('click', closePanel), 0)
 }
 
 /**
  * Perform a saving throw roll. Success if d20 >= save target.
  * @param {DolmenSheet} sheet - The sheet instance
  * @param {string} saveKey - The save key
- * @param {number} traitBonus - Additional bonus from selected trait (lowers target)
- * @param {string} [traitName] - Name of the trait providing bonus
+ * @param {number} traitBonus - Total bonus that lowers save target
+ * @param {string[]} [modifierNames] - Names of applied modifiers for display
  */
-async function performSavingThrow(sheet, saveKey, traitBonus = 0, traitName = null) {
-	const adjusted = computeAdjustedValues(sheet.actor)
-	const baseSaveTarget = adjusted.saves[saveKey]
+async function performSavingThrow(sheet, saveKey, traitBonus = 0, modifierNames = []) {
+	const baseSaveTarget = sheet.actor.type === 'Adventurer'
+		? sheet.actor.system.final.saves[saveKey]
+		: sheet.actor.system.saves[saveKey]
 	if (baseSaveTarget === undefined) return
 
 	// Trait bonus lowers the save target (making it easier)
@@ -228,7 +347,7 @@ async function performSavingThrow(sheet, saveKey, traitBonus = 0, traitName = nu
 
 	const anchor = await roll.toAnchor({ classes: ['save-inline-roll'] })
 
-	const traitBadge = traitName ? `<span class="trait-badge">${traitName}</span>` : ''
+	const traitBadges = modifierNames.map(n => `<span class="trait-badge">${n}</span>`).join(' ')
 	const targetDisplay = traitBonus !== 0
 		? `${baseSaveTarget} - ${traitBonus} = ${saveTarget}+`
 		: `${saveTarget}+`
@@ -238,7 +357,7 @@ async function performSavingThrow(sheet, saveKey, traitBonus = 0, traitName = nu
 			<div class="roll-header save">
 				<i class="fa-solid fa-shield-halved"></i>
 				<div class="roll-info">
-					<h3>${game.i18n.localize('DOLMEN.Roll.SaveVs')} ${saveName} ${traitBadge}</h3>
+					<h3>${game.i18n.localize('DOLMEN.Roll.SaveVs')} ${saveName} ${traitBadges}</h3>
 					<span class="roll-type">${game.i18n.localize('DOLMEN.Roll.SavingThrow')}</span>
 				</div>
 			</div>
@@ -257,7 +376,7 @@ async function performSavingThrow(sheet, saveKey, traitBonus = 0, traitName = nu
 	await ChatMessage.create({
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
-		rolls: [roll],
+		sound: CONFIG.sounds.dice,
 		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }
@@ -297,7 +416,7 @@ export function onSkillRoll(sheet, skillKey, targetOverride, event) {
  * @param {string} [traitName] - Name of the trait providing bonus
  */
 async function performSkillCheck(sheet, skillKey, targetOverride = null, traitBonus = 0, traitName = null) {
-	const adjusted = computeAdjustedValues(sheet.actor)
+	const adjusted = sheet.actor.system.final
 	let baseSkillTarget = targetOverride
 
 	if (baseSkillTarget === null) {
@@ -358,7 +477,7 @@ async function performSkillCheck(sheet, skillKey, targetOverride = null, traitBo
 	await ChatMessage.create({
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
-		rolls: [roll],
+		sound: CONFIG.sounds.dice,
 		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }
@@ -408,7 +527,7 @@ export async function rollTrait(sheet, traitId, traitName, formula, rollTarget =
 	await ChatMessage.create({
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
-		rolls: [roll],
+		sound: CONFIG.sounds.dice,
 		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }

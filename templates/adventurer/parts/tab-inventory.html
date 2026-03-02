@@ -8,7 +8,8 @@
 					<label>{{localize "DOLMEN.Encumbrance.Method"}}</label>
 					<span class="encumbrance-value">{{encumbranceMethodLabel}}</span>
 				</div>
-				{{#if (eq encumbranceMethod "slots")}}
+				{{#if (eq encumbranceMethod "disabled")}}
+				{{else if (eq encumbranceMethod "slots")}}
 				<div class="encumbrance-stat">
 					<label>{{localize "DOLMEN.Inventory.Equipped"}}</label>
 					<span class="encumbrance-value">{{encumbrance.equipped.current}} / {{encumbrance.equipped.max}}</span>

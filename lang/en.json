@@ -199,7 +199,9 @@
 			"Overland": "Overland",
 			"FeetPerRound": "Feet / Round",
 			"FeetPerTurn": "Feet / Turn",
-			"TravelPoints": "Travel Points / day"
+			"TravelPoints": "Travel Points / day",
+			"BaseSpeed": "Base Speed",
+			"BaseSpeedHint": "The character's base movement speed before encumbrance and adjustments."
 		},
 		"SkillTargets": "Skill Targets",
 		"Skills": {
@@ -219,7 +221,8 @@
 			"monsterLore": "Monster Lore",
 			"OptionalRules": "Optional Rules",
 			"CustomizeSkills": "Customize Skills",
-			"CustomizeSkillsHint": "Use the optional customising skills rule instead of skill table (works only for skill-based classes, e.g., Thief, Hunter, Bard)."
+			"CustomizeSkillsHint": "Use the optional customising skills rule instead of skill table (works only for skill-based classes, e.g., Thief, Hunter, Bard).",
+			"CustomizeRequired": "Enable 'Customize Skills' in the Settings tab to edit skill targets directly, or use the Adjustments tab."
 		},
 		"SkillPoints": "skill points",
 		"AddSkill": "Add Skill",
@@ -271,7 +274,8 @@
 			"SignificantLoadHint": "Percentage of max load at which treasure counts as significant (Weight Treasure method).",
 			"weight": "Weight (Full)",
 			"treasure": "Weight (Treasure)",
-			"slots": "Slots"
+			"slots": "Slots",
+			"disabled": "Disabled"
 		},
 		"Exhaustion": "Exhaustion",
 		"Coins": {

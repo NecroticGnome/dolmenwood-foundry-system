@@ -1,6 +1,6 @@
 /* global game, foundry, canvas, ui, Hooks, ChatMessage, Actor */
 
-import { computeXPModifier, computeAdjustedValues } from '../sheet/data-context.js'
+import { computeXPModifier } from '../sheet/data-context.js'
 
 const { DialogV2 } = foundry.applications.api
 
@@ -111,7 +111,7 @@ function renderParty() {
 		const stats = document.createElement('div')
 		stats.className = 'party-stats'
 
-		const adjusted = actor.type === 'Adventurer' ? computeAdjustedValues(actor) : null
+		const adjusted = actor.type === 'Adventurer' ? actor.system.final : null
 		const hp = actor.system.hp
 		const hpMax = adjusted?.hp?.max ?? hp.max
 		const hpRatio = hpMax > 0 ? hp.value / hpMax : 0
@@ -263,7 +263,7 @@ async function addXP() {
 
 	const members = validActors.map(a => {
 		const isRetainer = a.system.retainer
-		const adjusted = computeAdjustedValues(a)
+		const adjusted = a.system.final
 		const baseMod = computeXPModifier(a, adjusted.abilities)
 		const adjMod = a.system.adjustments.xpModifier || 0
 		const bonusPct = baseMod + adjMod

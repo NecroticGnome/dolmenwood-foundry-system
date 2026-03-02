@@ -1,17 +1,26 @@
 <section class="tab-content tab-settings {{tab.cssClass}}" data-group="primary" data-tab="settings">
-	<section class="unit-system boxed-section">
-		<h2>{{localize "DOLMEN.KindredDetails.UnitSystem"}}</h2>
-		<div class="unit-toggle">
-			<label class="radio-label">
-				<input type="radio" name="system.physical.unitSystem" value="imperial" {{#if (eq system.physical.unitSystem "imperial" )}}checked{{/if}}>
-				{{localize "DOLMEN.KindredDetails.Imperial"}}
-			</label>
-			<label class="radio-label">
-				<input type="radio" name="system.physical.unitSystem" value="metric" {{#if (eq system.physical.unitSystem "metric" )}}checked{{/if}}>
-				{{localize "DOLMEN.KindredDetails.Metric"}}
-			</label>
-		</div>
-	</section>
+	<div class="two-columns">
+		<section class="unit-system boxed-section">
+			<h2>{{localize "DOLMEN.KindredDetails.UnitSystem"}}</h2>
+			<div class="unit-toggle">
+				<label class="radio-label">
+					<input type="radio" name="system.physical.unitSystem" value="imperial" {{#if (eq system.physical.unitSystem "imperial" )}}checked{{/if}}>
+					{{localize "DOLMEN.KindredDetails.Imperial"}}
+				</label>
+				<label class="radio-label">
+					<input type="radio" name="system.physical.unitSystem" value="metric" {{#if (eq system.physical.unitSystem "metric" )}}checked{{/if}}>
+					{{localize "DOLMEN.KindredDetails.Metric"}}
+				</label>
+			</div>
+		</section>
+		<section class="base-speed-setting boxed-section">
+			<h2>{{localize "DOLMEN.Movement.BaseSpeed"}}</h2>
+			<div class="form-group">
+				<input type="number" name="system.speed" value="{{system.speed}}" min="0">
+				<span class="unit">{{localize "DOLMEN.Movement.FeetPerRound"}}</span>
+			</div>
+		</section>
+	</div>
 
 	<section class="customize-skills boxed-section">
 		<h2>{{localize "DOLMEN.Skills.OptionalRules"}}</h2>

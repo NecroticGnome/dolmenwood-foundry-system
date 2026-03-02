@@ -217,7 +217,8 @@ Hooks.once('init', async function () {
 		choices: {
 			weight: 'DOLMEN.Encumbrance.weight',
 			treasure: 'DOLMEN.Encumbrance.treasure',
-			slots: 'DOLMEN.Encumbrance.slots'
+			slots: 'DOLMEN.Encumbrance.slots',
+			disabled: 'DOLMEN.Encumbrance.disabled'
 		},
 		onChange: () => {
 			ui.items?.render()
@@ -227,7 +228,8 @@ Hooks.once('init', async function () {
 			foundry.applications.instances?.forEach(app => {
 				if (app.collection?.documentName === 'Item') app.render()
 			})
-			// Re-render open adventurer sheets
+			// Recompute derived data and re-render open adventurer sheets
+			game.actors.filter(a => a.type === 'Adventurer').forEach(a => a.prepareData())
 			Object.values(ui.windows).forEach(app => {
 				if (app.document?.type === 'Adventurer') app.render()
 			})

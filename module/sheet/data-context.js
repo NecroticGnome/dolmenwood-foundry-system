@@ -66,7 +66,8 @@ export function computeEncumbrance(actor) {
 	case 'weight': return computeWeightFull(equipped, stowed, totalCoins)
 	case 'treasure': return computeWeightTreasure(equipped, stowed, totalCoins, game.settings.get('dolmenwood', 'significantLoad'))
 	case 'slots': return computeSlots(equipped, stowed, totalCoins)
-	default: return { current: 0, max: 1600, speed: 40 }
+	case 'disabled': return { current: 0, max: 0, speed: null }
+	default: return { current: 0, max: 0, speed: null }
 	}
 }
 
@@ -191,7 +192,13 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 		return { score: adjustedScore, mod: adjustedMod }
 	}
 
-	const baseSpeed = encumbranceSpeed ?? system.speed
+	// Apply encumbrance as a percentage of character speed
+	// 40→100%, 30→75%, 20→50%, 10→25%, 0→0%
+	let baseSpeed = system.speed
+	if (encumbranceSpeed !== null && encumbranceSpeed !== undefined) {
+		const ratio = encumbranceSpeed / 40
+		baseSpeed = Math.floor(system.speed * ratio)
+	}
 
 	// Compute AC from equipped armor + adjusted DEX modifier + shield bonus
 	const equippedArmor = actor.items?.filter(i => i.type === 'Armor' && i.system.equipped) || []
@@ -270,9 +277,10 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 			search: skillAdjusted('search'),
 			survival: skillAdjusted('survival')
 		},
+		baseSpeed,
 		speed: baseSpeed + (adj.speed || 0) + getTraitAdj('speed'),
 		movement: {
-			exploring: (baseSpeed * 3) + (adj.movement.exploring || 0),
+			exploring: (baseSpeed + (adj.speed || 0) + getTraitAdj('speed')) * 3 + (adj.movement.exploring || 0),
 			overland: Math.floor((baseSpeed + (adj.speed || 0) + getTraitAdj('speed')) / 5) + (adj.movement.overland || 0)
 		}
 	}

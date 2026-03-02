@@ -1,4 +1,4 @@
-/* global game, ui, Roll, ChatMessage, CONST */
+/* global game, ui, Roll, ChatMessage, CONST, CONFIG */
 /**
  * Attack Roll Handlers
  * All melee/missile attack flows, context menu attacks, and roll utilities.
@@ -6,7 +6,6 @@
  */
 
 import { createContextMenu } from './context-menu.js'
-import { computeAdjustedValues } from './data-context.js'
 import { getAllActiveTraits, resolveDamageProgression } from './trait-helpers.js'
 import { parseSaveLinks } from '../chat-save.js'
 import { getWeaponTypesForGroup, WEAPON_PROF_GROUPS } from '../utils/choices.js'
@@ -126,7 +125,7 @@ export function createUnarmedWeapon(actor) {
  * @returns {object} Object containing attackMod, abilityMod, traitMod, and totalMod
  */
 export function getAttackModifiers(sheet, attackType) {
-	const adjusted = computeAdjustedValues(sheet.actor)
+	const adjusted = sheet.actor.system.final
 	const attackMod = adjusted.attack || 0
 	const abilityMod = attackType === 'melee'
 		? adjusted.abilities.strength.mod
@@ -246,7 +245,6 @@ async function performAttackRoll(sheet, weapon, attackType, {
 	totalAttackMod = null, damageFormula = null,
 	modifierNames = null, attackModeName = null, specialText = null
 } = {}) {
-	const rolls = []
 	let attackData = null
 	let damageData = null
 
@@ -262,7 +260,7 @@ async function performAttackRoll(sheet, weapon, attackType, {
 		const formula = buildAttackFormula(finalMod)
 		const roll = new Roll(formula)
 		await roll.evaluate()
-		rolls.push(roll)
+
 
 		attackData = {
 			anchor: await roll.toAnchor({ classes: ['attack-inline-roll'] }),
@@ -281,7 +279,7 @@ async function performAttackRoll(sheet, weapon, attackType, {
 		await roll.evaluate()
 		// Enforce minimum 1 damage
 		if (roll.total < 1) roll._total = 1
-		rolls.push(roll)
+
 
 		damageData = {
 			anchor: await roll.toAnchor({ classes: ['damage-inline-roll'] }),
@@ -300,7 +298,7 @@ async function performAttackRoll(sheet, weapon, attackType, {
 	await ChatMessage.create({
 		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
 		content: chatContent,
-		rolls,
+		sound: CONFIG.sounds.dice,
 		style: CONST.CHAT_MESSAGE_STYLES.OTHER
 	})
 }
@@ -423,7 +421,7 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 
 	// Backstab - available if class has backstab feature
 	if (classItem?.system?.hasBackstab) {
-		const strMod = computeAdjustedValues(actor).abilities.strength.mod
+		const strMod = actor.system.final.abilities.strength.mod
 		const modStr = strMod >= 0 ? ` + ${strMod}` : ` - ${Math.abs(strMod)}`
 		modifiers.push({
 			id: 'backstab',
@@ -648,7 +646,7 @@ async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, 
 		damageFormula = damageOverride
 	} else {
 		damageFormula = weapon.system.damage
-		const strMod = computeAdjustedValues(sheet.actor).abilities.strength.mod
+		const strMod = sheet.actor.system.final.abilities.strength.mod
 		if (strMod !== 0) {
 			damageFormula = strMod > 0
 				? `${damageFormula} + ${strMod}`
