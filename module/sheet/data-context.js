@@ -172,8 +172,9 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 	const skillAdjusted = (name) => {
 		const overridePath = `skills.${name}`
 		if (skillOverrides[overridePath] !== undefined) {
-			// Override acts as a ceiling — use whichever is lower (better)
-			const base = Math.min(skillOverrides[overridePath], system.skills[name])
+			// Kindred bonus = how much better than default (6). Apply that difference to class value.
+			const kindredBonus = 6 - skillOverrides[overridePath]
+			const base = system.skills[name] - kindredBonus
 			return base + (adj.skills[name] || 0)
 		}
 		return system.skills[name] + (adj.skills[name] || 0) + getTraitAdj(overridePath)
