@@ -118,7 +118,7 @@
 	<section class="item-common">
 		<h2>{{localize "DOLMEN.Item.CommonDetails"}}</h2>
 		<div class="form-row">
-			<div class="form-field cost-field">
+			<div class="form-field cost-field" style="flex: 2;">
 				<label>{{localize "DOLMEN.Item.Cost"}}</label>
 				<div class="flexrow">
 					<input type="number" name="system.cost" value="{{system.cost}}" min="0">
@@ -127,6 +127,12 @@
 					</select>
 				</div>
 			</div>
+			<div class="form-field" style="flex: 1;">
+				<label>{{localize "DOLMEN.Item.Quantity"}}</label>
+				<input type="number" name="system.quantity" value="{{system.quantity}}" min="1">
+			</div>
+		</div>
+		<div class="form-row">
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.WeightCoins"}}</label>
 				<input type="number" name="system.weightCoins" value="{{system.weightCoins}}" min="0" step="0.1">
@@ -138,10 +144,6 @@
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.StackSize"}}</label>
 				<input type="number" name="system.stackSize" value="{{system.stackSize}}" min="1">
-			</div>
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Item.Quantity"}}</label>
-				<input type="number" name="system.quantity" value="{{system.quantity}}" min="1">
 			</div>
 		</div>
 	</section>
@@ -156,6 +158,12 @@
 				<label>{{localize "DOLMEN.Item.Damage"}}</label>
 				<input type="text" name="system.damage" value="{{system.damage}}" placeholder="1d6">
 			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.ToHitBonus"}}</label>
+				<input type="number" name="system.toHitBonus" value="{{system.toHitBonus}}">
+			</div>
+		</div>
+		<div class="form-row">
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.WeaponType.label"}}</label>
 				<select name="system.weaponType">
@@ -260,6 +268,23 @@
 		<div class="form-group">
 			<label>{{localize "DOLMEN.Item.EffectsSummary"}}</label>
 			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
+		</div>
+	</section>
+	{{/if}}
+
+	{{#if isContainer}}
+	<!-- Container-specific fields -->
+	<section class="item-container">
+		<h2>{{localize "DOLMEN.Item.ContainerDetails"}}</h2>
+		<div class="form-row">
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.CapacitySlots"}}</label>
+				<input type="number" name="system.capacitySlots" value="{{system.capacitySlots}}" min="0">
+			</div>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Item.CapacityCoins"}}</label>
+				<input type="number" name="system.capacityCoins" value="{{system.capacityCoins}}" min="0">
+			</div>
 		</div>
 	</section>
 	{{/if}}

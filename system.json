@@ -150,6 +150,9 @@
       "Foraged": {
         "htmlFields": ["notes", "effects"]
       },
+      "Container": {
+        "htmlFields": ["notes"]
+      },
       "Spell": {
         "htmlFields": ["description"]
       },

@@ -487,6 +487,20 @@ class DolmenActor extends Actor {
 		const maxSkills = CONFIG.DOLMENWOOD.maxExtraSkills || 6
 		updateData['system.extraSkills'] = finalSkills.slice(0, maxSkills)
 
+		// Apply attack bonus from progression table
+		if (progression.attackProgression?.[level - 1] !== undefined) {
+			updateData['system.attack'] = progression.attackProgression[level - 1]
+		}
+
+		// Apply saving throws from progression tables
+		if (progression.saveProgressions) {
+			for (const save of ['doom', 'ray', 'hold', 'blast', 'spell']) {
+				if (progression.saveProgressions[save]?.[level - 1] !== undefined) {
+					updateData[`system.saves.${save}`] = progression.saveProgressions[save][level - 1]
+				}
+			}
+		}
+
 		await this.update(updateData)
 	}
 

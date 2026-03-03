@@ -17,7 +17,7 @@ import {
 	setupTabListeners, setupXPListener, setupLevelListeners, setupCoinListener,
 	setupPortraitPicker, setupSkillListeners, setupAttackListeners,
 	setupAbilityRollListeners, setupSaveRollListeners,
-	setupSkillRollListeners, setupUnitConversionListeners,
+	setupSkillRollListeners, setupUnitConversionListeners, setupLanguagesListener,
 	setupDetailsRollListeners, setupExtraDetailsRollListeners,
 	setupBackgroundRollListener, setupNameRollListener,
 	setupTraitListeners, setupAdjustableInputListeners,
@@ -80,9 +80,10 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			forgetSpell: DolmenSheet._onForgetSpell,
 			memorizeToSlot: DolmenSheet._onMemorizeToSlot,
 			castSpell: DolmenSheet._onCastSpell,
-			setExhaustion: DolmenSheet._onSetExhaustion
-		},
-		dragDrop: [{ dropSelector: '.item-list' }]
+			setExhaustion: DolmenSheet._onSetExhaustion,
+			toggleContainer: DolmenSheet._onToggleContainer,
+			removeFromContainer: DolmenSheet._onRemoveFromContainer
+		}
 	}
 
 	static PARTS = {
@@ -374,14 +375,55 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		// Prepare inventory items grouped by type (exclude spells, Kindred, and Class items)
 		const excludedTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune', 'Kindred', 'Class']
 		const items = actor.items.contents.filter(i => !excludedTypes.includes(i.type))
-		const equippedItems = items.filter(i => i.system.equipped).map(i => prepareItemData(i))
-		const stowedItems = items.filter(i => !i.system.equipped).map(i => prepareItemData(i))
+		const equippedItems = items.filter(i => i.system.equipped && i.type !== 'Container').map(i => prepareItemData(i))
+		const allStowedItems = items.filter(i => !i.system.equipped && i.type !== 'Container').map(i => prepareItemData(i))
+
+		// Separate containers and build container data for stowed section
+		const containerItems = items.filter(i => i.type === 'Container')
+		const encumbranceMethod = game.settings.get('dolmenwood', 'encumbranceMethod')
+		context.containers = containerItems.map(c => {
+			const prepared = prepareItemData(c)
+			const contents = allStowedItems.filter(i => i.system.containerId === c.id)
+			const slotsUsed = contents.reduce((sum, i) => {
+				const w = i.system.weightSlots || 0
+				if (!w) return sum
+				const qty = i.system.quantity || 1
+				const stack = i.system.stackSize || 1
+				return sum + (stack > 1 ? w * Math.ceil(qty / stack) : w * qty)
+			}, 0)
+			const coinsUsed = contents.reduce((sum, i) => sum + (i.system.weightCoins || 0) * (i.system.quantity || 1), 0)
+			return {
+				...prepared,
+				contents: groupItemsByType(contents),
+				hasContents: contents.length > 0,
+				slotsUsed,
+				slotsMax: c.system.capacitySlots,
+				coinsUsed,
+				coinsMax: c.system.capacityCoins,
+				isSlots: encumbranceMethod === 'slots'
+			}
+		})
+		context.hasContainers = context.containers.length > 0
+
+		// Loose stowed items (not in any container)
+		const containerIds = new Set(containerItems.map(c => c.id))
+		const looseStowedItems = allStowedItems.filter(i => !i.system.containerId || !containerIds.has(i.system.containerId))
 
 		// Group items by type
 		context.equippedByType = groupItemsByType(equippedItems)
-		context.stowedByType = groupItemsByType(stowedItems)
+		context.stowedByType = groupItemsByType(looseStowedItems)
 		context.hasEquippedItems = equippedItems.length > 0
-		context.hasStowedItems = stowedItems.length > 0
+		context.hasLooseStowedItems = looseStowedItems.length > 0
+		context.unsortedWeight = encumbranceMethod === 'slots'
+			? looseStowedItems.reduce((sum, i) => {
+				const w = i.system.weightSlots || 0
+				if (!w) return sum
+				const qty = i.system.quantity || 1
+				const stack = i.system.stackSize || 1
+				return sum + (stack > 1 ? w * Math.ceil(qty / stack) : w * qty)
+			}, 0)
+			: looseStowedItems.reduce((sum, i) => sum + (i.system.weightCoins || 0) * (i.system.quantity || 1), 0)
+		context.hasStowedItems = context.hasLooseStowedItems || context.hasContainers
 
 		// Prepare magic tab data
 		context.knackTypeChoices = buildChoices('DOLMEN.Magic.Knacks.Types', CHOICE_KEYS.knackTypes)
@@ -556,6 +598,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		setupSaveRollListeners(this)
 		setupSkillRollListeners(this)
 		setupUnitConversionListeners(this)
+		setupLanguagesListener(this)
 		setupDetailsRollListeners(this)
 		setupExtraDetailsRollListeners(this)
 		setupBackgroundRollListener(this)
@@ -650,7 +693,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			const item = this.actor.items.get(itemId)
 			if (item) {
 				this.actor.warnIfIncompatibleSize(item)
-				await item.update({ 'system.equipped': true })
+				const updates = { 'system.equipped': true }
+				if (item.system.containerId) updates['system.containerId'] = ''
+				await item.update(updates)
 			}
 		}
 	}
@@ -675,6 +720,13 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 					modal: true
 				})
 				if (confirmed) {
+					// Clean up contained items when deleting a container
+					if (item.type === 'Container') {
+						const contained = this.actor.items.filter(i => i.system.containerId === itemId)
+						for (const ci of contained) {
+							await ci.update({ 'system.containerId': '' })
+						}
+					}
 					// Clean up memorized spell slots before deleting
 					if (['Spell', 'HolySpell'].includes(item.type)) {
 						const magicPath = item.type === 'HolySpell' ? 'holyMagic' : 'arcaneMagic'
@@ -719,6 +771,23 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				if (currentQty > 1) {
 					await item.update({ 'system.quantity': currentQty - 1 })
 				}
+			}
+		}
+	}
+
+	static _onToggleContainer(_event, target) {
+		const group = target.closest('.container-group')
+		if (group) {
+			group.classList.toggle('collapsed')
+		}
+	}
+
+	static async _onRemoveFromContainer(_event, target) {
+		const itemId = target.closest('[data-item-id]')?.dataset.itemId
+		if (itemId) {
+			const item = this.actor.items.get(itemId)
+			if (item) {
+				await item.update({ 'system.containerId': '' })
 			}
 		}
 	}
@@ -1009,12 +1078,31 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 						DolmenSheet._divideCost(itemData.system, bagQty)
 					}
 				}
+				// If dropped onto a container, set containerId on the new item
+				const containerGroup = event.target.closest('.container-group')
+				if (containerGroup && itemData.type !== 'Container') {
+					itemData.system.containerId = containerGroup.dataset.containerId
+					itemData.system.equipped = false
+				}
 				await this.actor.createEmbeddedDocuments('Item', [itemData])
 			} else {
-				// If dropped within the same actor, toggle equipped state
-				const equipped = targetList === 'equipped'
-				if (item.system.equipped !== equipped) {
-					await item.update({ 'system.equipped': equipped })
+				// If dropped within the same actor
+				const containerGroup = event.target.closest('.container-group')
+				if (containerGroup) {
+					// Dropped onto a container � assign to it
+					const containerId = containerGroup.dataset.containerId
+					if (item.type !== 'Container' && item.system.containerId !== containerId) {
+						await item.update({ 'system.containerId': containerId, 'system.equipped': false })
+					}
+				} else {
+					// Dropped onto equipped/stowed list � toggle equipped and clear container
+					const equipped = targetList === 'equipped'
+					const updates = {}
+					if (item.system.equipped !== equipped) updates['system.equipped'] = equipped
+					if (item.system.containerId) updates['system.containerId'] = ''
+					if (Object.keys(updates).length) {
+						await item.update(updates)
+					}
 				}
 			}
 		}

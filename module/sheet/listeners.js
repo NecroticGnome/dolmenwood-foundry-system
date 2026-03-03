@@ -11,6 +11,8 @@ import { openXPDialog, openXPEditDialog, openAddSkillDialog, openCoinDialog, rem
 import { createContextMenu } from './context-menu.js'
 import { drawFromTable, drawFromTableRaw } from '../utils/roll-tables.js'
 
+const { DialogV2 } = foundry.applications.api
+
 /**
  * Setup listeners for adjustable inputs.
  * Syncs changes to hidden input and highlights adjusted values.
@@ -344,6 +346,135 @@ export function setupUnitConversionListeners(sheet) {
 			weightLbsInput.value = Math.round(kg / 0.453592)
 		})
 	}
+}
+
+const KNOWN_LANGUAGE_IDS = ['woldish', 'gaffe', 'caprice', 'sylvan', 'highElfish', 'mewl', 'mulch']
+
+/**
+ * Setup languages edit button listener.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupLanguagesListener(sheet) {
+	const btn = sheet.element.querySelector('.edit-languages-btn')
+	if (!btn) return
+	btn.addEventListener('click', (e) => {
+		e.preventDefault()
+		openLanguagesDialog(sheet)
+	})
+}
+
+/**
+ * Get localized name for a language ID.
+ */
+function localizeLanguage(id) {
+	const key = `DOLMEN.Languages.${id}`
+	return game.i18n.has(key) ? game.i18n.localize(key) : id
+}
+
+/**
+ * Open language editor dialog.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+function openLanguagesDialog(sheet) {
+	const languages = [...(sheet.actor.system.languages || [])]
+
+	function buildListHtml(langs) {
+		if (langs.length === 0) return `<div class="lang-list-empty">${game.i18n.localize('DOLMEN.Languages.None')}</div>`
+		return langs.map((id, i) => `
+			<div class="lang-entry">
+				<span class="lang-name">${localizeLanguage(id)}</span>
+				<a class="lang-remove" data-index="${i}" title="${game.i18n.localize('DOLMEN.Remove')}"><i class="fas fa-trash"></i></a>
+			</div>
+		`).join('')
+	}
+
+	// Build select options from known IDs not already added
+	function buildSelectOptions(langs) {
+		const options = KNOWN_LANGUAGE_IDS
+			.filter(id => !langs.includes(id))
+			.map(id => `<option value="${id}">${localizeLanguage(id)}</option>`)
+			.join('')
+		return options + `<option value="_custom">${game.i18n.localize('DOLMEN.Languages.Custom')}</option>`
+	}
+
+	const content = `
+		<div class="lang-dialog">
+			<div class="lang-list">${buildListHtml(languages)}</div>
+			<div class="lang-add-row">
+				<select class="lang-select">${buildSelectOptions(languages)}</select>
+				<input type="text" class="lang-custom-input" placeholder="${game.i18n.localize('DOLMEN.Languages.CustomPlaceholder')}" style="display:none;">
+				<button type="button" class="lang-add-btn"><i class="fas fa-plus"></i></button>
+			</div>
+		</div>
+	`
+
+	const dialog = new DialogV2({
+		window: { title: game.i18n.localize('DOLMEN.Languages.EditTitle') },
+		content,
+		buttons: [
+			{
+				action: 'save',
+				icon: 'fas fa-check',
+				label: game.i18n.localize('DOLMEN.Save'),
+				default: true,
+				callback: () => {
+					sheet.actor.update({ 'system.languages': languages })
+				}
+			},
+			{
+				action: 'cancel',
+				icon: 'fas fa-times',
+				label: game.i18n.localize('DOLMEN.Cancel')
+			}
+		]
+	})
+	dialog.render(true)
+
+	// Wire up interactivity after render
+	dialog.addEventListener('render', () => {
+		const el = dialog.element
+		const listEl = el.querySelector('.lang-list')
+		const selectEl = el.querySelector('.lang-select')
+		const customInput = el.querySelector('.lang-custom-input')
+		const addBtn = el.querySelector('.lang-add-btn')
+
+		function refresh() {
+			listEl.innerHTML = buildListHtml(languages)
+			selectEl.innerHTML = buildSelectOptions(languages)
+			customInput.style.display = 'none'
+			customInput.value = ''
+			wireRemoveButtons()
+		}
+
+		function wireRemoveButtons() {
+			listEl.querySelectorAll('.lang-remove').forEach(btn => {
+				btn.addEventListener('click', () => {
+					languages.splice(parseInt(btn.dataset.index), 1)
+					refresh()
+				})
+			})
+		}
+
+		selectEl.addEventListener('change', () => {
+			customInput.style.display = selectEl.value === '_custom' ? '' : 'none'
+		})
+
+		addBtn.addEventListener('click', () => {
+			const val = selectEl.value
+			if (val === '_custom') {
+				const custom = customInput.value.trim()
+				if (custom && !languages.includes(custom)) {
+					languages.push(custom)
+					refresh()
+				}
+			} else if (val && !languages.includes(val)) {
+				languages.push(val)
+				refresh()
+			}
+		})
+
+		wireRemoveButtons()
+	})
 }
 
 /**

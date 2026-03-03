@@ -390,7 +390,40 @@
 /* -------------------------------------------- */
 
 .sheet.dolmen .tab-magic .spell-row.rune-row {
-	grid-template-columns: 20px 1fr auto 2.5rem;
+	grid-template-columns: 20px 1fr auto 2.5rem 2.5rem;
+}
+
+.sheet.dolmen .tab-magic .rune-quantity {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.25rem;
+	font-weight: bold;
+	font-size: 0.85rem;
+}
+
+.sheet.dolmen .tab-magic .rune-quantity .qty-value {
+	min-width: 0.75rem;
+	text-align: center;
+	color: var(--dolmen-color-text);
+}
+
+.sheet.dolmen .tab-magic .rune-quantity .qty-arrows {
+	display: flex;
+	flex-direction: column;
+	line-height: 0.5;
+}
+
+.sheet.dolmen .tab-magic .rune-quantity .qty-control {
+	cursor: pointer;
+	opacity: 0.5;
+	font-size: 0.6rem;
+	color: var(--dolmen-color-h2);
+	transition: opacity 0.1s;
+}
+
+.sheet.dolmen .tab-magic .rune-quantity .qty-control:hover {
+	opacity: 1;
 }
 
 .sheet.dolmen .tab-magic .rune-usage {

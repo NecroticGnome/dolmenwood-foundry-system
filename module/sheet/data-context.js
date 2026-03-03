@@ -57,8 +57,8 @@ export function computeEncumbrance(actor) {
 	const method = game.settings.get('dolmenwood', 'encumbranceMethod')
 	const excludedTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune', 'Kindred', 'Class']
 	const items = actor.items.contents.filter(i => !excludedTypes.includes(i.type))
-	const equipped = items.filter(i => i.system.equipped)
-	const stowed = items.filter(i => !i.system.equipped)
+	const equipped = items.filter(i => i.system.equipped && i.type !== 'Container')
+	const stowed = items.filter(i => !i.system.equipped && i.type !== 'Container')
 	const totalCoins = (system.coins.copper || 0) + (system.coins.silver || 0)
 		+ (system.coins.gold || 0) + (system.coins.pellucidium || 0)
 
@@ -172,8 +172,9 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 	const skillAdjusted = (name) => {
 		const overridePath = `skills.${name}`
 		if (skillOverrides[overridePath] !== undefined) {
-			// Override sets the base value, then add manual adjustments
-			return skillOverrides[overridePath] + (adj.skills[name] || 0)
+			// Override acts as a ceiling — use whichever is lower (better)
+			const base = Math.min(skillOverrides[overridePath], system.skills[name])
+			return base + (adj.skills[name] || 0)
 		}
 		return system.skills[name] + (adj.skills[name] || 0) + getTraitAdj(overridePath)
 	}
@@ -487,17 +488,19 @@ export function groupRunesByMagnitude(runes, actor) {
 			.map(r => {
 				const data = prepareSpellData(r)
 				const usage = getRuneUsage(magnitude, level)
+				const qty = data.system.quantity || 1
+				const totalMax = usage.max * qty
 				const stored = runeUsage[r.id] || { used: 0 }
-				const usedCount = Math.min(stored.used || 0, usage.max)
+				const usedCount = Math.min(stored.used || 0, totalMax)
 
 				data.usageFrequency = game.i18n.localize(usage.frequency)
-				data.maxUses = usage.max
+				data.maxUses = totalMax
 				data.usedCount = usedCount
-				data.usesRemaining = usage.max - usedCount
+				data.usesRemaining = totalMax - usedCount
 				data.deleteOnUse = !!usage.deleteOnUse
 				data.resetsOnRest = usage.resetsOnRest
 				data.usageCheckboxes = []
-				for (let i = 0; i < usage.max; i++) {
+				for (let i = 0; i < totalMax; i++) {
 					data.usageCheckboxes.push({ index: i, checked: i < usedCount })
 				}
 				return data
@@ -602,6 +605,14 @@ export function prepareItemData(item) {
 	// Add armor bulk display
 	if (data.isArmor) {
 		data.bulkDisplay = game.i18n.localize(`DOLMEN.Item.Bulk.${item.system.bulk}`)
+	}
+	// Add treasure value in gold
+	if (item.type === 'Treasure') {
+		const cost = item.system.cost || 0
+		const denom = item.system.costDenomination || 'gp'
+		const toGold = { cp: 0.01, sp: 0.1, gp: 1, pp: 10 }
+		const raw = cost * (toGold[denom] || 1)
+		data.valueInGold = raw % 1 === 0 ? raw : parseFloat(raw.toFixed(2))
 	}
 
 	return data
