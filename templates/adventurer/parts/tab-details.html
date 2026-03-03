@@ -71,11 +71,11 @@
 	<section class="physical-characteristics boxed-section">
 		<h2>{{localize "DOLMEN.KindredDetails.Title"}}</h2>
 		<div class="physical-grid" data-unit-system="{{system.physical.unitSystem}}">
-			<div class="header-field">
+			<div class="header-field" style="grid-column-end: span 3;">
 				<label>{{localize "DOLMEN.KindredDetails.KindredType"}}</label>
 				<span class="proficiency-value">{{creatureTypeLabel}}</span>
 			</div>
-			<div class="header-field">
+			<div class="header-field" style="grid-column-end: span 2;">
 				<label>{{localize "DOLMEN.KindredDetails.Height"}} {{#if (eq system.physical.unitSystem "imperial" )}}{{localize "DOLMEN.KindredDetails.Feet"}}{{else}}{{localize "DOLMEN.KindredDetails.Cm"}}{{/if}}</label>
 				<div class="flexrow">
 					<div class="unit-inputs">
@@ -89,7 +89,7 @@
 					<i class="fa fa-dice-d20 rollable roll-height" title="{{heightTitle}}"></i>
 				</div>
 			</div>
-			<div class="header-field">
+			<div class="header-field" style="grid-column-end: span 2;">
 				<label>{{localize "DOLMEN.KindredDetails.Weight"}} {{#if (eq system.physical.unitSystem "imperial" )}}{{localize "DOLMEN.KindredDetails.Lbs"}}{{else}}{{localize "DOLMEN.KindredDetails.Kg"}}{{/if}}</label>
 				<div class="flexrow">
 					<div class="unit-inputs">
@@ -150,21 +150,28 @@
 				<label>{{localize "DOLMEN.ClassDetails.HitPoints"}}</label>
 				<span class="proficiency-value">{{hitPointsClass}}</span>
 			</div>
-			<div class="header-field" style="grid-column-end: span 2;">
+			{{#if system.retainer}}
+			<div class="header-field" style="grid-column-end: span 1;">
 				<label>{{localize "DOLMEN.ClassDetails.CombatAptitude"}}</label>
 				<span class="proficiency-value">{{combatAptitude}}</span>
-			</div>
-			<div class="header-field" style="grid-column-end: span 2;">
-				<label>{{localize "DOLMEN.ClassDetails.ArmorProficiency"}}</label>
-				<span class="proficiency-value">{{armorProficiency}}</span>
-			</div>
-			<div class="header-field" style="grid-column-end: span 2;">
-				<label>{{localize "DOLMEN.ClassDetails.WeaponsProficiency"}}</label>
-				<span class="proficiency-value">{{weaponsProficiency}}</span>
 			</div>
 			<div class="header-field" style="grid-column-end: span 1;">
 				<label>{{localize "DOLMEN.ClassDetails.Loyalty"}}</label>
 				<input type="number" name="system.loyalty" value="{{system.loyalty}}" min="1" max="12">
+			</div>
+			{{else}}
+			<div class="header-field" style="grid-column-end: span 2;">
+				<label>{{localize "DOLMEN.ClassDetails.CombatAptitude"}}</label>
+				<span class="proficiency-value">{{combatAptitude}}</span>
+			</div>
+			{{/if}}
+			<div class="header-field" style="grid-column-end: span 3;">
+				<label>{{localize "DOLMEN.ClassDetails.ArmorProficiency"}}</label>
+				<span class="proficiency-value">{{armorProficiency}}</span>
+			</div>
+			<div class="header-field" style="grid-column-end: span 3;">
+				<label>{{localize "DOLMEN.ClassDetails.WeaponsProficiency"}}</label>
+				<span class="proficiency-value">{{weaponsProficiency}}</span>
 			</div>
 		</div>
 	</section>
