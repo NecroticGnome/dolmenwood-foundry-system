@@ -637,7 +637,8 @@ async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, 
 
 	// Compute total attack modifier
 	const { totalMod } = getAttackModifiers(sheet, 'melee')
-	const finalAttackMod = totalMod + attackModeBonus + modAttackBonus + numericMod + proficiencyPenalty
+	const weaponToHitBonus = weapon.system.toHitBonus || 0
+	const finalAttackMod = totalMod + attackModeBonus + modAttackBonus + numericMod + proficiencyPenalty + weaponToHitBonus
 
 	// Determine damage formula (melee adds STR modifier; damageOverride already includes STR)
 	const exhaustion = sheet.actor.system.exhaustion || 0
@@ -963,7 +964,8 @@ async function executeMissileAttack(sheet, weapon, selectedModifiers, numericMod
 
 	// Compute total attack modifier (includes range modifier)
 	const { totalMod } = getAttackModifiers(sheet, 'missile')
-	const finalAttackMod = totalMod + modAttackBonus + numericMod + rangeMod
+	const weaponToHitBonus = weapon.system.toHitBonus || 0
+	const finalAttackMod = totalMod + modAttackBonus + numericMod + rangeMod + weaponToHitBonus
 
 	// Determine damage formula
 	let damageFormula = weapon.system.damage

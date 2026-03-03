@@ -31,7 +31,8 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			HolySpell: 325,
 			Glamour: 325,
 			Rune: 325,
-			Item: 325
+			Item: 325,
+			Container: 365
 		}
 		const type = this.item?.type
 		return heightByType[type] ?? this.constructor.DEFAULT_OPTIONS.position.height
@@ -105,6 +106,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.isGlamour = this.item.type === 'Glamour'
 		context.isRune = this.item.type === 'Rune'
 		context.isGenericItem = this.item.type === 'Item'
+		context.isContainer = this.item.type === 'Container'
 		context.isGear = !context.isSpell && !context.isHolySpell && !context.isGlamour && !context.isRune
 		context.isRankedSpell = context.isSpell || context.isHolySpell
 		context.hasCodexLink = !!this.item.system.codexUuid

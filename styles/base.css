@@ -63,7 +63,7 @@
 }
 
 span.proficiency-value {
-	line-height: 2rem;
+	line-height: 1.75rem;
 	margin-left: 0.2rem;
 	background-color: var(--dolmen-color-inner-background);
 	border-radius: 3px;
@@ -73,6 +73,7 @@ span.proficiency-value {
 /* Rollable Icons */
 .xp-add-btn,
 .xp-edit-btn,
+.edit-languages-btn,
 .sheet.dolmen .rollable {
 	text-align: center;
 	cursor: pointer;
@@ -85,13 +86,15 @@ span.proficiency-value {
 
 .xp-add-btn:hover,
 .xp-edit-btn:hover,
+.edit-languages-btn:hover,
 .sheet.dolmen .rollable:hover {
 	color: var(--dolmen-color-h1);
 	text-shadow: 0 0 5px var(--dolmen-color-h2);
 }
 
 .xp-add-btn,
-.xp-edit-btn {
+.xp-edit-btn,
+.edit-languages-btn {
 	background: none;
 	border: none;
 	font-size: 1rem;

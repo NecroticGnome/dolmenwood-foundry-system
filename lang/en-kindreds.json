@@ -33,7 +33,11 @@
 			"sylvan": "Sylvan",
 			"highElfish": "High Elfish",
 			"mewl": "Mewl",
-			"mulch": "Mulch"
+			"mulch": "Mulch",
+			"EditTitle": "Edit Languages",
+			"None": "No languages",
+			"Custom": "Custom",
+			"CustomPlaceholder": "Enter language name"
 		},
 		"KindredSheetTitle": "Kindred Item Sheet",
 		"NameRoll": {

@@ -840,6 +840,31 @@ export class GearDataModel extends ItemDataModel {
 				required: true,
 				blank: true,
 				initial: ""
+			}),
+			containerId: new StringField({
+				required: false,
+				blank: true,
+				initial: ""
+			})
+		}
+	}
+}
+
+export class ContainerDataModel extends GearDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
+			capacitySlots: new NumberField({
+				required: true,
+				integer: true,
+				min: 0,
+				initial: 10
+			}),
+			capacityCoins: new NumberField({
+				required: true,
+				integer: true,
+				min: 0,
+				initial: 400
 			})
 		}
 	}
@@ -866,6 +891,11 @@ export class WeaponDataModel extends GearDataModel {
 				required: true,
 				blank: false,
 				initial: "1d6"
+			}),
+			toHitBonus: new NumberField({
+				required: false,
+				integer: true,
+				initial: 0
 			}),
 			weaponType: new StringField({
 				required: false,
@@ -1022,7 +1052,13 @@ export class RuneDataModel extends ItemDataModel {
 				initial: "lesser",
 				choices: CHOICE_KEYS.runeMagnitudes
 			}),
-			description: new HTMLField({ required: true, blank: true, initial: "" })
+			description: new HTMLField({ required: true, blank: true, initial: "" }),
+			quantity: new NumberField({
+				required: true,
+				integer: true,
+				min: 1,
+				initial: 1
+			})
 		}
 	}
 }

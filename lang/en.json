@@ -19,7 +19,8 @@
 			"Glamour": "Glamour",
 			"Rune": "Rune",
 			"Kindred": "Kindred",
-			"Class": "Class"
+			"Class": "Class",
+			"Container": "Container"
 		}
 	},
 	"DOLMEN": {
@@ -259,6 +260,7 @@
 		"Cancel": "Cancel",
 		"Close": "Close",
 		"Save": "Save",
+		"Remove": "Remove",
 		"Amount": "Amount",
 		"None": "None",
 		"Immortal": "Immortal",
@@ -279,7 +281,7 @@
 		},
 		"Exhaustion": "Exhaustion",
 		"Coins": {
-			"Title": "Coins",
+			"Title": "Stowed Coins",
 			"Copper": "Copper",
 			"Silver": "Silver",
 			"Gold": "Gold",
@@ -416,7 +418,9 @@
 			"WeightCoins": "Weight (Coins)",
 			"WeightSlots": "Weight (Slots)",
 			"Details": "Details",
-			"Damage": "Dmg",
+			"Damage": "Damage Formula",
+			"DamageShort": "Dmg",
+			"ToHitBonus": "To-Hit Bonus",
 			"AC": "AC",
 			"Qualities": "Qualities",
 			"CommonDetails": "Item Details",
@@ -524,7 +528,10 @@
 			"Value": "Val",
 			"Quantity": "Qty",
 			"BundleSize": "Bundle Size",
-			"TreasureDetails": "Treasure Details"
+			"TreasureDetails": "Treasure Details",
+			"ContainerDetails": "Container Details",
+			"CapacitySlots": "Capacity (Slots)",
+			"CapacityCoins": "Capacity (Coins)"
 		},
 		"Inventory": {
 			"Equipped": "Equipped Items",
@@ -535,7 +542,10 @@
 			"Stow": "Stow",
 			"Delete": "Delete",
 			"DeleteConfirmTitle": "Delete Item",
-			"DeleteConfirmContent": "Are you sure you want to delete {name}?"
+			"DeleteConfirmContent": "Are you sure you want to delete {name}?",
+			"Loose": "Loose Items",
+			"RemoveFromContainer": "Remove from Container",
+			"Unsorted": "Unsorted"
 		},
 		"Attack": {
 			"NoWeapon": "No equipped {type} weapon found.",

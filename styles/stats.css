@@ -9,7 +9,7 @@
 
 .sheet.dolmen .tab-content .header-details {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-template-columns: 0.75fr 0.75fr 1fr 1fr;
 	gap: 0.5rem;
 }
 

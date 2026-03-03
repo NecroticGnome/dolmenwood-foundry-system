@@ -8,7 +8,7 @@ import DolmenKindredSheet from './module/dolmen-kindred-sheet.js'
 import DolmenClassSheet from './module/dolmen-class-sheet.js'
 import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
-import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel } from './module/data-models.mjs'
+import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, ContainerDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel } from './module/data-models.mjs'
 import { setupDamageContextMenu } from './module/chat-damage.js'
 import { rollSaveForControlled, createSaveLinkEnricher } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
@@ -199,6 +199,7 @@ Hooks.once('init', async function () {
 		Weapon: WeaponDataModel,
 		Armor: ArmorDataModel,
 		Foraged: ForagedDataModel,
+		Container: ContainerDataModel,
 		Spell: SpellDataModel,
 		HolySpell: HolySpellDataModel,
 		Glamour: GlamourDataModel,
@@ -380,7 +381,7 @@ Hooks.once('init', async function () {
 	})
 
 	Items.registerSheet('dolmen', DolmenItemSheet, {
-		types: ['Item', 'Treasure', 'Weapon', 'Armor', 'Foraged', 'Spell', 'HolySpell', 'Glamour', 'Rune'],
+		types: ['Item', 'Treasure', 'Weapon', 'Armor', 'Foraged', 'Container', 'Spell', 'HolySpell', 'Glamour', 'Rune'],
 		label: 'DOLMEN.ItemSheetTitle',
 		makeDefault: true
 	})

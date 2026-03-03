@@ -163,6 +163,13 @@
 									{{/each}}
 								</div>
 							</div>
+							<span class="rune-quantity">
+								<span class="qty-value">{{this.system.quantity}}</span>
+								<span class="qty-arrows">
+									<a class="qty-control" data-action="increaseQty" data-item-id="{{this.id}}"><i class="fas fa-caret-up"></i></a>
+									<a class="qty-control" data-action="decreaseQty" data-item-id="{{this.id}}"><i class="fas fa-caret-down"></i></a>
+								</span>
+							</span>
 							<span class="spell-controls">
 								<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" data-delete-on-use="{{this.deleteOnUse}}" title="{{localize 'DOLMEN.Magic.Invoke'}}">
 									<i class="fas fa-sparkles"></i>
