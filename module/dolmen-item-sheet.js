@@ -23,9 +23,9 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 	_getInitialHeight() {
 		const heightByType = {
-			Weapon: 545,
-			Armor: 365,
-			Treasure: 390,
+			Weapon: 580,
+			Armor: 400,
+			Treasure: 425,
 			Foraged: 445,
 			Spell: 325,
 			HolySpell: 325,
@@ -146,6 +146,16 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
 		// Cost denomination choices
 		context.costDenominationChoices = buildChoices('DOLMEN.Item.Denomination', CHOICE_KEYS.costDenominations)
+
+		// Charges max select options (0-9) — only for weapon, armor, treasure
+		if (context.isWeapon || context.isArmor || context.isTreasure) {
+			const currentMax = this.item.system.charges?.max || 0
+			context.chargesMaxOptions = Array.from({ length: 10 }, (_, i) => ({
+				value: i,
+				label: i === 0 ? game.i18n.localize('DOLMEN.None') : String(i),
+				selected: i === currentMax
+			}))
+		}
 
 		return context
 	}

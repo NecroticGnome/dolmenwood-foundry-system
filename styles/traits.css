@@ -83,6 +83,7 @@
 	margin-top: 0.5rem;
 	padding: 0.35rem 0.5rem;
 	background-color: var(--dolmen-color-box-highlight);
+	color: var(--dolmen-color-text);
 	border-radius: 0.25rem;
 	font-size: 0.75rem;
 }

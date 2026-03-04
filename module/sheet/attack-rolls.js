@@ -1033,7 +1033,7 @@ export function openRollTypeContextMenu(sheet, weapons, attackType, position) {
 			<span class="weapon-name">${attackOnlyLabel}</span>
 		</div>
 		<div class="weapon-menu-item" data-roll-type="damage">
-			<i class="fas fa-burst"></i>
+			<i class="fas fa-heart-crack"></i>
 			<span class="weapon-name">${damageOnlyLabel}</span>
 		</div>
 	`

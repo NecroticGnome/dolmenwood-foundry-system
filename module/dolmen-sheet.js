@@ -21,7 +21,8 @@ import {
 	setupDetailsRollListeners, setupExtraDetailsRollListeners,
 	setupBackgroundRollListener, setupNameRollListener,
 	setupTraitListeners, setupAdjustableInputListeners,
-	setupRuneUsageListeners, setupKnackUsageListeners
+	setupRuneUsageListeners, setupKnackUsageListeners,
+	setupChargesListeners
 } from './sheet/listeners.js'
 import { openAddSkillDialog, removeSkill } from './sheet/dialogs.js'
 
@@ -400,6 +401,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				slotsMax: c.system.capacitySlots,
 				coinsUsed,
 				coinsMax: c.system.capacityCoins,
+				infiniteCapacity: c.system.infiniteCapacity,
+				ignoreEncumbrance: c.system.ignoreEncumbrance,
 				isSlots: encumbranceMethod === 'slots'
 			}
 		})
@@ -606,6 +609,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		setupTraitListeners(this)
 		setupRuneUsageListeners(this)
 		setupKnackUsageListeners(this)
+		setupChargesListeners(this)
 		setupAdjustableInputListeners(this)
 
 		// Setup kindred and class select listeners

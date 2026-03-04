@@ -134,7 +134,7 @@ export function openCoinDialog(sheet) {
 			<div class="coin-adjust-row">
 				<label>${label}</label>
 				<span class="coin-current">${coins[denom] || 0}</span>
-				<input type="number" id="coin-${denom}" placeholder="0" min="0">
+				<input type="number" id="coin-${denom}" placeholder="0">
 			</div>
 		`
 	}).join('')
@@ -144,7 +144,7 @@ export function openCoinDialog(sheet) {
 			<div class="coin-adjust-header">
 				<span></span>
 				<span>${game.i18n.localize('DOLMEN.Coins.Title')}</span>
-				<span>${game.i18n.localize('DOLMEN.Amount')}</span>
+				<span>+/&minus;</span>
 			</div>
 			${rows}
 		</div>
@@ -155,33 +155,16 @@ export function openCoinDialog(sheet) {
 		content: content,
 		buttons: [
 			{
-				action: 'add',
-				icon: 'fas fa-plus',
-				label: game.i18n.localize('DOLMEN.Coins.AdjustAdd'),
+				action: 'update',
+				icon: 'fas fa-check',
+				label: game.i18n.localize('DOLMEN.Coins.AdjustUpdate'),
 				default: true,
 				callback: (event, button, html) => {
 					const update = {}
 					for (const denom of denominations) {
 						const amount = parseInt(html.element.querySelector(`#coin-${denom}`).value) || 0
-						if (amount > 0) {
-							update[`system.coins.${denom}`] = (coins[denom] || 0) + amount
-						}
-					}
-					if (Object.keys(update).length > 0) {
-						sheet.actor.update(update)
-					}
-				}
-			},
-			{
-				action: 'subtract',
-				icon: 'fas fa-minus',
-				label: game.i18n.localize('DOLMEN.Coins.AdjustSubtract'),
-				callback: (event, button, html) => {
-					const update = {}
-					for (const denom of denominations) {
-						const amount = parseInt(html.element.querySelector(`#coin-${denom}`).value) || 0
-						if (amount > 0) {
-							update[`system.coins.${denom}`] = Math.max(0, (coins[denom] || 0) - amount)
+						if (amount !== 0) {
+							update[`system.coins.${denom}`] = Math.max(0, (coins[denom] || 0) + amount)
 						}
 					}
 					if (Object.keys(update).length > 0) {

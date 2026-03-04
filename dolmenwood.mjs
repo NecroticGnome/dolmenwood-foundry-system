@@ -35,6 +35,20 @@ function applyTheme(theme) {
 	document.documentElement.setAttribute('data-dolmen-theme', resolved)
 }
 
+Hooks.on('initializeDynamicTokenRingConfig', ringConfig => {
+	const dolmenwoodRing = new foundry.canvas.placeables.tokens.DynamicRingData({
+		id: 'dolmenwoodRing',
+		label: 'Dolmenwood',
+		effects: {
+			RING_PULSE: 'TOKEN.RING.EFFECTS.RING_PULSE',
+			RING_GRADIENT: 'TOKEN.RING.EFFECTS.RING_GRADIENT',
+			BACKGROUND_WAVE: 'TOKEN.RING.EFFECTS.BACKGROUND_WAVE'
+		},
+		spritesheet: 'systems/dolmenwood/assets/dynamic-token-ring/dynamic-xcc-spritesheet.json'
+	})
+	ringConfig.addConfig('dolmenwoodRing', dolmenwoodRing)
+})
+
 Hooks.once('init', async function () {
 	CONFIG.DOLMENWOOD = DOLMENWOOD
 

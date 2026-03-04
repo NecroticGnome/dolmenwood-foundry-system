@@ -865,7 +865,9 @@ export class ContainerDataModel extends GearDataModel {
 				integer: true,
 				min: 0,
 				initial: 400
-			})
+			}),
+			infiniteCapacity: new BooleanField({ required: true, initial: false }),
+			ignoreEncumbrance: new BooleanField({ required: true, initial: false })
 		}
 	}
 }
@@ -878,6 +880,10 @@ export class TreasureDataModel extends GearDataModel {
 				required: true,
 				blank: true,
 				initial: ""
+			}),
+			charges: new SchemaField({
+				max: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+				value: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
 			})
 		}
 	}
@@ -927,11 +933,15 @@ export class WeaponDataModel extends GearDataModel {
 				min: 0,
 				initial: 0
 			}),
-			rangeLong: new NumberField({ 
-				required: false, 
+			rangeLong: new NumberField({
+				required: false,
 				integer: true,
 				min: 0,
 				initial: 0
+			}),
+			charges: new SchemaField({
+				max: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+				value: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
 			})
 		}
 	}
@@ -964,6 +974,10 @@ export class ArmorDataModel extends GearDataModel {
 				initial: "armor",
 				choices: CHOICE_KEYS.armorTypes
 			}),
+			charges: new SchemaField({
+				max: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+				value: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
+			})
 		}
 	}
 }

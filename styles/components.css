@@ -240,6 +240,7 @@
 
 .dolmen-weapon-context-menu {
 	background-color: var(--dolmen-color-background);
+	color: var(--dolmen-color-text);
 	border: 2px solid var(--dolmen-color-title-background);
 	border-radius: 4px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -403,12 +404,14 @@
 	border: 1px solid var(--dolmen-color-box-border);
 	border-radius: 2px;
 	background-color: var(--dolmen-color-inner-background);
+	color: var(--dolmen-color-text-muted);
 	transition: background-color 0.1s;
 	user-select: none;
 }
 
 .modifier-panel .numeric-btn:hover {
 	background-color: var(--dolmen-color-box-background);
+	color: var(--dolmen-color-text);
 }
 
 .modifier-panel .numeric-btn.selected {
@@ -420,6 +423,7 @@
 /* Damage context menu */
 .dolmen.damage-context-menu {
 	background-color: var(--dolmen-color-background);
+	color: var(--dolmen-color-text);
 	border: 2px solid var(--dolmen-color-title-background);
 	border-radius: 4px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);

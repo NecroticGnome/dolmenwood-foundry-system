@@ -146,6 +146,20 @@
 				<input type="number" name="system.stackSize" value="{{system.stackSize}}" min="1">
 			</div>
 		</div>
+		{{#if (or isWeapon isArmor isTreasure)}}
+		<div class="form-row">
+			<div class="form-field" style="flex: 1;">
+				<label>{{localize "DOLMEN.Item.ChargesMax"}}</label>
+				<select name="system.charges.max">
+					{{#each @root.chargesMaxOptions}}
+					<option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+					{{/each}}
+				</select>
+			</div>
+			<div class="form-field" style="flex: 1;"></div>
+			<div class="form-field" style="flex: 1;"></div>
+		</div>
+		{{/if}}
 	</section>
 	{{/if}}
 
@@ -284,6 +298,20 @@
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Item.CapacityCoins"}}</label>
 				<input type="number" name="system.capacityCoins" value="{{system.capacityCoins}}" min="0">
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-field checkbox-field">
+				<label>
+					<input type="checkbox" name="system.infiniteCapacity" {{#if system.infiniteCapacity}}checked{{/if}}>
+					{{localize "DOLMEN.Item.InfiniteCapacity"}}
+				</label>
+			</div>
+			<div class="form-field checkbox-field">
+				<label>
+					<input type="checkbox" name="system.ignoreEncumbrance" {{#if system.ignoreEncumbrance}}checked{{/if}}>
+					{{localize "DOLMEN.Item.IgnoreEncumbrance"}}
+				</label>
 			</div>
 		</div>
 	</section>
