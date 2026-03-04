@@ -286,9 +286,8 @@
 			"Silver": "Silver",
 			"Gold": "Gold",
 			"Pellucidium": "Pellucidium",
-			"AdjustTitle": "Add / Subtract Coins",
-			"AdjustAdd": "Add",
-			"AdjustSubtract": "Subtract"
+			"AdjustTitle": "Adjust Coins",
+			"AdjustUpdate": "Update"
 		},
 		"ExtraDetails": {
 			"Title": "Extra Details",
@@ -531,7 +530,10 @@
 			"TreasureDetails": "Treasure Details",
 			"ContainerDetails": "Container Details",
 			"CapacitySlots": "Capacity (Slots)",
-			"CapacityCoins": "Capacity (Coins)"
+			"CapacityCoins": "Capacity (Coins)",
+			"InfiniteCapacity": "Infinite Capacity",
+			"IgnoreEncumbrance": "Do Not Affect Encumbrance",
+			"ChargesMax": "Max Charges"
 		},
 		"Inventory": {
 			"Equipped": "Equipped Items",
@@ -730,9 +732,15 @@
 		"Damage": {
 			"ApplyDamage": "Apply Damage",
 			"ApplyAmount": "Apply {damage} damage",
-			"ApplyPlus": "Apply {damage} + 1 damage",
+			"ApplyHalf": "Apply {damage} (half) damage",
+			"ApplyDouble": "Apply {damage} (double) damage",
+			"ApplyPlus": "Apply {damage} damage (vs Fey)",
+			"ApplyMinus": "Apply {damage} damage (vs non-Fey)",
+			"ApplyHealing": "Heal {damage} HP",
 			"Applied": "Applied {damage} damage to {name}",
 			"AppliedMultiple": "Applied {damage} damage to {count} tokens",
+			"Healed": "Healed {damage} HP for {name}",
+			"HealedMultiple": "Healed {damage} HP for {count} tokens",
 			"NoTokensSelected": "No tokens selected. Select a token first."
 		},
 		"SaveRoll": {

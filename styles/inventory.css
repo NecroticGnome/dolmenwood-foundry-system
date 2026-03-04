@@ -126,7 +126,7 @@
 	color: var(--dolmen-color-coin-silver);
 }
 
-.sheet.dolmen .tab-content .coin .coin-gold {
+.sheet.dolmen .tab-content .coin-gold {
 	color: var(--dolmen-color-coin-gold);
 }
 
@@ -210,31 +210,31 @@
 /*  Inventory Tab - Item Row Grid Templates     */
 /* -------------------------------------------- */
 
-/* Weapon row: icon | name | qualities | damage | weight | controls */
+/* Weapon row: icon | name | qualities | damage | charges | weight | qty | controls */
 .sheet.dolmen .tab-content .weapon-header,
 .sheet.dolmen .tab-content .item-row.weapon {
-	grid-template-columns: 20px 1fr 1fr 3rem 2rem 2rem 2rem;
+	grid-template-columns: 20px 1fr 1fr 3rem 1.5rem 2rem 2rem 2rem;
 }
 
-/* Armor row: icon | name | bulk | AC | weight | controls */
+/* Armor row: icon | name | bulk | AC | charges | weight | qty | controls */
 .sheet.dolmen .tab-content .armor-header,
 .sheet.dolmen .tab-content .item-row.armor {
-	grid-template-columns: 20px 1fr 1fr 3rem 2rem 2rem 2rem;
+	grid-template-columns: 20px 1fr 1fr 3rem 1.5rem 2rem 2rem 2rem;
 }
 
-/* Foraged row: icon | name | notes | weight | controls */
+/* Foraged row: icon | name | notes | weight | qty | controls */
 .sheet.dolmen .tab-content .foraged-header,
 .sheet.dolmen .tab-content .item-row.foraged {
 	grid-template-columns: 20px 1fr 3rem 2rem 2rem 2rem;
 }
 
-/* Treasure row: icon | name | notes | value | weight | qty | controls */
+/* Treasure row: icon | name | value | notes | charges | weight | qty | controls */
 .sheet.dolmen .tab-content .treasure-header,
 .sheet.dolmen .tab-content .item-row.treasure {
-	grid-template-columns: 20px 1fr 3rem 3rem 2rem 2rem 2rem;
+	grid-template-columns: 20px 1fr 3rem 3rem 1.5rem 2rem 2rem 2rem;
 }
 
-/* Generic item row: icon | name | weight | controls */
+/* Generic item row: icon | name | weight | qty | controls */
 .sheet.dolmen .tab-content .item-header,
 .sheet.dolmen .tab-content .item-row.item {
 	grid-template-columns: 20px 1fr 2rem 2rem 2rem;
@@ -469,4 +469,21 @@
 .sheet.dolmen .tab-content .container-contents .item-list-empty {
 	padding: 0.5rem;
 	font-size: 0.75rem;
+}
+
+/* -------------------------------------------- */
+/*  Inventory Tab - Item Charges Icon           */
+/* -------------------------------------------- */
+
+.sheet.dolmen .tab-content .item-row .item-charges {
+	text-align: center;
+	font-size: 1rem;
+	cursor: pointer;
+	color: var(--dolmen-color-h2);
+	transition: color 0.1s;
+	margin-bottom: -1px;
+}
+
+.sheet.dolmen .tab-content .item-row .item-charges:hover {
+	color: var(--dolmen-color-text);
 }

@@ -898,3 +898,42 @@ export function setupKnackUsageListeners(sheet) {
 		})
 	})
 }
+
+/**
+ * Set up item charges icon listeners.
+ * Left-click uses a charge (decrements remaining), right-click restores one.
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupChargesListeners(sheet) {
+	sheet.element.querySelectorAll('.item-charges-icon').forEach(icon => {
+		// Left-click: use a charge
+		icon.addEventListener('click', async (event) => {
+			event.preventDefault()
+			event.stopPropagation()
+
+			const item = sheet.actor.items.get(icon.dataset.itemId)
+			if (!item) return
+			const charges = item.system.charges
+			if (!charges || charges.max <= 0) return
+
+			const used = charges.value || 0
+			if (used >= charges.max) return // all used up
+			await item.update({ 'system.charges.value': used + 1 })
+		})
+
+		// Right-click: restore a charge
+		icon.addEventListener('contextmenu', async (event) => {
+			event.preventDefault()
+			event.stopPropagation()
+
+			const item = sheet.actor.items.get(icon.dataset.itemId)
+			if (!item) return
+			const charges = item.system.charges
+			if (!charges || charges.max <= 0) return
+
+			const used = charges.value || 0
+			if (used <= 0) return // none used
+			await item.update({ 'system.charges.value': used - 1 })
+		})
+	})
+}

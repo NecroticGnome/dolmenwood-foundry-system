@@ -189,15 +189,15 @@ async function rollWeather(autoRoll = false) {
 	let effectsHtml = ''
 	for (const flag of effects) {
 		if (effectLabels[flag]) {
-			effectsHtml += `<div style="margin-top: 4px; font-size: 11px; opacity: 0.85;">\u26a0 ${effectLabels[flag]}</div>`
+			effectsHtml += `<div style="margin-top: 0.25rem; font-size: 0.6875rem; opacity: 0.85;">\u26a0 ${effectLabels[flag]}</div>`
 		}
 	}
 
 	const icon = getWeatherIcon(text)
 	const chatTitle = game.i18n.localize('DOLMEN.Calendar.Weather.ChatTitle')
 	const content = `
-		<div style="padding: 4px 0;">
-			<div style="font-weight: 700; margin-bottom: 4px;">
+		<div style="padding: 0.25rem 0;">
+			<div style="font-weight: 700; margin-bottom: 0.25rem;">
 				<i class="fa-solid ${icon}"></i> ${chatTitle}
 			</div>
 			<div>

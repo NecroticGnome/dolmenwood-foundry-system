@@ -57,8 +57,13 @@ export function computeEncumbrance(actor) {
 	const method = game.settings.get('dolmenwood', 'encumbranceMethod')
 	const excludedTypes = ['Spell', 'HolySpell', 'Glamour', 'Rune', 'Kindred', 'Class']
 	const items = actor.items.contents.filter(i => !excludedTypes.includes(i.type))
+	// Build set of container IDs that ignore encumbrance
+	const ignoreContainerIds = new Set(
+		items.filter(i => i.type === 'Container' && i.system.ignoreEncumbrance).map(i => i.id)
+	)
 	const equipped = items.filter(i => i.system.equipped && i.type !== 'Container')
-	const stowed = items.filter(i => !i.system.equipped && i.type !== 'Container')
+	const stowed = items.filter(i => !i.system.equipped && i.type !== 'Container'
+		&& !ignoreContainerIds.has(i.system.containerId))
 	const totalCoins = (system.coins.copper || 0) + (system.coins.silver || 0)
 		+ (system.coins.gold || 0) + (system.coins.pellucidium || 0)
 
@@ -547,6 +552,11 @@ export function groupItemsByType(items) {
 		groups[item.type].items.push(item)
 	}
 
+	// Sort items within each group by name
+	for (const group of Object.values(groups)) {
+		group.items.sort((a, b) => a.name.localeCompare(b.name))
+	}
+
 	// Sort groups by type order
 	return typeOrder
 		.filter(type => groups[type])
@@ -614,6 +624,17 @@ export function prepareItemData(item) {
 		const toGold = { cp: 0.01, sp: 0.1, gp: 1, pp: 10 }
 		const raw = cost * (toGold[denom] || 1)
 		data.valueInGold = raw % 1 === 0 ? raw : parseFloat(raw.toFixed(2))
+	}
+
+	// Prepare charges display data
+	if (item.system.charges?.max > 0) {
+		data.hasCharges = true
+		data.chargesMax = item.system.charges.max
+		data.chargesUsed = Math.min(item.system.charges.value || 0, item.system.charges.max)
+		data.chargesRemaining = data.chargesMax - data.chargesUsed
+		if (data.chargesRemaining === 0) data.chargesIconStyle = 'fa-light'
+		else if (data.chargesRemaining < data.chargesMax) data.chargesIconStyle = 'fa-duotone fa-light'
+		else data.chargesIconStyle = 'fa-solid'
 	}
 
 	return data
