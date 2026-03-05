@@ -10,7 +10,7 @@ import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
 import { AdventurerDataModel, CreatureDataModel, TraitDataModel, GearDataModel, ContainerDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel } from './module/data-models.mjs'
 import { setupDamageContextMenu } from './module/chat-damage.js'
-import { rollSaveForControlled, createSaveLinkEnricher } from './module/chat-save.js'
+import { createSaveLinkEnricher, openInlineSaveModifierPanel } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { getFaSymbol } from './module/sheet/data-context.js'
@@ -465,7 +465,9 @@ document.addEventListener('click', (event) => {
 	event.preventDefault()
 	event.stopPropagation()
 	const saveKey = link.dataset.save
-	if (saveKey) rollSaveForControlled(saveKey)
+	if (!saveKey) return
+	const position = { top: event.clientY, left: event.clientX }
+	openInlineSaveModifierPanel(saveKey, position)
 })
 
 // Sync embedded Kindred/Class items when source items are updated (world or compendium)

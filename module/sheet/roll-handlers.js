@@ -185,17 +185,17 @@ async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0, trait
 export function onSaveRoll(sheet, saveKey, event) {
 	const modifiers = getTraitRollOptions(sheet.actor, `saves.${saveKey}`)
 
-	// Add Magic Resistance option if actor has MR > 0 (adventurers only)
-	if (sheet.actor.type === 'Adventurer') {
-		const adjusted = sheet.actor.system.final
-		if (adjusted.magicResistance > 0) {
-			modifiers.push({
-				id: 'magicResistance',
-				name: game.i18n.localize('DOLMEN.Traits.MagicResistance'),
-				bonus: adjusted.magicResistance,
-				condition: null
-			})
-		}
+	// Add Magic Resistance option if actor has MR > 0
+	const mr = sheet.actor.type === 'Adventurer'
+		? (sheet.actor.system.final?.magicResistance || 0)
+		: (sheet.actor.system.specialAbilities?.some(a => a.name.toLowerCase() === 'magic resistance') ? 2 : 0)
+	if (mr > 0) {
+		modifiers.push({
+			id: 'magicResistance',
+			name: game.i18n.localize('DOLMEN.Traits.MagicResistance'),
+			bonus: mr,
+			condition: null
+		})
 	}
 
 	const position = event ? {
@@ -317,10 +317,10 @@ function openSaveModifierPanel(sheet, saveKey, modifiers, position) {
 }
 
 /**
- * Perform a saving throw roll. Success if d20 >= save target.
+ * Perform a saving throw roll. Success if d20 + bonus >= save target.
  * @param {DolmenSheet} sheet - The sheet instance
  * @param {string} saveKey - The save key
- * @param {number} traitBonus - Total bonus that lowers save target
+ * @param {number} traitBonus - Total bonus added to the roll
  * @param {string[]} [modifierNames] - Names of applied modifiers for display
  */
 async function performSavingThrow(sheet, saveKey, traitBonus = 0, modifierNames = []) {
@@ -329,16 +329,14 @@ async function performSavingThrow(sheet, saveKey, traitBonus = 0, modifierNames 
 		: sheet.actor.system.saves[saveKey]
 	if (baseSaveTarget === undefined) return
 
-	// Trait bonus lowers the save target (making it easier)
-	const saveTarget = baseSaveTarget - traitBonus
-
 	const saveName = game.i18n.localize(`DOLMEN.Saves.${saveKey.charAt(0).toUpperCase() + saveKey.slice(1)}`)
 
-	const roll = new Roll('1d20')
+	const formula = traitBonus !== 0 ? `1d20 + ${traitBonus}` : '1d20'
+	const roll = new Roll(formula)
 	await roll.evaluate()
 
-	const d20Result = roll.dice[0].results[0].result
-	const isSuccess = d20Result >= saveTarget
+	const total = roll.total
+	const isSuccess = total >= baseSaveTarget
 
 	const resultClass = isSuccess ? 'success' : 'failure'
 	const resultLabel = isSuccess
@@ -348,9 +346,7 @@ async function performSavingThrow(sheet, saveKey, traitBonus = 0, modifierNames 
 	const anchor = await roll.toAnchor({ classes: ['save-inline-roll'] })
 
 	const traitBadges = modifierNames.map(n => `<span class="trait-badge">${n}</span>`).join(' ')
-	const targetDisplay = traitBonus !== 0
-		? `${baseSaveTarget} - ${traitBonus} = ${saveTarget}+`
-		: `${saveTarget}+`
+	const targetDisplay = `${baseSaveTarget}+`
 
 	const chatContent = `
 		<div class="dolmen save-roll">

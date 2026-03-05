@@ -278,7 +278,7 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 			blast: system.saves.blast + (adj.saves.blast || 0) + getTraitAdj('saves.blast'),
 			spell: system.saves.spell + (adj.saves.spell || 0) + getTraitAdj('saves.spell')
 		},
-		magicResistance: system.magicResistance + (adj.magicResistance || 0) + getTraitAdj('magicResistance'),
+		magicResistance: system.abilities.wisdom.mod + (adj.magicResistance || 0) + getTraitAdj('magicResistance'),
 		skills: {
 			listen: skillAdjusted('listen'),
 			search: skillAdjusted('search'),
