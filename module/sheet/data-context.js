@@ -85,9 +85,9 @@ function computeWeightFull(equipped, stowed, totalCoins, coinCapacityAdj) {
 	const max = 1600 + coinCapacityAdj
 	let speed = 40
 	if (current > max) speed = 0
-	else if (current > max / 2) speed = 10
-	else if (current > max * 3 / 8) speed = 20
-	else if (current > max / 4) speed = 30
+	else if (current > 800 + coinCapacityAdj) speed = 10
+	else if (current > 600 + coinCapacityAdj) speed = 20
+	else if (current > 400 + coinCapacityAdj) speed = 30
 	return { current, max, speed }
 }
 
