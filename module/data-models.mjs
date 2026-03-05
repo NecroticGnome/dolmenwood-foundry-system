@@ -176,7 +176,12 @@ function createAdjustmentsSchema() {
 		speed: createAdjustmentField(),
 		movement: createMovementAdjustmentsSchema(),
 		magic: createMagicAdjustmentsSchema(),
-		xpModifier: createAdjustmentField()
+		xpModifier: createAdjustmentField(),
+		coinCapacity: createAdjustmentField(),
+		slotCapacity: new SchemaField({
+			equipped: createAdjustmentField(),
+			stowed: createAdjustmentField()
+		})
 	})
 }
 

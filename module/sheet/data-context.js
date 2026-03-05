@@ -67,34 +67,37 @@ export function computeEncumbrance(actor) {
 	const totalCoins = (system.coins.copper || 0) + (system.coins.silver || 0)
 		+ (system.coins.gold || 0) + (system.coins.pellucidium || 0)
 
+	const adj = system.adjustments || {}
 	switch (method) {
-	case 'weight': return computeWeightFull(equipped, stowed, totalCoins)
-	case 'treasure': return computeWeightTreasure(equipped, stowed, totalCoins, game.settings.get('dolmenwood', 'significantLoad'))
-	case 'slots': return computeSlots(equipped, stowed, totalCoins)
+	case 'weight': return computeWeightFull(equipped, stowed, totalCoins, adj.coinCapacity || 0)
+	case 'treasure': return computeWeightTreasure(equipped, stowed, totalCoins, game.settings.get('dolmenwood', 'significantLoad'), adj.coinCapacity || 0)
+	case 'slots': return computeSlots(equipped, stowed, totalCoins, adj.slotCapacity || {})
 	case 'disabled': return { current: 0, max: 0, speed: null }
 	default: return { current: 0, max: 0, speed: null }
 	}
 }
 
-function computeWeightFull(equipped, stowed, totalCoins) {
+function computeWeightFull(equipped, stowed, totalCoins, coinCapacityAdj) {
 	const itemWeight = [...equipped, ...stowed].reduce(
 		(sum, i) => sum + (i.system.weightCoins || 0) * (i.system.quantity || 1), 0
 	)
 	const current = itemWeight + totalCoins
+	const max = 1600 + coinCapacityAdj
 	let speed = 40
-	if (current > 1600) speed = 0
-	else if (current > 800) speed = 10
-	else if (current > 600) speed = 20
-	else if (current > 400) speed = 30
-	return { current, max: 1600, speed }
+	if (current > max) speed = 0
+	else if (current > max / 2) speed = 10
+	else if (current > max * 3 / 8) speed = 20
+	else if (current > max / 4) speed = 30
+	return { current, max, speed }
 }
 
-function computeWeightTreasure(equipped, stowed, totalCoins, significantLoad) {
+function computeWeightTreasure(equipped, stowed, totalCoins, significantLoad, coinCapacityAdj) {
 	const treasureWeight = [...equipped, ...stowed]
 		.filter(i => i.type === 'Treasure')
 		.reduce((sum, i) => sum + (i.system.weightCoins || 0) * (i.system.quantity || 1), 0)
 	const current = treasureWeight + totalCoins
-	const threshold = 1600 * (significantLoad || 50) / 100
+	const max = 1600 + coinCapacityAdj
+	const threshold = max * (significantLoad || 50) / 100
 	const hasTreasure = current >= threshold
 
 	// Find heaviest equipped armor bulk
@@ -117,8 +120,8 @@ function computeWeightTreasure(equipped, stowed, totalCoins, significantLoad) {
 		speed = hasTreasure ? 10 : 20
 	}
 
-	if (current > 1600) speed = 0
-	return { current, max: 1600, speed }
+	if (current > max) speed = 0
+	return { current, max, speed }
 }
 
 function itemSlots(i) {
@@ -130,30 +133,34 @@ function itemSlots(i) {
 	return w * qty
 }
 
-function computeSlots(equipped, stowed, totalCoins) {
+function computeSlots(equipped, stowed, totalCoins, slotCapacityAdj) {
 	const equippedSlots = equipped.reduce((sum, i) => sum + itemSlots(i), 0)
 	const coinSlots = Math.ceil(totalCoins / 100)
 	const stowedSlots = stowed.reduce((sum, i) => sum + itemSlots(i), 0) + coinSlots
+	const eAdj = slotCapacityAdj.equipped || 0
+	const sAdj = slotCapacityAdj.stowed || 0
+	const equippedMax = 10 + eAdj
+	const stowedMax = 16 + sAdj
 
-	// Speed from equipped tier
+	// Speed from equipped tier (thresholds shift with capacity adjustment)
 	let equippedSpeed
-	if (equippedSlots <= 3) equippedSpeed = 40
-	else if (equippedSlots <= 5) equippedSpeed = 30
-	else if (equippedSlots <= 7) equippedSpeed = 20
+	if (equippedSlots <= 3 + eAdj) equippedSpeed = 40
+	else if (equippedSlots <= 5 + eAdj) equippedSpeed = 30
+	else if (equippedSlots <= 7 + eAdj) equippedSpeed = 20
 	else equippedSpeed = 10
 
-	// Speed from stowed tier
+	// Speed from stowed tier (thresholds shift with capacity adjustment)
 	let stowedSpeed
-	if (stowedSlots <= 10) stowedSpeed = 40
-	else if (stowedSlots <= 12) stowedSpeed = 30
-	else if (stowedSlots <= 14) stowedSpeed = 20
+	if (stowedSlots <= 10 + sAdj) stowedSpeed = 40
+	else if (stowedSlots <= 12 + sAdj) stowedSpeed = 30
+	else if (stowedSlots <= 14 + sAdj) stowedSpeed = 20
 	else stowedSpeed = 10
 
 	const speed = Math.min(equippedSpeed, stowedSpeed)
 
 	return {
-		equipped: { current: equippedSlots, max: 10 },
-		stowed: { current: stowedSlots, max: 16 },
+		equipped: { current: equippedSlots, max: equippedMax },
+		stowed: { current: stowedSlots, max: stowedMax },
 		speed
 	}
 }
