@@ -438,7 +438,7 @@ export class AdventurerDataModel extends ActorDataModel {
 				nextLevel: new NumberField({ required: true, integer: true, min: 0, initial: 2000 })
 			}),
 
-			// Magic Resistance (from Wisdom and Kindred)
+			// Magic Resistance (computed from WIS mod + kindred bonus + adjustments)
 			magicResistance: new NumberField({ required: true, integer: true, initial: 0 }),
 
 			// Movement speeds
