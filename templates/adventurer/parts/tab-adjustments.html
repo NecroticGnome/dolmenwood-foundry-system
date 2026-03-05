@@ -233,5 +233,24 @@
 				</div>
 			</div>
 		</fieldset>
+
+		<!-- Encumbrance Capacity Adjustments -->
+		<fieldset class="adj-group">
+			<legend>{{localize "DOLMEN.Encumbrance.Title"}}</legend>
+			<div class="flexrow adj-grid-encumbrance">
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Adjustments.CoinCapacity"}}</span>
+					<input type="number" name="system.adjustments.coinCapacity" value="{{system.adjustments.coinCapacity}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Adjustments.EquippedSlots"}}</span>
+					<input type="number" name="system.adjustments.slotCapacity.equipped" value="{{system.adjustments.slotCapacity.equipped}}" placeholder="0">
+				</div>
+				<div class="adj-row">
+					<span class="adj-label">{{localize "DOLMEN.Adjustments.StowedSlots"}}</span>
+					<input type="number" name="system.adjustments.slotCapacity.stowed" value="{{system.adjustments.slotCapacity.stowed}}" placeholder="0">
+				</div>
+			</div>
+		</fieldset>
 	</section>
 </section>

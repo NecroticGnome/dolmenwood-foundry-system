@@ -102,6 +102,11 @@
 	gap: 0.5rem;
 }
 
+.sheet.dolmen .tab-adjustments .adjustments-content {
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
 .sheet.dolmen .tab-adjustments .adjustments-content h2 {
 	margin-bottom: 0.25rem;
 }
@@ -202,6 +207,10 @@
 
 .sheet.dolmen .tab-adjustments .adj-grid-other {
 	grid-template-columns: repeat(9, 1fr);
+}
+
+.sheet.dolmen .tab-adjustments .adj-grid-encumbrance {
+	gap: 1rem;
 }
 
 .sheet.dolmen .tab-adjustments .adj-grid-magic-enable {

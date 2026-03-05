@@ -43,6 +43,9 @@
 			"Title": "Custom Adjustments",
 			"Hint": "Add custom bonuses/penalties to base values (e.g., from magic equipment, custom traits, or other effects).",
 			"MaxGlamours": "Max Glamours",
+			"CoinCapacity": "Coin Capacity",
+			"EquippedSlots": "Equipped Slots",
+			"StowedSlots": "Stowed Slots",
 			"Other": "Other"
 		},
 		"Details": "Details",
