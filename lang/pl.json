@@ -132,6 +132,8 @@
 		"Calendar": {
 			"SettingName": "Pokaż widget kalendarza",
 			"SettingHint": "Wyświetl widget kalendarza i czasu nad paskiem makr.",
+			"CalendarName": "Kalendarz Dolmenwood",
+			"Wysenday": "Wysenday",
 			"Year": "Rok",
 			"Month": "Miesiąc",
 			"Day": "Dzień",

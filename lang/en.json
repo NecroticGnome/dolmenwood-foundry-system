@@ -1107,6 +1107,8 @@
 		"Calendar": {
 			"SettingName": "Show Calendar Widget",
 			"SettingHint": "Display a calendar and time widget above the macro hotbar.",
+			"CalendarName": "Dolmenwood Calendar",
+			"Wysenday": "Wysenday",
 			"Year": "Year",
 			"Month": "Month",
 			"Day": "Day",

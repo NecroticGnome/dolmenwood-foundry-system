@@ -16,6 +16,7 @@ import { createSaveLinkEnricher, createChanceLinkEnricher, openInlineSaveModifie
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { worldTimeToCalendar, dateKeyToEpochDay } from './module/calendar/calendar-time.js'
+import { DolmenwoodCalendar, buildCalendarConfig } from './module/calendar/calendar-data.js'
 import { getFaSymbol, getRuneUsage } from './module/sheet/data-context.js'
 import { registerCombatSystem } from './module/combat/combat.js'
 import { handleCombatSocket } from './module/combat/combat-rolls.js'
@@ -62,6 +63,12 @@ Hooks.on('initializeDynamicTokenRingConfig', ringConfig => {
 Hooks.once('init', async function () {
 	CONFIG.DOLMENWOOD = DOLMENWOOD
 	CONFIG.DOLMENWOOD.effectFields = EFFECT_FIELDS
+
+	// Expose the Dolmenwood calendar through the core time API
+	// (game.time.calendar / game.time.components) for module interoperability
+	CONFIG.time.worldCalendarClass = DolmenwoodCalendar
+	CONFIG.time.worldCalendarConfig = buildCalendarConfig()
+	CONFIG.time.formatters.timestamp = DolmenwoodCalendar.formatTimestamp
 	game.dolmenwood = { executeMacroAttack }
 
 	game.settings.register('dolmenwood', 'colorTheme', {
