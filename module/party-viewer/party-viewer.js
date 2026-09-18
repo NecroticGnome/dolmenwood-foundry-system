@@ -338,7 +338,7 @@ async function addXP() {
 		const isRetainer = a.system.retainer
 		const adjusted = a.system.final
 		const baseMod = computeXPModifier(a, adjusted.abilities)
-		const adjMod = a.system.adjustments.xpModifier || 0
+		const adjMod = adjusted.xpModifier || 0
 		const bonusPct = baseMod + adjMod
 		const basePct = getXPShare(a) * 100
 		const newTreasure = computeNewTreasureGold(a)

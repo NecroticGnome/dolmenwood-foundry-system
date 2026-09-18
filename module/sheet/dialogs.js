@@ -19,7 +19,7 @@ export function openXPDialog(sheet) {
 	const currentXP = sheet.actor.system.xp.value || 0
 	const adjusted = sheet.actor.system.final
 	const baseXPMod = computeXPModifier(sheet.actor, adjusted.abilities)
-	const xpModAdj = sheet.actor.system.adjustments.xpModifier || 0
+	const xpModAdj = adjusted.xpModifier || 0
 	const modifier = baseXPMod + xpModAdj
 
 	const content = `
