@@ -1,4 +1,4 @@
-/* global game, ui, Roll, ChatMessage, CONST, CONFIG, canvas */
+/* global game, ui, Roll, ChatMessage, CONST, CONFIG, canvas, foundry */
 import { createChatMessage } from './chat-helpers.js'
 /**
  * Attack Roll Handlers
@@ -15,6 +15,35 @@ import { createAttackMacro } from '../attack-macros.js'
 /* -------------------------------------------- */
 /*  Weapon Helpers                              */
 /* -------------------------------------------- */
+
+/**
+ * Sum the flat numeric modifiers in a weapon's damage formula (e.g. "1d6+2" becomes 2).
+ * Used to carry a magic weapon's bonus onto attacks that replace its dice (backstab) or for other stuff, I'm not your mom
+ * @param {object} weapon - The weapon item
+ * @returns {number} Flat damage bonus or penalty
+ */
+function getWeaponDamageBonus(weapon) {
+	const { NumericTerm, OperatorTerm } = foundry.dice.terms
+	let terms
+
+	try {
+		terms = new Roll(weapon.system.damage).terms
+	} catch {
+		return 0
+	}
+
+	let bonus = 0
+	let sign = 1
+	for (const term of terms) {
+		if (term instanceof OperatorTerm)
+			sign = term.operator === '-' ? -1 : term.operator === '+' ? 1 : 0
+		else if (term instanceof NumericTerm)
+			bonus += sign * term.number
+	}
+
+	return bonus
+}
+
 
 /**
  * Build HTML for weapon selection menu items.
@@ -461,11 +490,13 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 	if (classItem?.system?.hasBackstab) {
 		const strMod = actor.system.final.abilities.strength.mod
 		const modStr = strMod >= 0 ? ` + ${strMod}` : ` - ${Math.abs(strMod)}`
+		const weaponBonus = getWeaponDamageBonus(weapon)
+		const weaponStr = weaponBonus > 0 ? ` + ${weaponBonus}` : weaponBonus < 0 ? ` - ${Math.abs(weaponBonus)}` : ''
 		modifiers.push({
 			id: 'backstab',
 			name: game.i18n.localize('DOLMEN.Attack.Mod.Backstab'),
 			attackBonus: 4,
-			damageOverride: `3d4${modStr}`
+			damageOverride: `3d4${modStr}${weaponStr}`
 		})
 	}
 
