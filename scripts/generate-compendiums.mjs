@@ -534,14 +534,16 @@ const KINDRED_TRAITS = {
 				nameKey: 'DOLMEN.Traits.Leadership',
 				descKey: 'DOLMEN.Traits.LeadershipDesc',
 				traitType: 'info'
-			}
-		],
-		info: [
+			},
 			{
 				id: 'spirited',
 				nameKey: 'DOLMEN.Traits.Spirited',
 				descKey: 'DOLMEN.Traits.SpiritedDesc',
-				traitType: 'info'
+				traitType: 'adjustment',
+				adjustmentType: 'static',
+				adjustmentTarget: 'xpModifier',
+				adjustmentValue: 10,
+				hideFromTraitTab: false
 			}
 		]
 	},

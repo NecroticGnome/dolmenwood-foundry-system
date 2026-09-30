@@ -646,7 +646,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		// Compute XP modifier from prime abilities + custom adjustment
 		const baseXPMod = computeXPModifier(actor, context.adjusted.abilities)
-		const xpModAdj = actor.system.adjustments.xpModifier || 0
+		const xpModAdj = context.adjusted.xpModifier || 0
 		context.xpModifier = baseXPMod + xpModAdj
 		context.xpModifierLabel = context.xpModifier >= 0
 			? `+${context.xpModifier}%`
