@@ -408,7 +408,7 @@ export class AdventurerDataModel extends ActorDataModel {
 		}
 
 		// Aggregate gear statEffects
-		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Container']
+		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable', 'Container']
 		for (const item of items) {
 			if (!gearTypes.includes(item.type)) continue
 			const effects = item.system.statEffects
@@ -1376,6 +1376,19 @@ export class ForagedDataModel extends GearDataModel {
 				min: 1,
 				max: 6
 			}),
+			effects: new HTMLField({
+				required: true,
+				blank: true,
+				initial: ""
+			})
+		}
+	}
+}
+
+export class ConsumableDataModel extends GearDataModel {
+	static defineSchema() {
+		return {
+			...super.defineSchema(),
 			effects: new HTMLField({
 				required: true,
 				blank: true,

@@ -290,6 +290,17 @@
 	</section>
 	{{/if}}
 
+	{{#if isConsumable}}
+	<!-- Consumable-specific fields -->
+	<section class="item-consumable">
+		<h2>{{localize "DOLMEN.Item.ConsumableDetails"}}</h2>
+		<div class="form-group">
+			<label>{{localize "DOLMEN.Item.EffectsSummary"}}</label>
+			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
+		</div>
+	</section>
+	{{/if}}
+
 	{{#if isContainer}}
 	<!-- Container-specific fields -->
 	<section class="item-container">

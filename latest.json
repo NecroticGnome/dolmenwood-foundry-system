@@ -154,6 +154,9 @@
       "Foraged": {
         "htmlFields": ["notes", "effects"]
       },
+      "Consumable": {
+        "htmlFields": ["notes", "effects"]
+      },
       "Container": {
         "htmlFields": ["notes"]
       },

@@ -1,61 +1,114 @@
-/* global game, canvas, ui */
+/* global game, canvas, ui, foundry */
 import { createContextMenu } from './sheet/context-menu.js'
 
 /**
- * Apply damage to controlled tokens.
- * @param {number} damage - Amount of damage to apply
+ * Apply damage or healing to a single actor.
+ * Players lacking ownership delegate the update to the active GM via socket.
+ * @param {Actor} actor - The actor to modify
+ * @param {number} amount - HP to remove (damage) or restore (heal)
+ * @param {'damage'|'heal'} mode - Whether to damage or heal
+ * @returns {Promise<boolean>} Whether the change was applied or delegated
  */
-export async function applyDamageToControlled(damage) {
-	const controlled = canvas.tokens.controlled
-	if (controlled.length === 0) {
+async function applyHpChange(actor, amount, mode) {
+	if (!actor.isOwner) {
+		if (!game.users.activeGM) {
+			ui.notifications.warn(game.i18n.format('DOLMEN.Damage.NoGM', { name: actor.name }))
+			return false
+		}
+		game.socket.emit('system.dolmenwood', { action: 'applyHpChange', actorUuid: actor.uuid, amount, mode })
+		return true
+	}
+	const { value, max } = actor.system.hp
+	const newHP = mode === 'heal' ? Math.min(max, value + amount) : Math.max(0, value - amount)
+	await actor.update({ 'system.hp.value': newHP })
+	return true
+}
+
+/**
+ * Resolve the tokens a chat card's damage should apply to: the attack's
+ * stored target if it still exists on a scene, otherwise the controlled tokens.
+ * @param {ChatMessage} [message] - The chat message the damage roll belongs to
+ * @returns {TokenDocument[]} Token documents to apply damage to
+ */
+function getDamageTargets(message) {
+	const targetUuid = message?.getFlag('dolmenwood', 'damage')?.targetUuid
+	if (targetUuid) {
+		const token = foundry.utils.fromUuidSync(targetUuid)
+		if (token?.actor) return [token]
+	}
+	return canvas.tokens.controlled.map(t => t.document).filter(t => t.actor)
+}
+
+/**
+ * Apply damage or healing to the chat card's target or the controlled tokens.
+ * @param {ChatMessage} [message] - The chat message the roll belongs to
+ * @param {number} amount - HP amount
+ * @param {'damage'|'heal'} mode - Whether to damage or heal
+ */
+async function applyToTargets(message, amount, mode) {
+	const tokens = getDamageTargets(message)
+	if (tokens.length === 0) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.Damage.NoTokensSelected'))
 		return
 	}
 
-	for (const token of controlled) {
-		const actor = token.actor
-		if (!actor) continue
-
-		const currentHP = actor.system.hp.value
-		const newHP = Math.max(0, currentHP - damage)
-
-		await actor.update({ 'system.hp.value': newHP })
+	const applied = []
+	for (const token of tokens) {
+		if (await applyHpChange(token.actor, amount, mode)) applied.push(token)
 	}
+	if (applied.length === 0) return
 
-	const count = controlled.length
-	const label = count === 1
-		? game.i18n.format('DOLMEN.Damage.Applied', { damage, name: controlled[0].name })
-		: game.i18n.format('DOLMEN.Damage.AppliedMultiple', { damage, count })
+	const key = mode === 'heal' ? 'DOLMEN.Damage.Healed' : 'DOLMEN.Damage.Applied'
+	const label = applied.length === 1
+		? game.i18n.format(key, { damage: amount, name: applied[0].name })
+		: game.i18n.format(`${key}Multiple`, { damage: amount, count: applied.length })
 	ui.notifications.info(label)
 }
 
 /**
- * Apply healing to controlled tokens.
- * @param {number} healing - Amount of HP to restore
+ * Whether an actor counts as fey (fairy or demi-fey) for cold-iron damage.
+ * @param {Actor} actor
+ * @returns {boolean}
  */
-async function applyHealingToControlled(healing) {
-	const controlled = canvas.tokens.controlled
-	if (controlled.length === 0) {
-		ui.notifications.warn(game.i18n.localize('DOLMEN.Damage.NoTokensSelected'))
-		return
-	}
+function isFey(actor) {
+	const type = actor.type === 'Adventurer' ? actor.system.creatureType : actor.system.monsterType
+	return type === 'fairy' || type === 'demi-fey'
+}
 
-	for (const token of controlled) {
-		const actor = token.actor
-		if (!actor) continue
+/**
+ * Socket handler: apply HP changes requested by players (active GM only).
+ * @param {object} data - Socket payload
+ */
+export async function handleDamageSocket(data) {
+	if (data.action !== 'applyHpChange' || game.user !== game.users.activeGM) return
+	const actor = foundry.utils.fromUuidSync(data.actorUuid)
+	if (actor) await applyHpChange(actor, data.amount, data.mode)
+}
 
-		const currentHP = actor.system.hp.value
-		const maxHP = actor.system.hp.max
-		const newHP = Math.min(maxHP, currentHP + healing)
+/**
+ * Automatically apply an attack's damage to its target, when the
+ * autoApplyDamage setting is enabled. Runs on the active GM's client only.
+ * Missed attacks and attacks without a target are ignored.
+ * @param {ChatMessage} message - The newly created chat message
+ */
+export async function autoApplyDamage(message) {
+	if (game.user !== game.users.activeGM) return
+	if (!game.settings.get('dolmenwood', 'autoApplyDamage')) return
+	const flag = message.getFlag('dolmenwood', 'damage')
+	if (!flag?.targetUuid || flag.hitResult === 'miss') return
 
-		await actor.update({ 'system.hp.value': newHP })
-	}
+	const token = foundry.utils.fromUuidSync(flag.targetUuid)
+	const actor = token?.actor
+	if (!actor) return
 
-	const count = controlled.length
-	const label = count === 1
-		? game.i18n.format('DOLMEN.Damage.Healed', { damage: healing, name: controlled[0].name })
-		: game.i18n.format('DOLMEN.Damage.HealedMultiple', { damage: healing, count })
-	ui.notifications.info(label)
+	let amount = flag.total
+	if (flag.coldIron) amount = isFey(actor) ? amount + 1 : Math.max(0, amount - 1)
+
+	// Don't reveal the result before Dice So Nice finishes animating
+	if (game.dice3d) await game.dice3d.waitFor3DAnimationByMessageID(message.id)
+
+	await applyHpChange(actor, amount, 'damage')
+	ui.notifications.info(game.i18n.format('DOLMEN.Damage.Applied', { damage: amount, name: token.name }))
 }
 
 /**
@@ -65,8 +118,9 @@ async function applyHealingToControlled(healing) {
  * @param {HTMLElement} excludeEl - Element to exclude from close detection
  * @param {object} [options] - Extra options
  * @param {boolean} [options.hasColdIron] - Whether the weapon has cold-iron quality
+ * @param {ChatMessage} [options.message] - The chat message the roll belongs to
  */
-function showDamageMenu(event, damageTotal, excludeEl, { hasColdIron = false } = {}) {
+function showDamageMenu(event, damageTotal, excludeEl, { hasColdIron = false, message = null } = {}) {
 	const halfDamage = Math.floor(damageTotal / 2)
 	const doubleDamage = damageTotal * 2
 	const coldIronPlus = damageTotal + 1
@@ -98,8 +152,14 @@ function showDamageMenu(event, damageTotal, excludeEl, { hasColdIron = false } =
 			<span>${game.i18n.format('DOLMEN.Damage.ApplyHalf', { damage: halfDamage })}</span>
 		</div>`
 
+	const [target] = getDamageTargets(message)
+	const isStoredTarget = !!target && target.uuid === message?.getFlag('dolmenwood', 'damage')?.targetUuid
+	const heading = isStoredTarget
+		? game.i18n.format('DOLMEN.Damage.ApplyDamageTo', { name: target.name })
+		: game.i18n.localize('DOLMEN.Damage.ApplyDamage')
+
 	const menuHtml = `
-		<h3>${game.i18n.localize('DOLMEN.Damage.ApplyDamage')}</h3>
+		<h3>${heading}</h3>
 		${damageOptions}
 		${halfDoubleOptions}
 		${hasColdIron ? `
@@ -125,12 +185,8 @@ function showDamageMenu(event, damageTotal, excludeEl, { hasColdIron = false } =
 		excludeFromClose: excludeEl,
 		onItemClick: async (item, menu) => {
 			const amount = parseInt(item.dataset.damage)
-			if (item.dataset.action === 'heal') {
-				await applyHealingToControlled(amount)
-			} else {
-				await applyDamageToControlled(amount)
-			}
 			menu.remove()
+			await applyToTargets(message, amount, item.dataset.action === 'heal' ? 'heal' : 'damage')
 		}
 	})
 }
@@ -155,8 +211,9 @@ function parseInlineRollTotal(el) {
 /**
  * Setup context menu for damage rolls in chat.
  * @param {HTMLElement} html - Chat message HTML
+ * @param {ChatMessage} [message] - The chat message being rendered
  */
-export function setupDamageContextMenu(html) {
+export function setupDamageContextMenu(html, message) {
 	const element = html[0] || html
 
 	// System damage rolls (inline-roll with damage-inline-roll class)
@@ -173,7 +230,7 @@ export function setupDamageContextMenu(html) {
 			const weaponQualities = damageSection?.dataset.weaponQualities || ''
 			const hasColdIron = weaponQualities.split(',').includes('cold-iron')
 
-			showDamageMenu(event, damageTotal, rollElement, { hasColdIron })
+			showDamageMenu(event, damageTotal, rollElement, { hasColdIron, message })
 			return false
 		}, { capture: true })
 	})
@@ -188,7 +245,7 @@ export function setupDamageContextMenu(html) {
 			const damageTotal = parseInt(totalElement.textContent) || 0
 			if (damageTotal === 0) return
 
-			showDamageMenu(event, damageTotal, totalElement)
+			showDamageMenu(event, damageTotal, totalElement, { message })
 			return false
 		}, { capture: true })
 	})

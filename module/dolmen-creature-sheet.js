@@ -1,14 +1,15 @@
-/* global foundry, game, ui, FilePicker, Roll, ChatMessage, CONST, CONFIG, fromUuid */
+/* global foundry, game, ui, FilePicker, Roll, ChatMessage, CONST, CONFIG, fromUuid, Item */
 
 const { DialogV2 } = foundry.applications.api
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { onSaveRoll } from './sheet/roll-handlers.js'
 import { createChatMessage } from './sheet/chat-helpers.js'
 import { createContextMenu } from './sheet/context-menu.js'
-import { getDieIconFromFormula } from './sheet/attack-rolls.js'
+import { getDieIconFromFormula, getAttackTarget, buildDamageFlags } from './sheet/attack-rolls.js'
 import { parseSaveLinks } from './chat-save.js'
 import { getEffectTargetLabel, getEffectFieldsForActor } from './effect-fields.js'
-import { onOpenItem } from './sheet/inventory-actions.js'
+import { prepareItemData, groupItemsByType, calcItemWeight } from './sheet/data-context.js'
+import { onOpenItem, onDeleteItem, onIncreaseQty, onDecreaseQty, onToggleContainer, onDropItemSimple } from './sheet/inventory-actions.js'
 import { setupAdjustableInputListeners } from './sheet/listeners.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -34,6 +35,10 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			addAbility: DolmenCreatureSheet._onAddAbility,
 			removeAbility: DolmenCreatureSheet._onRemoveAbility,
 			openItem: onOpenItem,
+			deleteItem: onDeleteItem,
+			increaseQty: onIncreaseQty,
+			decreaseQty: onDecreaseQty,
+			toggleContainer: onToggleContainer,
 			addEffect: DolmenCreatureSheet._onAddEffect,
 			deleteEffect: DolmenCreatureSheet._onDeleteEffect,
 			toggleEffect: DolmenCreatureSheet._onToggleEffect
@@ -46,6 +51,10 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		},
 		stats: {
 			template: 'systems/dolmenwood/templates/creature/parts/tab-stats.html',
+			scrollable: ['']
+		},
+		inventory: {
+			template: 'systems/dolmenwood/templates/creature/parts/tab-inventory.html',
 			scrollable: ['']
 		},
 		description: {
@@ -68,6 +77,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				{ id: 'stats', icon: 'fas fa-dragon', label: 'DOLMEN.Tabs.Stats' },
 				{ id: 'notes', icon: 'fas fa-eye', label: 'DOLMEN.Tabs.Details' },
 				{ id: 'effects', icon: 'fas fa-bolt', label: 'DOLMEN.Tabs.Effects' },
+				{ id: 'inventory', icon: 'fas fa-box', label: 'DOLMEN.Tabs.Inventory' },
 				{ id: 'description', icon: 'fas fa-note-sticky', label: 'DOLMEN.Tabs.Description' }
 			],
 			initial: 'stats'
@@ -172,12 +182,50 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			}
 		}).sort((a, b) => a.name.localeCompare(b.name))
 
+		// Prepare inventory data (stowed items only)
+		context.encumbranceMethod = game.settings.get('dolmenwood', 'encumbranceMethod')
+		this._prepareInventoryContext(context, actor)
+
 		return context
+	}
+
+	_prepareInventoryContext(context, actor) {
+		const weightKey = context.encumbranceMethod === 'slots' ? 'weightSlots' : 'weightCoins'
+
+		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable']
+		const allStowedItems = actor.items.contents
+			.filter(i => gearTypes.includes(i.type))
+			.map(i => prepareItemData(i))
+
+		// Build container data
+		const containerItems = actor.items.contents.filter(i => i.type === 'Container')
+		context.containers = containerItems.map(c => {
+			const prepared = prepareItemData(c)
+			const contents = allStowedItems.filter(i => i.system.containerId === c.id)
+			return {
+				...prepared,
+				contents: groupItemsByType(contents),
+				hasContents: contents.length > 0,
+				coinsUsed: contents.reduce((sum, i) => sum + calcItemWeight(i, weightKey), 0),
+				coinsMax: weightKey === 'weightSlots' ? c.system.capacitySlots : c.system.capacityCoins,
+				infiniteCapacity: c.system.infiniteCapacity
+			}
+		})
+		context.hasContainers = context.containers.length > 0
+
+		// Loose stowed items (not in any container)
+		const containerIds = new Set(containerItems.map(c => c.id))
+		const looseStowedItems = allStowedItems.filter(i => !i.system.containerId || !containerIds.has(i.system.containerId))
+
+		context.stowedByType = groupItemsByType(looseStowedItems)
+		context.hasLooseStowedItems = looseStowedItems.length > 0
+		context.unsortedWeight = looseStowedItems.reduce((sum, i) => sum + calcItemWeight(i, weightKey), 0)
+		context.hasStowedItems = context.hasLooseStowedItems || context.hasContainers
 	}
 
 	async _preparePartContext(partId, context) {
 		context = await super._preparePartContext(partId, context)
-		const tabIds = ['stats', 'description', 'notes', 'effects']
+		const tabIds = ['stats', 'description', 'notes', 'effects', 'inventory']
 		if (tabIds.includes(partId)) {
 			context.tab = context.tabs?.primary?.[partId] || {
 				id: partId,
@@ -340,6 +388,19 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				this._openAbilityDialog(index)
 			})
 		})
+
+		// Inventory item drag listeners
+		this.element.querySelectorAll('.item-row.draggable').forEach(el => {
+			el.setAttribute('draggable', true)
+			el.addEventListener('dragstart', (event) => {
+				const item = this.actor.items.get(el.dataset.itemId)
+				if (!item) return
+				event.dataTransfer.setData('text/plain', JSON.stringify({
+					type: 'Item',
+					uuid: item.uuid
+				}))
+			})
+		})
 	}
 
 	async _onDrop(event) {
@@ -366,6 +427,11 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		if (data.type === 'Item' && data.uuid) {
 			const item = await fromUuid(data.uuid)
+
+			// Items dropped on the inventory tab are stored as gear
+			if (event.target?.closest('.tab-inventory')) {
+				return onDropItemSimple(this, event, data)
+			}
 
 			// Translate a dropped Weapon into a creature attack
 			if (item?.type === 'Weapon') {
@@ -403,6 +469,13 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		}
 
 		return super._onDrop(event)
+	}
+
+	async _onDropItem(event, data) {
+		const item = await Item.implementation.fromDropData(data)
+		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable', 'Container']
+		if (gearTypes.includes(item?.type)) return onDropItemSimple(this, event, data)
+		return super._onDropItem(event, data)
 	}
 
 	/* -------------------------------------------- */
@@ -858,16 +931,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const diceIcon = getDieIconFromFormula(attack.attackDamage)
 
 		// Compare against targeted token's AC, if any
-		let targetData = null
-		const targets = game.user.targets
-		if (targets.size > 0) {
-			const targetToken = targets.first()
-			const targetActor = targetToken.actor
-			if (targetActor) {
-				const targetAC = targetActor.system.final?.ac ?? targetActor.system.ac
-				targetData = { name: targetToken.name, ac: targetAC }
-			}
-		}
+		const targetData = getAttackTarget()
 		const hitResult = targetData ? (atkRoll.total >= targetData.ac ? 'hit' : 'miss') : null
 		const hitClass = hitResult === 'hit' ? ' success' : hitResult === 'miss' ? ' failure' : ''
 		const targetInfo = targetData
@@ -909,7 +973,8 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			content,
 			rolls: [atkRoll, dmgRoll],
 			sound: CONFIG.sounds.dice,
-			style: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+			flags: buildDamageFlags({ targetData, hitResult, total: dmgRoll.total })
 		})
 	}
 

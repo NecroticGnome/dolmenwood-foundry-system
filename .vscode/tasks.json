@@ -11,7 +11,7 @@
 		{
 			"label": "Copy to Foundry",
 			"type": "shell",
-			"command": "node scripts/build-css.js; if ($LASTEXITCODE -ne 0) { exit 1 }; Remove-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' | Out-Null; Get-ChildItem -Path . -Exclude '.*', 'node_modules', 'scripts' | Copy-Item -Destination 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue",
+			"command": "node scripts/build-css.js; if ($LASTEXITCODE -ne 0) { exit 1 }; $target = Get-Item -LiteralPath 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Force -ErrorAction SilentlyContinue; if ($target -and $target.LinkType) { Write-Host 'Foundry system folder is linked to this repo - skipping copy'; exit 0 }; Remove-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' | Out-Null; Get-ChildItem -Path . -Exclude '.*', 'node_modules', 'scripts' | Copy-Item -Destination 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue",
 			"group": "build",
 			"problemMatcher": []
 		},

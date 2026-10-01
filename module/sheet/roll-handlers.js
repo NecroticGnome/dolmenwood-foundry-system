@@ -231,8 +231,8 @@ function openSaveModifierPanel(sheet, saveKey, modifiers, position) {
 		for (const mod of modifiers) {
 			const bonusStr = mod.bonus >= 0 ? `+${mod.bonus}` : `${mod.bonus}`
 			html += `
-				<div class="modifier-item" data-mod-id="${mod.id}">
-					<span class="mod-check"></span>
+				<div class="modifier-item${mod.defaultSelected ? ' selected' : ''}" data-mod-id="${mod.id}"${mod.exclusiveGroup ? ` data-exclusive-group="${mod.exclusiveGroup}"` : ''}>
+					<span class="mod-check">${mod.defaultSelected ? '✓' : ''}</span>
 					<span class="mod-name">${mod.name}</span>
 					<span class="mod-bonus">${bonusStr}</span>
 				</div>
@@ -264,9 +264,16 @@ function openSaveModifierPanel(sheet, saveKey, modifiers, position) {
 	const panelRect = panel.getBoundingClientRect()
 	panel.style.left = `${position.left - panelRect.width - 5}px`
 
-	// Modifier toggle behavior (multi-select)
+	// Modifier toggle behavior (multi-select; options sharing an exclusive group deselect each other)
 	panel.querySelectorAll('.modifier-item').forEach(item => {
 		item.addEventListener('click', () => {
+			const group = item.dataset.exclusiveGroup
+			if (group && !item.classList.contains('selected')) {
+				panel.querySelectorAll(`.modifier-item[data-exclusive-group="${group}"].selected`).forEach(other => {
+					other.classList.remove('selected')
+					other.querySelector('.mod-check').textContent = ''
+				})
+			}
 			item.classList.toggle('selected')
 			const check = item.querySelector('.mod-check')
 			check.textContent = item.classList.contains('selected') ? '\u2713' : ''

@@ -1,0 +1,8 @@
+<section class="tab-content tab-inventory {{tab.cssClass}}" data-group="primary" data-tab="inventory">
+	<section class="stowed-items inventory boxed-section" data-item-list="stowed">
+		<h2><i class="fas fa-box"></i> {{localize "DOLMEN.Inventory.Stowed"}} {{#if unsortedWeight}}<span class="container-capacity">(<i class="fas fa-weight-hanging"></i> {{unsortedWeight}})</span>{{/if}}</h2>
+		<div class="item-list stowed-list" data-item-list="stowed">
+			{{> "systems/dolmenwood/templates/shared/container-list.html"}}
+		</div>
+	</section>
+</section>

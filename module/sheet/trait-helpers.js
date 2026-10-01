@@ -5,7 +5,7 @@
  * All functions receive the actor as a parameter.
  */
 
-import { parseSaveLinks } from '../chat-save.js'
+import { parseSaveLinks } from '../utils/save-links.js'
 
 /**
  * Resolve damage from a damageProgression array for a given level.
@@ -30,12 +30,28 @@ export function resolveDamageProgression(progression, level) {
  * Existing actors with stale Class items still resolve via these entries.
  */
 const TRAIT_PROGRESSION_FALLBACKS = {
+	// Mossling Resilience: +2 to all saves (errata 2026-09; was stored as 1)
+	resilience: [{ minLevel: 1, value: 2 }],
 	armorOfFaith: [
 		{ minLevel: 1, value: 2 },
 		{ minLevel: 5, value: 3 },
 		{ minLevel: 9, value: 4 },
 		{ minLevel: 13, value: 5 }
 	]
+}
+
+/**
+ * Fallbacks for roll-option traits that offer additional alternative options,
+ * for actors whose embedded Kindred/Class items predate `extraRollOptions`.
+ */
+const TRAIT_ROLL_OPTION_FALLBACKS = {
+	resilience: {
+		exclusiveGroup: 'resilience',
+		rollOptionDefault: true,
+		extraRollOptions: [
+			{ id: 'resilienceFungal', nameKey: 'DOLMEN.Traits.ResilienceFungal', value: 4, exclusiveGroup: 'resilience' }
+		]
+	}
 }
 
 /**
@@ -327,12 +343,27 @@ export function getTraitRollOptions(actor, rollType) {
 
 		const bonus = resolveAdjustmentValue(trait, level)
 
+		const fallback = TRAIT_ROLL_OPTION_FALLBACKS[trait.id]
 		options.push({
 			id: trait.id,
 			name: game.i18n.localize(trait.nameKey),
 			bonus,
-			condition: trait.adjustmentCondition ? game.i18n.localize(trait.adjustmentCondition) : null
+			condition: trait.adjustmentCondition ? game.i18n.localize(trait.adjustmentCondition) : null,
+			exclusiveGroup: trait.exclusiveGroup ?? fallback?.exclusiveGroup ?? null,
+			defaultSelected: trait.rollOptionDefault ?? fallback?.rollOptionDefault ?? false
 		})
+
+		// Alternative options from the same trait (e.g. Resilience vs fungal)
+		for (const extra of trait.extraRollOptions ?? fallback?.extraRollOptions ?? []) {
+			options.push({
+				id: extra.id,
+				name: game.i18n.localize(extra.nameKey),
+				bonus: extra.value,
+				condition: null,
+				exclusiveGroup: extra.exclusiveGroup ?? null,
+				defaultSelected: false
+			})
+		}
 	}
 
 	return options

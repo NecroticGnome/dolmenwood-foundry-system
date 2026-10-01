@@ -704,7 +704,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		}).sort((a, b) => a.name.localeCompare(b.name))
 
 		// Gear effects summary
-		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Container']
+		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable', 'Container']
 		context.gearEffects = actor.items
 			.filter(i => gearTypes.includes(i.type) && i.system.statEffects?.length > 0)
 			.flatMap(item => item.system.statEffects.map((eff, idx) => ({
@@ -1193,6 +1193,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			{ type: 'Armor', icon: 'fas fa-shield', label: game.i18n.localize('TYPES.Item.Armor') },
 			{ type: 'Treasure', icon: 'fas fa-gem', label: game.i18n.localize('TYPES.Item.Treasure') },
 			{ type: 'Foraged', icon: 'fas fa-leaf', label: game.i18n.localize('TYPES.Item.Foraged') },
+			{ type: 'Consumable', icon: 'fas fa-flask', label: game.i18n.localize('TYPES.Item.Consumable') },
 			{ type: 'Container', icon: 'fas fa-box', label: game.i18n.localize('TYPES.Item.Container') }
 		]
 		const html = itemTypes.map(t =>

@@ -5,7 +5,7 @@ import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { onSaveRoll } from './sheet/roll-handlers.js'
 import { createChatMessage } from './sheet/chat-helpers.js'
 import { createContextMenu } from './sheet/context-menu.js'
-import { getDieIconFromFormula } from './sheet/attack-rolls.js'
+import { getDieIconFromFormula, getAttackTarget, buildDamageFlags } from './sheet/attack-rolls.js'
 import { parseSaveLinks } from './chat-save.js'
 import { prepareItemData, groupItemsByType, computeEncumbrance, calcItemWeight } from './sheet/data-context.js'
 import { setupAdjustableInputListeners } from './sheet/listeners.js'
@@ -758,16 +758,7 @@ class DolmenHorseSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const diceIcon = getDieIconFromFormula(attack.attackDamage)
 
 		// Compare against targeted token's AC, if any
-		let targetData = null
-		const targets = game.user.targets
-		if (targets.size > 0) {
-			const targetToken = targets.first()
-			const targetActor = targetToken.actor
-			if (targetActor) {
-				const targetAC = targetActor.system.final?.ac ?? targetActor.system.ac
-				targetData = { name: targetToken.name, ac: targetAC }
-			}
-		}
+		const targetData = getAttackTarget()
 		const hitResult = targetData ? (atkRoll.total >= targetData.ac ? 'hit' : 'miss') : null
 		const hitClass = hitResult === 'hit' ? ' success' : hitResult === 'miss' ? ' failure' : ''
 		const targetInfo = targetData
@@ -809,7 +800,8 @@ class DolmenHorseSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			content,
 			rolls: [atkRoll, dmgRoll],
 			sound: CONFIG.sounds.dice,
-			style: CONST.CHAT_MESSAGE_STYLES.OTHER
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+			flags: buildDamageFlags({ targetData, hitResult, total: dmgRoll.total })
 		})
 	}
 }
