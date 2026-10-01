@@ -589,7 +589,7 @@ export function calcItemWeight(item, weightKey) {
  * @returns {object[]} Array of type groups with items
  */
 export function groupItemsByType(items) {
-	const typeOrder = ['Weapon', 'Armor', 'Item', 'Treasure', 'Foraged']
+	const typeOrder = ['Weapon', 'Armor', 'Item', 'Treasure', 'Foraged', 'Consumable']
 	const groups = {}
 
 	for (const item of items) {
@@ -603,7 +603,8 @@ export function groupItemsByType(items) {
 				isArmor: item.type === 'Armor',
 				isItem: item.type === 'Item',
 				isTreasure: item.type === 'Treasure',
-				isForaged: item.type === 'Foraged'
+				isForaged: item.type === 'Foraged',
+				isConsumable: item.type === 'Consumable'
 			}
 		}
 		groups[item.type].items.push(item)
@@ -658,7 +659,7 @@ export function prepareItemData(item) {
 		isWeapon: item.type === 'Weapon',
 		isArmor: item.type === 'Armor',
 		cssClass: item.type.toLowerCase(),
-		hasEffects: ['Treasure', 'Foraged'].includes(item.type) && !!(item.system?.effects),
+		hasEffects: ['Treasure', 'Foraged', 'Consumable'].includes(item.type) && !!(item.system?.effects),
 		tooltipEffects: (item.system?.effects || '')
 			.replace(/\[([^\]]+)\]\(save:\w+\)/g, '$1')
 			.replace(/\[\[\/r (\d+d\d+(?:[+-]\d+)?)\]\]/g, '$1')

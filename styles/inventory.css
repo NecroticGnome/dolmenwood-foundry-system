@@ -301,7 +301,8 @@
 	background-color: var(--dolmen-color-header-armor);
 }
 
-.sheet.dolmen .tab-content .foraged-header {
+.sheet.dolmen .tab-content .foraged-header,
+.sheet.dolmen .tab-content .consumable-header {
 	background-color: var(--dolmen-color-header-foraged);
 }
 
@@ -329,9 +330,11 @@
 	grid-template-columns: 20px 1fr 1fr 3rem 1.5rem 2rem 2rem 2rem;
 }
 
-/* Foraged row: icon | name | notes | weight | qty | controls */
+/* Foraged/Consumable row: icon | name | notes | weight | qty | controls */
 .sheet.dolmen .tab-content .foraged-header,
-.sheet.dolmen .tab-content .item-row.foraged {
+.sheet.dolmen .tab-content .item-row.foraged,
+.sheet.dolmen .tab-content .consumable-header,
+.sheet.dolmen .tab-content .item-row.consumable {
 	grid-template-columns: 20px 1fr 3rem 2rem 2rem 2rem;
 }
 

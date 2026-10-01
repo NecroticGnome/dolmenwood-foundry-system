@@ -128,7 +128,7 @@ export async function onDropItemSimple(sheet, event, data) {
 	if (!item) return
 
 	// Only allow gear-type items
-	const allowedTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Container']
+	const allowedTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable', 'Container']
 	if (!allowedTypes.includes(item.type)) return
 
 	// Check if dropping into a container

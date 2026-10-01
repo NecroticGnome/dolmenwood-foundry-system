@@ -1,5 +1,9 @@
 /* global game, canvas, ui, ChatMessage, Roll, CONST, CONFIG */
 import { createChatMessage } from './sheet/chat-helpers.js'
+import { getTraitRollOptions } from './sheet/trait-helpers.js'
+import { parseSaveLinks } from './utils/save-links.js'
+
+export { parseSaveLinks }
 
 /**
  * Get an actor's magic resistance value.
@@ -17,17 +21,24 @@ function getActorMagicResistance(actor) {
 }
 
 /**
- * Parse markdown-style save links into clickable HTML anchors.
- * Syntax: [visible text](save:saveKey)
- * Example: [Save vs. Hold](save:hold) → <a class="inline-save-link" data-save="hold">Save vs. Hold</a>
- * @param {string} text - Text containing save link markdown
- * @returns {string} Text with save links replaced by HTML anchors
+ * Get the save modifier options available to an actor: trait roll options
+ * plus magic resistance (if any).
+ * @param {Actor} actor
+ * @param {string} saveKey - The save type
+ * @returns {object[]} Options as { id, name, bonus, exclusiveGroup }
  */
-export function parseSaveLinks(text) {
-	if (!text) return text
-	return text
-		.replace(/\[([^\]]+)\]\(save:(\w+)\)/g, '<a class="inline-save-link" data-save="$2">$1</a>')
-		.replace(/\[([^\]]+)\]\(chance:(\d+)\)/g, '<a class="inline-chance-link" data-target="$2">$1</a>')
+function getActorSaveOptions(actor, saveKey) {
+	const options = getTraitRollOptions(actor, `saves.${saveKey}`)
+	const mr = getActorMagicResistance(actor)
+	if (mr > 0) {
+		options.push({
+			id: 'magicResistance',
+			name: game.i18n.localize('DOLMEN.Traits.MagicResistance'),
+			bonus: mr,
+			exclusiveGroup: null
+		})
+	}
+	return options
 }
 
 /**
@@ -52,9 +63,10 @@ export function createSaveLinkEnricher(match) {
  * @param {string} saveKey - The save type (doom, ray, hold, blast, spell)
  * @param {number} [bonus=0] - Numeric bonus added to roll
  * @param {string[]} [modifierNames=[]] - Names of applied modifiers for display
- * @param {boolean} [useMR=false] - Whether to add each actor's magic resistance to the roll
+ * @param {string[]} [optionIds=[]] - Selected save options (trait roll options, magic resistance);
+ *   each is applied only to actors that have it
  */
-export async function rollSaveForControlled(saveKey, bonus = 0, modifierNames = [], useMR = false) {
+export async function rollSaveForControlled(saveKey, bonus = 0, modifierNames = [], optionIds = []) {
 	const controlled = canvas.tokens.controlled
 	if (controlled.length === 0) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.SaveRoll.NoTokensSelected'))
@@ -68,12 +80,10 @@ export async function rollSaveForControlled(saveKey, bonus = 0, modifierNames = 
 		let actorBonus = bonus
 		const actorModNames = [...modifierNames]
 
-		if (useMR) {
-			const mr = getActorMagicResistance(actor)
-			if (mr > 0) {
-				actorBonus += mr
-				actorModNames.push(game.i18n.localize('DOLMEN.Traits.MagicResistance'))
-			}
+		for (const option of getActorSaveOptions(actor, saveKey)) {
+			if (!optionIds.includes(option.id)) continue
+			actorBonus += option.bonus
+			actorModNames.push(option.name)
 		}
 
 		await performSaveRollForActor(actor, saveKey, actorBonus, actorModNames)
@@ -149,7 +159,8 @@ async function performSaveRollForActor(actor, saveKey, bonus = 0, modifierNames 
 }
 
 /**
- * Open a modifier panel for inline save links (numeric grid -4 to +4).
+ * Open a modifier panel for inline save links: save options of the controlled
+ * tokens (trait roll options, magic resistance) plus a numeric grid -4 to +4.
  * @param {string} saveKey - The save type
  * @param {object} position - Screen position {top, left}
  */
@@ -162,21 +173,33 @@ export function openInlineSaveModifierPanel(saveKey, position) {
 
 	const rollLabel = game.i18n.localize('DOLMEN.Attack.Roll')
 
-	// Check if any controlled token has magic resistance
-	const controlled = canvas.tokens.controlled
-	const anyHasMR = controlled.some(t => t.actor && getActorMagicResistance(t.actor) > 0)
+	// Collect save options across controlled tokens; the bonus is shown only
+	// when it is the same for every token that has the option
+	const options = new Map()
+	for (const token of canvas.tokens.controlled) {
+		if (!token.actor) continue
+		for (const option of getActorSaveOptions(token.actor, saveKey)) {
+			const existing = options.get(option.id)
+			if (!existing) options.set(option.id, { ...option })
+			else if (existing.bonus !== option.bonus) existing.bonus = null
+		}
+	}
 
-	// Build HTML - ROLL button + optional MR toggle + numeric modifier grid
+	// Build HTML - ROLL button + save options + numeric modifier grid
 	let html = `<div class="roll-btn"><i class="fas fa-dice-d20"></i> ${rollLabel}</div>`
 
-	if (anyHasMR) {
+	if (options.size > 0) {
 		html += '<div class="menu-separator"></div>'
-		html += `
-			<div class="modifier-item" data-mod-id="magicResistance">
-				<span class="mod-check"></span>
-				<span class="mod-name">${game.i18n.localize('DOLMEN.Traits.MagicResistance')}</span>
-			</div>
-		`
+		for (const option of options.values()) {
+			const bonusStr = option.bonus === null ? '' : option.bonus >= 0 ? `+${option.bonus}` : `${option.bonus}`
+			html += `
+				<div class="modifier-item${option.defaultSelected ? ' selected' : ''}" data-mod-id="${option.id}"${option.exclusiveGroup ? ` data-exclusive-group="${option.exclusiveGroup}"` : ''}>
+					<span class="mod-check">${option.defaultSelected ? '✓' : ''}</span>
+					<span class="mod-name">${option.name}</span>
+					<span class="mod-bonus">${bonusStr}</span>
+				</div>
+			`
+		}
 	}
 
 	html += '<div class="menu-separator"></div>'
@@ -202,9 +225,16 @@ export function openInlineSaveModifierPanel(saveKey, position) {
 	const panelRect = panel.getBoundingClientRect()
 	panel.style.left = `${position.left - panelRect.width - 5}px`
 
-	// Modifier toggle behavior (multi-select)
+	// Modifier toggle behavior (multi-select; options sharing an exclusive group deselect each other)
 	panel.querySelectorAll('.modifier-item').forEach(item => {
 		item.addEventListener('click', () => {
+			const group = item.dataset.exclusiveGroup
+			if (group && !item.classList.contains('selected')) {
+				panel.querySelectorAll(`.modifier-item[data-exclusive-group="${group}"].selected`).forEach(other => {
+					other.classList.remove('selected')
+					other.querySelector('.mod-check').textContent = ''
+				})
+			}
 			item.classList.toggle('selected')
 			const check = item.querySelector('.mod-check')
 			check.textContent = item.classList.contains('selected') ? '\u2713' : ''
@@ -236,12 +266,11 @@ export function openInlineSaveModifierPanel(saveKey, position) {
 			? [numericMod > 0 ? `+${numericMod}` : `${numericMod}`]
 			: []
 
-		const mrItem = panel.querySelector('.modifier-item[data-mod-id="magicResistance"]')
-		const useMR = mrItem ? mrItem.classList.contains('selected') : false
+		const optionIds = [...panel.querySelectorAll('.modifier-item.selected')].map(item => item.dataset.modId)
 
 		panel.remove()
 		document.removeEventListener('click', closePanel)
-		rollSaveForControlled(saveKey, numericMod, modifierNames, useMR)
+		rollSaveForControlled(saveKey, numericMod, modifierNames, optionIds)
 	})
 
 	setTimeout(() => document.addEventListener('click', closePanel), 0)

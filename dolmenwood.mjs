@@ -10,8 +10,8 @@ import DolmenKindredSheet from './module/dolmen-kindred-sheet.js'
 import DolmenClassSheet from './module/dolmen-class-sheet.js'
 import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
-import { AdventurerDataModel, CreatureDataModel, HorseDataModel, VehicleDataModel, GearDataModel, ContainerDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel, EffectDataModel } from './module/data-models.mjs'
-import { setupDamageContextMenu } from './module/chat-damage.js'
+import { AdventurerDataModel, CreatureDataModel, HorseDataModel, VehicleDataModel, GearDataModel, ContainerDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, ConsumableDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel, EffectDataModel } from './module/data-models.mjs'
+import { setupDamageContextMenu, autoApplyDamage, handleDamageSocket } from './module/chat-damage.js'
 import { createSaveLinkEnricher, createChanceLinkEnricher, openInlineSaveModifierPanel, rollChance } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
@@ -280,6 +280,7 @@ Hooks.once('init', async function () {
 		Weapon: WeaponDataModel,
 		Armor: ArmorDataModel,
 		Foraged: ForagedDataModel,
+		Consumable: ConsumableDataModel,
 		Container: ContainerDataModel,
 		Spell: SpellDataModel,
 		HolySpell: HolySpellDataModel,
@@ -367,6 +368,15 @@ Hooks.once('init', async function () {
 		config: true,
 		type: Boolean,
 		default: true
+	})
+
+	game.settings.register('dolmenwood', 'autoApplyDamage', {
+		name: 'DOLMEN.Settings.AutoApplyDamage',
+		hint: 'DOLMEN.Settings.AutoApplyDamageHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false
 	})
 
 	game.settings.register('dolmenwood', 'autoMissileRange', {
@@ -532,7 +542,7 @@ Hooks.once('init', async function () {
 	})
 
 	Items.registerSheet('dolmen', DolmenItemSheet, {
-		types: ['Item', 'Treasure', 'Weapon', 'Armor', 'Foraged', 'Container', 'Spell', 'HolySpell', 'Glamour', 'Rune'],
+		types: ['Item', 'Treasure', 'Weapon', 'Armor', 'Foraged', 'Consumable', 'Container', 'Spell', 'HolySpell', 'Glamour', 'Rune'],
 		label: 'DOLMEN.ItemSheetTitle',
 		makeDefault: true
 	})
@@ -554,6 +564,46 @@ Hooks.once('init', async function () {
 		label: 'DOLMEN.ClassSheetTitle',
 		makeDefault: true
 	})
+})
+
+/**
+ * Get the legacy kindred/class string field updates needed to match an
+ * Adventurer's embedded Kindred/Class items. These fields are only read as a
+ * fallback when no item exists, but stale values would make that fallback wrong.
+ * @param {Actor} actor - An Adventurer actor
+ * @returns {object} Update data (empty if already in sync)
+ */
+function getLegacyKindredClassUpdates(actor) {
+	const updates = {}
+	const kindredId = actor.items.find(i => i.type === 'Kindred')?.system?.kindredId
+	const classId = actor.items.find(i => i.type === 'Class')?.system?.classId
+	if (kindredId && actor.system.kindred !== kindredId) updates['system.kindred'] = kindredId
+	if (classId && actor.system.class !== classId) updates['system.class'] = classId
+	return updates
+}
+
+/**
+ * Bring the legacy kindred/class fields of world Adventurers in line with
+ * their embedded items (fixes actors created before these were kept in sync).
+ */
+async function syncLegacyKindredClassFields() {
+	for (const actor of game.actors.filter(a => a.type === 'Adventurer')) {
+		const updates = getLegacyKindredClassUpdates(actor)
+		if (Object.keys(updates).length) await actor.update(updates)
+	}
+}
+
+// Keep the legacy kindred/class fields in sync when a Kindred/Class item is added.
+// Uses the new item directly: setKindred/setClass create the new item before
+// deleting the old one, so both briefly coexist on the actor.
+Hooks.on('createItem', (item, options, userId) => {
+	if (userId !== game.user.id) return
+	const actor = item.parent
+	if (actor?.type !== 'Adventurer') return
+	const [field, id] = item.type === 'Kindred' ? ['kindred', item.system.kindredId]
+		: item.type === 'Class' ? ['class', item.system.classId]
+			: []
+	if (id && actor.system[field] !== id) actor.update({ [`system.${field}`]: id })
 })
 
 /**
@@ -655,6 +705,7 @@ Hooks.once('ready', async function () {
 	// Run one-time migration of manual adjustments to Effect items
 	if (game.user.isGM) {
 		await migrateAdjustmentsToEffects()
+		await syncLegacyKindredClassFields()
 	}
 
 	initCalendarWidget()
@@ -675,6 +726,7 @@ Hooks.once('ready', async function () {
 	// Socket listeners for player operations that require GM permission
 	game.socket.on('system.dolmenwood', handleCalendarSocket)
 	game.socket.on('system.dolmenwood', handleCombatSocket)
+	game.socket.on('system.dolmenwood', handleDamageSocket)
 
 	// Initialize rune refresh day tracking
 	const initCal = worldTimeToCalendar(game.time.worldTime)
@@ -1016,7 +1068,12 @@ Hooks.on('renderSettingsConfig', (app, html) => {
 
 // Add context menu to damage rolls in chat
 Hooks.on('renderChatMessageHTML', (message, html) => {
-	setupDamageContextMenu(html)
+	setupDamageContextMenu(html, message)
+})
+
+// Auto-apply attack damage to the targeted token (GM setting)
+Hooks.on('createChatMessage', (message) => {
+	autoApplyDamage(message)
 })
 
 // Global delegated listener for inline save links (chat, journals, item descriptions, etc.)

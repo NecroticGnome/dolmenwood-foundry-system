@@ -33,6 +33,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			Armor: 400,
 			Treasure: 425,
 			Foraged: 445,
+			Consumable: 400,
 			Spell: 325,
 			HolySpell: 325,
 			Glamour: 325,
@@ -84,7 +85,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 	}
 
 	_isGearType() {
-		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Container']
+		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable', 'Container']
 		return gearTypes.includes(this.item.type)
 	}
 
@@ -119,6 +120,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.isArmor = this.item.type === 'Armor'
 		context.isTreasure = this.item.type === 'Treasure'
 		context.isForaged = this.item.type === 'Foraged'
+		context.isConsumable = this.item.type === 'Consumable'
 		context.isSpell = this.item.type === 'Spell'
 		context.isHolySpell = this.item.type === 'HolySpell'
 		context.isGlamour = this.item.type === 'Glamour'

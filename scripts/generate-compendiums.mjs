@@ -556,7 +556,12 @@ const KINDRED_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'saves.all',
-				adjustmentValue: 1
+				adjustmentValue: 2,
+				extraRollOptions: [
+					{ id: 'resilienceFungal', nameKey: 'DOLMEN.Traits.ResilienceFungal', value: 4, exclusiveGroup: 'resilience' }
+				],
+				exclusiveGroup: 'resilience',
+				rollOptionDefault: true
 			},
 			{
 				id: 'keenSurvival',
@@ -1275,7 +1280,12 @@ const KINDRED_CLASS_TRAITS = {
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'saves.all',
-				adjustmentValue: 1
+				adjustmentValue: 2,
+				extraRollOptions: [
+					{ id: 'resilienceFungal', nameKey: 'DOLMEN.Traits.ResilienceFungal', value: 4, exclusiveGroup: 'resilience' }
+				],
+				exclusiveGroup: 'resilience',
+				rollOptionDefault: true
 			},
 			{
 				id: 'keenSurvival',

@@ -174,9 +174,9 @@
 </div>
 {{/each}}
 {{/if}}
-{{#if this.isForaged}}
-<div class="item-list-header foraged-header">
-	<i class="fas fa-mushroom"></i>
+{{#if (or this.isForaged this.isConsumable)}}
+<div class="item-list-header {{this.typeLower}}-header">
+	<i class="fas {{#if this.isConsumable}}fa-flask{{else}}fa-mushroom{{/if}}"></i>
 	<span class="type-label">{{this.label}}</span>
 	<i class="fas fa-sparkles"></i>
 	<i class="fas fa-weight-hanging"></i>
@@ -184,7 +184,7 @@
 	<span class="item-controls"></span>
 </div>
 {{#each this.items}}
-<div class="item-row draggable foraged" data-item-id="{{this.id}}" data-action="openItem">
+<div class="item-row draggable {{../typeLower}}" data-item-id="{{this.id}}" data-action="openItem">
 	<img src="{{this.img}}" class="item-image">
 	<span class="item-name">{{this.name}}</span>
 	{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.tooltipEffects}}</span></i></span>

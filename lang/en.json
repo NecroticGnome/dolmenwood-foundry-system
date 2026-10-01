@@ -15,6 +15,7 @@
 			"Weapon": "Weapon",
 			"Armor": "Armour",
 			"Foraged": "Foraged",
+			"Consumable": "Consumable",
 			"Spell": "Arcane Spell",
 			"HolySpell": "Holy Spell",
 			"Glamour": "Glamour",
@@ -643,6 +644,7 @@
 			"WeaponDetails": "Weapon Details",
 			"ArmorDetails": "Armour Details",
 			"ForagedDetails": "Foraged Details",
+			"ConsumableDetails": "Consumable Details",
 			"SpellDetails": "Arcane Spell Details",
 			"HolySpellDetails": "Holy Spell Details",
 			"GlamourDetails": "Glamour Details",
@@ -967,6 +969,7 @@
 		},
 		"Damage": {
 			"ApplyDamage": "Apply Damage",
+			"ApplyDamageTo": "Apply Damage to {name}",
 			"ApplyAmount": "Apply {damage} damage",
 			"ApplyHalf": "Apply {damage} (half) damage",
 			"ApplyDouble": "Apply {damage} (double) damage",
@@ -977,7 +980,8 @@
 			"AppliedMultiple": "Applied {damage} damage to {count} tokens",
 			"Healed": "Healed {damage} HP for {name}",
 			"HealedMultiple": "Healed {damage} HP for {count} tokens",
-			"NoTokensSelected": "No tokens selected. Select a token first."
+			"NoTokensSelected": "No tokens selected. Select a token first.",
+			"NoGM": "Cannot change {name}'s HP: no Referee is connected."
 		},
 		"SaveRoll": {
 			"NoTokensSelected": "No tokens selected. Select a token to roll saving throw."
@@ -1006,6 +1010,8 @@
 			"CustomSkillsHint": "Comma-separated list of custom skill names available for all adventurers (e.g. Herbalism, Cooking, Diplomacy).",
 			"RandomizeCreatureHP": "Randomize Creature HP",
 			"RandomizeCreatureHPHint": "When placing an unlinked creature token on the canvas, roll the creature's HP dice to randomize its hit points.",
+			"AutoApplyDamage": "Auto-Apply Damage",
+			"AutoApplyDamageHint": "Automatically apply attack damage to the targeted token when an attack hits (or when damage is rolled on its own). Attacks that miss, or that have no target, are not applied. Cold-iron weapons are adjusted by ±1 based on whether the target is fey.",
 			"AutoMissileRange": "Automatic Missile Range",
 			"AutoMissileRangeHint": "Automatically determine missile attack range (Close/Medium/Long) from the distance between the attacker's token and the target, instead of asking. Requires the attacker to have a token on the scene and exactly one target; otherwise the manual range menu is shown. Attacks beyond long range are rolled at long range with an out-of-range note.",
 			"AutomatedKillLog": "Automated Kill Log",

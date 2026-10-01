@@ -185,6 +185,45 @@ export function buildAttackFormula(totalMod) {
 	return totalMod >= 0 ? `1d20 + ${totalMod}` : `1d20 - ${Math.abs(totalMod)}`
 }
 
+/**
+ * Get the user's first targeted token as attack target data.
+ * @returns {{name: string, ac: number, uuid: string}|null} Target data, or null if nothing is targeted
+ */
+export function getAttackTarget() {
+	const targetToken = game.user.targets.first()
+	const targetActor = targetToken?.actor
+	if (!targetActor) return null
+	return {
+		name: targetToken.name,
+		ac: targetActor.system.final?.ac ?? targetActor.system.ac,
+		uuid: targetToken.document.uuid
+	}
+}
+
+/**
+ * Build chat message flags describing an attack's damage, used to apply
+ * damage to the attack's target (via context menu or auto-apply).
+ * @param {object} config
+ * @param {object|null} config.targetData - Result of getAttackTarget()
+ * @param {string|null} config.hitResult - 'hit', 'miss', or null if no attack roll
+ * @param {number} config.total - Damage roll total
+ * @param {boolean} [config.coldIron] - Whether the weapon has the cold-iron quality
+ * @returns {object} Flags object for ChatMessage data
+ */
+export function buildDamageFlags({ targetData, hitResult, total, coldIron = false }) {
+	return {
+		dolmenwood: {
+			damage: {
+				targetUuid: targetData?.uuid ?? null,
+				targetName: targetData?.name ?? null,
+				hitResult,
+				total,
+				coldIron
+			}
+		}
+	}
+}
+
 export function getDieIconFromFormula(formula) {
 	const dieMatch = formula.match(/(\d*)d(\d+)/)
 	if (dieMatch) {
@@ -292,19 +331,11 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 } = {}) {
 	let attackData = null
 	let damageData = null
+	let hitResult = null
 	const rolls = []
 
 	// Get target info for hit/miss evaluation
-	let targetData = null
-	const targets = game.user.targets
-	if (targets.size > 0) {
-		const targetToken = targets.first()
-		const targetActor = targetToken.actor
-		if (targetActor) {
-			const targetAC = targetActor.system.final?.ac ?? targetActor.system.ac
-			targetData = { name: targetToken.name, ac: targetAC }
-		}
-	}
+	const targetData = getAttackTarget()
 
 	// Handle attack roll
 	if (!damageOnly) {
@@ -321,7 +352,6 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 		rolls.push(roll)
 
 		// Determine hit/miss against target
-		let hitResult = null
 		if (targetData !== null) {
 			hitResult = roll.total >= targetData.ac ? 'hit' : 'miss'
 		}
@@ -349,7 +379,8 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 
 		damageData = {
 			anchor: await roll.toAnchor({ classes: ['damage-inline-roll', 'inline-dsn-hidden'] }),
-			formula
+			formula,
+			total: roll.total
 		}
 	}
 
@@ -366,7 +397,13 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 		content: chatContent,
 		rolls,
 		sound: CONFIG.sounds.dice,
-		style: CONST.CHAT_MESSAGE_STYLES.OTHER
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+		flags: damageData ? buildDamageFlags({
+			targetData,
+			hitResult,
+			total: damageData.total,
+			coldIron: (weapon.system.qualities || []).includes('cold-iron')
+		}) : {}
 	})
 }
 
