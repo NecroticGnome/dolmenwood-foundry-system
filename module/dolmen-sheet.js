@@ -29,7 +29,7 @@ import {
 import { openAddSkillDialog, removeSkill } from './sheet/dialogs.js'
 import { createContextMenu } from './sheet/context-menu.js'
 import { onOpenItem, onIncreaseQty, onDecreaseQty, onToggleContainer, createDeleteItemHandler, onEquipItem, onStowItem, onRemoveFromContainer } from './sheet/inventory-actions.js'
-import { getEffectTargetLabel } from './effect-fields.js'
+import { getEffectTargetLabel, getEffectListData } from './effect-fields.js'
 import { createChatMessage } from './sheet/chat-helpers.js'
 
 const TextEditor = foundry.applications.ux.TextEditor.implementation
@@ -703,10 +703,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				name: e.name,
 				img: e.img,
 				enabled: e.system.enabled,
-				target: e.system.target,
-				value: e.system.value,
-				effectType: e.system.effectType,
-				targetLabel: getEffectTargetLabel(e.system.target),
+				...getEffectListData(e.system),
 				durationLabel
 			}
 		}).sort((a, b) => a.name.localeCompare(b.name))

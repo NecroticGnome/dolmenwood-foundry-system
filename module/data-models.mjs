@@ -1,4 +1,5 @@
 import { CHOICE_KEYS } from './utils/choices.js'
+import { getEffectEntries } from './effect-fields.js'
 
 /* global foundry, game */
 const { ArrayField, BooleanField, HTMLField, NumberField, ObjectField, SchemaField, StringField } = foundry.data.fields
@@ -400,10 +401,12 @@ export class AdventurerDataModel extends ActorDataModel {
 			}
 		}
 
-		// Aggregate Effect items on the actor
+		// Aggregate Effect items on the actor (every effect detail entry)
 		for (const item of items) {
 			if (item.type === 'Effect' && item.system.enabled) {
-				applyEffect(item.system.target, item.system.value, item.system.effectType, item.system.subTarget)
+				for (const entry of getEffectEntries(item.system)) {
+					applyEffect(entry.target, entry.value, entry.effectType, entry.subTarget)
+				}
 			}
 		}
 
@@ -897,13 +900,14 @@ export class CreatureDataModel extends ActorDataModel {
 		if (items) {
 			for (const item of items) {
 				if (item.type !== 'Effect' || !item.system.enabled) continue
-				const target = item.system.target
-				if (target === 'saves.all') {
-					for (const save of ['doom', 'ray', 'hold', 'blast', 'spell']) {
-						adj[`saves.${save}`] += (item.system.value || 0)
+				for (const { target, value } of getEffectEntries(item.system)) {
+					if (target === 'saves.all') {
+						for (const save of ['doom', 'ray', 'hold', 'blast', 'spell']) {
+							adj[`saves.${save}`] += (value || 0)
+						}
+					} else if (target in adj) {
+						adj[target] += (value || 0)
 					}
-				} else if (target in adj) {
-					adj[target] += (item.system.value || 0)
 				}
 			}
 		}
@@ -1674,6 +1678,13 @@ export class EffectDataModel extends ItemDataModel {
 				blank: true,
 				initial: ''
 			}),
+			// Further effect details beyond the first (target/value/effectType/subTarget above)
+			additionalEffects: new ArrayField(new SchemaField({
+				target: new StringField({ required: true, blank: false, initial: 'abilities.strength.score' }),
+				value: new NumberField({ required: true, integer: true, initial: 0 }),
+				effectType: new StringField({ required: true, blank: false, initial: 'numeric' }),
+				subTarget: new StringField({ required: false, blank: true, initial: '' })
+			}), { initial: [] }),
 			duration: new StringField({
 				required: true,
 				blank: false,

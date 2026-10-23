@@ -7,7 +7,7 @@ import { createChatMessage } from './sheet/chat-helpers.js'
 import { createContextMenu } from './sheet/context-menu.js'
 import { getDieIconFromFormula, getAttackTarget, buildDamageFlags } from './sheet/attack-rolls.js'
 import { parseSaveLinks } from './chat-save.js'
-import { getEffectTargetLabel, getEffectFieldsForActor } from './effect-fields.js'
+import { getEffectFieldsForActor, getEffectEntries, getEffectListData } from './effect-fields.js'
 import { prepareItemData, groupItemsByType, calcItemWeight } from './sheet/data-context.js'
 import { onOpenItem, onDeleteItem, onIncreaseQty, onDecreaseQty, onToggleContainer, onDropItemSimple } from './sheet/inventory-actions.js'
 import { setupAdjustableInputListeners } from './sheet/listeners.js'
@@ -175,10 +175,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				name: e.name,
 				img: e.img,
 				enabled: e.system.enabled,
-				target: e.system.target,
-				value: e.system.value,
-				effectType: e.system.effectType,
-				targetLabel: getEffectTargetLabel(e.system.target),
+				...getEffectListData(e.system),
 				durationLabel
 			}
 		}).sort((a, b) => a.name.localeCompare(b.name))
@@ -460,7 +457,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				for (const group of Object.values(creatureFields)) {
 					for (const key of Object.keys(group.fields)) validTargets.add(key)
 				}
-				if (!validTargets.has(item.system.target)) {
+				if (getEffectEntries(item.system).some(e => !validTargets.has(e.target))) {
 					ui.notifications.warn(game.i18n.localize('DOLMEN.Effects.UnsupportedTarget'))
 					return
 				}

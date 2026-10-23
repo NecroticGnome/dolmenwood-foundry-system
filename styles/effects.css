@@ -208,3 +208,47 @@
 	font-style: italic;
 	font-size: 0.85rem;
 }
+
+/* Effect item sheet: navigation between effect detail entries */
+.sheet.dolmen.effect .effect-config h2 {
+	display: flex;
+	align-items: center;
+}
+
+.sheet.dolmen.effect .effect-entry-nav {
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: 0.15rem;
+}
+
+.sheet.dolmen.effect .effect-entry-nav button {
+	width: 1.4rem;
+	height: 1.4rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	font-size: 0.7rem;
+	color: var(--dolmen-color-title);
+	opacity: 0.7;
+	cursor: pointer;
+}
+
+.sheet.dolmen.effect .effect-entry-nav button:hover:not(:disabled) {
+	opacity: 1;
+}
+
+.sheet.dolmen.effect .effect-entry-nav button:disabled {
+	opacity: 0.25;
+	cursor: default;
+}
+
+.sheet.dolmen.effect .effect-entry-count {
+	font-size: 0.75rem;
+	min-width: 2rem;
+	text-align: center;
+}
