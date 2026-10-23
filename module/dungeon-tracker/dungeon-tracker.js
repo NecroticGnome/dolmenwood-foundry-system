@@ -825,15 +825,11 @@ function injectWidget() {
 				pendingTurns = 0
 				return
 			}
-			const calendarOn = game.settings.get('dolmenwood', 'showCalendar')
-			if (calendarOn) {
-				// Advance world time by 10 minutes; if not paused the time hook
-				// will also advance the turn, so only directly advance when paused
-				game.time.advance(TURN_SECONDS)
-				if (trackerPaused) advanceTurn(1)
-			} else {
-				advanceTurn(1)
-			}
+			// Advance world time by 10 minutes regardless of the built-in calendar,
+			// so external calendars (e.g. Calendaria) stay in step. If not paused
+			// the time hook will also advance the turn, so only directly advance when paused
+			game.time.advance(TURN_SECONDS)
+			if (trackerPaused) advanceTurn(1)
 		})
 
 		controls.appendChild(pauseBtn)
