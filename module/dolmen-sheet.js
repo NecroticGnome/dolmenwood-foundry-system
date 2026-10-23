@@ -141,6 +141,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			increaseQty: onIncreaseQty,
 			decreaseQty: onDecreaseQty,
 			memorizeSpell: DolmenSheet._onMemorizeSpell,
+			markShrineSpell: DolmenSheet._onMarkShrineSpell,
+			unmarkShrineSpell: DolmenSheet._onUnmarkShrineSpell,
 			forgetSpell: DolmenSheet._onForgetSpell,
 			memorizeToSlot: DolmenSheet._onMemorizeToSlot,
 			castSpell: DolmenSheet._onCastSpell,
@@ -589,14 +591,20 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.hasKnownArcaneSpells = arcaneSpells.length > 0
 		context.hasMemorizedSlots = context.memorizedArcaneSlots.some(r => r.total > 0)
 
-		// Holy magic: known spells and memorized slots
-		context.knownHolySpellsByRank = groupSpellsByRank(holySpells, 5)
+		// Holy magic: known spells, memorized slots, and shrine spells (held outside slots)
+		const knownHolySpells = holySpells.filter(s => !s.system.shrine)
+		context.knownHolySpellsByRank = groupSpellsByRank(knownHolySpells, 5)
 		context.memorizedHolySlots = prepareMemorizedSlots(
 			actor.system.holyMagic.spellSlots,
-			holySpells,
+			knownHolySpells,
 			5
 		)
-		context.hasKnownHolySpells = holySpells.length > 0
+		context.shrineHolySpells = holySpells
+			.filter(s => s.system.shrine)
+			.map(s => prepareSpellData(s))
+			.sort((a, b) => a.name.localeCompare(b.name))
+		context.hasShrineSpell = context.shrineHolySpells.length > 0
+		context.hasKnownHolySpells = knownHolySpells.length > 0
 		context.hasMemorizedHolySlots = context.memorizedHolySlots.some(r => r.total > 0)
 
 		// Fairy magic
@@ -999,6 +1007,31 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		})
 	}
 
+	/**
+	 * Mark a known holy spell as a shrine spell: it leaves the known list and any
+	 * memorized slots, and is held in the Shrine Spell section until cast once.
+	 * Only one shrine spell may be held at a time.
+	 */
+	static async _onMarkShrineSpell(_event, target) {
+		const spell = this.actor.items.get(target.dataset.itemId)
+		if (spell?.type !== 'HolySpell') return
+		if (this.actor.items.some(i => i.type === 'HolySpell' && i.system.shrine)) {
+			ui.notifications.warn(game.i18n.localize('DOLMEN.Magic.Holy.ShrineSpellLimit'))
+			return
+		}
+		await cleanupSpellSlots(this.actor, spell)
+		await spell.update({ 'system.shrine': true })
+	}
+
+	/**
+	 * Return a shrine spell to the known spells list.
+	 */
+	static async _onUnmarkShrineSpell(_event, target) {
+		const spell = this.actor.items.get(target.dataset.itemId)
+		if (spell?.type !== 'HolySpell') return
+		await spell.update({ 'system.shrine': false })
+	}
+
 	static async _onForgetSpell(_event, target) {
 		const slotIndex = parseInt(target.dataset.slotIndex)
 		const rankKey = target.dataset.rankKey
@@ -1026,7 +1059,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		const itemType = spellType === 'holy' ? 'HolySpell' : 'Spell'
 		const knownSpells = this.actor.items.filter(
-			i => i.type === itemType && i.system.rank === rank
+			i => i.type === itemType && i.system.rank === rank && !i.system.shrine
 		)
 
 		if (knownSpells.length === 0) {
@@ -1177,6 +1210,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			content,
 			style: CONST.CHAT_MESSAGE_STYLES.OTHER
 		})
+
+		// Shrine spells are granted for a single casting
+		if (item.type === 'HolySpell' && item.system.shrine) await item.delete()
 	}
 
 	static async _onSetExhaustion(_event, target) {

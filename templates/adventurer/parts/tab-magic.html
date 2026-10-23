@@ -245,8 +245,33 @@
 					</div>
 					{{/each}}
 					{{else}}
+					{{#unless shrineHolySpells.length}}
 					<div class="spell-list-empty">
 						<span>{{localize "DOLMEN.Magic.Holy.NoSlots"}}</span>
+					</div>
+					{{/unless}}
+					{{/if}}
+					{{#if shrineHolySpells.length}}
+					<div class="spell-rank-group shrine-spells">
+						<div class="spell-list-header">
+							<span class="rank-label">{{localize "DOLMEN.Magic.Holy.ShrineSpell"}}</span>
+							<i class="fas fa-person-praying"></i>
+							<span class="spell-controls-header"></span>
+						</div>
+						{{#each shrineHolySpells}}
+						<div class="spell-row memorized-slot filled" data-item-id="{{this.id}}" data-action="openItem">
+							<img src="{{this.img}}" class="spell-image">
+							<span class="spell-name">{{this.name}}</span>
+							<span class="spell-controls">
+								<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Cast'}}">
+									<i class="fas fa-sparkles"></i>
+								</a>
+								<a class="spell-control" data-action="unmarkShrineSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Holy.UnmarkShrine'}}">
+									<i class="fas fa-rotate-left"></i>
+								</a>
+							</span>
+						</div>
+						{{/each}}
 					</div>
 					{{/if}}
 				</div>
@@ -270,6 +295,11 @@
 								<a class="spell-control" data-action="memorizeSpell" data-item-id="{{this.id}}" data-spell-type="holy" title="{{localize 'DOLMEN.Magic.Memorize'}}">
 									<i class="fas fa-brain-arrow-curved-right" style="transform: scaleX(-1);"></i>
 								</a>
+								{{#unless @root.hasShrineSpell}}
+								<a class="spell-control" data-action="markShrineSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Holy.MarkShrine'}}">
+									<i class="fas fa-person-praying"></i>
+								</a>
+								{{/unless}}
 								<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
 									<i class="fas fa-square-x"></i>
 								</a>

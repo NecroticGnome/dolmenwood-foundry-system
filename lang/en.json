@@ -901,7 +901,11 @@
 				"KnownSpells": "Known Spells",
 				"NoSpells": "No spells prepared. Drag holy spells here.",
 				"NoKnownSpells": "No spells known. Drag holy spells here to learn them.",
-				"NoSlots": "No spell slots available. Increase max spell slots to prepare spells."
+				"NoSlots": "No spell slots available. Increase max spell slots to prepare spells.",
+				"ShrineSpell": "Shrine Spell",
+				"ShrineSpellLimit": "Only one shrine spell can be held at a time. Cast or return the current one first.",
+				"MarkShrine": "Mark as Shrine Spell (granted at a shrine: no slot needed, any rank, cast once)",
+				"UnmarkShrine": "Return to Known Spells"
 			},
 			"Knacks": {
 				"Title": "Mossling Knack",

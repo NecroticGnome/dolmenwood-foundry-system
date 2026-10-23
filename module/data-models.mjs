@@ -1429,7 +1429,9 @@ export class HolySpellDataModel extends SpellDataModel {
 				max: 5,
 				initial: 1
 			}),
-			prayerName: new StringField({ required: true, blank: true, initial: "" })
+			prayerName: new StringField({ required: true, blank: true, initial: "" }),
+			// Granted at a shrine: held outside spell slots (any rank) until cast once
+			shrine: new BooleanField({ required: true, initial: false })
 		}
 	}
 }
