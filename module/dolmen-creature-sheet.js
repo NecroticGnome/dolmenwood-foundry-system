@@ -11,6 +11,7 @@ import { getEffectTargetLabel, getEffectFieldsForActor } from './effect-fields.j
 import { prepareItemData, groupItemsByType, calcItemWeight } from './sheet/data-context.js'
 import { onOpenItem, onDeleteItem, onIncreaseQty, onDecreaseQty, onToggleContainer, onDropItemSimple } from './sheet/inventory-actions.js'
 import { setupAdjustableInputListeners } from './sheet/listeners.js'
+import { openCodex } from './utils/codex.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets
@@ -317,8 +318,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			codexBtn.addEventListener('click', async () => {
 				const uuid = this.actor.system.codexUuid
 				if (uuid) {
-					const doc = await fromUuid(uuid)
-					doc?.sheet?.render(true)
+					await openCodex(uuid)
 				}
 			})
 		}
@@ -334,8 +334,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				codexLink.innerHTML = '<i class="fas fa-book-open"></i>'
 				codexLink.addEventListener('click', async (event) => {
 					event.preventDefault()
-					const doc = await fromUuid(codexUuid)
-					doc?.sheet?.render(true)
+					await openCodex(codexUuid)
 				})
 				nav.appendChild(codexLink)
 			}
