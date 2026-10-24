@@ -6,6 +6,12 @@ import { computeEncumbrance, computeAdjustedValues, getRuneUsage } from './sheet
 class DolmenActor extends Actor {
 
 	/** @override */
+	static getDefaultArtwork() {
+		const img = 'systems/dolmenwood/assets/token_default.webp'
+		return { img, texture: { src: img } }
+	}
+
+	/** @override */
 	async _preCreate(data, options, user) {
 		await super._preCreate(data, options, user)
 		if (data.type === 'Adventurer') {
