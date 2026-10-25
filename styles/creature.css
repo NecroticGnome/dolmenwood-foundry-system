@@ -230,9 +230,15 @@
 }
 
 .attack-edit-modal .form-group.full-width textarea {
-	min-height: 3rem;
+	min-height: calc(3rem + 2lh);
 	resize: vertical;
 	flex: none;
+}
+
+.attack-edit-modal .formatting-hint {
+	margin: 0;
+	font-size: 0.75rem;
+	color: var(--color-text-subtle, #777);
 }
 
 .attack-edit-modal .type-radios {

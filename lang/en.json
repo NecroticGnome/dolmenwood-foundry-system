@@ -519,6 +519,8 @@
 			"AttackTypeAttack": "Attack Roll",
 			"AttackTypeSave": "Saving Throw",
 			"SaveEffect": "Effect",
+			"EffectHintSave": "Display save roll link in chat",
+			"EffectHintRoll": "Display dice roll link in chat",
 			"RangeShort": "Short",
 			"RangeMedium": "Medium",
 			"RangeLong": "Long",
