@@ -1,6 +1,7 @@
-/* global foundry, game, FilePicker, fromUuid */
+/* global foundry, game, FilePicker */
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { rewriteCSV, extractJSON } from './utils/form-helpers.js'
+import { openCodex } from './utils/codex.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
@@ -150,8 +151,7 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			codexBtn.addEventListener('click', async () => {
 				const uuid = this.item.system.codexUuid
 				if (uuid) {
-					const doc = await fromUuid(uuid)
-					doc?.sheet?.render(true)
+					await openCodex(uuid)
 				}
 			})
 		}
@@ -167,8 +167,7 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 				codexLink.innerHTML = '<i class="fas fa-book-open"></i>'
 				codexLink.addEventListener('click', async (event) => {
 					event.preventDefault()
-					const doc = await fromUuid(codexUuid)
-					doc?.sheet?.render(true)
+					await openCodex(codexUuid)
 				})
 				nav.appendChild(codexLink)
 			}

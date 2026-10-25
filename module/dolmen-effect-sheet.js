@@ -1,5 +1,5 @@
 /* global foundry, game, FilePicker */
-import { BOOLEAN_TARGETS, WEAPON_TYPE_TARGETS, getEffectGroupForTarget, getEffectFieldsForActor } from './effect-fields.js'
+import { BOOLEAN_TARGETS, WEAPON_TYPE_TARGETS, getEffectGroupForTarget, getEffectFieldsForActor, getEffectEntries } from './effect-fields.js'
 import { CHOICE_KEYS } from './utils/choices.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -18,8 +18,20 @@ class DolmenEffectSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		},
 		window: {
 			resizable: true
+		},
+		actions: {
+			addEntry: DolmenEffectSheet._onAddEntry,
+			removeEntry: DolmenEffectSheet._onRemoveEntry,
+			prevEntry: DolmenEffectSheet._onPrevEntry,
+			nextEntry: DolmenEffectSheet._onNextEntry
 		}
 	}
+
+	/**
+	 * Index of the effect detail entry being edited: 0 is the item's original
+	 * target/value fields, 1+ are entries in system.additionalEffects.
+	 */
+	_entryIndex = 0
 
 	static PARTS = {
 		body: {
@@ -33,7 +45,17 @@ class DolmenEffectSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		const actorType = this.item.parent?.type || 'Adventurer'
 		const effectFields = getEffectFieldsForActor(actorType)
 
-		context.currentGroup = getEffectGroupForTarget(system.target) || Object.keys(effectFields)[0]
+		// The effect detail entry currently shown
+		const entries = getEffectEntries(system)
+		this._entryIndex = Math.min(this._entryIndex, entries.length - 1)
+		const entry = entries[this._entryIndex]
+		context.entry = entry
+		context.entryNumber = this._entryIndex + 1
+		context.entryCount = entries.length
+		context.hasPrev = this._entryIndex > 0
+		context.hasNext = this._entryIndex < entries.length - 1
+
+		context.currentGroup = getEffectGroupForTarget(entry.target) || Object.keys(effectFields)[0]
 		// Fall back to first available group if current group is excluded
 		if (!effectFields[context.currentGroup]) {
 			context.currentGroup = Object.keys(effectFields)[0]
@@ -54,14 +76,14 @@ class DolmenEffectSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			}
 		}
 
-		context.currentField = system.target
-		context.isBoolean = BOOLEAN_TARGETS.has(system.target)
-		context.showWeaponType = WEAPON_TYPE_TARGETS.has(system.target)
+		context.currentField = entry.target
+		context.isBoolean = BOOLEAN_TARGETS.has(entry.target)
+		context.showWeaponType = WEAPON_TYPE_TARGETS.has(entry.target)
 		context.weaponTypeChoices = {}
 		for (const wt of CHOICE_KEYS.weaponTypes) {
 			context.weaponTypeChoices[wt] = game.i18n.localize(`DOLMEN.Item.WeaponType.${wt}`)
 		}
-		context.currentWeaponType = system.subTarget || CHOICE_KEYS.weaponTypes[0]
+		context.currentWeaponType = entry.subTarget || CHOICE_KEYS.weaponTypes[0]
 		context.system = system
 		context.item = this.item
 
@@ -78,6 +100,72 @@ class DolmenEffectSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.hideDurationAmount = ['permanent', 'untilRest', 'untilNextDay'].includes(system.duration)
 
 		return context
+	}
+
+	/**
+	 * Route the edited entry's fields (submitted as entry.*) to the item's
+	 * original fields for the first entry, or to its additionalEffects slot.
+	 */
+	_processFormData(event, form, formData) {
+		const data = super._processFormData(event, form, formData)
+		const entry = data.entry
+		delete data.entry
+		if (!entry) return data
+
+		data.system ??= {}
+		if (this._entryIndex === 0) {
+			Object.assign(data.system, entry)
+		} else {
+			const additional = foundry.utils.deepClone(this.item.system.additionalEffects)
+			const i = this._entryIndex - 1
+			additional[i] = { ...additional[i], ...entry }
+			data.system.additionalEffects = additional
+		}
+		return data
+	}
+
+	static async _onAddEntry() {
+		const additional = foundry.utils.deepClone(this.item.system.additionalEffects)
+		additional.push({ target: 'abilities.strength.score', value: 0, effectType: 'numeric', subTarget: '' })
+		this._entryIndex = additional.length
+		await this.item.update({ 'system.additionalEffects': additional })
+	}
+
+	/**
+	 * Remove the shown entry. Removing the first entry promotes the next one
+	 * into the item's original fields, so those always hold an entry.
+	 */
+	static async _onRemoveEntry() {
+		const additional = foundry.utils.deepClone(this.item.system.additionalEffects)
+		if (!additional.length) return
+		if (this._entryIndex === 0) {
+			const { target, value, effectType, subTarget } = additional.shift()
+			await this.item.update({
+				'system.target': target,
+				'system.value': value,
+				'system.effectType': effectType,
+				'system.subTarget': subTarget,
+				'system.additionalEffects': additional
+			})
+		} else {
+			additional.splice(this._entryIndex - 1, 1)
+			this._entryIndex = Math.min(this._entryIndex, additional.length)
+			await this.item.update({ 'system.additionalEffects': additional })
+		}
+	}
+
+	static _onPrevEntry() {
+		if (this._entryIndex > 0) {
+			this._entryIndex--
+			this.render()
+		}
+	}
+
+	static _onNextEntry() {
+		if (this._entryIndex < this.item.system.additionalEffects.length) {
+			this._entryIndex++
+			this.render()
+		}
 	}
 
 	_onRender(context, options) {
@@ -146,7 +234,7 @@ class DolmenEffectSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		const isBoolean = BOOLEAN_TARGETS.has(target)
 		const valueRow = html.querySelector('.effect-value-row')
 		if (valueRow) valueRow.style.display = isBoolean ? 'none' : ''
-		const typeInput = html.querySelector('input[name="system.effectType"]')
+		const typeInput = html.querySelector('input[name="entry.effectType"]')
 		if (typeInput) typeInput.value = isBoolean ? 'boolean' : 'numeric'
 	}
 }

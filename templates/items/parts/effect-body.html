@@ -23,7 +23,18 @@
 
 	<!-- Effect Configuration -->
 	<section class="boxed-section effect-config">
-		<h2>{{localize "DOLMEN.Effects.DetailsSimple"}}</h2>
+		<h2>
+			{{localize "DOLMEN.Effects.DetailsSimple"}}
+			<span class="effect-entry-nav">
+				{{#if (gt entryCount 1)}}
+				<button type="button" data-action="prevEntry" title="{{localize 'DOLMEN.Effects.PrevEntry'}}" {{#unless hasPrev}}disabled{{/unless}}><i class="fas fa-chevron-left"></i></button>
+				<span class="effect-entry-count">{{entryNumber}}/{{entryCount}}</span>
+				<button type="button" data-action="nextEntry" title="{{localize 'DOLMEN.Effects.NextEntry'}}" {{#unless hasNext}}disabled{{/unless}}><i class="fas fa-chevron-right"></i></button>
+				<button type="button" data-action="removeEntry" title="{{localize 'DOLMEN.Effects.RemoveEntry'}}"><i class="fas fa-trash"></i></button>
+				{{/if}}
+				<button type="button" data-action="addEntry" title="{{localize 'DOLMEN.Effects.AddEntry'}}"><i class="fas fa-plus"></i></button>
+			</span>
+		</h2>
 
 		<div class="form-row">
 			<div class="form-field">
@@ -32,7 +43,7 @@
 			</div>
 			<div class="form-field effect-value-row" {{#if isBoolean}}style="display:none"{{/if}}>
 				<label>{{localize "DOLMEN.Effects.Value"}}</label>
-				<input type="number" name="system.value" value="{{system.value}}" step="1" />
+				<input type="number" name="entry.value" value="{{entry.value}}" step="1" />
 			</div>
 		</div>
 
@@ -47,7 +58,7 @@
 			</div>
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Effects.Target"}}</label>
-				<select class="effect-field-select" name="system.target">
+				<select class="effect-field-select" name="entry.target">
 					{{#each fieldChoices}}
 					<option value="{{@key}}" {{#if (eq @key ../currentField)}}selected{{/if}}>{{this}}</option>
 					{{/each}}
@@ -55,12 +66,12 @@
 			</div>
 		</div>
 
-		<input type="hidden" name="system.effectType" value="{{system.effectType}}" />
+		<input type="hidden" name="entry.effectType" value="{{entry.effectType}}" />
 
 		<div class="form-row effect-weapon-type-row" {{#unless showWeaponType}}style="display:none"{{/unless}}>
 			<div class="form-field">
 				<label>{{localize "DOLMEN.Effects.WeaponType"}}</label>
-				<select name="system.subTarget" class="effect-weapon-type-select">
+				<select name="entry.subTarget" class="effect-weapon-type-select">
 					{{#each weaponTypeChoices}}
 					<option value="{{@key}}" {{#if (eq @key ../currentWeaponType)}}selected{{/if}}>{{this}}</option>
 					{{/each}}

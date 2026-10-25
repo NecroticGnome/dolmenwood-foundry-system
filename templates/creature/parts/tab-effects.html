@@ -22,9 +22,11 @@
 				<span class="effect-col-duration">
 					{{#if this.durationLabel}}{{this.durationLabel}}{{else}}<i class="fas fa-infinity" title="{{localize 'DOLMEN.Effects.DurationPermanent'}}"></i>{{/if}}
 				</span>
-				<span class="effect-col-target">{{this.targetLabel}}</span>
-				<span class="effect-col-value">
-					{{#if (eq this.effectType "boolean")}}
+				<span class="effect-col-target"{{#if this.extraCount}} title="{{this.summary}}"{{/if}}>{{this.targetLabel}}</span>
+				<span class="effect-col-value"{{#if this.extraCount}} title="{{this.summary}}"{{/if}}>
+					{{#if this.extraCount}}
+						-
+					{{else if (eq this.effectType "boolean")}}
 						<i class="fas fa-check"></i>
 					{{else}}
 						{{#if (gt this.value 0)}}+{{/if}}{{this.value}}

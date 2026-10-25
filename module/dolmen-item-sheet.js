@@ -1,6 +1,7 @@
 /* global foundry, game, FilePicker, fromUuid */
 import { buildChoices, buildChoicesWithBlank, buildQualityOptions, CHOICE_KEYS } from './utils/choices.js'
-import { EFFECT_FIELDS, BOOLEAN_TARGETS, getEffectTargetLabel, getEffectGroupForTarget } from './effect-fields.js'
+import { EFFECT_FIELDS, BOOLEAN_TARGETS, getEffectTargetLabel, getEffectGroupForTarget, getEffectEntries } from './effect-fields.js'
+import { openCodex } from './utils/codex.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
@@ -269,8 +270,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			codexBtn.addEventListener('click', async () => {
 				const uuid = this.item.system.codexUuid
 				if (uuid) {
-					const doc = await fromUuid(uuid)
-					doc?.sheet?.render(true)
+					await openCodex(uuid)
 				}
 			})
 		}
@@ -286,8 +286,7 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 				codexLink.innerHTML = '<i class="fas fa-book-open"></i>'
 				codexLink.addEventListener('click', async (event) => {
 					event.preventDefault()
-					const doc = await fromUuid(codexUuid)
-					doc?.sheet?.render(true)
+					await openCodex(codexUuid)
 				})
 				nav.appendChild(codexLink)
 			}
@@ -335,13 +334,15 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 				const droppedItem = await fromUuid(data.uuid)
 				if (!droppedItem || droppedItem.type !== 'Effect') return
 				const effects = foundry.utils.deepClone(this.item.system.statEffects || [])
-				effects.push({
-					enabled: droppedItem.system.enabled,
-					target: droppedItem.system.target,
-					value: droppedItem.system.value,
-					effectType: droppedItem.system.effectType,
-					condition: 'whenEquipped'
-				})
+				for (const entry of getEffectEntries(droppedItem.system)) {
+					effects.push({
+						enabled: droppedItem.system.enabled,
+						target: entry.target,
+						value: entry.value,
+						effectType: entry.effectType,
+						condition: 'whenEquipped'
+					})
+				}
 				await this.item.update({ 'system.statEffects': effects })
 			})
 		}

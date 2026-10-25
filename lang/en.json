@@ -58,6 +58,11 @@
 			"ModeSimple": "Simple",
 			"ModeAdvanced": "Advanced",
 			"DetailsSimple": "Effect Details (Simple)",
+			"Multiple": "Multiple",
+			"AddEntry": "Add effect detail",
+			"RemoveEntry": "Remove this effect detail",
+			"PrevEntry": "Previous effect detail",
+			"NextEntry": "Next effect detail",
 			"DetailsAdvanced": "Effect Details (Advanced)",
 			"EffectType": "Type",
 			"TypeNumeric": "Numeric",
@@ -514,6 +519,8 @@
 			"AttackTypeAttack": "Attack Roll",
 			"AttackTypeSave": "Saving Throw",
 			"SaveEffect": "Effect",
+			"EffectHintSave": "Display save roll link in chat",
+			"EffectHintRoll": "Display dice roll link in chat",
 			"RangeShort": "Short",
 			"RangeMedium": "Medium",
 			"RangeLong": "Long",
@@ -901,7 +908,11 @@
 				"KnownSpells": "Known Spells",
 				"NoSpells": "No spells prepared. Drag holy spells here.",
 				"NoKnownSpells": "No spells known. Drag holy spells here to learn them.",
-				"NoSlots": "No spell slots available. Increase max spell slots to prepare spells."
+				"NoSlots": "No spell slots available. Increase max spell slots to prepare spells.",
+				"ShrineSpell": "Shrine Spell",
+				"ShrineSpellLimit": "Only one shrine spell can be held at a time. Cast or return the current one first.",
+				"MarkShrine": "Mark as Shrine Spell (granted at a shrine: no slot needed, any rank, cast once)",
+				"UnmarkShrine": "Return to Known Spells"
 			},
 			"Knacks": {
 				"Title": "Mossling Knack",

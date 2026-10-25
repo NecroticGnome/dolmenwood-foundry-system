@@ -536,6 +536,10 @@ class DolmenHorseSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				<div class="form-group full-width">
 					<label>${game.i18n.localize('DOLMEN.Creature.SaveEffect')}</label>
 					<textarea id="attack-effect">${attack.attackEffect || ''}</textarea>
+					<p class="formatting-hint">
+						${game.i18n.localize('DOLMEN.Creature.EffectHintSave')}: <code>[Text](save:doom)</code><br>
+						${game.i18n.localize('DOLMEN.Creature.EffectHintRoll')}: <code>[[/r 1d6]]</code>
+					</p>
 				</div>
 			</div>
 		`

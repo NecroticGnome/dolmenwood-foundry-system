@@ -199,4 +199,37 @@ function getEffectFieldsForActor(actorType) {
 	return filtered
 }
 
-export { EFFECT_FIELDS, VALID_EFFECT_TARGETS, BOOLEAN_TARGETS, WEAPON_TYPE_TARGETS, getEffectTargetLabel, getEffectGroupForTarget, getEffectFieldsForActor }
+/**
+ * List all effect detail entries of an Effect item: the original single-entry
+ * fields first, followed by any additional entries.
+ * @param {object} system - The Effect item's system data
+ * @returns {{target: string, value: number, effectType: string, subTarget: string}[]}
+ */
+function getEffectEntries(system) {
+	const { target, value, effectType, subTarget } = system
+	return [{ target, value, effectType, subTarget }, ...(system.additionalEffects || [])]
+}
+
+/**
+ * Build display data for an Effect item in an effects list: the first entry's
+ * target and value (target shown as "Multiple" when there are several entries),
+ * plus a tooltip summary of all entries.
+ * @param {object} system - The Effect item's system data
+ * @returns {object} { target, value, effectType, targetLabel, extraCount, summary }
+ */
+function getEffectListData(system) {
+	const entries = getEffectEntries(system)
+	const formatValue = e => e.effectType === 'boolean' ? '✓' : `${e.value > 0 ? '+' : ''}${e.value}`
+	return {
+		target: system.target,
+		value: system.value,
+		effectType: system.effectType,
+		targetLabel: entries.length > 1
+			? game.i18n.localize('DOLMEN.Effects.Multiple')
+			: getEffectTargetLabel(system.target),
+		extraCount: entries.length - 1,
+		summary: entries.map(e => `${getEffectTargetLabel(e.target)} ${formatValue(e)}`).join('; ')
+	}
+}
+
+export { EFFECT_FIELDS, VALID_EFFECT_TARGETS, BOOLEAN_TARGETS, WEAPON_TYPE_TARGETS, getEffectTargetLabel, getEffectGroupForTarget, getEffectFieldsForActor, getEffectEntries, getEffectListData }

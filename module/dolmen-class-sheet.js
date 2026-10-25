@@ -1,6 +1,7 @@
-/* global foundry, game, FilePicker, fromUuid */
+/* global foundry, game, FilePicker */
 import { buildChoices, buildWeaponProfOptions, buildArmorProfOptions, buildClassSkillOptions, WEAPON_PROF_GROUPS, getWeaponTypesForGroup } from './utils/choices.js'
 import { extractJSON } from './utils/form-helpers.js'
+import { openCodex } from './utils/codex.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ItemSheetV2 } = foundry.applications.sheets
@@ -208,8 +209,7 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 			codexBtn.addEventListener('click', async () => {
 				const uuid = this.item.system.codexUuid
 				if (uuid) {
-					const doc = await fromUuid(uuid)
-					doc?.sheet?.render(true)
+					await openCodex(uuid)
 				}
 			})
 		}
@@ -225,8 +225,7 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 				codexLink.innerHTML = '<i class="fas fa-book-open"></i>'
 				codexLink.addEventListener('click', async (event) => {
 					event.preventDefault()
-					const doc = await fromUuid(codexUuid)
-					doc?.sheet?.render(true)
+					await openCodex(codexUuid)
 				})
 				nav.appendChild(codexLink)
 			}

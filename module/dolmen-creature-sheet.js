@@ -7,10 +7,11 @@ import { createChatMessage } from './sheet/chat-helpers.js'
 import { createContextMenu } from './sheet/context-menu.js'
 import { getDieIconFromFormula, getAttackTarget, buildDamageFlags } from './sheet/attack-rolls.js'
 import { parseSaveLinks } from './chat-save.js'
-import { getEffectTargetLabel, getEffectFieldsForActor } from './effect-fields.js'
+import { getEffectFieldsForActor, getEffectEntries, getEffectListData } from './effect-fields.js'
 import { prepareItemData, groupItemsByType, calcItemWeight } from './sheet/data-context.js'
 import { onOpenItem, onDeleteItem, onIncreaseQty, onDecreaseQty, onToggleContainer, onDropItemSimple } from './sheet/inventory-actions.js'
 import { setupAdjustableInputListeners } from './sheet/listeners.js'
+import { openCodex } from './utils/codex.js'
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets
@@ -174,10 +175,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				name: e.name,
 				img: e.img,
 				enabled: e.system.enabled,
-				target: e.system.target,
-				value: e.system.value,
-				effectType: e.system.effectType,
-				targetLabel: getEffectTargetLabel(e.system.target),
+				...getEffectListData(e.system),
 				durationLabel
 			}
 		}).sort((a, b) => a.name.localeCompare(b.name))
@@ -317,8 +315,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			codexBtn.addEventListener('click', async () => {
 				const uuid = this.actor.system.codexUuid
 				if (uuid) {
-					const doc = await fromUuid(uuid)
-					doc?.sheet?.render(true)
+					await openCodex(uuid)
 				}
 			})
 		}
@@ -334,8 +331,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				codexLink.innerHTML = '<i class="fas fa-book-open"></i>'
 				codexLink.addEventListener('click', async (event) => {
 					event.preventDefault()
-					const doc = await fromUuid(codexUuid)
-					doc?.sheet?.render(true)
+					await openCodex(codexUuid)
 				})
 				nav.appendChild(codexLink)
 			}
@@ -461,7 +457,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				for (const group of Object.values(creatureFields)) {
 					for (const key of Object.keys(group.fields)) validTargets.add(key)
 				}
-				if (!validTargets.has(item.system.target)) {
+				if (getEffectEntries(item.system).some(e => !validTargets.has(e.target))) {
 					ui.notifications.warn(game.i18n.localize('DOLMEN.Effects.UnsupportedTarget'))
 					return
 				}
@@ -609,6 +605,10 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				<div class="form-group full-width">
 					<label>${game.i18n.localize('DOLMEN.Creature.SaveEffect')}</label>
 					<textarea id="attack-effect">${attack.attackEffect || ''}</textarea>
+					<p class="formatting-hint">
+						${game.i18n.localize('DOLMEN.Creature.EffectHintSave')}: <code>[Text](save:doom)</code><br>
+						${game.i18n.localize('DOLMEN.Creature.EffectHintRoll')}: <code>[[/r 1d6]]</code>
+					</p>
 				</div>
 			</div>
 		`
