@@ -8,10 +8,39 @@ import { createContextMenu } from './sheet/context-menu.js'
 import { getDieIconFromFormula, getAttackTarget, buildDamageFlags } from './sheet/attack-rolls.js'
 import { parseSaveLinks } from './chat-save.js'
 import { getEffectFieldsForActor, getEffectEntries, getEffectListData } from './effect-fields.js'
-import { prepareItemData, groupItemsByType, calcItemWeight } from './sheet/data-context.js'
-import { onOpenItem, onDeleteItem, onIncreaseQty, onDecreaseQty, onToggleContainer, onDropItemSimple } from './sheet/inventory-actions.js'
+import { prepareItemData, groupItemsByType, calcItemWeight, groupSpellsByRank, prepareMemorizedSlots } from './sheet/data-context.js'
+import { onOpenItem, onIncreaseQty, onDecreaseQty, onToggleContainer, onDropItemSimple, createDeleteItemHandler } from './sheet/inventory-actions.js'
 import { setupAdjustableInputListeners } from './sheet/listeners.js'
 import { openCodex } from './utils/codex.js'
+import DolmenSheet from './dolmen-sheet.js'
+
+/** Spell item types a creature can memorize, with their magic and highest rank. */
+const CREATURE_SPELLS = {
+	Spell: { path: 'arcaneMagic', spellType: 'arcane', maxRank: 6 },
+	HolySpell: { path: 'holyMagic', spellType: 'holy', maxRank: 5 }
+}
+
+/** Fairy magic a creature knows: its glamours, and its runes by magnitude. */
+const FAIRY_MAGIC = ['Glamour', 'Rune']
+const RUNE_MAGNITUDES = { lesser: 'fa-brightness-low', greater: 'fa-sun-bright', mighty: 'fa-sun' }
+
+/**
+ * Before a spell item is deleted, take it out of the memorized spells; its slot goes with it,
+ * as a creature has one slot per known spell.
+ * @param {Actor} actor - The actor owning the item
+ * @param {Item} item - The item being deleted
+ */
+async function removeCreatureSpellSlots(actor, item) {
+	const kind = CREATURE_SPELLS[item.type]
+	if (!kind) return
+	const updates = {}
+	for (const [key, slot] of Object.entries(actor.system[kind.path].spellSlots)) {
+		if (slot.memorized.includes(item.id)) {
+			updates[`system.${kind.path}.spellSlots.${key}.memorized`] = slot.memorized.filter(id => id !== item.id)
+		}
+	}
+	if (Object.keys(updates).length) await actor.update(updates)
+}
 
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets
@@ -24,7 +53,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			submitOnChange: true
 		},
 		position: {
-			width: 700,
+			width: 750,
 			height: 550,
 		},
 		window: {
@@ -36,7 +65,11 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			addAbility: DolmenCreatureSheet._onAddAbility,
 			removeAbility: DolmenCreatureSheet._onRemoveAbility,
 			openItem: onOpenItem,
-			deleteItem: onDeleteItem,
+			deleteItem: createDeleteItemHandler(removeCreatureSpellSlots),
+			castSpell: DolmenSheet._onCastSpell,
+			memorizeToSlot: DolmenSheet._onMemorizeToSlot,
+			memorizeSpell: DolmenSheet._onMemorizeSpell,
+			forgetSpell: DolmenSheet._onForgetSpell,
 			increaseQty: onIncreaseQty,
 			decreaseQty: onDecreaseQty,
 			toggleContainer: onToggleContainer,
@@ -69,6 +102,10 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		effects: {
 			template: 'systems/dolmenwood/templates/creature/parts/tab-effects.html',
 			scrollable: ['']
+		},
+		magic: {
+			template: 'systems/dolmenwood/templates/creature/parts/tab-magic.html',
+			scrollable: ['']
 		}
 	}
 
@@ -78,6 +115,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				{ id: 'stats', icon: 'fas fa-dragon', label: 'DOLMEN.Tabs.Stats' },
 				{ id: 'notes', icon: 'fas fa-eye', label: 'DOLMEN.Tabs.Details' },
 				{ id: 'effects', icon: 'fas fa-bolt', label: 'DOLMEN.Tabs.Effects' },
+				{ id: 'magic', icon: 'fas fa-sparkles', label: 'DOLMEN.Tabs.Magic' },
 				{ id: 'inventory', icon: 'fas fa-box', label: 'DOLMEN.Tabs.Inventory' },
 				{ id: 'description', icon: 'fas fa-note-sticky', label: 'DOLMEN.Tabs.Description' }
 			],
@@ -90,10 +128,14 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 	}
 
 	_getTabs() {
+		// the last spell gone, the Magic tab goes: back to Stats
+		if (this.tabGroups.primary === 'magic' && !this._hasSpells()) this.tabGroups.primary = 'stats'
 		const tabs = {}
 		for (const [groupId, config] of Object.entries(this.constructor.TABS)) {
 			const group = {}
 			for (const t of config.tabs) {
+				// the Magic tab only for a creature with spells
+				if (t.id === 'magic' && !this._hasSpells()) continue
 				group[t.id] = {
 					id: t.id,
 					group: groupId,
@@ -183,8 +225,41 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		// Prepare inventory data (stowed items only)
 		context.encumbranceMethod = game.settings.get('dolmenwood', 'encumbranceMethod')
 		this._prepareInventoryContext(context, actor)
+		this._prepareMagicContext(context, actor)
 
 		return context
+	}
+
+	/** Whether the creature has spells, glamours or runes, which unlock the Magic tab. */
+	_hasSpells() {
+		return this.actor.items.some(i => i.type in CREATURE_SPELLS || FAIRY_MAGIC.includes(i.type))
+	}
+
+	_prepareMagicContext(context, actor) {
+		context.creatureMagic = Object.entries(CREATURE_SPELLS).map(([type, kind]) => {
+			const spells = actor.items.contents.filter(i => i.type === type)
+			return {
+				...kind,
+				title: game.i18n.localize(`DOLMEN.Magic.${kind.spellType === 'holy' ? 'Holy' : 'Arcane'}.Title`),
+				memorizedLabel: game.i18n.localize(kind.spellType === 'holy' ? 'DOLMEN.Magic.Holy.PreparedSpells' : 'DOLMEN.Magic.Arcane.MemorizedSpells'),
+				slots: prepareMemorizedSlots(actor.system[kind.path].spellSlots, spells, kind.maxRank),
+				known: groupSpellsByRank(spells, kind.maxRank)
+			}
+		}).filter(m => m.known.length)
+
+		// fairy magic: the glamours, and the runes by magnitude, each with how often the creature
+		// may use it (its stat block's, flags.dolmenwood.creatureUsage, else the glamour's own)
+		const fairy = actor.items.contents.filter(i => FAIRY_MAGIC.includes(i.type))
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(i => ({ id: i.id, name: i.name, img: i.img, type: i.type, magnitude: i.system.magnitude || 'lesser',
+				usage: i.flags.dolmenwood?.creatureUsage || i.system.usageFrequency || '' }))
+		const glamours = fairy.filter(i => i.type === 'Glamour')
+		const runes = Object.entries(RUNE_MAGNITUDES).map(([magnitude, icon]) => ({
+			icon,
+			label: game.i18n.localize(`DOLMEN.Magic.Fairy.Magnitudes.${magnitude}`),
+			runes: fairy.filter(i => i.type === 'Rune' && i.magnitude === magnitude)
+		})).filter(g => g.runes.length)
+		context.fairyMagic = fairy.length ? { glamours, runes } : null
 	}
 
 	_prepareInventoryContext(context, actor) {
@@ -223,7 +298,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 	async _preparePartContext(partId, context) {
 		context = await super._preparePartContext(partId, context)
-		const tabIds = ['stats', 'description', 'notes', 'effects', 'inventory']
+		const tabIds = ['stats', 'description', 'notes', 'effects', 'inventory', 'magic']
 		if (tabIds.includes(partId)) {
 			context.tab = context.tabs?.primary?.[partId] || {
 				id: partId,
@@ -450,6 +525,12 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				return
 			}
 
+			// A dropped spell is memorized: one more slot of its rank, holding it
+			if (item && item.type in CREATURE_SPELLS) {
+				await this._addMemorizedSpell(item)
+				return
+			}
+
 			// Check Effect items for unsupported targets
 			if (item?.type === 'Effect') {
 				const creatureFields = getEffectFieldsForActor('Creature')
@@ -472,6 +553,30 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const gearTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable', 'Container']
 		if (gearTypes.includes(item?.type)) return onDropItemSimple(this, event, data)
 		return super._onDropItem(event, data)
+	}
+
+	/**
+	 * A dropped spell is learned (once) and memorized: learning it adds a slot of its rank, which
+	 * it fills. The sheet shows the Magic tab.
+	 * @param {Item} item - The dropped spell
+	 */
+	async _addMemorizedSpell(item) {
+		const kind = CREATURE_SPELLS[item.type]
+		this.tabGroups.primary = 'magic'
+		if (item.parent === this.actor || this.actor.items.some(i => i.type === item.type && i.name === item.name)) {
+			ui.notifications.info(game.i18n.format('DOLMEN.Creature.SpellKnown', { name: item.name }))
+			return this.render()
+		}
+		const data = item.toObject()
+		delete data._id
+		const [spell] = await this.actor.createEmbeddedDocuments('Item', [data])
+		const key = `rank${spell.system.rank}`
+		const slot = this.actor.system[kind.path].spellSlots[key]
+		const memorized = [...slot.memorized]
+		let index = 0
+		while (memorized[index] && index < slot.max) index++
+		memorized[index] = spell.id
+		await this.actor.update({ [`system.${kind.path}.spellSlots.${key}.memorized`]: memorized })
 	}
 
 	/* -------------------------------------------- */

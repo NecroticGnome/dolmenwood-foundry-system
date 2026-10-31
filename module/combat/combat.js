@@ -165,7 +165,7 @@ export default class DolmenCombat extends Combat {
 /* -------------------------------------------- */
 
 /**
- * Register the combat system: document classes, tracker UI, and settings.
+ * Register the combat system: document classes and tracker UI.
  * Call this from Hooks.once('init', ...) in dolmenwood.mjs.
  */
 export function registerCombatSystem() {
@@ -173,8 +173,12 @@ export function registerCombatSystem() {
 	CONFIG.Combat.documentClass = DolmenCombat
 	CONFIG.Combatant.documentClass = DolmenCombatant
 	CONFIG.ui.combat = DolmenCombatTracker
+}
 
-	// Register combat settings
+/**
+ * Register the combat settings, where they should appear in the settings list.
+ */
+export function registerCombatSettings() {
 	game.settings.register('dolmenwood', 'rerollInitiative', {
 		name: 'DOLMEN.Combat.Settings.RerollInitiative',
 		hint: 'DOLMEN.Combat.Settings.RerollInitiativeHint',

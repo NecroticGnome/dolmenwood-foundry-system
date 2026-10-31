@@ -33,18 +33,24 @@ const layers = [
 			'combat-tracker.css',
 			'dungeon-tracker.css',
 			'party-viewer.css',
-			'effects.css'
+			'effects.css',
+			'ui-theme.css'
 		]
+	},
+	{
+		// unlayered: journal pages override Foundry's own (layered) journal styles
+		name: null,
+		files: ['journal.css']
 	}
 ]
 
-// Concatenate with @layer wrappers
+// Concatenate with @layer wrappers (a layer without a name stays unlayered)
 let combined = ''
 for (const layer of layers) {
 	const contents = layer.files
 		.map(file => fs.readFileSync(path.join(root, 'styles', file), 'utf8'))
 		.join('\n')
-	combined += `@layer ${layer.name} {\n${contents}\n}\n`
+	combined += layer.name ? `@layer ${layer.name} {\n${contents}\n}\n` : `${contents}\n`
 }
 
 // Minify (level 1 = safe transforms only)

@@ -79,6 +79,11 @@
       "name": "Dolmenwood System Data",
       "color": "#d54134",
       "packs": ["kindreds", "classes"]
+    },
+    {
+      "name": "Dolmenwood Free Content",
+      "color": "#d54134",
+      "packs": ["maps"]
     }
   ],
   "packs": [
@@ -101,6 +106,16 @@
       "system": "dolmenwood",
       "ownership": {
         "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "maps",
+      "label": "Dolmenwood Free Packs",
+      "path": "packs/maps",
+      "type": "Adventure",
+      "ownership": {
+        "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       }
     }

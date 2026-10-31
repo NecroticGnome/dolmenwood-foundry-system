@@ -881,12 +881,39 @@ export class CreatureDataModel extends ActorDataModel {
 			// Retainer loyalty score (2-12, default 7)
 			loyalty: new NumberField({ required: false, integer: true, min: 1, max: 12 }),
 
+			// Spells memorized per rank. A creature has as many slots of a rank as spells it knows
+			// of that rank (max is derived); a cast spell leaves its slot empty.
+			arcaneMagic: new SchemaField({
+				spellSlots: createArcaneSpellSlotsSchema()
+			}),
+			holyMagic: new SchemaField({
+				spellSlots: createHolySpellSlotsSchema()
+			}),
+
 		}
 	}
 
 	/** @override */
 	prepareDerivedData() {
 		this._aggregateCreatureEffects()
+		this._prepareCreatureMagic()
+	}
+
+	/**
+	 * Spell slots follow the known spells: one slot of a rank per spell of that rank the creature
+	 * has. The magic is enabled while the creature has spells of its kind.
+	 */
+	_prepareCreatureMagic() {
+		const items = this.parent?.items?.contents ?? []
+		for (const [path, type] of [['arcaneMagic', 'Spell'], ['holyMagic', 'HolySpell']]) {
+			const magic = this[path]
+			if (!magic) continue
+			const spells = items.filter(i => i.type === type)
+			magic.enabled = spells.length > 0
+			for (const [key, slot] of Object.entries(magic.spellSlots)) {
+				slot.max = spells.filter(i => `rank${i.system.rank}` === key).length
+			}
+		}
 	}
 
 	/**

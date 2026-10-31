@@ -1,0 +1,129 @@
+<section class="tab-content tab-magic {{tab.cssClass}}" data-group="primary" data-tab="magic">
+	{{#each creatureMagic}}
+	<div class="two-columns">
+		<section class="memorized-spells boxed-section">
+			<h2><i class="fas fa-brain-circuit"></i> {{this.title}}: {{this.memorizedLabel}}</h2>
+			<div class="spell-list memorized-slots-list">
+				{{#each this.slots}}
+				<div class="spell-rank-group">
+					<div class="spell-list-header">
+						<span class="rank-label">{{localize "DOLMEN.Magic.SpellRank"}}</span>
+						<i class="fas {{this.icon}}"></i>
+						<span class="slot-usage-label">{{this.memorized}}/{{this.total}}</span>
+						<span class="spell-controls-header"></span>
+					</div>
+					{{#each this.filledSlots}}
+					<div class="spell-row memorized-slot filled" data-item-id="{{this.spell.id}}" data-action="openItem">
+						<img src="{{this.spell.img}}" class="spell-image">
+						<span class="spell-name">{{this.spell.name}}</span>
+						<span class="spell-controls">
+							<a class="spell-control" data-action="castSpell" data-item-id="{{this.spell.id}}" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-spell-type="{{../../spellType}}" title="{{localize 'DOLMEN.Magic.Cast'}}">
+								<i class="fas fa-sparkles"></i>
+							</a>
+							<a class="spell-control" data-action="forgetSpell" data-slot-index="{{this.index}}" data-rank-key="{{../key}}" data-spell-type="{{../../spellType}}" title="{{localize 'DOLMEN.Magic.Forget'}}">
+								<i class="fas fa-brain-arrow-curved-right"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+					{{#if this.hasEmpty}}
+					<div class="spell-row memorized-slot empty" data-action="memorizeToSlot" data-slot-index="{{this.firstEmptyIndex}}" data-rank-key="{{this.key}}" data-rank="{{this.rank}}" data-spell-type="{{../spellType}}">
+						<div class="spell-image empty-slot-icon"><i class="fas fa-plus"></i></div>
+						<span class="spell-name empty-slot-label">{{localize "DOLMEN.Magic.EmptySlot"}}</span>
+						<span class="spell-controls"></span>
+					</div>
+					{{/if}}
+				</div>
+				{{/each}}
+			</div>
+		</section>
+		<section class="known-spells boxed-section">
+			<h2><i class="fa-solid fa-brain"></i> {{this.title}}: {{localize "DOLMEN.Magic.Arcane.KnownSpells"}}</h2>
+			<div class="spell-list">
+				{{#each this.known}}
+				<div class="spell-rank-group">
+					<div class="spell-list-header">
+						<span class="rank-label">{{localize "DOLMEN.Magic.SpellRank"}}</span>
+						<i class="fas {{this.icon}}"></i>
+						<span class="spell-controls-header"></span>
+					</div>
+					{{#each this.spells}}
+					<div class="spell-row" data-item-id="{{this.id}}" data-action="openItem">
+						<img src="{{this.img}}" class="spell-image">
+						<span class="spell-name">{{this.name}}</span>
+						<span class="spell-controls">
+							<a class="spell-control" data-action="memorizeSpell" data-item-id="{{this.id}}" data-spell-type="{{../../spellType}}" title="{{localize 'DOLMEN.Magic.Memorize'}}">
+								<i class="fas fa-brain-arrow-curved-right" style="transform: scaleX(-1);"></i>
+							</a>
+							<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
+								<i class="fas fa-square-x"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+				</div>
+				{{/each}}
+			</div>
+		</section>
+	</div>
+	{{/each}}
+	{{#if fairyMagic}}
+	<div class="two-columns">
+		<section class="glamours boxed-section">
+			<h2><i class="fas fa-wand-sparkles"></i> {{localize "DOLMEN.Magic.Fairy.Title"}}: {{localize "DOLMEN.Magic.Fairy.Glamours"}}</h2>
+			<div class="spell-list">
+				<div class="spell-rank-group">
+					{{#each fairyMagic.glamours}}
+					<div class="spell-row glamour-row" data-item-id="{{this.id}}" data-action="openItem">
+						<img src="{{this.img}}" class="spell-image">
+						<span class="spell-name">{{this.name}}</span>
+						<span class="glamour-usage">{{this.usage}}</span>
+						<span class="spell-controls">
+							<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Use'}}">
+								<i class="fas fa-sparkles"></i>
+							</a>
+							<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
+								<i class="fas fa-square-x"></i>
+							</a>
+						</span>
+					</div>
+					{{else}}
+					<div class="spell-list-empty"><span>{{localize "DOLMEN.Magic.Fairy.NoGlamours"}}</span></div>
+					{{/each}}
+				</div>
+			</div>
+		</section>
+		<section class="runes boxed-section">
+			<h2><i class="fas fa-circle-nodes"></i> {{localize "DOLMEN.Magic.Fairy.Title"}}: {{localize "DOLMEN.Magic.Fairy.Runes"}}</h2>
+			<div class="spell-list">
+				{{#each fairyMagic.runes}}
+				<div class="spell-rank-group">
+					<div class="spell-list-header">
+						<i class="fas {{this.icon}}"></i>
+						<span class="rank-label">{{this.label}}</span>
+						<span class="spell-controls-header"></span>
+					</div>
+					{{#each this.runes}}
+					<div class="spell-row rune-row" data-item-id="{{this.id}}" data-action="openItem">
+						<img src="{{this.img}}" class="spell-image">
+						<span class="spell-name">{{this.name}}</span>
+						<span class="glamour-usage">{{this.usage}}</span>
+						<span class="spell-controls">
+							<a class="spell-control" data-action="castSpell" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Magic.Use'}}">
+								<i class="fas fa-sparkles"></i>
+							</a>
+							<a class="spell-control" data-action="deleteItem" data-item-id="{{this.id}}" title="{{localize 'DOLMEN.Delete'}}">
+								<i class="fas fa-square-x"></i>
+							</a>
+						</span>
+					</div>
+					{{/each}}
+				</div>
+				{{else}}
+				<div class="spell-list-empty"><span>{{localize "DOLMEN.Magic.Fairy.NoRunes"}}</span></div>
+				{{/each}}
+			</div>
+		</section>
+	</div>
+	{{/if}}
+</section>

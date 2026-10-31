@@ -3,9 +3,11 @@
 /**
  * Find a RollTable by name, checking world tables first, then compendium packs.
  * @param {string} name - The table name to search for
+ * @param {object} [options]
+ * @param {boolean} [options.quiet] - Don't warn when there is no such table
  * @returns {Promise<RollTable|null>}
  */
-export async function findRollTable(name) {
+export async function findRollTable(name, { quiet = false } = {}) {
 	const table = game.tables.getName(name)
 	if (table) return table
 	for (const pack of game.packs.filter(p => p.documentName === 'RollTable')) {
@@ -13,7 +15,7 @@ export async function findRollTable(name) {
 		const entry = index.find(e => e.name === name)
 		if (entry) return pack.getDocument(entry._id)
 	}
-	ui.notifications.warn(game.i18n.format('DOLMEN.RollTable.NotFound', { name }))
+	if (!quiet) ui.notifications.warn(game.i18n.format('DOLMEN.RollTable.NotFound', { name }))
 	return null
 }
 

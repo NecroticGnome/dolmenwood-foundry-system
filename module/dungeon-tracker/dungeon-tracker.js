@@ -252,11 +252,14 @@ async function showSettingsDialog() {
 		.join('')
 
 	const tableOptions = [`<option value=""${!encounterTable ? ' selected' : ''}>${noneLbl}</option>`]
-	for (const table of game.tables) {
-		if (table.name.startsWith('Encounter Table:')) {
-			const sel = encounterTable === table.name ? ' selected' : ''
-			tableOptions.push(`<option value="${table.name}"${sel}>${table.name}</option>`)
-		}
+	// the world's tables and the compendiums', a name once (findRollTable draws the world's first)
+	const tableNames = new Set(game.tables.map(table => table.name))
+	for (const pack of game.packs.filter(p => p.documentName === 'RollTable')) {
+		for (const entry of await pack.getIndex()) tableNames.add(entry.name)
+	}
+	for (const name of [...tableNames].filter(n => n.startsWith('Encounter Table:')).sort((a, b) => a.localeCompare(b))) {
+		const sel = encounterTable === name ? ' selected' : ''
+		tableOptions.push(`<option value="${name}"${sel}>${name}</option>`)
 	}
 
 	const hookId = Hooks.once('renderDialogV2', (dialog) => {

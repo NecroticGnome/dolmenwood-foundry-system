@@ -912,7 +912,7 @@ function computeAutoRange(sheet, weapon) {
 /**
  * Open range selection menu for missile attacks (Close / Medium / Long).
  *
- * When the "Automatic Missile Range" setting is on, the range band is derived
+ * When the "Auto-Calculate Missile Range" setting is on, the range band is derived
  * from token distance instead of prompting — picking the weapon first if more
  * than one is equipped. Falls back to the manual menu when the distance can't
  * be resolved (handled via the forceManual flag to avoid re-entering auto).

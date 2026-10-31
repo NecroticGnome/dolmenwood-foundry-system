@@ -1,0 +1,455 @@
+/* Dolmenwood journals: the books' look for journal pages (headings, boxed text, tables, statblocks,
+   art). Built unlayered (scripts/build-css.js) so it overrides Foundry's own journal styles. */
+
+/* ── Palette ─────────────────────────────────────────────────────────────────── */
+/* Light values come from the printed books. Dark values are exposed as the same */
+/* CSS custom properties so every rule below works in both Foundry themes. */
+/* Foundry's own parchment texture (served from /ui/). In dark mode the same texture is */
+/* multiplied over a dark colour so the page keeps its mottled paper look. */
+/* Dark values follow Foundry's own dark interface (its "cool" purple-black palette) so a */
+/* journal sits naturally next to the rest of the UI. The parchment texture is multiplied */
+/* over the base colour, which lands close to the window background behind it. */
+:root {
+	--dw-bg: #FBF8F1;
+	--dw-bg-image: url("/ui/parchment.jpg");
+	--dw-bg-blend: normal;
+	--dw-box-bg: #F5EEDF;
+	--dw-table-alt-row-bg: #EBDFD8;
+	--dw-red: #d54033;
+	--dw-orange: #DD6D54;
+	--dw-brown: #562E19;
+	--dw-box-title: #D2232A;
+	--dw-text: #000;
+}
+
+body.theme-dark,
+.themed.theme-dark {
+	--dw-bg: #17141f;
+	--dw-bg-image: url("/ui/parchment.jpg");
+	--dw-bg-blend: multiply;
+	--dw-box-bg: #2a2334;
+	--dw-table-alt-row-bg: #241e2d;
+	--dw-red: #e8584b;
+	--dw-orange: #e9826a;
+	--dw-brown: #c4b4d6;
+	--dw-box-title: #ee5a60;
+	--dw-text: var(--color-text-primary, #e0ddd8);
+}
+
+/* A per-window light override inside a dark client (or vice versa) wins over the body theme. */
+.themed.theme-light {
+	--dw-bg: #FBF8F1;
+	--dw-bg-image: url("/ui/parchment.jpg");
+	--dw-bg-blend: normal;
+	--dw-box-bg: #F5EEDF;
+	--dw-table-alt-row-bg: #EBDFD8;
+	--dw-red: #d54033;
+	--dw-orange: #DD6D54;
+	--dw-brown: #562E19;
+	--dw-box-title: #D2232A;
+	--dw-text: #000;
+}
+
+/* With the Dolmenwood system's "Apply Theme to Interface" setting on, journals take the */
+/* colours of its chosen colour theme instead, without the parchment texture. */
+[data-dolmen-ui] :is(body, .themed) {
+	--dw-bg: var(--dolmen-color-background);
+	--dw-bg-image: none;
+	--dw-bg-blend: normal;
+	--dw-box-bg: var(--dolmen-color-inner-background);
+	--dw-table-alt-row-bg: var(--dolmen-color-box-background);
+	--dw-red: var(--dolmen-color-h1);
+	--dw-orange: var(--dolmen-color-h2);
+	--dw-brown: var(--dolmen-color-h3);
+	--dw-box-title: var(--dolmen-color-h1);
+	--dw-text: var(--dolmen-color-text);
+}
+
+/* ── Hide Journal Art (user setting, module/journal-art.js) ──────────────────── */
+/* The books' artwork goes, with any paragraph or figure holding only that; crests, maps and */
+/* diagrams stay. Never in the editor, so art can't be deleted unseen. */
+body.dolmenwood-hide-art .dolmenwood-art:not(.ProseMirror *),
+body.dolmenwood-hide-art :is(p, figure):has(> .dolmenwood-art:only-child):not(.ProseMirror *) {
+	display: none;
+}
+
+/* ── Journal page ────────────────────────────────────────────────────────────── */
+.journal-entry-content {
+	background-color: var(--dw-bg);
+	background-image: var(--dw-bg-image);
+	background-repeat: repeat;
+	background-blend-mode: var(--dw-bg-blend);
+}
+
+.journal-entry-page h1, .journal-entry-page h2, .journal-entry-page h3, .journal-entry-page h4, .journal-entry-page h5, .journal-entry-page h6,
+.editor-content h1,
+.editor-content h2,
+.editor-content h3,
+.editor-content h4,
+.editor-content h5,
+.editor-content h6 {
+	font-weight: bold;
+	padding: 0;
+	line-height: 1.2;
+	clear: both;
+}
+.journal-entry-page .journal-page-header h1,
+.editor-content .journal-page-header h1 {
+	color: var(--dw-red);
+	font-size: 3em;
+	margin: 0 0 0.125em;
+	text-align: center;
+	border-bottom: 3px double var(--dw-red);
+}
+.journal-entry-page .subtitle,
+.editor-content .subtitle {
+	font-size: 1.1em;
+	font-weight: semi-bold;
+	text-align: center;
+	margin: 0 0 1em;
+}
+.journal-entry-page h2,
+.editor-content h2 {
+	color: var(--dw-orange);
+	font-size: 1.5em;
+	margin: 0.666em 0 0 0;
+	text-transform: uppercase;
+	border-bottom: none;
+}
+.journal-entry-page h3,
+.editor-content h3 {
+	color: var(--dw-brown);
+	font-size: 1.3em;
+	margin: 0.4em 0 0 0;
+}
+.journal-entry-page h4,
+.editor-content h4 {
+	font-size: 1em;
+	color: var(--dw-box-title);
+	margin: 0.6em 0 0 0;
+}
+.journal-entry-page p,
+.editor-content p {
+	margin: 0.5em 0;
+	padding: 0;
+}
+.journal-entry-page a,
+.editor-content a {
+	color: var(--dw-red);
+	font-weight: 500;
+	font-style: normal;
+	text-decoration: underline;
+	text-decoration-color: var(--dw-red);
+}
+.journal-entry-page a.content-link,
+.journal-entry-page a.inline-roll,
+.editor-content a.content-link,
+.editor-content a.inline-roll {
+	color: var(--dw-red);
+	font-weight: 500;
+	font-style: normal;
+	text-decoration: underline;
+	text-decoration-color: var(--dw-red);
+	border: none;
+	background: none;
+	padding: 1px 1px 0 2px;
+}
+.journal-entry-page a.content-link i,
+.journal-entry-page a.inline-roll i,
+.editor-content a.content-link i,
+.editor-content a.inline-roll i {
+	color: var(--dw-red);
+}
+.journal-entry-page .boxed-text,
+.editor-content .boxed-text {
+	border: 2px solid var(--dw-orange);
+	padding: 0.3em 0.8em;
+	margin: 0.5em 0;
+	background: var(--dw-box-bg);
+	overflow: hidden;
+}
+.journal-entry-page .example-text,
+.editor-content .example-text {
+	font-size: 0.93em;
+	border-top: 2px solid var(--dw-orange);
+	border-bottom: 2px solid var(--dw-orange);
+	border-left: none;
+	border-right: none;
+	background: var(--dw-box-bg);
+	padding: 0.3em 0.8em;
+	margin: 0.5em 0;
+}
+.journal-entry-page .journal-page-content ul li p,
+.editor-content .journal-page-content ul li p {
+	margin: 0 0 0.2em;
+}
+.journal-entry-page .journal-page-content ul li::marker,
+.editor-content .journal-page-content ul li::marker {
+	content: "▶ ";
+	font-size: 10px;
+	color: inherit;
+}
+.journal-entry-page .journal-page-content,
+.editor-content .journal-page-content {
+	/* a long list of short names (the Monster Book's monster lists) in as many columns as fit */
+}
+.journal-entry-page .journal-page-content ul.column-list,
+.editor-content .journal-page-content ul.column-list {
+	columns: 12em;
+	column-gap: 2em;
+}
+.journal-entry-page .journal-page-content ul.column-list li,
+.editor-content .journal-page-content ul.column-list li {
+	break-inside: avoid;
+}
+.journal-entry-page .monster-image,
+.editor-content .monster-image {
+	background-color: var(--dw-bg);
+	border: 2px solid var(--dw-brown);
+	max-width: 300px;
+}
+.journal-entry-page .monster-image.float-right,
+.editor-content .monster-image.float-right {
+	float: right;
+	margin: 0 0 1em 1em;
+}
+.journal-entry-page .monster-image.float-left,
+.editor-content .monster-image.float-left {
+	float: left;
+	margin: 0 1em 1em 0;
+}
+.journal-entry-page .monster-image,
+.editor-content .monster-image {
+	/* closing a section with no text beside it: centre instead of floating */
+}
+.journal-entry-page .monster-image.centered,
+.editor-content .monster-image.centered {
+	display: block;
+	clear: both;
+	margin: 1em auto;
+}
+.journal-entry-page,
+.editor-content {
+	/* the books' line-drawing vignettes: centred on the page, as wide as in the book (inline max-width) */
+}
+.journal-entry-page img.sketch,
+.editor-content img.sketch {
+	display: block;
+	clear: both;
+	margin: 0.5em auto;
+	border: none;
+	max-width: 60%;
+}
+.journal-entry-page,
+.editor-content {
+	/* a heraldic shield beside its house */
+}
+.journal-entry-page .crest,
+.editor-content .crest {
+	float: right;
+	width: 90px;
+	margin: 0 0 0.5em 1em;
+	border: none;
+}
+.journal-entry-page,
+.editor-content {
+	/* a crest after an NPC's portrait sits on the portrait's lower left corner, anchored to it
+		 (not while art is hidden; without anchor positioning it floats beside the portrait) */
+}
+@supports (anchor-name: --a) {
+	:is(.journal-page-content, .editor-content) {
+		/* each page anchors its own crests: not to a portrait on another page in the same sheet */
+		position: relative;
+		anchor-scope: --npc-portrait;
+	}
+	body:not(.dolmenwood-hide-art) .journal-entry-page .monster-image.float-right:has(+ .crest),
+	body:not(.dolmenwood-hide-art) .editor-content .monster-image.float-right:has(+ .crest) {
+		anchor-name: --npc-portrait;
+	}
+	body:not(.dolmenwood-hide-art) .journal-entry-page .monster-image.float-right + .crest,
+	body:not(.dolmenwood-hide-art) .editor-content .monster-image.float-right + .crest {
+		position: absolute;
+		position-anchor: --npc-portrait;
+		left: calc(anchor(left) + 8px);
+		bottom: calc(anchor(bottom) + 8px);
+		z-index: 1;
+		width: 64px;
+		margin: 0;
+		filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+	}
+}
+.journal-entry-page .clear-both,
+.editor-content .clear-both {
+	clear: both;
+}
+.journal-entry-page p.clear-both,
+.editor-content p.clear-both {
+	/* an empty paragraph that only clears the floats above it: no space of its own
+		 (Foundry gives p:empty a min-height of 1rem) */
+	min-height: 0;
+	margin: 0;
+}
+.journal-entry-page,
+.editor-content {
+	/* Hex pages: location map floats right; neighbouring hexes span the width below it */
+}
+.journal-entry-page .hex-map,
+.editor-content .hex-map {
+	width: 300px;
+	box-sizing: border-box; /* border included, so it lines up with the box below */
+}
+.journal-entry-page .hex-neighbours,
+.editor-content .hex-neighbours {
+	clear: both; /* below the floated map, full journal width */
+	display: grid;
+	/* label | hex | label | hex — minmax(0, …) stops long links from overflowing */
+	grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr);
+	column-gap: 0.5em;
+	font-size: 0.9em;
+}
+.journal-entry-page .hex-neighbours h4,
+.editor-content .hex-neighbours h4 {
+	grid-column: 1/-1;
+	margin-top: 0;
+}
+.journal-entry-page .hex-neighbours p,
+.editor-content .hex-neighbours p {
+	margin: 0.15em 0;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.journal-entry-page .hex-neighbours a.content-link,
+.editor-content .hex-neighbours a.content-link {
+	white-space: normal; /* Foundry keeps links on one line by default */
+}
+.journal-entry-page,
+.editor-content {
+	/* Captioned symbol grid in a sidebar (dungeon mapping symbols) */
+}
+.journal-entry-page .symbol-grid,
+.editor-content .symbol-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.5em 1em;
+	text-align: center;
+}
+.journal-entry-page .symbol-grid img,
+.editor-content .symbol-grid img {
+	width: 100%;
+	max-width: 160px;
+	border: none;
+}
+.journal-entry-page .symbol-grid p,
+.editor-content .symbol-grid p {
+	margin: 0 0 0.3em;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+.journal-entry-page table,
+.editor-content table {
+	width: 100%;
+	margin: 0.5em auto;
+	border-collapse: collapse;
+	font-size: 1em;
+	display: table;
+	background-color: var(--dw-bg);
+}
+.journal-entry-page thead,
+.editor-content thead {
+	background: none;
+	border: none;
+}
+.journal-entry-page th,
+.editor-content th {
+	color: var(--dw-text); /* headers have no background of their own here */
+	font-weight: bold;
+	padding: 0.5em 0.8em;
+	text-align: left;
+}
+.journal-entry-page tbody,
+.editor-content tbody {
+	border-top: 2px solid var(--dw-brown);
+}
+.journal-entry-page tbody tr,
+.editor-content tbody tr {
+	border-bottom: none;
+}
+.journal-entry-page tbody tr:nth-child(odd),
+.editor-content tbody tr:nth-child(odd) {
+	background: var(--dw-table-alt-row-bg);
+}
+.journal-entry-page tbody tr:nth-child(even),
+.editor-content tbody tr:nth-child(even) {
+	background: var(--dw-bg);
+}
+.journal-entry-page td,
+.editor-content td {
+	padding: 0.5em 0.8em;
+	text-align: left;
+}
+.journal-entry-page,
+.editor-content {
+	/* Center all content in the table */
+}
+.journal-entry-page table.center-all th,
+.journal-entry-page table.center-all td,
+.editor-content table.center-all th,
+.editor-content table.center-all td {
+	text-align: center;
+}
+.journal-entry-page,
+.editor-content {
+	/* Center only specific columns */
+}
+.journal-entry-page th.center-col,
+.journal-entry-page td.center-col,
+.editor-content th.center-col,
+.editor-content td.center-col {
+	text-align: center;
+}
+.journal-entry-page,
+.editor-content {
+	/* Vertical divider between sections */
+}
+.journal-entry-page th.divider,
+.journal-entry-page td.divider,
+.editor-content th.divider,
+.editor-content td.divider {
+	border-right: 2px solid var(--dw-brown);
+}
+.journal-entry-page,
+.editor-content {
+	/* Monster Statblock Styling */
+}
+.journal-entry-page .monster-statblock,
+.editor-content .monster-statblock {
+	max-width: none;
+	margin: 0.33em 0;
+	padding: 0;
+	border: none;
+	background-color: transparent;
+	/* Monster Type */
+}
+.journal-entry-page .monster-statblock .monster-type,
+.editor-content .monster-statblock .monster-type {
+	font-size: 0.92em;
+	color: var(--dw-brown);
+	font-weight: bold;
+	text-transform: uppercase;
+}
+.journal-entry-page .monster-statblock,
+.editor-content .monster-statblock {
+	/* Stats Block */
+}
+.journal-entry-page .monster-statblock .monster-stats,
+.editor-content .monster-statblock .monster-stats {
+	padding: 0;
+	line-height: 1.2;
+	color: var(--dw-text);
+	border-top: 1px solid var(--dw-box-title);
+	border-bottom: 1px solid var(--dw-box-title);
+}
+.journal-entry-page .monster-statblock .monster-stats strong,
+.editor-content .monster-statblock .monster-stats strong {
+	color: var(--dw-box-title);
+}

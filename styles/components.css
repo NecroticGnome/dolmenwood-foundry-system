@@ -642,3 +642,13 @@
 	padding: 0.25rem;
 	cursor: pointer;
 }
+/* The Dolmenwood Tools button: the image's shape in the control's own colour, as its Font Awesome neighbours */
+.control.dolmen-tools-icon::before {
+	content: '';
+	display: block;
+	flex: none;
+	width: 1.25em;
+	height: 1.25em;
+	background-color: currentColor;
+	mask: url('../assets/icons/d_icon.webp') center / contain no-repeat;
+}

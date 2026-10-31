@@ -50,7 +50,9 @@
 }
 
 /* ── 1. Dolmenwood Playerbook (default light theme) ── */
-[data-dolmen-theme="playerbook"] .dolmen {
+[data-dolmen-theme="playerbook"] {
+	--dolmen-color-scheme: light;
+	--dolmen-icon-filter: invert(1);
 	--dolmen-color-background: #ffffff;
 	--dolmen-color-text: #090404;
 	--dolmen-color-h1: #d54134;
@@ -92,7 +94,9 @@
 }
 
 /* ── 2. Drune Altar (dark red theme) ── */
-[data-dolmen-theme="drunealtar"] .dolmen {
+[data-dolmen-theme="drunealtar"] {
+	--dolmen-color-scheme: dark;
+	--dolmen-icon-filter: none;
 	--dolmen-color-background: #1e0e0e;
 	--dolmen-color-text: #f2eee9;
 
@@ -136,7 +140,9 @@
 }
 
 /* ── 3. Winter's Daughter (bright blue) ── */
-[data-dolmen-theme="wintersdaughter"] .dolmen {
+[data-dolmen-theme="wintersdaughter"] {
+	--dolmen-color-scheme: light;
+	--dolmen-icon-filter: invert(1);
 	--dolmen-color-background: #eaf4ff;
 	--dolmen-color-text: #1a2a3d;
 
@@ -180,7 +186,9 @@
 }
 
 /* ── 4. Cold Prince (dark blue) ── */
-[data-dolmen-theme="coldprince"] .dolmen {
+[data-dolmen-theme="coldprince"] {
+	--dolmen-color-scheme: dark;
+	--dolmen-icon-filter: none;
 	--dolmen-color-background: #0a1628;
 	--dolmen-color-text: #dce8f5;
 
@@ -224,7 +232,9 @@
 }
 
 /* ── 5. Grimalkin Princess (bright pink) ── */
-[data-dolmen-theme="grimalkin"] .dolmen {
+[data-dolmen-theme="grimalkin"] {
+	--dolmen-color-scheme: light;
+	--dolmen-icon-filter: invert(1);
 	--dolmen-color-background: #fff0f5;
 	--dolmen-color-text: #3d1a2a;
 
@@ -268,7 +278,9 @@
 }
 
 /* ── 6. Nag-Lord (dark purple/fey) ── */
-[data-dolmen-theme="naglord"] .dolmen {
+[data-dolmen-theme="naglord"] {
+	--dolmen-color-scheme: dark;
+	--dolmen-icon-filter: none;
 	--dolmen-color-background: #0f0a1f;
 	--dolmen-color-text: #e8dff5;
 
@@ -312,7 +324,9 @@
 }
 
 /* ── 7. Woodgrue Treehouse (muted green) ── */
-[data-dolmen-theme="woodgrue"] .dolmen {
+[data-dolmen-theme="woodgrue"] {
+	--dolmen-color-scheme: light;
+	--dolmen-icon-filter: invert(1);
 	--dolmen-color-background: #f0f4ee;
 	--dolmen-color-text: #2a3028;
 
@@ -356,7 +370,9 @@
 }
 
 /* ── 8. Mossling Den (dark woodland green) ── */
-[data-dolmen-theme="mosslingden"] .dolmen {
+[data-dolmen-theme="mosslingden"] {
+	--dolmen-color-scheme: dark;
+	--dolmen-icon-filter: none;
 	--dolmen-color-background: #0d1f0d;
 	--dolmen-color-text: #d4e6d4;
 
@@ -400,7 +416,9 @@
 }
 
 /* ── 9. Breggle Horns (sepia/parchment theme) ── */
-[data-dolmen-theme="bregglehorns"] .dolmen {
+[data-dolmen-theme="bregglehorns"] {
+	--dolmen-color-scheme: light;
+	--dolmen-icon-filter: invert(1);
 	--dolmen-color-background: #f5e6d0;
 	--dolmen-color-text: #3d2b1f;
 
@@ -444,7 +462,9 @@
 }
 
 /* ── 10. Mortal's End (dark brown/dirt) ── */
-[data-dolmen-theme="mortalsend"] .dolmen {
+[data-dolmen-theme="mortalsend"] {
+	--dolmen-color-scheme: dark;
+	--dolmen-icon-filter: none;
 	--dolmen-color-background: #1a1208;
 	--dolmen-color-text: #e8ddd0;
 
@@ -488,7 +508,9 @@
 }
 
 /* ── 11. Silver Dagger (light gray) ── */
-[data-dolmen-theme="silverdagger"] .dolmen {
+[data-dolmen-theme="silverdagger"] {
+	--dolmen-color-scheme: light;
+	--dolmen-icon-filter: invert(1);
 	--dolmen-color-background: #f0f0f2;
 	--dolmen-color-text: #1a1a2a;
 
@@ -532,7 +554,9 @@
 }
 
 /* ── 12. Cold Iron Axe (dark gray) ── */
-[data-dolmen-theme="coldironaxe"] .dolmen {
+[data-dolmen-theme="coldironaxe"] {
+	--dolmen-color-scheme: dark;
+	--dolmen-icon-filter: none;
 	--dolmen-color-background: #18181c;
 	--dolmen-color-text: #d8d8e0;
 
@@ -576,7 +600,9 @@
 }
 
 /* ── 13. High Contrast (maximum readability) ── */
-[data-dolmen-theme="highcontrast"] .dolmen {
+[data-dolmen-theme="highcontrast"] {
+	--dolmen-color-scheme: dark;
+	--dolmen-icon-filter: none;
 	--dolmen-color-background: #000000;
 	--dolmen-color-text: #ffffff;
 
