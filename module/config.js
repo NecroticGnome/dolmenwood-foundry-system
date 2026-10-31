@@ -281,4 +281,7 @@ DOLMENWOOD.unseasonWeatherTable = {
 	chame: 'summer'
 }
 
+// Tools a module adds to the Dolmenwood Tools group, by name (set in its init hook)
+DOLMENWOOD.extraTools = {}
+
 export default DOLMENWOOD

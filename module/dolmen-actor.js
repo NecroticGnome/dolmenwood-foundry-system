@@ -14,6 +14,10 @@ class DolmenActor extends Actor {
 	/** @override */
 	async _preCreate(data, options, user) {
 		await super._preCreate(data, options, user)
+		// new actors' tokens wear the dynamic token ring (unless the data says otherwise)
+		if (data.prototypeToken?.ring?.enabled === undefined) {
+			this.updateSource({ 'prototypeToken.ring.enabled': true })
+		}
 		if (data.type === 'Adventurer') {
 			this.updateSource({
 				'prototypeToken.actorLink': true,

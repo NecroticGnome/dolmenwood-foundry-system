@@ -1,8 +1,15 @@
 {
 	"DOLMEN": {
+		"ToolsTitle": "Narzędzia Dolmenwood",
+		"HideArt": {
+			"Name": "Ukryj grafiki w dziennikach",
+			"Hint": "Ukrywa ilustracje z podręczników w dziennikach Dolmenwood, dla widoku nastawionego na dane. Herby, mapy i diagramy pozostają widoczne. Dotyczy tylko ciebie."
+		},
 		"Settings": {
 			"ColorTheme": "Motyw kolorystyczny",
 			"ColorThemeHint": "Wybierz motyw kolorystyczny dla kart postaci i czatu Dolmenwood.",
+			"UiTheme": "Motyw dla całego interfejsu",
+			"UiThemeHint": "Stosuj motyw kolorystyczny także do interfejsu Foundry (pasek boczny, czat, dzienniki, okna i menu).",
 			"ThemeAuto": "Auto (Jasny/Ciemny)",
 			"ThemePlayerbook": "Podręcznik Dolmenwood",
 			"ThemeDruneAltar": "Ołtarz Drune",

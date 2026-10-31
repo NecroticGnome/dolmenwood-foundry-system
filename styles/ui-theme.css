@@ -1,0 +1,350 @@
+/* -------------------------------------------- */
+/*  Interface Theme                             */
+/*  Recolours Foundry's own interface (sidebar, */
+/*  chat, windows, menus, inputs) with the      */
+/*  chosen Dolmenwood colour theme. Active when */
+/*  the "uiTheme" setting sets data-dolmen-ui.  */
+/* -------------------------------------------- */
+
+/* Palette and theme variables: Foundry declares them on body and on every themed element */
+[data-dolmen-ui] :is(body, .theme-dark, .theme-light) {
+	--dui-bg: var(--dolmen-color-background);
+	--dui-panel: var(--dolmen-color-inner-background);
+	--dui-box: var(--dolmen-color-box-background);
+	--dui-border: var(--dolmen-color-box-border);
+	--dui-text: var(--dolmen-color-text);
+	--dui-muted: var(--dolmen-color-text-muted);
+	--dui-line: color-mix(in srgb, var(--dui-border) 45%, transparent);
+
+	color-scheme: var(--dolmen-color-scheme);
+	--color-scheme: var(--dolmen-color-scheme);
+
+	/* Surfaces */
+	--color-cool-3: color-mix(in srgb, var(--dui-border) 40%, var(--dui-panel));
+	--color-cool-4: var(--dui-panel);
+	--color-cool-5: var(--dui-bg);
+	--color-cool-5-25: color-mix(in srgb, var(--dui-bg) 25%, transparent);
+	--color-cool-5-50: color-mix(in srgb, var(--dui-bg) 50%, transparent);
+	--color-cool-5-75: color-mix(in srgb, var(--dui-bg) 75%, transparent);
+	--color-cool-5-90: color-mix(in srgb, var(--dui-bg) 90%, transparent);
+
+	/* Ink: dark mode writes with light-*, light mode with dark-* */
+	--color-light-1: var(--dui-text);
+	--color-light-2: color-mix(in srgb, var(--dui-text) 90%, var(--dui-bg));
+	--color-light-3: color-mix(in srgb, var(--dui-text) 80%, var(--dui-bg));
+	--color-light-4: color-mix(in srgb, var(--dui-muted) 70%, var(--dui-text));
+	--color-light-5: var(--dui-muted);
+	--color-light-6: color-mix(in srgb, var(--dui-muted) 55%, var(--dui-bg));
+	--color-dark-1: var(--color-light-1);
+	--color-dark-2: var(--color-light-2);
+	--color-dark-3: var(--color-light-3);
+	--color-dark-4: var(--color-light-4);
+	--color-dark-5: var(--color-light-5);
+	--color-dark-6: var(--color-light-6);
+
+	/* Accents */
+	--color-warm-1: var(--dolmen-color-h1);
+	--color-warm-2: var(--dolmen-color-title-background);
+	--color-warm-3: var(--dui-border);
+
+	--color-text-emphatic: var(--dui-text);
+	--color-text-primary: var(--dui-text);
+	--color-text-secondary: color-mix(in srgb, var(--dui-text) 80%, var(--dui-bg));
+	--color-text-subtle: var(--dui-muted);
+	--color-text-selection: var(--dolmen-color-title);
+	--color-text-selection-bg: var(--dolmen-color-title-background);
+	--color-text-hyperlink: var(--dolmen-color-h1);
+	--color-shadow-dark: #111; /* Foundry derives it from dark-1, which is theme ink here */
+	--color-scrollbar: var(--dui-border);
+	--color-scrollbar-track: transparent;
+	--hr-border: 0;
+	--hr-gradient: linear-gradient(90deg, transparent 0%, var(--dui-border) 50%, transparent 100%);
+	--fa-inverse: var(--dui-bg);
+	--background-parchment: var(--dui-bg);
+	--chat-input-border: 1px solid var(--dolmen-color-input-border);
+
+	--content-link-background: var(--dui-box);
+	--content-link-border-color: var(--dui-line);
+	--content-link-icon-color: var(--dui-muted);
+	--content-link-text-color: var(--dui-text);
+
+	--sidebar-background: color-mix(in srgb, var(--dui-bg) 92%, transparent);
+	--sidebar-separator: 1px solid var(--dui-line);
+	--sidebar-entry-hover-bg: var(--dolmen-color-box-highlight);
+	--sidebar-folder-color: var(--dolmen-color-title-background); /* under light folder names */
+
+	--table-background-color: transparent;
+	--table-header-bg-color: var(--dolmen-color-title-background);
+	--table-header-border-color: var(--dolmen-color-title-background);
+	--table-header-text-color: var(--dolmen-color-title);
+	--table-row-color-even: var(--dolmen-color-box-highlight);
+	--table-row-color-odd: transparent;
+	--table-row-color-highlight: color-mix(in srgb, var(--dui-border) 30%, transparent);
+}
+
+/* Text drawn over folder colours, banners, scene thumbnails, notifications and coloured
+   package tags stays light, on Foundry's dark backdrop where there is no image, as in Foundry */
+[data-dolmen-ui] :is(li.folder > .folder-header, .compendium-sidebar .compendium, .compendium-directory .header-banner, .scenes-sidebar .scene, #notifications,
+	.package-list .package .tags > .tag:is(.javascript, .css, .compendium, .unavailable, .unknown, .languages, .badge)) {
+	--color-cool-5-90: rgba(11, 10, 19, 0.9);
+	--color-light-1: #f7f3e8;
+	--color-light-2: #efe6d8;
+	--color-light-3: #e7d1b1;
+	--color-light-4: #d0b8a3;
+	--color-light-5: #9f8475;
+	--color-light-6: #816b66;
+	--color-dark-1: #111;
+	--color-dark-2: #222;
+	--color-dark-3: #333;
+	--color-dark-5: #555;
+	--color-text-primary: var(--color-light-2);
+	--color-text-secondary: var(--color-light-3);
+	--color-text-subtle: var(--color-light-5);
+}
+
+[data-dolmen-ui] li.folder > .folder-header button {
+	--button-background-color: transparent;
+	--button-border-color: transparent;
+	--button-text-color: var(--color-light-2);
+	--button-hover-background-color: transparent;
+	--button-hover-text-color: var(--color-light-1);
+}
+
+/* Windows: plain theme background instead of Foundry's parchment */
+[data-dolmen-ui] :is(.application, .themed, .app .standard-form) {
+	--background: color-mix(in srgb, var(--dui-bg) 94%, transparent);
+	--color-header-background: var(--dolmen-color-title-background);
+	--color-border: var(--dui-line);
+	--color-tabs-border: var(--dui-line);
+	--color-fieldset-border: var(--dui-line);
+	--color-form-label: var(--dui-text);
+	--color-form-label-hover: var(--dolmen-color-h1);
+	--color-form-hint: var(--dui-muted);
+	--color-form-hint-hover: var(--dui-text);
+	--color-select-option-bg: var(--dui-panel);
+	--color-data-border: var(--dui-line);
+	--color-data-background: var(--dui-box);
+}
+
+/* Title bar: Foundry writes it in light-1, which is theme ink here */
+[data-dolmen-ui] :is(.application, .window-app) .window-header {
+	--color-light-1: var(--dolmen-color-title);
+	color: var(--dolmen-color-title);
+}
+
+[data-dolmen-ui] .application .window-header button.header-control {
+	--button-background-color: transparent;
+	--button-border-color: transparent;
+	--button-text-color: var(--dolmen-color-title);
+	--button-hover-background-color: color-mix(in srgb, var(--dolmen-color-title) 20%, transparent);
+	--button-hover-border-color: transparent;
+	--button-hover-text-color: var(--dolmen-color-title);
+}
+
+/* Form controls */
+[data-dolmen-ui] :is(input, select, textarea, code-mirror, formula-input, color-picker, file-picker, document-tags, string-tags) {
+	--input-background-color: color-mix(in srgb, var(--dui-box) 60%, transparent);
+	--input-border-color: var(--dolmen-color-input-border);
+	--input-text-color: var(--dui-text);
+	--input-placeholder-color: var(--dui-muted);
+	--input-focus-outline-color: var(--dolmen-color-input-border-focus);
+}
+
+[data-dolmen-ui] :is(input, select, textarea, code-mirror, formula-input, color-picker, file-picker, document-tags, string-tags):disabled,
+[data-dolmen-ui] input[readonly] {
+	--input-background-color: transparent;
+	--input-border-color: var(--dui-line);
+	--input-text-color: var(--dui-muted);
+}
+
+[data-dolmen-ui] :is(.standard-form label.icon, search) {
+	--input-background-color: color-mix(in srgb, var(--dui-box) 60%, transparent);
+	--input-border-color: transparent;
+	--input-text-color: var(--dui-text);
+	--input-focus-outline-color: var(--dolmen-color-input-border-focus);
+}
+
+/* Checked: title colours, which each theme pairs for contrast. Unchecked: a visible square */
+[data-dolmen-ui] input[type="checkbox"] {
+	--checkbox-checked-color: var(--dolmen-color-title-background);
+	--checkbox-checkmark-color: var(--dolmen-color-title);
+	--checkbox-disabled-color: var(--dui-muted);
+	--checkbox-background-color: color-mix(in srgb, var(--dolmen-color-input-border) 55%, var(--dui-box));
+}
+
+[data-dolmen-ui] input[type="range"] {
+	--range-thumb-background-color: var(--dui-bg);
+	--range-thumb-border-color: var(--dolmen-color-h1);
+}
+
+[data-dolmen-ui] :is(a.button, button, kbd) {
+	--button-background-color: color-mix(in srgb, var(--dui-box) 70%, transparent);
+	--button-border-color: var(--dui-line);
+	--button-text-color: var(--dui-text);
+	--button-focus-outline-color: var(--dolmen-color-input-border-focus);
+	--button-hover-background-color: var(--dolmen-color-title-background);
+	--button-hover-border-color: var(--dui-border);
+	--button-hover-text-color: var(--dolmen-color-title);
+}
+
+/* Tab buttons (e.g. the settings categories) stay plain text with a bottom border, as in
+   Foundry: the active tab only gets the accent colour */
+[data-dolmen-ui] nav.tabs button {
+	--button-background-color: transparent;
+	--button-border-color: transparent;
+	--button-focus-outline-color: transparent;
+	--button-hover-background-color: transparent;
+	--button-hover-border-color: transparent;
+	--button-hover-text-color: var(--dolmen-color-h1);
+	box-shadow: none;
+	text-shadow: none;
+}
+
+[data-dolmen-ui] nav.tabs button.active {
+	color: var(--dolmen-color-h1);
+	border-bottom-color: var(--dolmen-color-h1);
+}
+
+[data-dolmen-ui] :is(a.button, button, kbd)[disabled] {
+	--button-background-color: transparent;
+	--button-border-color: var(--dui-line);
+	--button-text-color: var(--dui-muted);
+	--button-hover-background-color: var(--button-background-color);
+	--button-hover-border-color: var(--button-border-color);
+	--button-hover-text-color: var(--button-text-color);
+}
+
+[data-dolmen-ui] :is(a.button, button).bright {
+	--button-background-color: var(--dolmen-color-title-background);
+	--button-border-color: var(--dui-border);
+	--button-text-color: var(--dolmen-color-title);
+	--button-hover-background-color: var(--dolmen-color-h1);
+	--button-hover-border-color: var(--dui-border);
+	--button-hover-text-color: var(--dolmen-color-title);
+}
+
+[data-dolmen-ui] :is(.prosemirror, #prosemirror-dropdown, prose-mirror) {
+	--menu-background: var(--dui-panel);
+	--dropdown-background: var(--dui-panel);
+	--dropdown-border: var(--dui-line);
+	--dialog-background: var(--dui-bg);
+	--dialog-border: var(--dui-line);
+	--color-control-hover: var(--dolmen-color-box-highlight);
+}
+
+/* Code editor gutter and tooltips (macros): Foundry pairs dark-* with light-* */
+[data-dolmen-ui] code-mirror {
+	--gutter-background-color: var(--dui-box);
+	--gutter-border-color: var(--dui-line);
+	--gutter-text-color: var(--dui-muted);
+	--tooltip-background-color: var(--dui-panel);
+	--tooltip-text-color: var(--dui-text);
+}
+
+/* Chat */
+[data-dolmen-ui] .chat-message {
+	--chat-message-background: var(--dui-box); /* as the sheet window */
+	--chat-message-border-color: var(--dui-line);
+	--color-whisper-background: color-mix(in srgb, var(--dui-box) 85%, #4a6fa5);
+	--color-whisper-border: color-mix(in srgb, var(--dui-border) 50%, #4a6fa5);
+	--color-blind-background: color-mix(in srgb, var(--dui-box) 85%, #8e44ad);
+	--color-blind-border: color-mix(in srgb, var(--dui-border) 50%, #8e44ad);
+	--color-emote-background: color-mix(in srgb, var(--dui-box) 85%, var(--dolmen-color-h1));
+	--color-emote-border: var(--dui-border);
+	color: var(--dui-text);
+}
+
+[data-dolmen-ui] #chat-message {
+	--text-color: var(--dui-text);
+	--placeholder-color: var(--dui-muted);
+	--background-color: color-mix(in srgb, var(--dui-panel) 85%, transparent);
+	--border-color: var(--dui-line);
+	--menu-background: var(--background-color);
+}
+
+[data-dolmen-ui] .inline-roll .dice-tooltip {
+	background: var(--dui-panel);
+	border-color: var(--dui-border);
+}
+
+/* Playlist section headers (volume controls, currently playing): Foundry draws them in
+   dark-1 on light-2, which are both theme ink here */
+[data-dolmen-ui] .playlists-sidebar .global-control > header {
+	--color-text-primary: var(--dolmen-color-title);
+	--color-text-subtle: color-mix(in srgb, var(--dolmen-color-title) 60%, var(--dolmen-color-title-background));
+	background: var(--dolmen-color-title-background);
+	border-color: var(--dolmen-color-title-background);
+	color: var(--dolmen-color-title);
+}
+
+/* Menus and overlays */
+[data-dolmen-ui] #context-menu {
+	--background-color: var(--dui-panel);
+	--border-color: var(--dui-line);
+	--text-color: var(--dui-text);
+	--hover-text-color: var(--dolmen-color-title);
+	--group-separator: var(--dui-line);
+	--hover-entry-border: var(--dui-border);
+	--hover-entry-background: var(--dolmen-color-title-background);
+}
+
+[data-dolmen-ui] #autocomplete {
+	--background-color: var(--dui-panel);
+	--border-color: var(--dui-line);
+	--active-background-color: var(--dolmen-color-title-background);
+	--active-color: var(--dolmen-color-title);
+}
+
+[data-dolmen-ui] :is(.ui-control, .placeable-hud, #measurement .waypoint-label) {
+	--control-bg-color: color-mix(in srgb, var(--dui-bg) 75%, transparent);
+	--control-border-color: var(--dui-line);
+	--control-icon-color: var(--dui-text);
+	--control-hover-bg-color: var(--dui-bg);
+	--control-hover-border-color: var(--dui-border);
+	--control-hover-icon-color: var(--dolmen-color-h1);
+	--control-active-bg-color: var(--dui-bg);
+	--control-active-border-color: var(--dolmen-color-h1);
+	--control-active-icon-color: var(--dolmen-color-h1);
+	--control-button-border-color: var(--dui-border);
+	--control-button-hover-bg-color: var(--dolmen-color-title-background);
+	--control-button-hover-border-color: var(--dolmen-color-title);
+	--toggle-bg-color: color-mix(in srgb, var(--dui-bg) 75%, transparent);
+	--toggle-border-color: var(--dui-border);
+	--toggle-active-bg-color: var(--dolmen-color-title-background);
+	--toggle-active-border-color: var(--dolmen-color-h1);
+}
+
+[data-dolmen-ui] .placeable-hud {
+	--control-icon-filter: var(--dolmen-icon-filter);
+}
+
+[data-dolmen-ui] :is(#token-hud, #measurement) {
+	--hud-icon-filter: var(--dolmen-icon-filter);
+}
+
+[data-dolmen-ui] .combat-tracker {
+	--token-effect-filter: var(--dolmen-icon-filter);
+	--entry-hover-bg: var(--dolmen-color-box-highlight);
+	--entry-active-bg: color-mix(in srgb, var(--dui-border) 25%, transparent);
+}
+
+[data-dolmen-ui] #hotbar {
+	--slot-color: color-mix(in srgb, var(--dui-bg) 75%, transparent);
+	--key-bg-color-full: color-mix(in srgb, var(--dui-bg) 75%, transparent);
+	--key-text-color: var(--dui-text);
+	--page-control-color: var(--dui-text);
+}
+
+[data-dolmen-ui] #players {
+	--background-color: color-mix(in srgb, var(--dui-bg) 75%, transparent);
+	--border-color: var(--dui-line);
+	--text-color: var(--dui-muted);
+	--player-name-color: var(--dui-text);
+	--player-name-idle-color: var(--dui-muted);
+	--player-name-self-color: var(--dolmen-color-h1);
+}
+
+[data-dolmen-ui] #camera-views {
+	--av-background-color: color-mix(in srgb, var(--dui-bg) 75%, transparent);
+	--av-border-color: var(--dui-line);
+}

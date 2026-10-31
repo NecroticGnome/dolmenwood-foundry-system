@@ -1,0 +1,187 @@
+{
+  "_id": "Q7sQpoF461ofXxYo",
+  "name": "Player Hex Map (Preview)",
+  "img": "systems/dolmenwood/assets/maps/dolmenwood-player-hex-map-preview-thumb.webp",
+  "caption": "<p>The hex map of Dolmenwood, as a static image.</p>",
+  "description": "<p>Imports the <strong>Player Hex Map (Preview)</strong> scene: the hex map of Dolmenwood as a static image, with its hex grid. For revealing the map hex by hex, the <strong>Player Hex Map (Interactive)</strong> comes with the Dolmenwood content module.</p>",
+  "scenes": [
+    {
+      "_id": "DUcbqgVJVSwEimzT",
+      "name": "Player Hex Map (Preview)",
+      "navName": "Dolmenwood",
+      "active": false,
+      "navigation": false,
+      "navOrder": 0,
+      "folder": "SQ1RMyt42aGQTB5C",
+      "sort": 100000,
+      "thumb": "systems/dolmenwood/assets/maps/dolmenwood-player-hex-map-preview-thumb.webp",
+      "width": 4992,
+      "height": 3530,
+      "padding": 0.1,
+      "initial": null,
+      "initialLevel": "defaultLevel0000",
+      "grid": {
+        "type": 4,
+        "size": 270,
+        "style": "solidLines",
+        "thickness": 1,
+        "color": "#000000",
+        "alpha": 0.15,
+        "distance": 6,
+        "units": "mi"
+      },
+      "shiftX": 3,
+      "shiftY": 85,
+      "tokenVision": false,
+      "fog": {
+        "mode": 0,
+        "colors": {
+          "explored": null,
+          "unexplored": null
+        }
+      },
+      "environment": {
+        "darknessLevel": 0,
+        "globalLight": {
+          "enabled": true
+        }
+      },
+      "levels": [
+        {
+          "_id": "defaultLevel0000",
+          "name": "Dolmenwood",
+          "elevation": {
+            "bottom": 0,
+            "top": null
+          },
+          "background": {
+            "color": "#1b1a17",
+            "src": "systems/dolmenwood/assets/maps/dolmenwood-player-hex-map-preview.webp",
+            "tint": "#ffffff",
+            "alphaThreshold": 0
+          },
+          "foreground": {
+            "src": null,
+            "tint": "#ffffff",
+            "alphaThreshold": 0.75
+          },
+          "fog": {
+            "src": null
+          },
+          "textures": {
+            "anchorX": 0.5,
+            "anchorY": 0.5,
+            "offsetX": 0,
+            "offsetY": 0,
+            "fit": "fill",
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0
+          },
+          "visibility": {
+            "levels": []
+          },
+          "sort": 0,
+          "flags": {}
+        }
+      ],
+      "drawings": [],
+      "tokens": [],
+      "lights": [],
+      "notes": [],
+      "sounds": [],
+      "regions": [],
+      "tiles": [],
+      "walls": [],
+      "playlist": null,
+      "playlistSound": null,
+      "journal": null,
+      "journalEntryPage": null,
+      "weather": "",
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "14.359",
+        "systemId": "dolmenwood",
+        "systemVersion": "1.9.6.3",
+        "lastModifiedBy": null,
+        "createdTime": 1793474380332,
+        "modifiedTime": 1793474380332
+      }
+    }
+  ],
+  "journal": [],
+  "folders": [
+    {
+      "type": "Scene",
+      "folder": null,
+      "name": "Dolmenwood Maps",
+      "color": null,
+      "sorting": "m",
+      "_id": "BzhZ0rX1CZps3XWM",
+      "description": "",
+      "sort": 0,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "14.359",
+        "systemId": "dolmenwood",
+        "systemVersion": "1.9.6.3",
+        "lastModifiedBy": null,
+        "createdTime": 1793474380332,
+        "modifiedTime": 1793474380332
+      }
+    },
+    {
+      "type": "Scene",
+      "folder": "BzhZ0rX1CZps3XWM",
+      "name": "Player Maps",
+      "color": null,
+      "sorting": "m",
+      "_id": "SQ1RMyt42aGQTB5C",
+      "description": "",
+      "sort": 200000,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "14.359",
+        "systemId": "dolmenwood",
+        "systemVersion": "1.9.6.3",
+        "lastModifiedBy": null,
+        "createdTime": 1793474380332,
+        "modifiedTime": 1793474380332
+      }
+    }
+  ],
+  "actors": [],
+  "combats": [],
+  "items": [],
+  "tables": [],
+  "macros": [],
+  "cards": [],
+  "playlists": [],
+  "folder": null,
+  "sort": 100,
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "14.359",
+    "systemId": "dolmenwood",
+    "systemVersion": "1.9.6.3",
+    "lastModifiedBy": null,
+    "createdTime": 1793474380332,
+    "modifiedTime": 1793474380332
+  },
+  "_key": "!adventures!Q7sQpoF461ofXxYo"
+}

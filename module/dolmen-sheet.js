@@ -1126,8 +1126,9 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			})
 		}
 
-		// For runes: increment usage, handle refresh dates, and delete "once ever" runes
-		if (item.type === 'Rune') {
+		// For runes: increment usage, handle refresh dates, and delete "once ever" runes (an
+		// adventurer's: a creature's runes go by its stat block)
+		if (item.type === 'Rune' && this.actor.system.runeUsage !== undefined) {
 			const magnitude = item.system.magnitude || 'lesser'
 			const usage = getRuneUsage(magnitude, this.actor.system.level)
 			const qty = item.system.quantity || 1

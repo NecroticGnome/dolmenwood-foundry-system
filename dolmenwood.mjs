@@ -18,12 +18,13 @@ import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module
 import { worldTimeToCalendar, dateKeyToEpochDay } from './module/calendar/calendar-time.js'
 import { DolmenwoodCalendar, buildCalendarConfig } from './module/calendar/calendar-data.js'
 import { getFaSymbol, getRuneUsage } from './module/sheet/data-context.js'
-import { registerCombatSystem } from './module/combat/combat.js'
+import { registerCombatSystem, registerCombatSettings } from './module/combat/combat.js'
 import { handleCombatSocket } from './module/combat/combat-rolls.js'
 import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged, onRestBaselineChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 import { initPartyViewer, togglePartyViewer, onPartyMembersChanged } from './module/party-viewer/party-viewer.js'
 import { openCreatureImportDialog } from './module/creature-importer.js'
 import { executeMacroAttack } from './module/attack-macros.js'
+import { registerJournalArt } from './module/journal-art.js'
 import DolmenEffectSheet from './module/dolmen-effect-sheet.js'
 import { EFFECT_FIELDS } from './module/effect-fields.js'
 
@@ -44,6 +45,10 @@ function applyTheme(theme) {
 	document.documentElement.setAttribute('data-dolmen-theme', resolved)
 }
 
+function applyUiTheme(enabled) {
+	document.documentElement.toggleAttribute('data-dolmen-ui', enabled)
+}
+
 Hooks.on('initializeDynamicTokenRingConfig', ringConfig => {
 	const dolmenwoodRing = new foundry.canvas.placeables.tokens.DynamicRingData({
 		id: 'dolmenwoodRing',
@@ -58,6 +63,12 @@ Hooks.on('initializeDynamicTokenRingConfig', ringConfig => {
 		spritesheet: 'systems/dolmenwood/assets/dynamic-token-ring/dynamic-dolmen-spritesheet.json'
 	})
 	ringConfig.addConfig('dolmenwoodRing', dolmenwoodRing)
+	// the Dolmenwood ring is the default (a world that has picked a ring keeps it)
+	const setting = game.settings.settings.get('core.dynamicTokenRing')
+	if (setting) {
+		setting.default = 'dolmenwoodRing'
+		if (setting.type?.initial !== undefined) setting.type.initial = 'dolmenwoodRing'
+	}
 })
 
 Hooks.once('init', async function () {
@@ -97,6 +108,16 @@ Hooks.once('init', async function () {
 		onChange: applyTheme
 	})
 
+	game.settings.register('dolmenwood', 'uiTheme', {
+		name: 'DOLMEN.Settings.UiTheme',
+		hint: 'DOLMEN.Settings.UiThemeHint',
+		scope: 'client',
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: applyUiTheme
+	})
+
 	game.settings.register('dolmenwood', 'showCalendar', {
 		scope: 'world',
 		config: false,
@@ -134,24 +155,6 @@ Hooks.once('init', async function () {
 		config: false,
 		type: Array,
 		default: []
-	})
-
-	game.settings.register('dolmenwood', 'automatedKillLog', {
-		name: 'DOLMEN.Settings.AutomatedKillLog',
-		hint: 'DOLMEN.Settings.AutomatedKillLogHint',
-		scope: 'world',
-		config: true,
-		type: Boolean,
-		default: true
-	})
-
-	game.settings.register('dolmenwood', 'autoMarkDefeated', {
-		name: 'DOLMEN.Settings.AutoMarkDefeated',
-		hint: 'DOLMEN.Settings.AutoMarkDefeated',
-		scope: 'world',
-		config: true,
-		type: Boolean,
-		default: true
 	})
 
 	game.settings.register('dolmenwood', 'encounterChance', {
@@ -215,15 +218,6 @@ Hooks.once('init', async function () {
 		config: false,
 		type: Boolean,
 		default: true
-	})
-
-	game.settings.register('dolmenwood', 'autoWeather', {
-		name: 'DOLMEN.Calendar.Weather.AutoSettingName',
-		hint: 'DOLMEN.Calendar.Weather.AutoSettingHint',
-		scope: 'world',
-		config: true,
-		type: Boolean,
-		default: false
 	})
 
 	// Register combat system (group initiative, tracker, declarations)
@@ -361,6 +355,8 @@ Hooks.once('init', async function () {
 		default: ''
 	})
 
+	registerCombatSettings()
+
 	game.settings.register('dolmenwood', 'randomizeCreatureHP', {
 		name: 'DOLMEN.Settings.RandomizeCreatureHP',
 		hint: 'DOLMEN.Settings.RandomizeCreatureHPHint',
@@ -387,6 +383,35 @@ Hooks.once('init', async function () {
 		type: Boolean,
 		default: false
 	})
+
+	game.settings.register('dolmenwood', 'autoMarkDefeated', {
+		name: 'DOLMEN.Settings.AutoMarkDefeated',
+		hint: 'DOLMEN.Settings.AutoMarkDefeatedHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: true
+	})
+
+	game.settings.register('dolmenwood', 'automatedKillLog', {
+		name: 'DOLMEN.Settings.AutomatedKillLog',
+		hint: 'DOLMEN.Settings.AutomatedKillLogHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: true
+	})
+
+	game.settings.register('dolmenwood', 'autoWeather', {
+		name: 'DOLMEN.Calendar.Weather.AutoSettingName',
+		hint: 'DOLMEN.Calendar.Weather.AutoSettingHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false
+	})
+
+	registerJournalArt()
 
 	game.settings.register('dolmenwood', 'showWelcomeDialog', {
 		name: 'DOLMEN.Welcome.SettingName',
@@ -461,15 +486,15 @@ Hooks.once('init', async function () {
 	Hooks.on('getSceneControlButtons', (controls) => {
 		controls.dolmenwood = {
 			name: 'dolmenwood',
-			title: 'DOLMEN.SheetTitle',
-			icon: 'fa-solid fa-tree',
+			title: 'DOLMEN.ToolsTitle',
+			icon: 'dolmen-tools-icon',
 			visible: game.user.isGM,
 			activeTool: 'select',
 			tools: {
 				select: {
 					name: 'select',
-					title: 'DOLMEN.SheetTitle',
-					icon: 'fa-solid fa-tree'
+					title: 'DOLMEN.ToolsTitle',
+					icon: 'dolmen-tools-icon'
 				},
 				calendar: {
 					name: 'calendar',
@@ -500,12 +525,15 @@ Hooks.once('init', async function () {
 					onChange: (event, active) => {
 						game.settings.set('dolmenwood', 'showPartyViewer', active)
 					}
-				}
+				},
+				// a module's own tools for this group, put there in its init hook
+				...CONFIG.DOLMENWOOD.extraTools
 			}
 		}
 	})
 
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
+	applyUiTheme(game.settings.get('dolmenwood', 'uiTheme'))
 
 	// Re-apply auto theme when Foundry's own light/dark mode changes
 	const themeObserver = new MutationObserver(() => {

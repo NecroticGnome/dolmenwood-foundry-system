@@ -30,6 +30,7 @@
 		"ConfigureSheet": "Dolmenwood Config",
 		"WelcomeMessage": "Welcome to the Dolmenwood RPG system!",
 		"SheetTitle": "Dolmenwood Sheet",
+		"ToolsTitle": "Dolmenwood Tools",
 		"CreatureSheetTitle": "Dolmenwood Creature Sheet",
 		"HorseSheetTitle": "Dolmenwood Horse Sheet",
 		"VehicleSheetTitle": "Dolmenwood Vehicle Sheet",
@@ -532,7 +533,8 @@
 				"fly": "Fly",
 				"climb": "Climb",
 				"burrow": "Burrow"
-			}
+			},
+			"SpellKnown": "{name} is already known."
 		},
 		"CreatureImport": {
 			"Title": "Import Creature Statblock",
@@ -601,7 +603,7 @@
 			"Animals": "Animals",
 			"AnimalsPlaceholder": "e.g. 1 draft horse or 2 mules",
 			"Crew": "Crew",
-			"CrewPlaceholder": "e.g. 1\u20132 untrained",
+			"CrewPlaceholder": "e.g. 1–2 untrained",
 			"CrewPercent": "Crew %",
 			"CrewPercents": {
 				"100": "100%",
@@ -1003,6 +1005,8 @@
 		"Settings": {
 			"ColorTheme": "Colour Theme",
 			"ColorThemeHint": "Choose a colour theme for Dolmenwood sheets and chat cards.",
+			"UiTheme": "Apply Theme to Interface",
+			"UiThemeHint": "Also recolour Foundry's own interface (sidebar, chat, journals, windows and menus) with the colour theme.",
 			"ThemeAuto": "Auto (Light/Dark)",
 			"ThemePlayerbook": "Dolmenwood Playerbook",
 			"ThemeDruneAltar": "Drune Altar",
@@ -1023,12 +1027,12 @@
 			"RandomizeCreatureHPHint": "When placing an unlinked creature token on the canvas, roll the creature's HP dice to randomize its hit points.",
 			"AutoApplyDamage": "Auto-Apply Damage",
 			"AutoApplyDamageHint": "Automatically apply attack damage to the targeted token when an attack hits (or when damage is rolled on its own). Attacks that miss, or that have no target, are not applied. Cold-iron weapons are adjusted by ±1 based on whether the target is fey.",
-			"AutoMissileRange": "Automatic Missile Range",
+			"AutoMissileRange": "Auto-Calculate Missile Range",
 			"AutoMissileRangeHint": "Automatically determine missile attack range (Close/Medium/Long) from the distance between the attacker's token and the target, instead of asking. Requires the attacker to have a token on the scene and exactly one target; otherwise the manual range menu is shown. Attacks beyond long range are rolled at long range with an out-of-range note.",
-			"AutomatedKillLog": "Automated Kill Log",
+			"AutomatedKillLog": "Auto-Add to Kill Log",
 			"AutomatedKillLogHint": "Automatically record defeated creatures (HP drops to 0) in the kill log for XP distribution.",
-			"AutoMarkDefeated": "Automatic Defeated at 0 HP",
-			"AutoMarkDefatedHint": "Automatically mark PCs and creatures as defeated when they reach 0 HP"
+			"AutoMarkDefeated": "Auto-Mark as Defeated at 0 HP",
+			"AutoMarkDefeatedHint": "Automatically mark PCs and creatures as defeated when they reach 0 HP"
 		},
 		"Welcome": {
 			"Title": "Welcome to Dolmenwood VTT!",
@@ -1039,6 +1043,10 @@
 			"Close": "Close",
 			"SettingName": "Show Welcome Message",
 			"SettingHint": "Display the welcome dialog when Foundry loads."
+		},
+		"HideArt": {
+			"Name": "Hide Journal Art",
+			"Hint": "Hide the books' artwork in the Dolmenwood journals for a more data-oriented view. Crests, maps and diagrams stay visible. This affects only you."
 		},
 		"PartyViewer": {
 			"SettingName": "Show Party Viewer",
