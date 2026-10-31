@@ -2,7 +2,7 @@
   "id": "dolmenwood",
   "title": "Dolmenwood",
   "description": "Dolmenwood from Necrotic Gnome",
-  "version": "1.9.8.0",
+  "version": "2.0.0",
   "compatibility": {
     "minimum": "13.0",
     "verified": "14.369"
@@ -79,6 +79,11 @@
       "name": "Dolmenwood System Data",
       "color": "#d54134",
       "packs": ["kindreds", "classes"]
+    },
+    {
+      "name": "Dolmenwood Free Content",
+      "color": "#d54134",
+      "packs": ["maps"]
     }
   ],
   "packs": [
@@ -103,6 +108,16 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "name": "maps",
+      "label": "Dolmenwood Free Packs",
+      "path": "packs/maps",
+      "type": "Adventure",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      }
     }
   ],
   "grid": {
@@ -113,8 +128,8 @@
   "initiative": "1d6",
   "primaryTokenAttribute": "hp.value",
   "url": "https://github.com/NecroticGnome/dolmenwood-foundry-system",
-  "manifest": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.9.8.0/system.json",
-  "download": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v1.9.8.0/dolmenwood-foundry-system.zip",
+  "manifest": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v2.0.0/system.json",
+  "download": "https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/download/v2.0.0/dolmenwood-foundry-system.zip",
   "documentTypes": {
     "Actor": {
       "Adventurer": {
