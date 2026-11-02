@@ -38,9 +38,10 @@ export function allGroupsRolled(combat) {
  * Roll 1d6 group initiative for each group in the combat.
  * All combatants in a group share the same initiative value.
  * @param {Combat} combat - The active combat encounter
+ * @param {object} [options] - Update options
  * @returns {Promise<object>} Map of groupId → roll result
  */
-export async function rollGroupInitiativeForCombat(combat) {
+export async function rollGroupInitiativeForCombat(combat, options = {}) {
 	const groups = new Map()
 	for (const c of combat.combatants) {
 		if (!groups.has(c.dispositionGroup)) groups.set(c.dispositionGroup, [])
@@ -68,12 +69,12 @@ export async function rollGroupInitiativeForCombat(combat) {
 	}
 
 	if (updates.length) {
-		await combat.updateEmbeddedDocuments('Combatant', updates)
+		await combat.updateEmbeddedDocuments('Combatant', updates, { ...options })
 	}
 
 	// Reset turn to 0 so highest-initiative combatant becomes active
 	if (combat.round >= 1) {
-		await combat.update({ turn: 0 })
+		await combat.update({ turn: 0 }, { ...options })
 	}
 
 	await createChatMessage({
