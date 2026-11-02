@@ -19,7 +19,6 @@ import { worldTimeToCalendar, dateKeyToEpochDay } from './module/calendar/calend
 import { DolmenwoodCalendar, buildCalendarConfig } from './module/calendar/calendar-data.js'
 import { getFaSymbol, getRuneUsage } from './module/sheet/data-context.js'
 import { registerCombatSystem, registerCombatSettings } from './module/combat/combat.js'
-import { handleCombatSocket } from './module/combat/combat-rolls.js'
 import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged, onRestBaselineChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 import { initPartyViewer, togglePartyViewer, onPartyMembersChanged } from './module/party-viewer/party-viewer.js'
 import { openCreatureImportDialog } from './module/creature-importer.js'
@@ -753,7 +752,6 @@ Hooks.once('ready', async function () {
 
 	// Socket listeners for player operations that require GM permission
 	game.socket.on('system.dolmenwood', handleCalendarSocket)
-	game.socket.on('system.dolmenwood', handleCombatSocket)
 	game.socket.on('system.dolmenwood', handleDamageSocket)
 
 	// Initialize rune refresh day tracking

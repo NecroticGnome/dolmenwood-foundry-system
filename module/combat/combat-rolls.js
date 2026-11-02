@@ -1,4 +1,4 @@
-/* global game, Roll, CONFIG */
+/* global game, Roll, CONFIG, ui */
 import { createChatMessage } from '../sheet/chat-helpers.js'
 
 /**
@@ -110,22 +110,7 @@ export async function rollInitiativeForGroup(combat, groupId) {
 	const roll = new Roll('1d6')
 	await roll.evaluate()
 
-	const updates = combatants.map(c => ({ _id: c.id, initiative: roll.total }))
-
-	// Players lack permission to update combatants they don't own,
-	// so delegate the update to the GM via socket
-	if (game.user.isGM) {
-		await combat.updateEmbeddedDocuments('Combatant', updates)
-		if (combat.round >= 1 && allGroupsRolled(combat)) {
-			await combat.update({ turn: 0 })
-		}
-	} else {
-		game.socket.emit('system.dolmenwood', {
-			action: 'setGroupInitiative',
-			combatId: combat.id,
-			updates
-		})
-	}
+	await applyOrAskGM(combat, groupId, roll.total)
 
 	const config = GROUP_CONFIG[groupId]
 	const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.GroupA')
@@ -165,22 +150,7 @@ export async function setGroupInitiative(combat, groupId, value) {
 	const combatants = combat.combatants.filter(c => c.dispositionGroup === groupId)
 	if (!combatants.length) return null
 
-	const updates = combatants.map(c => ({ _id: c.id, initiative: value }))
-
-	// Players lack permission to update combatants they don't own,
-	// so delegate the update to the GM via socket (same path as rolling)
-	if (game.user.isGM) {
-		await combat.updateEmbeddedDocuments('Combatant', updates)
-		if (combat.round >= 1 && allGroupsRolled(combat)) {
-			await combat.update({ turn: 0 })
-		}
-	} else {
-		game.socket.emit('system.dolmenwood', {
-			action: 'setGroupInitiative',
-			combatId: combat.id,
-			updates
-		})
-	}
+	await applyOrAskGM(combat, groupId, value)
 
 	const config = GROUP_CONFIG[groupId]
 	const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.GroupA')
@@ -404,22 +374,52 @@ export async function rollEncounterDistance(environment = 'dungeon') {
 }
 
 /* -------------------------------------------- */
-/*  Socket Handler                              */
+/*  Applying Group Initiative                   */
 /* -------------------------------------------- */
 
 /**
- * Handle combat socket events (GM only).
- * Players emit these when they lack permission to update combatants directly.
+ * Set every combatant in a group to one initiative value, then start the round's turns from the
+ * top once all groups have rolled. Only initiative is written, and only for that group.
  */
-export function handleCombatSocket(data) {
-	if (game.user !== game.users.activeGM) return
-	if (data.action === 'setGroupInitiative') {
-		const combat = game.combats.get(data.combatId)
-		if (!combat) return
-		combat.updateEmbeddedDocuments('Combatant', data.updates).then(() => {
-			if (combat.round >= 1 && allGroupsRolled(combat)) {
-				combat.update({ turn: 0 })
-			}
-		})
+async function applyGroupInitiative(combat, groupId, value) {
+	const updates = combat.combatants
+		.filter(c => c.dispositionGroup === groupId)
+		.map(c => ({ _id: c.id, initiative: value }))
+	if (!updates.length) return
+	await combat.updateEmbeddedDocuments('Combatant', updates)
+	if (combat.round >= 1 && allGroupsRolled(combat)) {
+		await combat.update({ turn: 0 })
 	}
+}
+
+/**
+ * Players can't update combatants they don't own, so they ask the active GM to apply the value.
+ */
+async function applyOrAskGM(combat, groupId, value) {
+	if (game.user.isGM) return applyGroupInitiative(combat, groupId, value)
+	const gm = game.users.activeGM
+	if (!gm) return ui.notifications.warn('DOLMEN.Combat.NoActiveGM', { localize: true })
+	try {
+		return await gm.query(GROUP_INITIATIVE_QUERY, { combatId: combat.id, groupId, value })
+	} catch (err) {
+		// e.g. the GM removed the "Query Users" permission from players, or the GM disconnected
+		console.error(err)
+		ui.notifications.warn('DOLMEN.Combat.InitiativeQueryFailed', { localize: true })
+	}
+}
+
+export const GROUP_INITIATIVE_QUERY = 'dolmenwood.setGroupInitiative'
+
+/**
+ * Handle a player's group initiative query (runs on the active GM).
+ * @param {{ combatId: string, groupId: number, value: number }} data
+ * @param {{ user?: User }} [context] - provided in v14 and higher
+ */
+export async function handleGroupInitiativeQuery({ combatId, groupId, value } = {}, { user } = {}) {
+	const combat = game.combats.get(combatId)
+	if (!combat || !Number.isFinite(value)) return false
+	const group = combat.combatants.filter(c => c.dispositionGroup === groupId)
+	if (user && !group.some(c => c.testUserPermission(user, 'OWNER'))) return false
+	await applyGroupInitiative(combat, groupId, value)
+	return true
 }

@@ -9,7 +9,7 @@
 import { GROUPS } from './combatant.js'
 import DolmenCombatant from './combatant.js'
 import DolmenCombatTracker from './combat-tracker.js'
-import { rollGroupInitiativeForCombat, rollInitiativeForGroup } from './combat-rolls.js'
+import { rollGroupInitiativeForCombat, rollInitiativeForGroup, GROUP_INITIATIVE_QUERY, handleGroupInitiativeQuery } from './combat-rolls.js'
 
 export default class DolmenCombat extends Combat {
 
@@ -173,6 +173,9 @@ export function registerCombatSystem() {
 	CONFIG.Combat.documentClass = DolmenCombat
 	CONFIG.Combatant.documentClass = DolmenCombatant
 	CONFIG.ui.combat = DolmenCombatTracker
+
+	// Players ask the active GM to set their group's initiative
+	CONFIG.queries[GROUP_INITIATIVE_QUERY] = handleGroupInitiativeQuery
 }
 
 /**
