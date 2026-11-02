@@ -55,7 +55,7 @@ export default class DolmenCombat extends Combat {
 	 */
 	async rollNPC(options = {}) {
 		const ids = this.combatants.reduce((acc, c) => {
-			if (c.isOwner && c.isNPC && c.initiative === null && c.dispositionGroup !== GROUPS.FRIENDLY) {
+			if (c.isOwner && c.isNPC && !c.isDefeated && c.initiative === null && c.dispositionGroup !== GROUPS.FRIENDLY) {
 				acc.push(c.id)
 			}
 			return acc

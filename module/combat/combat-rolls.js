@@ -16,18 +16,31 @@ import { GROUP_CONFIG, getReactionCategory } from './combat-data.js'
 
 /**
  * Check if all disposition groups in a combat have rolled initiative.
+ * Groups with only defeated combatants aren't rolled for, so they're ignored here.
  * @param {Combat} combat - The active combat encounter
- * @returns {boolean} True if every group has at least one combatant with initiative
+ * @returns {boolean} True if every group has at least one undefeated combatant with initiative
  */
 export function allGroupsRolled(combat) {
 	if (!combat || !combat.combatants.size) return false
 	const groups = new Map()
 	for (const c of combat.combatants) {
+		if (c.isDefeated) continue
 		const g = c.dispositionGroup
 		if (!groups.has(g)) groups.set(g, false)
 		if (c.initiative !== null) groups.set(g, true)
 	}
 	return [...groups.values()].every(v => v)
+}
+
+/**
+ * The turn to start a round from: the top of the order, or with the core "Skip Defeated" setting
+ * on, the first undefeated combatant (as core's nextRound does).
+ * @param {Combat} combat - The active combat encounter
+ * @returns {number} The turn index
+ */
+export function firstTurn(combat) {
+	if (!combat.settings.skipDefeated) return 0
+	return Math.max(0, combat.turns.findIndex(t => !t.isDefeated))
 }
 
 /* -------------------------------------------- */
@@ -36,7 +49,8 @@ export function allGroupsRolled(combat) {
 
 /**
  * Roll 1d6 group initiative for each group in the combat.
- * All combatants in a group share the same initiative value.
+ * All combatants in a group share the same initiative value, defeated ones included so they keep
+ * their place in the order.
  * @param {Combat} combat - The active combat encounter
  * @returns {Promise<object>} Map of groupId → roll result
  */
@@ -53,6 +67,7 @@ export async function rollGroupInitiativeForCombat(combat) {
 	const allRolls = []
 
 	for (const [groupId, combatants] of groups) {
+		if (combatants.every(c => c.isDefeated)) continue
 		const roll = new Roll('1d6')
 		await roll.evaluate()
 		allRolls.push(roll)
@@ -71,9 +86,9 @@ export async function rollGroupInitiativeForCombat(combat) {
 		await combat.updateEmbeddedDocuments('Combatant', updates)
 	}
 
-	// Reset turn to 0 so highest-initiative combatant becomes active
+	// Start from the top so the highest-initiative combatant becomes active
 	if (combat.round >= 1) {
-		await combat.update({ turn: 0 })
+		await combat.update({ turn: firstTurn(combat) })
 	}
 
 	await createChatMessage({
@@ -388,7 +403,7 @@ async function applyGroupInitiative(combat, groupId, value) {
 	if (!updates.length) return
 	await combat.updateEmbeddedDocuments('Combatant', updates)
 	if (combat.round >= 1 && allGroupsRolled(combat)) {
-		await combat.update({ turn: 0 })
+		await combat.update({ turn: firstTurn(combat) })
 	}
 }
 
