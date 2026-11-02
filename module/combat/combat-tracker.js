@@ -205,11 +205,12 @@ export default class DolmenCombatTracker extends CombatTracker {
 			})
 		})
 
-		// Re-render when actor/token names change during combat
+		// Re-render when a combatant's actor or token changes (name, disposition) in the viewed combat
 		if (!this._hooksRegistered) {
 			this._hooksRegistered = true
-			Hooks.on('updateActor', () => this.render())
-			Hooks.on('updateToken', () => this.render())
+			const inViewed = doc => this.viewed?.combatants.some(c => c.actor === doc || c.token === doc)
+			Hooks.on('updateActor', actor => inViewed(actor) && this.render())
+			Hooks.on('updateToken', token => inViewed(token) && this.render())
 		}
 	}
 
