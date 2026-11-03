@@ -89,12 +89,12 @@
 				</button>
 
 				{{!-- Hidden Toggle --}}
-				<button type="button" class="combatant-control" data-action="toggleHidden" data-tooltip="{{localize 'COMBAT.ToggleVis'}}">
+				<button type="button" class="combatant-control" data-action="toggleHidden" data-tooltip="{{combatant.hiddenTooltip}}">
 					<i class="fas {{#if combatant.hidden}}fa-eye-slash{{else}}fa-eye{{/if}}"></i>
 				</button>
 
 				{{!-- Defeated Toggle --}}
-				<button type="button" class="combatant-control" data-action="toggleDefeated" data-tooltip="{{localize 'COMBAT.ToggleDead'}}">
+				<button type="button" class="combatant-control" data-action="toggleDefeated" data-tooltip="{{combatant.defeatedTooltip}}">
 					<i class="fas fa-skull {{#if combatant.isDefeated}}active{{/if}}"></i>
 				</button>
 

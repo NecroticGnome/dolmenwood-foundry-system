@@ -144,7 +144,7 @@ export default class DolmenCombat extends Combat {
 		const mode = game.settings.get('dolmenwood', 'rerollInitiative')
 		const updates = this.combatants.map(c => ({
 			_id: c.id,
-			'flags.dolmenwood.-=declaration': null,
+			'flags.dolmenwood.declaration': null,
 			...(mode !== 'keep' && { initiative: null })
 		}))
 		if (updates.length) await this.updateEmbeddedDocuments('Combatant', updates, { turnEvents: false })
