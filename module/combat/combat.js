@@ -126,37 +126,31 @@ export default class DolmenCombat extends Combat {
 	/* -------------------------------------------- */
 
 	/**
-	 * Override nextRound to handle initiative reset and declaration clearing.
-	 * @returns {Promise<Combat>} This combat instance
+	 * On a new round, clear declarations and reset or reroll initiative before the round's turn
+	 * events fire, so they see this round's order. Every path that advances the round (button,
+	 * keyboard, macro, nextTurn past the last combatant) ends up here, on the active GM only.
 	 */
-	async nextRound() {
-		// Clear all declarations
+	async _manageTurnEvents() {
+		if (game.user.isActiveGM && this.started && this.previous?.round && this.current.round > this.previous.round) {
+			// the combatant updates below record a new previous state; the events need the old one
+			const previous = { ...this.previous }
+			await this.#startNewRound()
+			this.previous = previous
+		}
+		return super._manageTurnEvents()
+	}
+
+	async #startNewRound() {
+		const mode = game.settings.get('dolmenwood', 'rerollInitiative')
 		const updates = this.combatants.map(c => ({
 			_id: c.id,
-			'flags.dolmenwood.-=declaration': null
+			'flags.dolmenwood.-=declaration': null,
+			...(mode !== 'keep' && { initiative: null })
 		}))
-
-		// Handle initiative based on setting
-		const mode = game.settings.get('dolmenwood', 'rerollInitiative')
-		if (mode === 'reset' || mode === 'reroll') {
-			for (const u of updates) {
-				u.initiative = null
-			}
-		}
-
-		if (updates.length) {
-			await this.updateEmbeddedDocuments('Combatant', updates)
-		}
-
-		// Advance round
-		const result = await super.nextRound()
-
-		// Auto-reroll if setting is 'reroll'
-		if (mode === 'reroll') {
-			await this.rollGroupInitiative()
-		}
-
-		return result
+		if (updates.length) await this.updateEmbeddedDocuments('Combatant', updates, { turnEvents: false })
+		// clearing initiative reorders the turns and Foundry follows the active combatant: start from the top
+		if (mode !== 'keep') await this.update({ turn: 0 }, { turnEvents: false, diff: false })
+		if (mode === 'reroll') await rollGroupInitiativeForCombat(this, { turnEvents: false })
 	}
 }
 
