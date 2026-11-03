@@ -529,6 +529,13 @@ Hooks.once('init', async function () {
 				...CONFIG.DOLMENWOOD.extraTools
 			}
 		}
+		// v13 only fix: Tile#_refreshState throws an error when it reads the active group's foreground
+		// tool after leaving a tile-layer group (the premium module's map tools).
+		// Non-enumerable, so it is neither rendered nor removed as a tool. v14 and above does not need
+		// this fix.
+		if (game.release.generation < 14) {
+			Object.defineProperty(controls.dolmenwood.tools, 'foreground', { value: { active: false } })
+		}
 	})
 
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
