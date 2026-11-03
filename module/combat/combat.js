@@ -9,7 +9,7 @@
 import { GROUPS } from './combatant.js'
 import DolmenCombatant from './combatant.js'
 import DolmenCombatTracker from './combat-tracker.js'
-import { rollGroupInitiativeForCombat, rollInitiativeForGroup, GROUP_INITIATIVE_QUERY, handleGroupInitiativeQuery } from './combat-rolls.js'
+import { rollGroupInitiativeForCombat, rollInitiativeForGroup, GROUP_INITIATIVE_QUERY, handleGroupInitiativeQuery, firstTurn } from './combat-rolls.js'
 
 export default class DolmenCombat extends Combat {
 
@@ -149,7 +149,7 @@ export default class DolmenCombat extends Combat {
 		}))
 		if (updates.length) await this.updateEmbeddedDocuments('Combatant', updates, { turnEvents: false })
 		// clearing initiative reorders the turns and Foundry follows the active combatant: start from the top
-		if (mode !== 'keep') await this.update({ turn: 0 }, { turnEvents: false, diff: false })
+		if (mode !== 'keep') await this.update({ turn: firstTurn(this) }, { turnEvents: false, diff: false })
 		if (mode === 'reroll') await rollGroupInitiativeForCombat(this, { turnEvents: false })
 	}
 }
