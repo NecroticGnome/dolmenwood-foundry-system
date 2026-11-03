@@ -2,8 +2,8 @@
   "_id": "Q7sQpoF461ofXxYo",
   "name": "Player Hex Map (Preview)",
   "img": "systems/dolmenwood/assets/maps/dolmenwood-player-hex-map-preview-thumb.webp",
-  "caption": "<p>The hex map of Dolmenwood, as a static image.</p>",
-  "description": "<p>Imports the <strong>Player Hex Map (Preview)</strong> scene: the hex map of Dolmenwood as a static image, with its hex grid. For revealing the map hex by hex, the <strong>Player Hex Map (Interactive)</strong> comes with the Dolmenwood content module.</p>",
+  "caption": "",
+  "description": "<p><em>The hex map of Dolmenwood: six-mile hexes, settlements, roads, and rivers.</em></p><p>A static preview of the <strong>Player Hex Map (Interactive)</strong> from the premium Dolmenwood module, which provides the full Dolmenwood content linked to each hex.</p>",
   "scenes": [
     {
       "_id": "DUcbqgVJVSwEimzT",
@@ -19,7 +19,6 @@
       "height": 3530,
       "padding": 0.1,
       "initial": null,
-      "initialLevel": "defaultLevel0000",
       "grid": {
         "type": 4,
         "size": 270,
@@ -30,15 +29,14 @@
         "distance": 6,
         "units": "mi"
       },
-      "shiftX": 3,
-      "shiftY": 85,
       "tokenVision": false,
       "fog": {
-        "mode": 0,
         "colors": {
           "explored": null,
           "unexplored": null
-        }
+        },
+        "overlay": null,
+        "exploration": false
       },
       "environment": {
         "darknessLevel": 0,
@@ -46,45 +44,6 @@
           "enabled": true
         }
       },
-      "levels": [
-        {
-          "_id": "defaultLevel0000",
-          "name": "Dolmenwood",
-          "elevation": {
-            "bottom": 0,
-            "top": null
-          },
-          "background": {
-            "color": "#1b1a17",
-            "src": "systems/dolmenwood/assets/maps/dolmenwood-player-hex-map-preview.webp",
-            "tint": "#ffffff",
-            "alphaThreshold": 0
-          },
-          "foreground": {
-            "src": null,
-            "tint": "#ffffff",
-            "alphaThreshold": 0.75
-          },
-          "fog": {
-            "src": null
-          },
-          "textures": {
-            "anchorX": 0.5,
-            "anchorY": 0.5,
-            "offsetX": 0,
-            "offsetY": 0,
-            "fit": "fill",
-            "scaleX": 1,
-            "scaleY": 1,
-            "rotation": 0
-          },
-          "visibility": {
-            "levels": []
-          },
-          "sort": 0,
-          "flags": {}
-        }
-      ],
       "drawings": [],
       "tokens": [],
       "lights": [],
@@ -106,13 +65,29 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
         "createdTime": 1793474380332,
         "modifiedTime": 1793474380332
-      }
+      },
+      "background": {
+        "src": "systems/dolmenwood/assets/maps/dolmenwood-player-hex-map-preview.webp",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 3,
+        "offsetY": 85,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0
+      },
+      "backgroundColor": "#1b1a17",
+      "foreground": null,
+      "foregroundElevation": null
     }
   ],
   "journal": [],
@@ -131,7 +106,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -153,7 +128,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -171,12 +146,16 @@
   "playlists": [],
   "folder": null,
   "sort": 100,
-  "flags": {},
+  "flags": {
+    "core": {
+      "sheetClass": "core.AdventureImporterV2"
+    }
+  },
   "_stats": {
     "compendiumSource": null,
     "duplicateSource": null,
     "exportSource": null,
-    "coreVersion": "14.359",
+    "coreVersion": "13.351",
     "systemId": "dolmenwood",
     "systemVersion": "1.9.6.3",
     "lastModifiedBy": null,

@@ -19,7 +19,6 @@ import { worldTimeToCalendar, dateKeyToEpochDay } from './module/calendar/calend
 import { DolmenwoodCalendar, buildCalendarConfig } from './module/calendar/calendar-data.js'
 import { getFaSymbol, getRuneUsage } from './module/sheet/data-context.js'
 import { registerCombatSystem, registerCombatSettings } from './module/combat/combat.js'
-import { handleCombatSocket } from './module/combat/combat-rolls.js'
 import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged, onRestBaselineChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 import { initPartyViewer, togglePartyViewer, onPartyMembersChanged } from './module/party-viewer/party-viewer.js'
 import { openCreatureImportDialog } from './module/creature-importer.js'
@@ -530,6 +529,13 @@ Hooks.once('init', async function () {
 				...CONFIG.DOLMENWOOD.extraTools
 			}
 		}
+		// v13 only fix: Tile#_refreshState throws an error when it reads the active group's foreground
+		// tool after leaving a tile-layer group (the premium module's map tools).
+		// Non-enumerable, so it is neither rendered nor removed as a tool. v14 and above does not need
+		// this fix.
+		if (game.release.generation < 14) {
+			Object.defineProperty(controls.dolmenwood.tools, 'foreground', { value: { active: false } })
+		}
 	})
 
 	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
@@ -753,7 +759,6 @@ Hooks.once('ready', async function () {
 
 	// Socket listeners for player operations that require GM permission
 	game.socket.on('system.dolmenwood', handleCalendarSocket)
-	game.socket.on('system.dolmenwood', handleCombatSocket)
 	game.socket.on('system.dolmenwood', handleDamageSocket)
 
 	// Initialize rune refresh day tracking

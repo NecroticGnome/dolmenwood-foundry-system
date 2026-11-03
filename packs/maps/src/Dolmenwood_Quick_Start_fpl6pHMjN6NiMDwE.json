@@ -2,8 +2,8 @@
   "_id": "fpl6pHMjN6NiMDwE",
   "name": "Dolmenwood Quick-Start",
   "img": "systems/dolmenwood/assets/quickstart/qs-cover.webp",
-  "caption": "<p>Quick-start rules, six ready-to-play characters, and a short adventure: <em>The Weaver &amp; the Redcaps</em>.</p>",
-  "description": "<p>Imports the <strong>Dolmenwood Quick-Start</strong>: the basic rules journal, the <strong>The Weaver &amp; the Redcaps</strong> adventure journal, its <strong>Glade and Oak</strong> and <strong>Cottage Interior</strong> scenes (a note on every keyed area opens its page; the creatures wait hidden where the maps place them), the six pre-generated characters, the adventure's creatures, and the Quick-Start's spells and magic items.</p>",
+  "caption": "The Weaver &amp; the Redcaps",
+  "description": "<p><em>Invited to tea by a seamstress said to weave magic into the garments she creates, players venture beneath the eaves of Dolmenwood. Arriving at her cottage, they find the home hoisted high in the branches of an oak tree, the sounds of smashing and shouting coming from within. Can players defeat the weaver’s capricious captors and finally sit down for that promised cup of tea?</em></p><p>This Quick-Start introduces players to the <strong>Dolmenwood RPG</strong>—a weird fairy tale adventure game, conjuring the wonder, horror, whimsy, and strangeness of British folklore. Included are 6 ready-to-play characters, introductory rules, and a short adventure, <em>The Weaver &amp; the Redcaps</em>.</p><p><em>Designed for 3–6 players and one Referee.</em></p>",
   "scenes": [
     {
       "_id": "8i2rYTCUTTU78B65",
@@ -19,7 +19,6 @@
       "height": 1755,
       "padding": 0.1,
       "initial": null,
-      "initialLevel": "defaultLevel0000",
       "grid": {
         "type": 1,
         "size": 125,
@@ -30,15 +29,14 @@
         "distance": 10,
         "units": "ft"
       },
-      "shiftX": 5,
-      "shiftY": 65,
       "tokenVision": true,
       "fog": {
-        "mode": 1,
         "colors": {
           "explored": null,
           "unexplored": null
-        }
+        },
+        "overlay": null,
+        "exploration": true
       },
       "environment": {
         "darknessLevel": 0,
@@ -46,45 +44,6 @@
           "enabled": true
         }
       },
-      "levels": [
-        {
-          "_id": "defaultLevel0000",
-          "name": "Glade and Oak",
-          "elevation": {
-            "bottom": 0,
-            "top": null
-          },
-          "background": {
-            "color": "#ffffff",
-            "src": "systems/dolmenwood/assets/quickstart/qs-oak.webp",
-            "tint": "#ffffff",
-            "alphaThreshold": 0
-          },
-          "foreground": {
-            "src": null,
-            "tint": "#ffffff",
-            "alphaThreshold": 0.75
-          },
-          "fog": {
-            "src": null
-          },
-          "textures": {
-            "anchorX": 0.5,
-            "anchorY": 0.5,
-            "offsetX": 0,
-            "offsetY": 0,
-            "fit": "fill",
-            "scaleX": 1,
-            "scaleY": 1,
-            "rotation": 0
-          },
-          "visibility": {
-            "levels": []
-          },
-          "sort": 0,
-          "flags": {}
-        }
-      ],
       "drawings": [],
       "tokens": [
         {
@@ -95,7 +54,6 @@
           "x": 875,
           "y": 1000,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": true,
@@ -140,7 +98,6 @@
           "x": 1000,
           "y": 1250,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": true,
@@ -185,7 +142,6 @@
           "x": 1750,
           "y": 1625,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": false,
@@ -230,7 +186,6 @@
           "x": 2500,
           "y": 375,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": false,
@@ -275,7 +230,6 @@
           "x": 2250,
           "y": 500,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": false,
@@ -320,7 +274,6 @@
           "x": 2125,
           "y": 250,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": false,
@@ -368,9 +321,6 @@
           "x": 942,
           "y": 650,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -403,9 +353,6 @@
           "x": 500,
           "y": 375,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -438,9 +385,6 @@
           "x": 1938,
           "y": 1813,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -473,9 +417,6 @@
           "x": 813,
           "y": 1188,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -508,9 +449,6 @@
           "x": 1375,
           "y": 1063,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -562,9 +500,6 @@
           },
           "animation": null,
           "_id": "bnQ6o7tM84529SSd",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -589,9 +524,6 @@
           },
           "animation": null,
           "_id": "Wh9zLLFXMjK9HSL2",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -616,9 +548,6 @@
           },
           "animation": null,
           "_id": "6Eh57Atd1K22FdHs",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -643,9 +572,6 @@
           },
           "animation": null,
           "_id": "t0gLxRw8OAvmv78F",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -670,9 +596,6 @@
           },
           "animation": null,
           "_id": "M9fKeRWEU1JIBE7a",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -697,9 +620,6 @@
           },
           "animation": null,
           "_id": "2aSR2pjCGxWkeXF9",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -724,9 +644,6 @@
           },
           "animation": null,
           "_id": "vDBDB1qNY4AHKBNR",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -751,9 +668,6 @@
           },
           "animation": null,
           "_id": "1QUeBWydQ2ogT6to",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         }
       ],
@@ -770,13 +684,29 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
         "createdTime": 1793456781553,
         "modifiedTime": 1793456781553
-      }
+      },
+      "background": {
+        "src": "systems/dolmenwood/assets/quickstart/qs-oak.webp",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 5,
+        "offsetY": 65,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0
+      },
+      "backgroundColor": "#ffffff",
+      "foreground": null,
+      "foregroundElevation": null
     },
     {
       "_id": "9w4EEfJg0QPQOiyQ",
@@ -792,7 +722,6 @@
       "height": 1748,
       "padding": 0.1,
       "initial": null,
-      "initialLevel": "defaultLevel0000",
       "grid": {
         "type": 1,
         "size": 114,
@@ -803,15 +732,14 @@
         "distance": 5,
         "units": "ft"
       },
-      "shiftX": 108,
-      "shiftY": 21,
       "tokenVision": true,
       "fog": {
-        "mode": 1,
         "colors": {
           "explored": null,
           "unexplored": null
-        }
+        },
+        "overlay": null,
+        "exploration": true
       },
       "environment": {
         "darknessLevel": 0,
@@ -819,45 +747,6 @@
           "enabled": true
         }
       },
-      "levels": [
-        {
-          "_id": "defaultLevel0000",
-          "name": "Cottage Interior",
-          "elevation": {
-            "bottom": 0,
-            "top": null
-          },
-          "background": {
-            "color": "#ffffff",
-            "src": "systems/dolmenwood/assets/quickstart/qs-cottage.webp",
-            "tint": "#ffffff",
-            "alphaThreshold": 0
-          },
-          "foreground": {
-            "src": null,
-            "tint": "#ffffff",
-            "alphaThreshold": 0.75
-          },
-          "fog": {
-            "src": null
-          },
-          "textures": {
-            "anchorX": 0.5,
-            "anchorY": 0.5,
-            "offsetX": 0,
-            "offsetY": 0,
-            "fit": "fill",
-            "scaleX": 1,
-            "scaleY": 1,
-            "rotation": 0
-          },
-          "visibility": {
-            "levels": []
-          },
-          "sort": 0,
-          "flags": {}
-        }
-      ],
       "drawings": [
         {
           "_id": "tHUHyQeGRqwjf5xO",
@@ -871,9 +760,6 @@
           "x": 997,
           "y": 1684,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "rotation": 0,
           "bezierFactor": 0,
@@ -906,9 +792,6 @@
           "x": 741,
           "y": 997.5,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "rotation": 0,
           "bezierFactor": 0,
@@ -941,9 +824,6 @@
           "x": 456,
           "y": 1226,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "rotation": 0,
           "bezierFactor": 0,
@@ -976,9 +856,6 @@
           "x": 1824,
           "y": 1397,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "rotation": 0,
           "bezierFactor": 0,
@@ -1009,7 +886,6 @@
           "x": 456,
           "y": 1026,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": true,
@@ -1054,7 +930,6 @@
           "x": 1482,
           "y": 1254,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": false,
@@ -1099,7 +974,6 @@
           "x": 1482,
           "y": 684,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": true,
@@ -1144,7 +1018,6 @@
           "x": 2508,
           "y": 1254,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": false,
@@ -1189,7 +1062,6 @@
           "x": 2508,
           "y": 1368,
           "elevation": 0,
-          "level": "defaultLevel0000",
           "width": 1,
           "height": 1,
           "hidden": false,
@@ -1237,9 +1109,6 @@
           "x": 1083,
           "y": 1311,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1272,9 +1141,6 @@
           "x": 513,
           "y": 969,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1307,9 +1173,6 @@
           "x": 1425,
           "y": 1254,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1342,9 +1205,6 @@
           "x": 1425,
           "y": 855,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1377,9 +1237,6 @@
           "x": 1081,
           "y": 785,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1412,9 +1269,6 @@
           "x": 684,
           "y": 798,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1447,9 +1301,6 @@
           "x": 1995,
           "y": 969,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1482,9 +1333,6 @@
           "x": 2109,
           "y": 1311,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1517,9 +1365,6 @@
           "x": 2451,
           "y": 1311,
           "elevation": 0,
-          "levels": [
-            "defaultLevel0000"
-          ],
           "sort": 0,
           "locked": false,
           "texture": {
@@ -1554,12 +1399,8 @@
           "color": "#284fcc",
           "elevation": {
             "bottom": 0,
-            "top": null,
-            "topInclusive": false
+            "top": null
           },
-          "levels": [
-            "defaultLevel0000"
-          ],
           "restriction": {
             "enabled": false,
             "type": "move",
@@ -1619,7 +1460,7 @@
                 "compendiumSource": null,
                 "duplicateSource": null,
                 "exportSource": null,
-                "coreVersion": "14.359",
+                "coreVersion": "13.351",
                 "systemId": "dolmenwood",
                 "systemVersion": "1.9.6.3",
                 "lastModifiedBy": null,
@@ -1635,12 +1476,8 @@
           "color": "#9928cc",
           "elevation": {
             "bottom": 0,
-            "top": null,
-            "topInclusive": false
+            "top": null
           },
-          "levels": [
-            "defaultLevel0000"
-          ],
           "restriction": {
             "enabled": false,
             "type": "move",
@@ -1700,7 +1537,7 @@
                 "compendiumSource": null,
                 "duplicateSource": null,
                 "exportSource": null,
-                "coreVersion": "14.359",
+                "coreVersion": "13.351",
                 "systemId": "dolmenwood",
                 "systemVersion": "1.9.6.3",
                 "lastModifiedBy": null,
@@ -1734,9 +1571,6 @@
           },
           "animation": null,
           "_id": "GJEEMGeDChhZC4AA",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1761,9 +1595,6 @@
           },
           "animation": null,
           "_id": "frufxU00GETGTwka",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1788,9 +1619,6 @@
           },
           "animation": null,
           "_id": "u3gMWYFddrz93Yw7",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1815,9 +1643,6 @@
           },
           "animation": null,
           "_id": "6xz4Doh6wxJ2kYDn",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1842,9 +1667,6 @@
           },
           "animation": null,
           "_id": "9pEL4W1hmvZlBX7O",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1869,9 +1691,6 @@
           },
           "animation": null,
           "_id": "U1z827a9vKpBPL5c",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1896,9 +1715,6 @@
           },
           "animation": null,
           "_id": "5LsZPk1hXGHCNQlK",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1923,9 +1739,6 @@
           },
           "animation": null,
           "_id": "x9i5cQJTUpozdW3r",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1950,9 +1763,6 @@
           },
           "animation": null,
           "_id": "oxaa0kGiiuOBKJkh",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -1977,9 +1787,6 @@
           },
           "animation": null,
           "_id": "Ho9KNjgFj8WIAdXo",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2004,9 +1811,6 @@
           },
           "animation": null,
           "_id": "E9HH820fbsnAR43V",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2031,9 +1835,6 @@
           },
           "animation": null,
           "_id": "c6uOY0isFDl03xBy",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2058,9 +1859,6 @@
           },
           "animation": null,
           "_id": "RxjLFNYHHIYJregh",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2085,9 +1883,6 @@
           },
           "animation": null,
           "_id": "dFnGjnsyJ28QpJhE",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2112,9 +1907,6 @@
           },
           "animation": null,
           "_id": "NmVIoGEwmgrkECDe",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2139,9 +1931,6 @@
           },
           "animation": null,
           "_id": "4cEwd3rtmZqWrjhm",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2166,9 +1955,6 @@
           },
           "animation": null,
           "_id": "TA6UGUvAObqbHi5S",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2193,9 +1979,6 @@
           },
           "animation": null,
           "_id": "O69lRhdmZjpd4MLw",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2220,9 +2003,6 @@
           },
           "animation": null,
           "_id": "6Yar5tBWDBDcfSdM",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2247,9 +2027,6 @@
           },
           "animation": null,
           "_id": "ehA6EWTjQqNvxioz",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2274,9 +2051,6 @@
           },
           "animation": null,
           "_id": "JcKE4uEA9NY6na8h",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2301,9 +2075,6 @@
           },
           "animation": null,
           "_id": "L35CWufM7i2eOHwt",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2328,9 +2099,6 @@
           },
           "animation": null,
           "_id": "oysrAZZCSVwKysZ5",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2355,9 +2123,6 @@
           },
           "animation": null,
           "_id": "jbA1CZrHWBlCXygC",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2382,9 +2147,6 @@
           },
           "animation": null,
           "_id": "cQyzR0ax6e38tUmj",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2409,9 +2171,6 @@
           },
           "animation": null,
           "_id": "Z6BKj1CmkNkVvClg",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2436,9 +2195,6 @@
           },
           "animation": null,
           "_id": "hj2DDWB0ATUhrin1",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2463,9 +2219,6 @@
           },
           "animation": null,
           "_id": "8Cld3cuM14uWGXy9",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2490,9 +2243,6 @@
           },
           "animation": null,
           "_id": "s4ASFsOwIU8pA5wv",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2517,9 +2267,6 @@
           },
           "animation": null,
           "_id": "YdBmvbdIAQ6haG1q",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2544,9 +2291,6 @@
           },
           "animation": null,
           "_id": "Rgg1ZtQ4lHMPpiMW",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2571,9 +2315,6 @@
           },
           "animation": null,
           "_id": "h5dHGk6E8epg6Eu2",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2598,9 +2339,6 @@
           },
           "animation": null,
           "_id": "cCt6wIrEgkpjIICT",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2625,9 +2363,6 @@
           },
           "animation": null,
           "_id": "zvCpuMEKVZb0JTQF",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2652,9 +2387,6 @@
           },
           "animation": null,
           "_id": "Dw0Ymecmoq3EhdSJ",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2679,9 +2411,6 @@
           },
           "animation": null,
           "_id": "LPutHPZyZVCuJqvX",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2706,9 +2435,6 @@
           },
           "animation": null,
           "_id": "cIpLsOgqehFVBpFO",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2733,9 +2459,6 @@
           },
           "animation": null,
           "_id": "4jo5gkR7SlWPzPCY",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2760,9 +2483,6 @@
           },
           "animation": null,
           "_id": "SMChRQ77oGvFfTHq",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2787,9 +2507,6 @@
           },
           "animation": null,
           "_id": "L8fKM0L3hA4ECjVJ",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2814,9 +2531,6 @@
           },
           "animation": null,
           "_id": "7QrRbNHdkCwRMZ2u",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2841,9 +2555,6 @@
           },
           "animation": null,
           "_id": "CMSKUeyYvmshIxDM",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2868,9 +2579,6 @@
           },
           "animation": null,
           "_id": "vqMBF7sVMzkVJ1ux",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2895,9 +2603,6 @@
           },
           "animation": null,
           "_id": "kjuxsfLhxbioem9a",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2922,9 +2627,6 @@
           },
           "animation": null,
           "_id": "TrH1ewOqvB8vVqXl",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2949,9 +2651,6 @@
           },
           "animation": null,
           "_id": "yyWGCNicnoG6yDLj",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -2976,9 +2675,6 @@
           },
           "animation": null,
           "_id": "a6FGfhPCcMuYVFQY",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3003,9 +2699,6 @@
           },
           "animation": null,
           "_id": "KGWHeFAwPSV05OFu",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3038,9 +2731,6 @@
             "strength": 1
           },
           "_id": "I6hBIdd2JasgfF8X",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3065,9 +2755,6 @@
           },
           "animation": null,
           "_id": "SH8iPoerDDnNGMdQ",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3092,9 +2779,6 @@
           },
           "animation": null,
           "_id": "s4P1LXLwDCYi7Ak6",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3119,9 +2803,6 @@
           },
           "animation": null,
           "_id": "snqTg28joWek9ts1",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3146,9 +2827,6 @@
           },
           "animation": null,
           "_id": "GDA4BMHluzuX7jfT",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3173,9 +2851,6 @@
           },
           "animation": null,
           "_id": "BHC9cXnuRDPwlqs2",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3200,9 +2875,6 @@
           },
           "animation": null,
           "_id": "Xc7wYVNL85yowVMa",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3227,9 +2899,6 @@
           },
           "animation": null,
           "_id": "693JvgUyL3QjIAXO",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3254,9 +2923,6 @@
           },
           "animation": null,
           "_id": "VDSAZkjrsnhp0Qhg",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3281,9 +2947,6 @@
           },
           "animation": null,
           "_id": "mGwY4bPAiangvu90",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3308,9 +2971,6 @@
           },
           "animation": null,
           "_id": "OXDsFPaWQyA6BfdU",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3335,9 +2995,6 @@
           },
           "animation": null,
           "_id": "9cbve649miysIn7P",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3362,9 +3019,6 @@
           },
           "animation": null,
           "_id": "iKO58VTOCkpOP3Dv",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3389,9 +3043,6 @@
           },
           "animation": null,
           "_id": "EzGMrBbn39rxlW73",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3416,9 +3067,6 @@
           },
           "animation": null,
           "_id": "UOuHMWY5GhHWzdWz",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3443,9 +3091,6 @@
           },
           "animation": null,
           "_id": "3qCo89Rf9wDyNW03",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3470,9 +3115,6 @@
           },
           "animation": null,
           "_id": "Xz1OtmdVBWVfq2N0",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         },
         {
@@ -3497,9 +3139,6 @@
           },
           "animation": null,
           "_id": "6EkoGLDI36Qmk8hi",
-          "levels": [
-            "defaultLevel0000"
-          ],
           "flags": {}
         }
       ],
@@ -3516,13 +3155,29 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
         "createdTime": 1793456781553,
         "modifiedTime": 1793456781553
-      }
+      },
+      "background": {
+        "src": "systems/dolmenwood/assets/quickstart/qs-cottage.webp",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 108,
+        "offsetY": 21,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0
+      },
+      "backgroundColor": "#ffffff",
+      "foreground": null,
+      "foregroundElevation": null
     }
   ],
   "journal": [
@@ -3559,7 +3214,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3596,7 +3251,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3633,7 +3288,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3670,7 +3325,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3707,7 +3362,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3744,7 +3399,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3781,7 +3436,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3818,7 +3473,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3855,7 +3510,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3875,7 +3530,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -3916,7 +3571,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3953,7 +3608,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -3990,7 +3645,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4027,7 +3682,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4064,7 +3719,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4101,7 +3756,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4138,7 +3793,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4175,7 +3830,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4212,7 +3867,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4249,7 +3904,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4286,7 +3941,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4323,7 +3978,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4360,7 +4015,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4397,7 +4052,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4434,7 +4089,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4471,7 +4126,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4508,7 +4163,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -4528,7 +4183,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -5090,7 +4745,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5134,7 +4789,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5178,7 +4833,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5213,7 +4868,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5248,7 +4903,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5283,7 +4938,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5318,7 +4973,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5353,7 +5008,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5388,7 +5043,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5423,7 +5078,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5458,7 +5113,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5492,7 +5147,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5527,7 +5182,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5562,7 +5217,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -5611,7 +5266,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -6100,7 +5755,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6139,7 +5794,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6183,7 +5838,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6229,7 +5884,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6264,7 +5919,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6299,7 +5954,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6334,7 +5989,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6369,7 +6024,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6404,7 +6059,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6439,7 +6094,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6474,7 +6129,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6508,7 +6163,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6543,7 +6198,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -6592,7 +6247,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -7166,7 +6821,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7201,7 +6856,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7236,7 +6891,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7271,7 +6926,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7306,7 +6961,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7341,7 +6996,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7376,7 +7031,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7410,7 +7065,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7445,7 +7100,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7480,7 +7135,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7512,7 +7167,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7544,7 +7199,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7576,7 +7231,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7608,7 +7263,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -7657,7 +7312,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -8235,7 +7890,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8270,7 +7925,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8305,7 +7960,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8340,7 +7995,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8375,7 +8030,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8410,7 +8065,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8445,7 +8100,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8480,7 +8135,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8515,7 +8170,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8550,7 +8205,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8585,7 +8240,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8620,7 +8275,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8651,7 +8306,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8682,7 +8337,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8713,7 +8368,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -8762,7 +8417,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -9363,7 +9018,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9408,7 +9063,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9453,7 +9108,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9488,7 +9143,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9523,7 +9178,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9558,7 +9213,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9593,7 +9248,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9628,7 +9283,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9663,7 +9318,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9698,7 +9353,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9733,7 +9388,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9767,7 +9422,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9802,7 +9457,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -9851,7 +9506,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -10399,7 +10054,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10443,7 +10098,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10487,7 +10142,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10522,7 +10177,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10557,7 +10212,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10592,7 +10247,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10627,7 +10282,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10662,7 +10317,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10697,7 +10352,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10732,7 +10387,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10766,7 +10421,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10801,7 +10456,7 @@
             "compendiumSource": null,
             "duplicateSource": null,
             "exportSource": null,
-            "coreVersion": "14.359",
+            "coreVersion": "13.351",
             "systemId": "dolmenwood",
             "systemVersion": "1.9.6.3",
             "lastModifiedBy": null,
@@ -10850,7 +10505,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12567,7 +12222,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12598,7 +12253,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12629,7 +12284,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12661,7 +12316,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12693,7 +12348,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12725,7 +12380,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12757,7 +12412,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12792,7 +12447,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12827,7 +12482,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12851,7 +12506,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12873,7 +12528,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12895,7 +12550,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12917,7 +12572,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12939,7 +12594,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12961,7 +12616,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -12983,7 +12638,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -13005,7 +12660,7 @@
         "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null,
-        "coreVersion": "14.359",
+        "coreVersion": "13.351",
         "systemId": "dolmenwood",
         "systemVersion": "1.9.6.3",
         "lastModifiedBy": null,
@@ -13021,12 +12676,16 @@
   "playlists": [],
   "folder": null,
   "sort": 300,
-  "flags": {},
+  "flags": {
+    "core": {
+      "sheetClass": "core.AdventureImporterV2"
+    }
+  },
   "_stats": {
     "compendiumSource": null,
     "duplicateSource": null,
     "exportSource": null,
-    "coreVersion": "14.359",
+    "coreVersion": "13.351",
     "systemId": "dolmenwood",
     "systemVersion": "1.9.6.3",
     "lastModifiedBy": null,
