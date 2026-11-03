@@ -181,6 +181,11 @@ function prepareCombatantData(combatant, optionalRules) {
 	const declarations = ['magic', 'flee']
 	if (optionalRules) declarations.push('charge', 'parry')
 
+	// Core's control tooltips: v14 has state-aware COMBATANT keys, v13 only the COMBAT toggles
+	const v14 = game.release.generation >= 14
+	const hiddenKey = v14 ? (combatant.hidden ? 'COMBATANT.Show' : 'COMBATANT.Hide') : 'COMBAT.ToggleVis'
+	const defeatedKey = v14 ? (combatant.isDefeated ? 'COMBATANT.UnmarkDefeated' : 'COMBATANT.MarkDefeated') : 'COMBAT.ToggleDead'
+
 	return {
 		id: combatant.id,
 		name: combatant.token?.name || combatant.actor?.name || combatant.name,
@@ -204,6 +209,8 @@ function prepareCombatantData(combatant, optionalRules) {
 		})),
 		tokenId: combatant.tokenId,
 		actorId: combatant.actorId,
-		hidden: combatant.hidden
+		hidden: combatant.hidden,
+		hiddenTooltip: game.i18n.localize(hiddenKey),
+		defeatedTooltip: game.i18n.localize(defeatedKey)
 	}
 }

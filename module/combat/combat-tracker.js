@@ -517,7 +517,7 @@ export default class DolmenCombatTracker extends CombatTracker {
 
 		const updates = combat.combatants.map(c => ({
 			_id: c.id,
-			'flags.dolmenwood.-=declaration': null
+			'flags.dolmenwood.declaration': null
 		}))
 		if (updates.length) {
 			await combat.updateEmbeddedDocuments('Combatant', updates)
@@ -588,9 +588,10 @@ export default class DolmenCombatTracker extends CombatTracker {
 	 */
 	_getEntryContextOptions() {
 		const options = super._getEntryContextOptions()
-		const clearOpt = options.find(o => o.name === 'COMBAT.CombatantClear')
+		// v13 names the option COMBAT.CombatantClear with callback(li); v14 labels it COMBATANT.ACTIONS.Clear with onClick(event, li)
+		const clearOpt = options.find(o => o.name === 'COMBAT.CombatantClear' || o.label === 'COMBATANT.ACTIONS.Clear')
 		if (clearOpt) {
-			clearOpt.callback = async (li) => {
+			const clearGroup = async (li) => {
 				const combat = this.viewed
 				if (!combat) return
 				const combatant = combat.combatants.get(li.dataset.combatantId)
@@ -605,6 +606,8 @@ export default class DolmenCombatTracker extends CombatTracker {
 					await combat.updateEmbeddedDocuments('Combatant', updates)
 				}
 			}
+			if ('onClick' in clearOpt) clearOpt.onClick = (event, li) => clearGroup(li)
+			else clearOpt.callback = clearGroup
 		}
 		return options
 	}
