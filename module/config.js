@@ -281,7 +281,9 @@ DOLMENWOOD.unseasonWeatherTable = {
 	chame: 'summer'
 }
 
-// Tools a module adds to the Dolmenwood Tools group, by name (set in its init hook)
+// Tools a module adds to the Dolmenwood Tools group, keyed by tool name, each a core SceneControlTool.
+// Set them in the module's init hook. For tools that must be rebuilt on every toolbar render, use the
+// getDolmenwoodTools hook instead.
 DOLMENWOOD.extraTools = {}
 
 export default DOLMENWOOD

@@ -12,16 +12,19 @@ import DolmenActor from './module/dolmen-actor.js'
 import DolmenItem from './module/dolmen-item.js'
 import { AdventurerDataModel, CreatureDataModel, HorseDataModel, VehicleDataModel, GearDataModel, ContainerDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, ConsumableDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel, EffectDataModel } from './module/data-models.mjs'
 import { setupDamageContextMenu, autoApplyDamage, handleDamageSocket } from './module/chat-damage.js'
-import { createSaveLinkEnricher, createChanceLinkEnricher, openInlineSaveModifierPanel, rollChance } from './module/chat-save.js'
+import { createSaveLinkEnricher, createChanceLinkEnricher, openInlineSaveModifierPanel, rollChance, rollSaveForControlled } from './module/chat-save.js'
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
-import { worldTimeToCalendar, dateKeyToEpochDay } from './module/calendar/calendar-time.js'
+import { worldTimeToCalendar, calendarToWorldTime, dateKeyToEpochDay, getSeason, getDaylightHours, getDayName, getHoliday, getMoonForDay } from './module/calendar/calendar-time.js'
+import { findRollTable, drawFromTable, drawFromTableSilent } from './module/utils/roll-tables.js'
+import { rollReaction, rollSurprise, rollMoraleCheck, rollEncounterDistance } from './module/combat/combat-rolls.js'
+import { getReactionCategory } from './module/combat/combat-data.js'
 import { DolmenwoodCalendar, buildCalendarConfig } from './module/calendar/calendar-data.js'
 import { getFaSymbol, getRuneUsage } from './module/sheet/data-context.js'
 import { registerCombatSystem, registerCombatSettings } from './module/combat/combat.js'
 import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged, onRestBaselineChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 import { initPartyViewer, togglePartyViewer, onPartyMembersChanged } from './module/party-viewer/party-viewer.js'
-import { openCreatureImportDialog } from './module/creature-importer.js'
+import { openCreatureImportDialog, importCreatureStatblock } from './module/creature-importer.js'
 import { executeMacroAttack } from './module/attack-macros.js'
 import { registerJournalArt } from './module/journal-art.js'
 import DolmenEffectSheet from './module/dolmen-effect-sheet.js'
@@ -79,7 +82,39 @@ Hooks.once('init', async function () {
 	CONFIG.time.worldCalendarClass = DolmenwoodCalendar
 	CONFIG.time.worldCalendarConfig = buildCalendarConfig()
 	CONFIG.time.formatters.timestamp = DolmenwoodCalendar.formatTimestamp
-	game.dolmenwood = { executeMacroAttack }
+	// Public API for macros and modules: use these rather than importing system files by path
+	game.dolmenwood = {
+		isReady: false, // true once the system's ready work is done, see the dolmenwood.ready hook
+		executeMacroAttack,
+		// encounter rolls and checks (post to chat)
+		rollReaction,
+		rollSurprise,
+		rollMoraleCheck,
+		rollEncounterDistance,
+		rollChance,
+		/** Roll a save for the controlled tokens: rollSaveForControlled(saveKey, bonus = 0) */
+		rollSaveForControlled: (saveKey, bonus = 0) => rollSaveForControlled(saveKey, bonus),
+		getReactionCategory,
+		// roll tables, by name
+		findRollTable,
+		drawFromTable,
+		drawFromTableSilent,
+		// calendar
+		worldTimeToCalendar,
+		calendarToWorldTime,
+		getSeason,
+		getDaylightHours,
+		getDayName,
+		getHoliday,
+		getMoonForDay,
+		// creatures
+		importCreatureStatblock,
+		openCreatureImportDialog,
+		/** @returns {string|null} The active unseason's key, or null */
+		getUnseason: () => game.settings.get('dolmenwood', 'activeUnseason') || null,
+		/** @returns {{ text: string, effects: string, roll: number }} Today's weather */
+		getWeather: () => game.settings.get('dolmenwood', 'currentWeather')
+	}
 
 	game.settings.register('dolmenwood', 'colorTheme', {
 		name: 'DOLMEN.Settings.ColorTheme',
@@ -525,10 +560,13 @@ Hooks.once('init', async function () {
 						game.settings.set('dolmenwood', 'showPartyViewer', active)
 					}
 				},
-				// a module's own tools for this group, put there in its init hook
+				// tools modules register once, in their init hook (see CONFIG.DOLMENWOOD.extraTools)
 				...CONFIG.DOLMENWOOD.extraTools
 			}
 		}
+		// then a hook for tools that change from render to render (state, permissions, the scene):
+		// Hooks.on('getDolmenwoodTools', tools => { tools.myTool = {...} })
+		Hooks.callAll('getDolmenwoodTools', controls.dolmenwood.tools)
 		// v13 only fix: Tile#_refreshState throws an error when it reads the active group's foreground
 		// tool after leaving a tile-layer group (the premium module's map tools).
 		// Non-enumerable, so it is neither rendered nor removed as a tool. v14 and above does not need
@@ -764,6 +802,12 @@ Hooks.once('ready', async function () {
 	// Initialize rune refresh day tracking
 	const initCal = worldTimeToCalendar(game.time.worldTime)
 	lastRuneRefreshDay = `${initCal.year}-${initCal.monthKey}-${initCal.day}`
+
+	// Foundry doesn't wait for async ready handlers, so modules' ready hooks can run before the system
+	// is ready.
+	// Module creators should use: Hooks.once('dolmenwood.ready', api => ...), or check game.dolmenwood.isReady
+	game.dolmenwood.isReady = true
+	Hooks.callAll('dolmenwood.ready', game.dolmenwood)
 })
 
 // Decrement round-based effect durations when combat round advances
