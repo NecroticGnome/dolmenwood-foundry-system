@@ -1,4 +1,4 @@
-/* global foundry, game, ui, FilePicker, Roll, ChatMessage, CONST, CONFIG, fromUuid, Item */
+/* global foundry, game, ui, Roll, ChatMessage, CONST, CONFIG, fromUuid, Item */
 
 const { DialogV2 } = foundry.applications.api
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
@@ -349,7 +349,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const portrait = this.element.querySelector('.portrait-image')
 		if (portrait) {
 			portrait.addEventListener('click', () => {
-				new FilePicker({
+				new foundry.applications.apps.FilePicker.implementation({
 					type: 'image',
 					current: this.actor.img,
 					callback: (path) => this.actor.update({ img: path })

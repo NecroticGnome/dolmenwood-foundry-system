@@ -1,4 +1,4 @@
-/* global foundry, game, FilePicker */
+/* global foundry, game */
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { rewriteCSV, extractJSON } from './utils/form-helpers.js'
 import { openCodex } from './utils/codex.js'
@@ -137,7 +137,7 @@ class DolmenKindredSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		const portrait = this.element.querySelector('.portrait-image')
 		if (portrait) {
 			portrait.addEventListener('click', () => {
-				new FilePicker({
+				new foundry.applications.apps.FilePicker.implementation({
 					type: 'image',
 					current: this.item.img,
 					callback: (path) => this.item.update({ img: path })

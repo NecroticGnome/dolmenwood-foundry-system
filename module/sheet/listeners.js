@@ -1,4 +1,4 @@
-/* global CONFIG, FilePicker, Roll, ChatMessage, CONST, game, foundry, ui */
+/* global CONFIG, Roll, ChatMessage, CONST, game, foundry, ui */
 import { createChatMessage } from './chat-helpers.js'
 /**
  * Listener Setup
@@ -251,7 +251,7 @@ export function setupPortraitPicker(sheet) {
 	const portrait = sheet.element.querySelector('.portrait-image')
 	if (portrait) {
 		portrait.addEventListener('click', () => {
-			new FilePicker({
+			new foundry.applications.apps.FilePicker.implementation({
 				type: 'image',
 				current: sheet.actor.img,
 				callback: (path) => sheet.actor.update({ img: path })
