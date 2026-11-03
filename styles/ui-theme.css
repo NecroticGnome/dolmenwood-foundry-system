@@ -126,6 +126,13 @@
 	--color-data-background: var(--dui-box);
 }
 
+/* V1 windows (core AdventureImporter, Dialog, older module apps) paint parchment.jpg on the
+   content directly, which theme ink can't be read on: use the theme background there too */
+[data-dolmen-ui] .app.window-app .window-content {
+	background: var(--background);
+	color: var(--color-text-primary);
+}
+
 /* Title bar: Foundry writes it in light-1, which is theme ink here */
 [data-dolmen-ui] :is(.application, .window-app) .window-header {
 	--color-light-1: var(--dolmen-color-title);
