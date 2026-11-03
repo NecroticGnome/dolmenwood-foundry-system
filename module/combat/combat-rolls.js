@@ -1,4 +1,4 @@
-/* global game, Roll, CONFIG */
+/* global game, Roll, CONFIG, ui */
 import { createChatMessage } from '../sheet/chat-helpers.js'
 
 /**
@@ -16,18 +16,31 @@ import { GROUP_CONFIG, getReactionCategory } from './combat-data.js'
 
 /**
  * Check if all disposition groups in a combat have rolled initiative.
+ * Groups with only defeated combatants aren't rolled for, so they're ignored here.
  * @param {Combat} combat - The active combat encounter
- * @returns {boolean} True if every group has at least one combatant with initiative
+ * @returns {boolean} True if every group has at least one undefeated combatant with initiative
  */
 export function allGroupsRolled(combat) {
 	if (!combat || !combat.combatants.size) return false
 	const groups = new Map()
 	for (const c of combat.combatants) {
+		if (c.isDefeated) continue
 		const g = c.dispositionGroup
 		if (!groups.has(g)) groups.set(g, false)
 		if (c.initiative !== null) groups.set(g, true)
 	}
 	return [...groups.values()].every(v => v)
+}
+
+/**
+ * The turn to start a round from: the top of the order, or with the core "Skip Defeated" setting
+ * on, the first undefeated combatant (as core's nextRound does).
+ * @param {Combat} combat - The active combat encounter
+ * @returns {number} The turn index
+ */
+export function firstTurn(combat) {
+	if (!combat.settings.skipDefeated) return 0
+	return Math.max(0, combat.turns.findIndex(t => !t.isDefeated))
 }
 
 /* -------------------------------------------- */
@@ -36,7 +49,8 @@ export function allGroupsRolled(combat) {
 
 /**
  * Roll 1d6 group initiative for each group in the combat.
- * All combatants in a group share the same initiative value.
+ * All combatants in a group share the same initiative value, defeated ones included so they keep
+ * their place in the order.
  * @param {Combat} combat - The active combat encounter
  * @returns {Promise<object>} Map of groupId → roll result
  */
@@ -53,6 +67,7 @@ export async function rollGroupInitiativeForCombat(combat) {
 	const allRolls = []
 
 	for (const [groupId, combatants] of groups) {
+		if (combatants.every(c => c.isDefeated)) continue
 		const roll = new Roll('1d6')
 		await roll.evaluate()
 		allRolls.push(roll)
@@ -71,9 +86,9 @@ export async function rollGroupInitiativeForCombat(combat) {
 		await combat.updateEmbeddedDocuments('Combatant', updates)
 	}
 
-	// Reset turn to 0 so highest-initiative combatant becomes active
+	// Start from the top so the highest-initiative combatant becomes active
 	if (combat.round >= 1) {
-		await combat.update({ turn: 0 })
+		await combat.update({ turn: firstTurn(combat) })
 	}
 
 	await createChatMessage({
@@ -110,22 +125,7 @@ export async function rollInitiativeForGroup(combat, groupId) {
 	const roll = new Roll('1d6')
 	await roll.evaluate()
 
-	const updates = combatants.map(c => ({ _id: c.id, initiative: roll.total }))
-
-	// Players lack permission to update combatants they don't own,
-	// so delegate the update to the GM via socket
-	if (game.user.isGM) {
-		await combat.updateEmbeddedDocuments('Combatant', updates)
-		if (combat.round >= 1 && allGroupsRolled(combat)) {
-			await combat.update({ turn: 0 })
-		}
-	} else {
-		game.socket.emit('system.dolmenwood', {
-			action: 'setGroupInitiative',
-			combatId: combat.id,
-			updates
-		})
-	}
+	await applyOrAskGM(combat, groupId, roll.total)
 
 	const config = GROUP_CONFIG[groupId]
 	const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.GroupA')
@@ -165,22 +165,7 @@ export async function setGroupInitiative(combat, groupId, value) {
 	const combatants = combat.combatants.filter(c => c.dispositionGroup === groupId)
 	if (!combatants.length) return null
 
-	const updates = combatants.map(c => ({ _id: c.id, initiative: value }))
-
-	// Players lack permission to update combatants they don't own,
-	// so delegate the update to the GM via socket (same path as rolling)
-	if (game.user.isGM) {
-		await combat.updateEmbeddedDocuments('Combatant', updates)
-		if (combat.round >= 1 && allGroupsRolled(combat)) {
-			await combat.update({ turn: 0 })
-		}
-	} else {
-		game.socket.emit('system.dolmenwood', {
-			action: 'setGroupInitiative',
-			combatId: combat.id,
-			updates
-		})
-	}
+	await applyOrAskGM(combat, groupId, value)
 
 	const config = GROUP_CONFIG[groupId]
 	const label = game.i18n.localize(config?.labelKey || 'DOLMEN.Combat.Group.GroupA')
@@ -404,22 +389,52 @@ export async function rollEncounterDistance(environment = 'dungeon') {
 }
 
 /* -------------------------------------------- */
-/*  Socket Handler                              */
+/*  Applying Group Initiative                   */
 /* -------------------------------------------- */
 
 /**
- * Handle combat socket events (GM only).
- * Players emit these when they lack permission to update combatants directly.
+ * Set every combatant in a group to one initiative value, then start the round's turns from the
+ * top once all groups have rolled. Only initiative is written, and only for that group.
  */
-export function handleCombatSocket(data) {
-	if (game.user !== game.users.activeGM) return
-	if (data.action === 'setGroupInitiative') {
-		const combat = game.combats.get(data.combatId)
-		if (!combat) return
-		combat.updateEmbeddedDocuments('Combatant', data.updates).then(() => {
-			if (combat.round >= 1 && allGroupsRolled(combat)) {
-				combat.update({ turn: 0 })
-			}
-		})
+async function applyGroupInitiative(combat, groupId, value) {
+	const updates = combat.combatants
+		.filter(c => c.dispositionGroup === groupId)
+		.map(c => ({ _id: c.id, initiative: value }))
+	if (!updates.length) return
+	await combat.updateEmbeddedDocuments('Combatant', updates)
+	if (combat.round >= 1 && allGroupsRolled(combat)) {
+		await combat.update({ turn: firstTurn(combat) })
 	}
+}
+
+/**
+ * Players can't update combatants they don't own, so they ask the active GM to apply the value.
+ */
+async function applyOrAskGM(combat, groupId, value) {
+	if (game.user.isGM) return applyGroupInitiative(combat, groupId, value)
+	const gm = game.users.activeGM
+	if (!gm) return ui.notifications.warn('DOLMEN.Combat.NoActiveGM', { localize: true })
+	try {
+		return await gm.query(GROUP_INITIATIVE_QUERY, { combatId: combat.id, groupId, value })
+	} catch (err) {
+		// e.g. the GM removed the "Query Users" permission from players, or the GM disconnected
+		console.error(err)
+		ui.notifications.warn('DOLMEN.Combat.InitiativeQueryFailed', { localize: true })
+	}
+}
+
+export const GROUP_INITIATIVE_QUERY = 'dolmenwood.setGroupInitiative'
+
+/**
+ * Handle a player's group initiative query (runs on the active GM).
+ * @param {{ combatId: string, groupId: number, value: number }} data
+ * @param {{ user?: User }} [context] - provided in v14 and higher
+ */
+export async function handleGroupInitiativeQuery({ combatId, groupId, value } = {}, { user } = {}) {
+	const combat = game.combats.get(combatId)
+	if (!combat || !Number.isFinite(value)) return false
+	const group = combat.combatants.filter(c => c.dispositionGroup === groupId)
+	if (user && !group.some(c => c.testUserPermission(user, 'OWNER'))) return false
+	await applyGroupInitiative(combat, groupId, value)
+	return true
 }

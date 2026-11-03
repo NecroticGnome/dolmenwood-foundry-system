@@ -255,6 +255,8 @@
 			"SetInitiativeTitle": "Set Initiative",
 			"SetInitiativeLabel": "Initiative value",
 			"ManualEntry": "manual",
+			"NoActiveGM": "Cannot set initiative: no Referee is connected.",
+			"InitiativeQueryFailed": "Cannot set initiative: the Referee could not be asked. Check that players have the Query Users permission.",
 			"ClearAll": "Clear All",
 			"Roll": "Roll",
 			"Group": {
