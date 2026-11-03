@@ -1,4 +1,4 @@
-/* global foundry, game, FilePicker */
+/* global foundry, game */
 
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { prepareItemData, groupItemsByType, calcItemWeight } from './sheet/data-context.js'
@@ -262,7 +262,7 @@ class DolmenVehicleSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const portrait = this.element.querySelector('.portrait-image')
 		if (portrait) {
 			portrait.addEventListener('click', () => {
-				new FilePicker({
+				new foundry.applications.apps.FilePicker.implementation({
 					type: 'image',
 					current: this.actor.img,
 					callback: (path) => this.actor.update({ img: path })

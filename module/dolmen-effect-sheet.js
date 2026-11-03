@@ -1,4 +1,4 @@
-/* global foundry, game, FilePicker */
+/* global foundry, game */
 import { BOOLEAN_TARGETS, WEAPON_TYPE_TARGETS, getEffectGroupForTarget, getEffectFieldsForActor, getEffectEntries } from './effect-fields.js'
 import { CHOICE_KEYS } from './utils/choices.js'
 
@@ -175,7 +175,7 @@ class DolmenEffectSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		const portrait = html.querySelector('.portrait-image')
 		if (portrait) {
 			portrait.addEventListener('click', () => {
-				new FilePicker({
+				new foundry.applications.apps.FilePicker.implementation({
 					type: 'image',
 					current: this.item.img,
 					callback: (path) => this.item.update({ img: path })

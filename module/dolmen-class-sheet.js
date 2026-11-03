@@ -1,4 +1,4 @@
-/* global foundry, game, FilePicker */
+/* global foundry, game */
 import { buildChoices, buildWeaponProfOptions, buildArmorProfOptions, buildClassSkillOptions, WEAPON_PROF_GROUPS, getWeaponTypesForGroup } from './utils/choices.js'
 import { extractJSON } from './utils/form-helpers.js'
 import { openCodex } from './utils/codex.js'
@@ -195,7 +195,7 @@ class DolmenClassSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		const portrait = this.element.querySelector('.portrait-image')
 		if (portrait) {
 			portrait.addEventListener('click', () => {
-				new FilePicker({
+				new foundry.applications.apps.FilePicker.implementation({
 					type: 'image',
 					current: this.item.img,
 					callback: (path) => this.item.update({ img: path })
