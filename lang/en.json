@@ -1002,7 +1002,7 @@
 			"NoTokensSelected": "No tokens selected. Select a token to roll saving throw."
 		},
 		"RollTable": {
-			"NotFound": "Roll table \"{name}\" not found. Make sure the Dolmenwood Foundry VTT Content Conversion module is installed and enabled."
+			"NotFound": "Roll table \"{name}\" not found. Make sure the Dolmenwood Premium Game module is installed and enabled."
 		},
 		"Settings": {
 			"ColorTheme": "Colour Theme",
