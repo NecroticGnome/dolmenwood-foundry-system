@@ -14,6 +14,8 @@ https://github.com/NecroticGnome/dolmenwood-foundry-system/releases/latest/downl
 
 ## Features
 
+See [how to use this system](how-to-use-this-system.md) for a guide to the sheets and tools, converting an OSE world, and the API for module developers.
+
 **Characters and creatures**
 - Adventurer sheets for every kindred and class, with skills, saves, encumbrance (by coin weight or by slots), and runes, glamours and spells.
 - Creature sheets with attacks, morale and saves, plus sheets for horses and vehicles.
@@ -39,18 +41,6 @@ The **Dolmenwood Premium Game** module, from [Necrotic Gnome](https://necroticgn
 ## Languages
 
 English and Polish.
-
-## Converting an OSE world
-
-There are two macros in the `scripts` folder that export your OSE world content and import it into a Dolmenwood world.
-
-1. In your OSE world, add and run [the export macro](https://github.com/NecroticGnome/dolmenwood-foundry-system/blob/main/scripts/ose-export-macro.js). It downloads a `.json` file.
-2. In your Dolmenwood world, add and run [the import macro](https://github.com/NecroticGnome/dolmenwood-foundry-system/blob/main/scripts/ose-import-macro.js), and choose that file.
-
-This converts the actors and items in your world to the Dolmenwood format, and imports its scenes and journals.
-
-- The export only includes what's in your world, **not compendiums**. Import any compendium content you want to keep before exporting.
-- Image paths are kept as they are, so removing the OSE system or its assets breaks the portraits and tokens of imported actors.
 
 ## Bugs and feedback
 
