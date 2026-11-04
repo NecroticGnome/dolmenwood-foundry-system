@@ -36,7 +36,7 @@ See [how to use this system](how-to-use-this-system.md) for a guide to the sheet
 
 ## The full setting
 
-The **Dolmenwood Premium Game** module, from [Necrotic Gnome](https://necroticgnome.com/), adds the Player's Book, Campaign Book, Monster Book and Maps Book as Foundry content: the rules and setting as journals, every creature as an actor, the books' items, spells and tables, and an interactive Player Hex Map linked to the wood's contents.
+The [**Dolmenwood Premium Game**](https://foundryvtt.com/packages/dolmenwood-premiumgame) module, from [Necrotic Gnome](https://necroticgnome.com/), adds the Player's Book, Campaign Book, Monster Book, and Maps Book as Foundry content: the rules and setting as journals, every creature as an actor, the books' items, spells and tables, and an interactive Player Hex Map linked to the wood's contents.
 
 ## Languages
 

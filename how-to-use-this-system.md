@@ -2,7 +2,7 @@
 
 ## General
 
-This system implements the Dolmenwood rules for Foundry VTT. It includes the Kindreds and Classes compendiums and the free Quick-Start adventure. The **Dolmenwood Premium Game** module adds the full setting: the books' journals, creatures, items, spells and roll tables.
+This system implements the Dolmenwood rules for Foundry VTT. It includes the Kindreds and Classes compendiums and the free Quick-Start adventure. The [**Dolmenwood Premium Game**](https://foundryvtt.com/packages/dolmenwood-premiumgame) module adds the full setting: the books' journals, creatures, items, spells and roll tables.
 
 Most of the Referee's tools are on the **Dolmenwood toolbar** in the scene controls on the left: the calendar, the dungeon tracker and the party viewer.
 
