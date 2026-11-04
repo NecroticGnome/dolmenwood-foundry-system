@@ -3,3 +3,6 @@
 
 # Generated compendium files - keep LF to match Node.js output
 packs/**/*.json text eol=lf
+
+# Package listing images, hosted for foundryvtt.com but kept out of the release zip
+listing/ export-ignore
