@@ -1,4 +1,4 @@
-<img width="1000" height="309" alt="Dolmenwood" src="https://raw.githubusercontent.com/NecroticGnome/dolmenwood-foundry-system/main/assets/logo.webp" />
+<img width="1000" height="244" alt="Dolmenwood" src="https://raw.githubusercontent.com/NecroticGnome/dolmenwood-foundry-system/main/assets/logo.webp" />
 
 # Dolmenwood
 
