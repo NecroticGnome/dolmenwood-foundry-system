@@ -1,10 +1,73 @@
 {
 	"DOLMEN": {
 		"Kindreds": {
+			"breggle": "Bregiel",
+			"elf": "Elf",
+			"grimalkin": "Grymalkin",
+			"human": "Człowiek",
+			"mossling": "Darniak",
+			"woodgrue": "Chrustoperz"
 		},
 		"KindredDetails": {
+			"Title": "Szczegóły Rasy",
+			"KindredType": "Typ Rasy",
+			"CurrentAge": "Obecny Wiek",
+			"Lifespan": "Długość Życia",
+			"Height": "Wzrost",
+			"Weight": "Waga",
+			"Feet": "(stopy)",
+			"Cm": "(cm)",
+			"Lbs": "(funty)",
+			"Kg": "(kg)",
+			"Imperial": "Imperialny",
+			"Metric": "Metryczny",
+			"UnitSystem": "System Miar",
+			"ValueYears": "{value} l.",
+			"HeightFormat": "{feet} ({cm} cm)",
+			"WeightFormat": "{lbs} lb ({kg} kg)"
+		},
+		"Languages": {
+			"woldish": "Woldycki",
+			"gaffe": "Gafiński",
+			"caprice": "Kapryski",
+			"sylvan": "Sylwański",
+			"highElfish": "Wysoki Elficki",
+			"mewl": "Skomlau",
+			"mulch": "Mulcz",
+			"EditTitle": "Edytuj Języki",
+			"None": "Brak języków",
+			"Custom": "Własny",
+			"CustomPlaceholder": "Wpisz nazwę języka"
+		},
+		"KindredSheetTitle": "Karta Rasy",
+		"NameRoll": {
+			"Male": "Męskie",
+			"Female": "Żeńskie",
+			"Unisex": "Uniwersalne",
+			"Rustic": "Wiejskie",
+			"Courtly": "Dworskie"
 		},
 		"Kindred": {
+			"Title": "Rasa",
+			"Name": "Nazwa Rasy",
+			"TabDetails": "Szczegóły",
+			"TabTraits": "Cechy",
+			"Identity": "Tożsamość",
+			"PhysicalCharacteristics": "Wygląd i Budowa",
+			"CulturalTraits": "Kultura",
+			"KindredId": "ID Rasy",
+			"LocalizationKey": "Klucz Lokalizacji",
+			"Size": "Rozmiar",
+			"CreatureType": "Typ Istoty",
+			"HasFur": "Ma Futro",
+			"AgeFormula": "Wzór na Wiek",
+			"LifespanFormula": "Wzór na Długośź Życia",
+			"HeightFormula": "Wzór na Wzrost (cale)",
+			"WeightFormula": "Wzór na Wagę (funty)",
+			"Languages": "Języki Ojczyste",
+			"NameRollGroups": "Grupy Losowania Imion (JSON)",
+			"Traits": "Cechy (JSON)",
+			"TraitsJSON": "Definicja Cech"
 		}
 	}
 }
