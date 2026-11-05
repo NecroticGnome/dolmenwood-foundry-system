@@ -28,6 +28,8 @@ Most of the Referee's tools are on the **Dolmenwood toolbar** in the scene contr
 - Custom skills can be added to every adventurer with the *Custom Skills* setting (a comma-separated list), and then added to a character with the *+* next to the skill list.
 - Journal text can include clickable rolls:
   - `[Save vs Doom](save:doom)` rolls a save for the selected tokens. The saves are `doom`, `ray`, `hold`, `blast` and `spell`.
+  - `[Strength check](ability:strength)` rolls an ability check for the selected adventurers. The abilities are `strength`, `intelligence`, `wisdom`, `dexterity`, `constitution` and `charisma` (or `str`, `int`, `wis`, `dex`, `con`, `cha`).
+  - `[Listen](skill:listen)` rolls a skill check for the selected adventurers. The skills are `listen`, `search`, `survival` and the extra skills (`alertness`, `climbWall`, `decipherDocument`, `detectMagic`, `disarmMechanism`, `legerdemain`, `monsterLore`, `pickLock`, `stalking`, `stealth`, `tracking`). An adventurer without the skill is skipped.
   - `[2-in-6 to find it](chance:2)` rolls an X-in-6 chance.
 
 ## Experience and levels

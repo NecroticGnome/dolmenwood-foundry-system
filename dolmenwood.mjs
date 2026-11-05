@@ -13,6 +13,7 @@ import DolmenItem from './module/dolmen-item.js'
 import { AdventurerDataModel, CreatureDataModel, HorseDataModel, VehicleDataModel, GearDataModel, ContainerDataModel, TreasureDataModel, WeaponDataModel, SpellDataModel, HolySpellDataModel, ArmorDataModel, ForagedDataModel, ConsumableDataModel, GlamourDataModel, RuneDataModel, KindredDataModel, ClassDataModel, EffectDataModel } from './module/data-models.mjs'
 import { setupDamageContextMenu, autoApplyDamage, handleDamageSocket } from './module/chat-damage.js'
 import { createSaveLinkEnricher, createChanceLinkEnricher, openInlineSaveModifierPanel, rollChance, rollSaveForControlled } from './module/chat-save.js'
+import { createAbilityLinkEnricher, createSkillLinkEnricher, onInlineCheckClick } from './module/chat-checks.js'
 import WelcomeDialog from './module/welcome-dialog.js'
 import { initCalendarWidget, toggleWidget, handleCalendarSocket } from './module/calendar/calendar-widget.js'
 import { worldTimeToCalendar, calendarToWorldTime, dateKeyToEpochDay, getSeason, getDaylightHours, getDayName, getHoliday, getMoonForDay } from './module/calendar/calendar-time.js'
@@ -257,10 +258,18 @@ Hooks.once('init', async function () {
 	// Register combat system (group initiative, tracker, declarations)
 	registerCombatSystem()
 
-	// Register custom text enrichers for save links and chance links
+	// Register custom text enrichers for save, ability, skill and chance links
 	CONFIG.TextEditor.enrichers.push({
 		pattern: /\[([^\]]+)\]\(save:(\w+)\)/g,
 		enricher: createSaveLinkEnricher
+	})
+	CONFIG.TextEditor.enrichers.push({
+		pattern: /\[([^\]]+)\]\(ability:(\w+)\)/g,
+		enricher: createAbilityLinkEnricher
+	})
+	CONFIG.TextEditor.enrichers.push({
+		pattern: /\[([^\]]+)\]\(skill:(\w+)\)/g,
+		enricher: createSkillLinkEnricher
 	})
 	CONFIG.TextEditor.enrichers.push({
 		pattern: /\[([^\]]+)\]\(chance:(\d+)\)/g,
@@ -1163,6 +1172,18 @@ document.addEventListener('click', (event) => {
 	if (!saveKey) return
 	const position = { top: event.clientY, left: event.clientX }
 	openInlineSaveModifierPanel(saveKey, position)
+})
+
+// Global delegated listener for inline ability and skill check links
+document.addEventListener('click', (event) => {
+	const link = event.target.closest('.inline-ability-link, .inline-skill-link')
+	if (!link) return
+	event.preventDefault()
+	event.stopPropagation()
+	const type = link.classList.contains('inline-ability-link') ? 'ability' : 'skill'
+	const key = link.dataset[type]
+	if (!key) return
+	onInlineCheckClick(type, key, { top: event.clientY, left: event.clientX })
 })
 
 // Global delegated listener for inline chance links

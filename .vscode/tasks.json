@@ -9,9 +9,9 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "Copy to Foundry",
+			"label": "Link to Foundry",
 			"type": "shell",
-			"command": "node scripts/build-css.js; if ($LASTEXITCODE -ne 0) { exit 1 }; $target = Get-Item -LiteralPath 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Force -ErrorAction SilentlyContinue; if ($target -and $target.LinkType) { Write-Host 'Foundry system folder is linked to this repo - skipping copy'; exit 0 }; Remove-Item -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' | Out-Null; Get-ChildItem -Path . -Exclude '.*', 'node_modules', 'scripts' | Copy-Item -Destination 'C:\\FoundryVTT\\Data\\systems\\dolmenwood' -Recurse -Force -ErrorAction SilentlyContinue",
+			"command": "node scripts/build-css.js; if ($LASTEXITCODE -ne 0) { exit 1 }; $path = 'C:\\FoundryVTT\\Data\\systems\\dolmenwood'; $target = Get-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue; if ($target -and $target.LinkType) { Write-Host 'Foundry system folder is linked to this repo'; exit 0 }; if ($target) { Write-Host 'Foundry system folder is a plain copy - replacing it with a link to this repo'; cmd /c rmdir /s /q \"$path\"; if (Test-Path -LiteralPath $path) { Write-Error 'Could not remove the Foundry system folder (is Foundry still running?)'; exit 1 } }; New-Item -ItemType Junction -Path $path -Target '${workspaceFolder}' | Out-Null; Write-Host 'Linked Foundry system folder to this repo'",
 			"group": "build",
 			"problemMatcher": []
 		},
@@ -43,7 +43,7 @@
 			"dependsOn": [
 				"Stop Foundry VTT",
 				"FVTT Pack - Pack",
-				"Copy to Foundry",
+				"Link to Foundry",
 				"Start Foundry VTT"
 			],
 			"dependsOrder": "sequence",

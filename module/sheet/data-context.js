@@ -661,7 +661,7 @@ export function prepareItemData(item) {
 		cssClass: item.type.toLowerCase(),
 		hasEffects: ['Treasure', 'Foraged', 'Consumable'].includes(item.type) && !!(item.system?.effects),
 		tooltipEffects: (item.system?.effects || '')
-			.replace(/\[([^\]]+)\]\(save:\w+\)/g, '$1')
+			.replace(/\[([^\]]+)\]\((?:save|ability|skill):\w+\)/g, '$1')
 			.replace(/\[\[\/r (\d+d\d+(?:[+-]\d+)?)\]\]/g, '$1')
 	}
 

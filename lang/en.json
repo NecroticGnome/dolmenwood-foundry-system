@@ -51,23 +51,15 @@
 			"NewEffect": "New Effect",
 			"Name": "Name",
 			"Target": "Target",
-			"TargetPath": "Target Path",
 			"Value": "Value",
 			"Enabled": "Enabled",
 			"Group": "Group",
-			"ToggleMode": "Advanced",
-			"ModeSimple": "Simple",
-			"ModeAdvanced": "Advanced",
 			"DetailsSimple": "Effect Details (Simple)",
 			"Multiple": "Multiple",
 			"AddEntry": "Add effect detail",
 			"RemoveEntry": "Remove this effect detail",
 			"PrevEntry": "Previous effect detail",
 			"NextEntry": "Next effect detail",
-			"DetailsAdvanced": "Effect Details (Advanced)",
-			"EffectType": "Type",
-			"TypeNumeric": "Numeric",
-			"TypeBoolean": "Boolean",
 			"NoEffects": "No effects. Click + to add one.",
 			"UnsupportedTarget": "This effect target is not supported for creatures.",
 			"NoStatEffects": "No stat effects. Click + to add one.",
@@ -1000,7 +992,9 @@
 			"NoGM": "Cannot change {name}'s HP: no Referee is connected."
 		},
 		"SaveRoll": {
-			"NoTokensSelected": "No tokens selected. Select a token to roll saving throw."
+			"NoTokensSelected": "No tokens selected. Select a token to roll saving throw.",
+			"NoCheckTokens": "No tokens selected. Select a token to roll the check.",
+			"NoCheckActors": "None of the selected tokens can make this check."
 		},
 		"RollTable": {
 			"NotFound": "Roll table \"{name}\" not found. Make sure the Dolmenwood Premium Game module is installed and enabled."
