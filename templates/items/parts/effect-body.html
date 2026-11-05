@@ -37,13 +37,21 @@
 		</h2>
 
 		<div class="form-row">
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Effects.Enabled"}}</label>
+			<label class="form-field effect-enabled-field">
 				<input type="checkbox" name="system.enabled" {{checked system.enabled}} />
+				<span>{{localize "DOLMEN.Effects.Enabled"}}</span>
+			</label>
+			<div class="form-field">
+				<label>{{localize "DOLMEN.Effects.Duration"}}</label>
+				<select name="system.duration" class="effect-duration-select">
+					{{#each durationChoices}}
+					<option value="{{@key}}" {{#if (eq @key ../system.duration)}}selected{{/if}}>{{this}}</option>
+					{{/each}}
+				</select>
 			</div>
-			<div class="form-field effect-value-row" {{#if isBoolean}}style="display:none"{{/if}}>
-				<label>{{localize "DOLMEN.Effects.Value"}}</label>
-				<input type="number" name="entry.value" value="{{entry.value}}" step="1" />
+			<div class="form-field effect-duration-value-row" {{#if hideDurationAmount}}style="display:none"{{/if}}>
+				<label>{{localize "DOLMEN.Effects.DurationAmount"}}</label>
+				<input type="number" name="system.durationValue" value="{{system.durationValue}}" min="1" step="1" />
 			</div>
 		</div>
 
@@ -80,17 +88,9 @@
 		</div>
 
 		<div class="form-row">
-			<div class="form-field">
-				<label>{{localize "DOLMEN.Effects.Duration"}}</label>
-				<select name="system.duration" class="effect-duration-select">
-					{{#each durationChoices}}
-					<option value="{{@key}}" {{#if (eq @key ../system.duration)}}selected{{/if}}>{{this}}</option>
-					{{/each}}
-				</select>
-			</div>
-			<div class="form-field effect-duration-value-row" {{#if hideDurationAmount}}style="display:none"{{/if}}>
-				<label>{{localize "DOLMEN.Effects.DurationAmount"}}</label>
-				<input type="number" name="system.durationValue" value="{{system.durationValue}}" min="1" step="1" />
+			<div class="form-field effect-value-row" {{#if isBoolean}}style="display:none"{{/if}}>
+				<label>{{localize "DOLMEN.Effects.Value"}}</label>
+				<input type="number" name="entry.value" value="{{entry.value}}" step="1" />
 			</div>
 		</div>
 	</section>

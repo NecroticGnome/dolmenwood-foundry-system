@@ -197,7 +197,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 					? await foundry.applications.ux.TextEditor.implementation.enrichHTML(attack.attackEffect, { async: true, secrets: game.user.isGM })
 					: '',
 				tooltipEffect: (attack.attackEffect || '')
-					.replace(/\[([^\]]+)\]\(save:\w+\)/g, '$1')
+					.replace(/\[([^\]]+)\]\((?:save|ability|skill):\w+\)/g, '$1')
 					.replace(/\[\[\/r (\d+d\d+(?:[+-]\d+)?)\]\]/g, '$1')
 			}))
 		)

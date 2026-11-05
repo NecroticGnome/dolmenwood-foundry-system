@@ -1,10 +1,92 @@
 {
 	"DOLMEN": {
 		"Classes": {
+			"bard": "Bard",
+			"breggle": "Bregiel",
+			"cleric": "Kleryk",
+			"elf": "Elf",
+			"enchanter": "Zaklinacz",
+			"fighter": "Wojownik",
+			"friar": "Brat Zakonny",
+			"grimalkin": "Grymalkin",
+			"hunter": "Myśliwy",
+			"knight": "Rycerz",
+			"magician": "Mag",
+			"mossling": "Darniak",
+			"thief": "Złodziej",
+			"woodgrue": "Chrustoperz"
 		},
 		"ClassDetails": {
+			"Title": "Szczegóły Klasy",
+			"PrimeAbilities": "Atrybuty Główne",
+			"HitPoints": "Punkty Życia",
+			"HitPointsFormat": "{hitDie} na poziom, +{flatBonus} po 10. poziomie",
+			"CombatAptitude": "Biegłość Bojowa",
+			"ArmorProficiency": "Zbroje",
+			"WeaponsProficiency": "Broń",
+			"Loyalty": "Lojalność (jako najemnik)"
 		},
+		"WeaponProf": {
+			"any": "Dowolna",
+			"anyMelee": "Dowolna do walki wręcz",
+			"anyMissile": "Dowolna dystansowa",
+			"small": "Mała",
+			"medium": "Średnia",
+			"large": "Duża"
+		},
+		"ArmorProf": {
+			"any": "Dowolna",
+			"light": "Lekka",
+			"medium": "Średnia",
+			"heavy": "Ciężka",
+			"shields": "Tarcze",
+			"none": "Brak",
+			"inclShields": "z tarczami",
+			"noShields": "bez tarcz",
+			"shieldsOnly": "Tylko tarcze",
+			"twoTypes": "{typeA} i {typeB}"
+		},
+		"ClassSheetTitle": "Karta Klasy",
 		"Class": {
+			"Title": "Klasa",
+			"Name": "Nazwa Klasy",
+			"TabDetails": "Szczegóły",
+			"TabTraits": "Cechy",
+			"Identity": "Tożsamość",
+			"CoreAttributes": "Podstawowe Parametry",
+			"Progression": "Rozwój",
+			"ClassId": "ID Klasy",
+			"RequiredKindred": "Wymagana Rasa",
+			"LocalizationKey": "Klucz Lokalizacji",
+			"PrimeAbilities": "Atrybuty Główne",
+			"HitDice": "Kość PŻ",
+			"FlatHP": "Stały Bonus PŻ",
+			"SpellType": "Typ Zaklęć",
+			"SpellTypeChoices": {
+				"none": "Brak",
+				"arcane": "Tajemne",
+				"holy": "Święte",
+				"fairy": "Baśniowe"
+			},
+			"CombatAptitude": "Biegłość Bojowa",
+			"CombatAptitudeChoices": {
+				"martial": "Bojowa",
+				"semi-martial": "Półbojowa",
+				"non-martial": "Niebojowa"
+			},
+			"WeaponsProficiency": "Biegłość w Broni",
+			"ArmorProficiency": "Biegłość w Zbrojach",
+			"ClassSkills": "Umiejętności Klasowe",
+			"SkillPointsBase": "Punkty Umiejętności (Bazowe)",
+			"SkillPointsPerLevel": "Punkty Umiejętności (na Poziom)",
+			"XPThresholds": "Progi PD",
+			"SpellProgression": "Rozwój Zaklęć",
+			"GlamourProgression": "Rozwój Uroków",
+			"AttackProgression": "Rozwój Ataku",
+			"SaveProgressions": "Rozwój Rzutów Obronnych",
+			"SkillProgressions": "Rozwój Umiejętności",
+			"Traits": "Cechy (JSON)",
+			"TraitsJSON": "Definicja Cech"
 		}
 	}
 }

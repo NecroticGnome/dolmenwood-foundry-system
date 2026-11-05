@@ -803,8 +803,10 @@
 	color: var(--dolmen-color-success);
 }
 
-/* Inline Save / Chance Links */
+/* Inline Save / Ability / Skill / Chance Links */
 .inline-save-link,
+.inline-ability-link,
+.inline-skill-link,
 .inline-chance-link {
 	color: var(--dolmen-color-link);
 	text-decoration: underline;
@@ -814,6 +816,8 @@
 }
 
 .inline-save-link:hover,
+.inline-ability-link:hover,
+.inline-skill-link:hover,
 .inline-chance-link:hover {
 	color: var(--dolmen-color-link-hover);
 	text-decoration: none;

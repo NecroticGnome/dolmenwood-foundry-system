@@ -55,11 +55,11 @@ function openTraitRollContextMenu(sheet, key, rollType, options, position, skill
 			menu.remove()
 
 			if (rollType === 'ability') {
-				performAbilityCheck(sheet, key, bonus, traitName)
+				performAbilityCheck(sheet.actor, key, bonus, traitName)
 			} else if (rollType === 'save') {
 				performSavingThrow(sheet, key, bonus, traitName)
 			} else if (rollType === 'skill') {
-				performSkillCheck(sheet, key, skillTargetOverride, bonus, traitName, customName)
+				performSkillCheck(sheet.actor, key, skillTargetOverride, bonus, traitName, customName)
 			}
 		}
 	})
@@ -79,7 +79,7 @@ export function onAbilityRoll(sheet, abilityKey, event) {
 	const rollOptions = getTraitRollOptions(sheet.actor, `abilities.${abilityKey}`)
 
 	if (rollOptions.length === 0) {
-		performAbilityCheck(sheet, abilityKey, 0)
+		performAbilityCheck(sheet.actor, abilityKey, 0)
 	} else {
 		const position = event ? {
 			top: event.currentTarget.getBoundingClientRect().top,
@@ -92,13 +92,13 @@ export function onAbilityRoll(sheet, abilityKey, event) {
 
 /**
  * Perform an ability check roll. Roll 1d6 + ability modifier vs DC 4.
- * @param {DolmenSheet} sheet - The sheet instance
+ * @param {Actor} actor - The rolling adventurer
  * @param {string} abilityKey - The ability key
  * @param {number} traitScoreBonus - Bonus to ability score from selected trait
  * @param {string} [traitName] - Name of the trait providing bonus
  */
-async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0, traitName = null) {
-	const adjusted = sheet.actor.system.final
+export async function performAbilityCheck(actor, abilityKey, traitScoreBonus = 0, traitName = null) {
+	const adjusted = actor.system.final
 	const baseScore = adjusted.abilities[abilityKey]?.score
 	const baseMod = adjusted.abilities[abilityKey]?.mod
 	if (baseScore === undefined) return
@@ -167,7 +167,7 @@ async function performAbilityCheck(sheet, abilityKey, traitScoreBonus = 0, trait
 	`
 
 	await createChatMessage({
-		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
+		speaker: ChatMessage.getSpeaker({ actor }),
 		content: chatContent,
 		rolls: [roll],
 		sound: CONFIG.sounds.dice,
@@ -403,7 +403,7 @@ export function onSkillRoll(sheet, skillKey, targetOverride, event, customName) 
 	const rollOptions = getTraitRollOptions(sheet.actor, `skills.${skillKey}`)
 
 	if (rollOptions.length === 0) {
-		performSkillCheck(sheet, skillKey, targetOverride, 0, null, customName)
+		performSkillCheck(sheet.actor, skillKey, targetOverride, 0, null, customName)
 	} else {
 		const position = event ? {
 			top: event.currentTarget.getBoundingClientRect().top,
@@ -416,15 +416,15 @@ export function onSkillRoll(sheet, skillKey, targetOverride, event, customName) 
 
 /**
  * Perform a skill check roll. Success if d6 >= skill target.
- * @param {DolmenSheet} sheet - The sheet instance
+ * @param {Actor} actor - The rolling adventurer
  * @param {string} skillKey - The skill key
  * @param {number} [targetOverride] - Override the target value (for extra skills)
  * @param {number} traitBonus - Additional bonus from selected trait
  * @param {string} [traitName] - Name of the trait providing bonus
  * @param {string} [customName] - Custom display name for user-defined skills
  */
-async function performSkillCheck(sheet, skillKey, targetOverride = null, traitBonus = 0, traitName = null, customName = null) {
-	const adjusted = sheet.actor.system.final
+export async function performSkillCheck(actor, skillKey, targetOverride = null, traitBonus = 0, traitName = null, customName = null) {
+	const adjusted = actor.system.final
 	let baseSkillTarget = targetOverride
 
 	if (baseSkillTarget === null) {
@@ -482,7 +482,7 @@ async function performSkillCheck(sheet, skillKey, targetOverride = null, traitBo
 	`
 
 	await createChatMessage({
-		speaker: ChatMessage.getSpeaker({ actor: sheet.actor }),
+		speaker: ChatMessage.getSpeaker({ actor }),
 		content: chatContent,
 		rolls: [roll],
 		sound: CONFIG.sounds.dice,

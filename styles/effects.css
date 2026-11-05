@@ -252,3 +252,19 @@
 	min-width: 2rem;
 	text-align: center;
 }
+
+/* Effect item sheet: "Enabled" checkbox inline with its label */
+.sheet.dolmen.effect .form-field.effect-enabled-field {
+	flex-direction: row;
+	align-items: center;
+	gap: 0.35rem;
+	min-height: 1.9rem;
+	font-size: 0.85rem;
+	cursor: pointer;
+}
+
+.sheet.dolmen.effect .form-field.effect-enabled-field input[type="checkbox"] {
+	width: auto;
+	flex: none;
+	margin: 0;
+}
