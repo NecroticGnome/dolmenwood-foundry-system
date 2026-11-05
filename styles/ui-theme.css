@@ -355,3 +355,11 @@
 	--av-background-color: color-mix(in srgb, var(--dui-bg) 75%, transparent);
 	--av-border-color: var(--dui-line);
 }
+
+/* Tour step shown mid-screen (a step with no target): Foundry paints it black, while the
+   other steps sit in the themed #tooltip, so give it the same panel as they have */
+[data-dolmen-ui] .tour-center-step {
+	background: var(--dui-panel);
+	border: 1px solid var(--dui-border);
+	color: var(--dui-text);
+}
