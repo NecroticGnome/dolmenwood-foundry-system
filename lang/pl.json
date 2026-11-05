@@ -156,8 +156,8 @@
 				"HolySlotRank5": "Święte Komórki (Ranga 5)",
 				"GlamoursMax": "Maks. Uroki",
 				"CoinCapacity": "Pojemność w Monetach",
-				"SlotCapacityEquipped": "Komórki w Wyposażeniu",
-				"SlotCapacityStowed": "Komórki w Posiadaniu",
+				"SlotCapacityEquipped": "Komórki (Wyposażone)",
+				"SlotCapacityStowed": "Komórki (Odłożone)",
 				"XPModifier": "Modyfikator PD"
 			}
 		},
