@@ -582,7 +582,7 @@ export function setupDetailsRollListeners(sheet) {
 	sheet.element.querySelector('.roll-age')?.addEventListener('click', async (event) => {
 		event.preventDefault()
 		if (!kindredItem) {
-			ui.notifications.warn('No kindred selected')
+			ui.notifications.warn('DOLMEN.Notifications.NoKindredSelected', { localize: true })
 			return
 		}
 		const formula = kindredItem.system.ageFormula
@@ -738,7 +738,7 @@ export function setupExtraDetailsRollListeners(sheet) {
 			event.preventDefault()
 			const kindredItem = sheet.actor.getKindredItem()
 			if (!kindredItem) {
-				ui.notifications.warn('No kindred selected')
+				ui.notifications.warn('DOLMEN.Notifications.NoKindredSelected', { localize: true })
 				return
 			}
 			const kindred = kindredItem.system.kindredId
@@ -762,7 +762,7 @@ export function setupBackgroundRollListener(sheet) {
 		event.preventDefault()
 		const kindredItem = sheet.actor.getKindredItem()
 		if (!kindredItem) {
-			ui.notifications.warn('No kindred selected')
+			ui.notifications.warn('DOLMEN.Notifications.NoKindredSelected', { localize: true })
 			return
 		}
 		const kindredLabel = kindredItem.name
@@ -845,13 +845,13 @@ export function setupNameRollListener(sheet) {
 
 		const kindredItem = sheet.actor.getKindredItem()
 		if (!kindredItem) {
-			ui.notifications.warn('No kindred selected')
+			ui.notifications.warn('DOLMEN.Notifications.NoKindredSelected', { localize: true })
 			return
 		}
 
 		const groups = kindredItem.system.nameRollGroups
 		if (!groups || groups.length === 0) {
-			ui.notifications.warn('No name roll groups configured for this kindred')
+			ui.notifications.warn('DOLMEN.Notifications.NoNameRollGroups', { localize: true })
 			return
 		}
 

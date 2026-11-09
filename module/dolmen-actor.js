@@ -415,7 +415,7 @@ class DolmenActor extends Actor {
 			kindredDoc = game.items.find(i => i.type === 'Kindred' && i.system?.kindredId === kindredId)
 		}
 		if (!kindredDoc) {
-			ui.notifications.warn(`Kindred "${kindredId}" not found`)
+			ui.notifications.warn(game.i18n.format('DOLMEN.Notifications.KindredNotFound', { id: kindredId }))
 			return
 		}
 
@@ -482,7 +482,7 @@ class DolmenActor extends Actor {
 			classDoc = game.items.find(i => i.type === 'Class' && i.system?.classId === classId)
 		}
 		if (!classDoc) {
-			ui.notifications.warn(`Class "${classId}" not found`)
+			ui.notifications.warn(game.i18n.format('DOLMEN.Notifications.ClassNotFound', { id: classId }))
 			return
 		}
 
