@@ -1,4 +1,4 @@
-/* global game, foundry, canvas, ui, Hooks, ChatMessage, Actor, TextEditor */
+/* global game, foundry, canvas, ui, Hooks, ChatMessage, Actor */
 
 import { computeXPModifier } from '../sheet/data-context.js'
 
@@ -456,7 +456,7 @@ async function addXP() {
 		creatureListEl.addEventListener('dragover', (e) => e.preventDefault())
 		creatureListEl.addEventListener('drop', async (e) => {
 			e.preventDefault()
-			const data = TextEditor.getDragEventData(e)
+			const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(e)
 			if (data.type !== 'Actor') return
 			const actor = await Actor.fromDropData(data)
 			if (actor.type !== 'Creature') return
