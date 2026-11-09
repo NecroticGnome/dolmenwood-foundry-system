@@ -831,7 +831,8 @@
 			"Failure": "Failure",
 			"NormalRoll": "Normal Roll",
 			"Result": "Result",
-			"OrLess": "or less"
+			"OrLess": "or less",
+			"ShiftClickHint": "Shift-click a check to roll straight away, without this panel"
 		},
 		"Edit": "Edit",
 		"Delete": "Delete",

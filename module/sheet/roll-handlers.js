@@ -58,7 +58,7 @@ function getPanelPosition(event) {
 export function onAbilityRoll(sheet, abilityKey, event) {
 	const rollOptions = getTraitRollOptions(sheet.actor, `abilities.${abilityKey}`)
 
-	openRollModifierPanel(sheet, rollOptions, getPanelPosition(event), ({ traitBonus, traitNames, numericMod }) => {
+	openRollModifierPanel(sheet, rollOptions, event, ({ traitBonus, traitNames, numericMod }) => {
 		performAbilityCheck(sheet.actor, abilityKey, traitBonus, traitNames.join(', ') || null, numericMod)
 	})
 }
@@ -179,7 +179,7 @@ export function onSaveRoll(sheet, saveKey, event) {
 		})
 	}
 
-	openRollModifierPanel(sheet, modifiers, getPanelPosition(event), ({ traitBonus, traitNames, numericMod }) => {
+	openRollModifierPanel(sheet, modifiers, event, ({ traitBonus, traitNames, numericMod }) => {
 		const names = numericMod !== 0 ? [...traitNames, formatBonus(numericMod)] : traitNames
 		performSavingThrow(sheet, saveKey, traitBonus + numericMod, names)
 	})
@@ -188,19 +188,32 @@ export function onSaveRoll(sheet, saveKey, event) {
 /**
  * Open a roll modifier panel (multi-select trait bonuses + numeric grid).
  * Shared by ability checks, saving throws, and skill checks.
+ * Shift-click skips the panel and rolls with the default-selected trait options only.
  * @param {DolmenSheet} sheet - The sheet instance
  * @param {object[]} modifiers - Available trait modifier options
- * @param {object} position - Screen position for the panel
+ * @param {Event} [event] - The click event (for positioning and Shift fast-forward)
  * @param {Function} onRoll - Called with { traitBonus, traitNames, numericMod } when ROLL is clicked
  */
-function openRollModifierPanel(sheet, modifiers, position, onRoll) {
+function openRollModifierPanel(sheet, modifiers, event, onRoll) {
+	if (event?.shiftKey) {
+		const defaults = modifiers.filter(m => m.defaultSelected)
+		onRoll({
+			traitBonus: defaults.reduce((sum, m) => sum + m.bonus, 0),
+			traitNames: defaults.map(m => m.name),
+			numericMod: 0
+		})
+		return
+	}
+	const position = getPanelPosition(event)
+
 	// Remove any existing context menu
 	document.querySelector('.dolmen-weapon-context-menu')?.remove()
 
 	const rollLabel = game.i18n.localize('DOLMEN.Attack.Roll')
 
 	// Build HTML
-	let html = `<div class="roll-btn"><i class="fas fa-dice-d20"></i> ${rollLabel}</div>`
+	const hint = game.i18n.localize('DOLMEN.Roll.ShiftClickHint')
+	let html = `<div class="roll-btn" data-tooltip="${hint}"><i class="fas fa-dice-d20"></i> ${rollLabel}</div>`
 
 	// Modifier toggles (multi-select)
 	if (modifiers.length > 0) {
@@ -375,7 +388,7 @@ async function performSavingThrow(sheet, saveKey, traitBonus = 0, modifierNames 
 export function onSkillRoll(sheet, skillKey, targetOverride, event, customName) {
 	const rollOptions = getTraitRollOptions(sheet.actor, `skills.${skillKey}`)
 
-	openRollModifierPanel(sheet, rollOptions, getPanelPosition(event), ({ traitBonus, traitNames, numericMod }) => {
+	openRollModifierPanel(sheet, rollOptions, event, ({ traitBonus, traitNames, numericMod }) => {
 		performSkillCheck(sheet.actor, skillKey, targetOverride, traitBonus, traitNames.join(', ') || null, customName, numericMod)
 	})
 }
