@@ -1091,13 +1091,13 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				{
 					action: 'cancel',
 					icon: 'fas fa-times',
-					label: game.i18n.localize('DOLMEN.Cancel'),
-					callback: () => null
+					label: game.i18n.localize('DOLMEN.Cancel')
 				}
 			],
 			rejectClose: false
 		})
-		if (!spellId) return
+		// DialogV2.wait resolves with the button's action name ('cancel') or null on close
+		if (!knownSpells.some(s => s.id === spellId)) return
 
 		const magicPath = spellType === 'holy' ? 'holyMagic' : 'arcaneMagic'
 		const slotData = this.actor.system[magicPath].spellSlots[rankKey]
