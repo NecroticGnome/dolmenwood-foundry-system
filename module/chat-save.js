@@ -2,6 +2,7 @@
 import { createChatMessage } from './sheet/chat-helpers.js'
 import { getTraitRollOptions } from './sheet/trait-helpers.js'
 import { parseSaveLinks } from './utils/save-links.js'
+import { resolveD20Roll, withNaturalNote } from './utils/natural-rolls.js'
 
 export { parseSaveLinks }
 
@@ -115,13 +116,10 @@ async function performSaveRollForActor(actor, saveKey, bonus = 0, modifierNames 
 	const roll = new Roll(formula)
 	await roll.evaluate()
 
-	const total = roll.total
-	const isSuccess = total >= baseSaveTarget
+	const { isSuccess, naturalNote } = resolveD20Roll(roll.dice[0].results[0].result, roll.total, baseSaveTarget)
 
 	const resultClass = isSuccess ? 'success' : 'failure'
-	const resultLabel = isSuccess
-		? game.i18n.localize('DOLMEN.Roll.Success')
-		: game.i18n.localize('DOLMEN.Roll.Failure')
+	const resultLabel = withNaturalNote(game.i18n.localize(isSuccess ? 'DOLMEN.Roll.Success' : 'DOLMEN.Roll.Failure'), naturalNote)
 
 	const anchor = await roll.toAnchor({ classes: ['save-inline-roll', 'inline-dsn-hidden'] })
 

@@ -834,7 +834,8 @@
 			"OrLess": "or less",
 			"ShiftClickHint": "Shift-click a check to roll straight away, without this panel",
 			"Natural1": "natural 1",
-			"Natural6": "natural 6"
+			"Natural6": "natural 6",
+			"Natural20": "natural 20"
 		},
 		"Edit": "Edit",
 		"Delete": "Delete",

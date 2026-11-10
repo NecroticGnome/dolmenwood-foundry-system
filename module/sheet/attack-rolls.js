@@ -11,6 +11,7 @@ import { getAllActiveTraits, resolveAdjustmentValue, resolveDamageProgression, t
 import { parseSaveLinks } from '../chat-save.js'
 import { getWeaponTypesForGroup, WEAPON_PROF_GROUPS } from '../utils/choices.js'
 import { createAttackMacro } from '../attack-macros.js'
+import { resolveD20Roll, withNaturalNote } from '../utils/natural-rolls.js'
 
 /* -------------------------------------------- */
 /*  Weapon Helpers                              */
@@ -267,9 +268,9 @@ export function buildAttackChatHtml({ weapon, attackType, attack, damage }) {
 			? `<span class="roll-target">${game.i18n.format('DOLMEN.Attack.VsAC', { ac: attack.targetData.ac, name: attack.targetData.name })}</span>`
 			: ''
 		const hitLabel = attack.hitResult === 'hit'
-			? `<span class="roll-label success">${game.i18n.localize('DOLMEN.Attack.Hit')}</span>`
+			? `<span class="roll-label success">${withNaturalNote(game.i18n.localize('DOLMEN.Attack.Hit'), attack.hitNote)}</span>`
 			: attack.hitResult === 'miss'
-				? `<span class="roll-label failure">${game.i18n.localize('DOLMEN.Attack.Miss')}</span>`
+				? `<span class="roll-label failure">${withNaturalNote(game.i18n.localize('DOLMEN.Attack.Miss'), attack.hitNote)}</span>`
 				: ''
 		rollSections += `
 			<div class="roll-section attack-section${hitClass}">
@@ -332,6 +333,7 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 	let attackData = null
 	let damageData = null
 	let hitResult = null
+	let hitNote = ''
 	const rolls = []
 
 	// Get target info for hit/miss evaluation
@@ -353,7 +355,9 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 
 		// Determine hit/miss against target
 		if (targetData !== null) {
-			hitResult = roll.total >= targetData.ac ? 'hit' : 'miss'
+			const hit = resolveD20Roll(roll.dice[0].results[0].result, roll.total, targetData.ac)
+			hitResult = hit.isSuccess ? 'hit' : 'miss'
+			hitNote = hit.naturalNote
 		}
 
 		attackData = {
@@ -364,7 +368,8 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 			attackModeName,
 			specialText,
 			targetData,
-			hitResult
+			hitResult,
+			hitNote
 		}
 	}
 
