@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "build:css": "node scripts/build-css.js",
     "todb": "node scripts/compile-packs.mjs",
-    "tojson": "node scripts/extract-packs.mjs"
+    "tojson": "node scripts/extract-packs.mjs",
+    "test": "node --test"
   }
 }
