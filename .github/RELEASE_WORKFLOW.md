@@ -20,6 +20,14 @@ When you publish the draft release, another workflow automatically:
 - Updates the `download` and `manifest` URLs to point to the new release
 - Commits these changes back to the main branch
 
+### 3. Foundry package publish (Manual)
+**Trigger:** Run the "Foundry package publish" workflow from the Actions tab
+
+Once the manifest update has committed `system.json` to main, this workflow:
+- Checks that the release's `system.json` is published and matches the version on main
+- Adds the version to the [Foundry package listing](https://foundryvtt.com/packages/dolmenwood) with its manifest, release notes link and compatibility
+- Can be run as a **dry run** first to validate without publishing
+
 ## Release Process Step-by-Step
 
 1. **Update version.txt**
@@ -50,8 +58,13 @@ When you publish the draft release, another workflow automatically:
    - Workflow #2 automatically runs
    - Your `system.json` is updated with new URLs
 
-6. **Done!**
-   - Users can now download the new version from GitHub
+6. **Publish to Foundry**
+   - Wait for the "Foundry Manifest Update" workflow to finish
+   - Go to the "Actions" tab, choose "Foundry package publish" and click "Run workflow" (tick *Dry run* to check it first)
+   - The new version appears on the Foundry package page
+
+7. **Done!**
+   - Users can now install or update to the new version within Foundry VTT
    - The manifest URLs point to the latest release
 
 ## Important Notes
@@ -74,3 +87,9 @@ When you publish the draft release, another workflow automatically:
 **Manifest not updated:**
 - Make sure you **published** the release (not just created a draft)
 - Check the Actions tab for the "Foundry Manifest Update" workflow
+
+**Foundry publish fails:**
+- `PACKAGE_RELEASE_TOKEN` must be set in repo Settings → Secrets and variables → Actions. The token is on the package's edit page on foundryvtt.com
+- "system.json is at X but version.txt is Y" means the GitHub release isn't published yet, or the manifest update hasn't committed `system.json` to main
+- Run it from `main`; started from any other branch the job is skipped
+- Foundry rejects a version that is already listed

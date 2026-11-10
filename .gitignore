@@ -405,6 +405,7 @@ FodyWeavers.xsd
 .*
 !.gitignore
 !.gitattributes
+!.github/
 !README.md
 !how-to-use-this-system.md
 

@@ -1,0 +1,117 @@
+name: Foundry package publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (validates without publishing)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish to Foundry VTT
+    # Only publish what's on main, whichever branch the run was started from
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Validate system.json shape
+        run: |
+          set -euo pipefail
+          jq -e 'has("id") and has("version") and has("manifest") and has("download") and has("compatibility")' system.json > /dev/null \
+            || { echo "::error::system.json is missing one of: id, version, manifest, download, compatibility"; exit 1; }
+          echo "system.json shape OK"
+
+      - name: Validate the release is published
+        run: |
+          set -euo pipefail
+          # version.txt changes when the release PR merges; system.json only once the
+          # release is published and the manifest update has committed it
+          EXPECTED=$(tr -d '[:space:]' < version.txt)
+          VERSION=$(jq -r '.version' system.json)
+          MANIFEST=$(jq -r '.manifest' system.json)
+          if [ "$VERSION" != "$EXPECTED" ]; then
+            echo "::error::system.json is at $VERSION but version.txt is $EXPECTED. Publish the v$EXPECTED GitHub release and wait for the Foundry Manifest Update workflow."
+            exit 1
+          fi
+          RELEASED=$(curl -sSfL --max-time 30 --retry 2 "$MANIFEST" | jq -r '.version') \
+            || { echo "::error::Could not fetch $MANIFEST. Publish the v$VERSION GitHub release first."; exit 1; }
+          if [ "$RELEASED" != "$VERSION" ]; then
+            echo "::error::$MANIFEST reports version $RELEASED, expected $VERSION"
+            exit 1
+          fi
+          echo "Release v$VERSION is published"
+
+      - name: Validate secret
+        env:
+          PACKAGE_RELEASE_TOKEN: ${{ secrets.PACKAGE_RELEASE_TOKEN }}
+        run: |
+          if [ -z "$PACKAGE_RELEASE_TOKEN" ]; then
+            echo "::error::PACKAGE_RELEASE_TOKEN secret is not set. Add it in repo Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - name: Publish release to Foundry VTT
+        env:
+          PACKAGE_RELEASE_TOKEN: ${{ secrets.PACKAGE_RELEASE_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          VERSION=$(jq -r '.version' system.json)
+          PACKAGE_ID=$(jq -r '.id' system.json)
+          MANIFEST=$(jq -r '.manifest' system.json)
+          NOTES="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/v${VERSION}"
+          COMPAT=$(jq -c '.compatibility' system.json)
+
+          BODY=$(jq -n \
+            --arg id "$PACKAGE_ID" \
+            --arg ver "$VERSION" \
+            --arg man "$MANIFEST" \
+            --arg notes "$NOTES" \
+            --argjson compat "$COMPAT" \
+            --argjson dry "$DRY_RUN" \
+            '{id: $id, "dry-run": $dry, release: {version: $ver, manifest: $man, notes: $notes, compatibility: $compat}}')
+
+          echo "Publishing package **$PACKAGE_ID** at version **$VERSION** (dry-run: $DRY_RUN)" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- manifest: \`$MANIFEST\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- release notes link: \`$NOTES\`" >> "$GITHUB_STEP_SUMMARY"
+
+          HTTP_CODE=$(curl -sS --max-time 60 -o /tmp/foundry_response.txt -w "%{http_code}" \
+            -X POST "https://foundryvtt.com/_api/packages/release_version/" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: ${PACKAGE_RELEASE_TOKEN}" \
+            -d "$BODY")
+
+          echo "=== Foundry API response (HTTP $HTTP_CODE) ==="
+          cat /tmp/foundry_response.txt
+          echo
+          echo "=== end response ==="
+
+          echo "HTTP status: $HTTP_CODE" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/foundry_response.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "::error::Foundry API returned $HTTP_CODE"
+            exit 1
+          fi
+
+          STATUS=$(jq -r '.status // "unknown"' /tmp/foundry_response.txt 2>/dev/null || echo "not JSON")
+          if [ "$STATUS" != "success" ]; then
+            echo "::error::Foundry API returned HTTP $HTTP_CODE but body status was '$STATUS'"
+            exit 1
+          fi
