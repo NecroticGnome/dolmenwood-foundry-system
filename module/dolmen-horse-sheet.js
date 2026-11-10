@@ -3,6 +3,7 @@
 const { DialogV2 } = foundry.applications.api
 import { buildChoices, CHOICE_KEYS } from './utils/choices.js'
 import { onSaveRoll } from './sheet/roll-handlers.js'
+import { resolveD20Roll, withNaturalNote } from './utils/natural-rolls.js'
 import { createChatMessage } from './sheet/chat-helpers.js'
 import { createContextMenu } from './sheet/context-menu.js'
 import { getDieIconFromFormula, getAttackTarget, buildDamageFlags } from './sheet/attack-rolls.js'
@@ -763,15 +764,17 @@ class DolmenHorseSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
 		// Compare against targeted token's AC, if any
 		const targetData = getAttackTarget()
-		const hitResult = targetData ? (atkRoll.total >= targetData.ac ? 'hit' : 'miss') : null
+		const hit = targetData ? resolveD20Roll(atkRoll.dice[0].results[0].result, atkRoll.total, targetData.ac) : null
+		const hitResult = hit ? (hit.isSuccess ? 'hit' : 'miss') : null
+		const hitNote = hit?.naturalNote || ''
 		const hitClass = hitResult === 'hit' ? ' success' : hitResult === 'miss' ? ' failure' : ''
 		const targetInfo = targetData
 			? `<span class="roll-target">${game.i18n.format('DOLMEN.Attack.VsAC', { ac: targetData.ac, name: targetData.name })}</span>`
 			: ''
 		const hitLabel = hitResult === 'hit'
-			? `<span class="roll-label success">${game.i18n.localize('DOLMEN.Attack.Hit')}</span>`
+			? `<span class="roll-label success">${withNaturalNote(game.i18n.localize('DOLMEN.Attack.Hit'), hitNote)}</span>`
 			: hitResult === 'miss'
-				? `<span class="roll-label failure">${game.i18n.localize('DOLMEN.Attack.Miss')}</span>`
+				? `<span class="roll-label failure">${withNaturalNote(game.i18n.localize('DOLMEN.Attack.Miss'), hitNote)}</span>`
 				: ''
 
 		const content = `
