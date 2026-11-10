@@ -3,6 +3,7 @@ import { buildChoices, buildChoicesWithBlank, formatWeaponProficiency, formatArm
 import { getFutureDateKey, getFutureDateKeyByYears } from './calendar/calendar-time.js'
 import { addRuneRefreshNote } from './sheet/listeners.js'
 import { parseSaveLinks } from './chat-save.js'
+import { stripSecrets } from './utils/save-links.js'
 
 // Sheet module imports
 import {
@@ -1187,7 +1188,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			fields += `<div class="spell-field"><strong>${game.i18n.localize('DOLMEN.Magic.Duration')}:</strong> ${sys.duration}</div>`
 		}
 		if (sys.description) {
-			fields += `<div class="spell-description">${parseSaveLinks(sys.description)}</div>`
+			fields += `<div class="spell-description">${parseSaveLinks(stripSecrets(sys.description))}</div>`
 		}
 		if (sys.codexUuid) {
 			fields += `<div class="spell-codex-link">@UUID[${sys.codexUuid}]{${game.i18n.localize('DOLMEN.Magic.CodexLink')}}</div>`

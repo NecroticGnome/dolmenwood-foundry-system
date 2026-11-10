@@ -12,6 +12,7 @@ import { onAbilityRoll, onSaveRoll, onSkillRoll, rollTrait, useTrait } from './r
 import { openXPDialog, openXPEditDialog, openAddSkillDialog, openCoinDialog, removeSkill, levelUp, levelDown } from './dialogs.js'
 import { createContextMenu } from './context-menu.js'
 import { drawFromTable, drawFromTableRaw } from '../utils/roll-tables.js'
+import { stripSecrets } from '../utils/save-links.js'
 
 const { DialogV2 } = foundry.applications.api
 
@@ -1175,7 +1176,7 @@ export function setupChargesListeners(sheet) {
 			await item.update({ 'system.charges.value': newUsed })
 
 			// Post to chat
-			const desc = item.system.effects || item.system.notes || ''
+			const desc = item.system.effects || stripSecrets(item.system.notes) || ''
 			const remaining = charges.max - newUsed
 			const usageInfo = `<span class="trait-chat-usage">${remaining}/${charges.max} ${game.i18n.localize('DOLMEN.Traits.Remaining')}</span>`
 			const descHtml = desc ? `<div class="trait-chat-desc">${desc}</div>` : ''
