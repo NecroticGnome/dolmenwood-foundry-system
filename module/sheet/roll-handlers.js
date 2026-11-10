@@ -45,6 +45,21 @@ function getPanelPosition(event) {
 	return { top: rect.top, left: rect.left }
 }
 
+/**
+ * Resolve a d6 check: a natural 1 always fails and a natural 6 always succeeds,
+ * irrespective of modifiers; otherwise the total must meet the target.
+ * @param {number} natural - The face rolled on the d6
+ * @param {number} total - The roll total including modifiers
+ * @param {number} target - The total needed to succeed
+ * @returns {{isSuccess: boolean, naturalNote: string}} naturalNote is set only when the natural roll changed the outcome
+ */
+function resolveD6Check(natural, total, target) {
+	const byTotal = total >= target
+	if (natural === 1 && byTotal) return { isSuccess: false, naturalNote: game.i18n.localize('DOLMEN.Roll.Natural1') }
+	if (natural === 6 && !byTotal) return { isSuccess: true, naturalNote: game.i18n.localize('DOLMEN.Roll.Natural6') }
+	return { isSuccess: byTotal, naturalNote: '' }
+}
+
 /* -------------------------------------------- */
 /*  Ability Check Roll Methods                  */
 /* -------------------------------------------- */
@@ -93,17 +108,11 @@ export async function performAbilityCheck(actor, abilityKey, traitScoreBonus = 0
 	const roll = new Roll(formula)
 	await roll.evaluate()
 
-	const total = roll.total
-	const isSuccess = total >= dc
+	const { isSuccess, naturalNote } = resolveD6Check(roll.dice[0].results[0].result, roll.total, dc)
 
 	let resultClass = isSuccess ? 'success' : 'failure'
-	let resultLabel = ''
-
-	if (isSuccess) {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Success')
-	} else {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Failure')
-	}
+	let resultLabel = game.i18n.localize(isSuccess ? 'DOLMEN.Roll.Success' : 'DOLMEN.Roll.Failure')
+	if (naturalNote) resultLabel += ` (${naturalNote})`
 
 	const anchor = await roll.toAnchor({ classes: ['ability-inline-roll', 'inline-dsn-hidden'] })
 
@@ -421,16 +430,11 @@ export async function performSkillCheck(actor, skillKey, targetOverride = null, 
 	const roll = new Roll(`1d6${signedTerm(rollModifier)}`)
 	await roll.evaluate()
 
-	const isSuccess = roll.total >= skillTarget
+	const { isSuccess, naturalNote } = resolveD6Check(roll.dice[0].results[0].result, roll.total, skillTarget)
 
 	let resultClass = isSuccess ? 'success' : 'failure'
-	let resultLabel = ''
-
-	if (isSuccess) {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Success')
-	} else {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Failure')
-	}
+	let resultLabel = game.i18n.localize(isSuccess ? 'DOLMEN.Roll.Success' : 'DOLMEN.Roll.Failure')
+	if (naturalNote) resultLabel += ` (${naturalNote})`
 
 	const anchor = await roll.toAnchor({ classes: ['skill-inline-roll', 'inline-dsn-hidden'] })
 

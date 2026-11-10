@@ -832,7 +832,9 @@
 			"NormalRoll": "Normal Roll",
 			"Result": "Result",
 			"OrLess": "or less",
-			"ShiftClickHint": "Shift-click a check to roll straight away, without this panel"
+			"ShiftClickHint": "Shift-click a check to roll straight away, without this panel",
+			"Natural1": "natural 1",
+			"Natural6": "natural 6"
 		},
 		"Edit": "Edit",
 		"Delete": "Delete",
