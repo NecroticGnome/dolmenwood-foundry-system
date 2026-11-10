@@ -1204,14 +1204,6 @@
 				"RecurrenceMonthly": "Co Miesiąc",
 				"RecurrenceYearly": "Co Rok"
 			}
-		},
-		"Notifications": {
-			"NoKindredSelected": "Nie wybrano rasy",
-			"KindredNotFound": "Nie znaleziono rasy \"{id}\"",
-			"ClassNotFound": "Nie znaleziono klasy \"{id}\"",
-			"CodexEntryNotFound": "Nie znaleziono wpisu w Kodeksie: {uuid}",
-			"NoNameRollGroups": "Ta rasa nie ma skonfigurowanych grup losowania imion",
-			"MigratedAdjustments": "Dolmenwood: przeniesiono ręczne modyfikatory do Efektów (liczba: {count})."
 		}
 	}
 }
