@@ -7,62 +7,57 @@ import { createChatMessage } from './chat-helpers.js'
  */
 
 import { AdventurerDataModel } from '../data-models.mjs'
-import { createContextMenu } from './context-menu.js'
 import { getTraitRollOptions } from './trait-helpers.js'
 import { getDieIconFromFormula } from './attack-rolls.js'
 
 /* -------------------------------------------- */
-/*  Trait Roll Context Menu                     */
+/*  Helpers                                     */
 /* -------------------------------------------- */
 
 /**
- * Open context menu to select trait bonuses for a roll.
- * @param {DolmenSheet} sheet - The sheet instance
- * @param {string} key - The ability/save/skill key
- * @param {string} rollType - 'ability', 'save', or 'skill'
- * @param {object[]} options - Available trait options
- * @param {object} position - Position {top, left}
- * @param {number} [skillTargetOverride] - For skill rolls, the target override value
- * @param {string} [customName] - Custom display name for user-defined skills
+ * Format a number as a formula term, e.g. ' + 2' or ' - 1'.
+ * @param {number} value
+ * @param {boolean} [includeZero] - Emit ' + 0' instead of '' for zero
+ * @returns {string}
  */
-function openTraitRollContextMenu(sheet, key, rollType, options, position, skillTargetOverride = null, customName = null) {
-	const normalLabel = game.i18n.localize('DOLMEN.Roll.NormalRoll')
+function signedTerm(value, includeZero = false) {
+	if (!value && !includeZero) return ''
+	return value >= 0 ? ` + ${value}` : ` - ${Math.abs(value)}`
+}
 
-	let html = `
-		<div class="weapon-menu-item" data-bonus="0" data-trait-id="">
-			<i class="fas fa-dice"></i>
-			<span class="weapon-name">${normalLabel}</span>
-		</div>
-	`
+/**
+ * Format a bonus for display, e.g. '+2' or '-1'.
+ * @param {number} value
+ * @returns {string}
+ */
+function formatBonus(value) {
+	return value >= 0 ? `+${value}` : `${value}`
+}
 
-	for (const opt of options) {
-		const bonusStr = opt.bonus >= 0 ? `+${opt.bonus}` : `${opt.bonus}`
-		html += `
-			<div class="weapon-menu-item" data-bonus="${opt.bonus}" data-trait-id="${opt.id}">
-				<i class="fas fa-sparkles"></i>
-				<span class="weapon-name">${opt.name}</span>
-				<span class="weapon-damage">${bonusStr}</span>
-			</div>
-		`
-	}
+/**
+ * Screen position for a roll panel, anchored to the clicked element.
+ * @param {Event} [event]
+ * @returns {{top: number, left: number}}
+ */
+function getPanelPosition(event) {
+	if (!event?.currentTarget) return { top: 100, left: 100 }
+	const rect = event.currentTarget.getBoundingClientRect()
+	return { top: rect.top, left: rect.left }
+}
 
-	createContextMenu(sheet, {
-		html,
-		position,
-		onItemClick: (item, menu) => {
-			const bonus = parseInt(item.dataset.bonus) || 0
-			const traitName = item.dataset.traitId ? options.find(o => o.id === item.dataset.traitId)?.name : null
-			menu.remove()
-
-			if (rollType === 'ability') {
-				performAbilityCheck(sheet.actor, key, bonus, traitName)
-			} else if (rollType === 'save') {
-				performSavingThrow(sheet, key, bonus, traitName)
-			} else if (rollType === 'skill') {
-				performSkillCheck(sheet.actor, key, skillTargetOverride, bonus, traitName, customName)
-			}
-		}
-	})
+/**
+ * Resolve a d6 check: a natural 1 always fails and a natural 6 always succeeds,
+ * irrespective of modifiers; otherwise the total must meet the target.
+ * @param {number} natural - The face rolled on the d6
+ * @param {number} total - The roll total including modifiers
+ * @param {number} target - The total needed to succeed
+ * @returns {{isSuccess: boolean, naturalNote: string}} naturalNote is set only when the natural roll changed the outcome
+ */
+function resolveD6Check(natural, total, target) {
+	const byTotal = total >= target
+	if (natural === 1 && byTotal) return { isSuccess: false, naturalNote: game.i18n.localize('DOLMEN.Roll.Natural1') }
+	if (natural === 6 && !byTotal) return { isSuccess: true, naturalNote: game.i18n.localize('DOLMEN.Roll.Natural6') }
+	return { isSuccess: byTotal, naturalNote: '' }
 }
 
 /* -------------------------------------------- */
@@ -78,16 +73,9 @@ function openTraitRollContextMenu(sheet, key, rollType, options, position, skill
 export function onAbilityRoll(sheet, abilityKey, event) {
 	const rollOptions = getTraitRollOptions(sheet.actor, `abilities.${abilityKey}`)
 
-	if (rollOptions.length === 0) {
-		performAbilityCheck(sheet.actor, abilityKey, 0)
-	} else {
-		const position = event ? {
-			top: event.currentTarget.getBoundingClientRect().top,
-			left: event.currentTarget.getBoundingClientRect().left
-		} : { top: 100, left: 100 }
-
-		openTraitRollContextMenu(sheet, abilityKey, 'ability', rollOptions, position)
-	}
+	openRollModifierPanel(sheet, rollOptions, event, ({ traitBonus, traitNames, numericMod }) => {
+		performAbilityCheck(sheet.actor, abilityKey, traitBonus, traitNames.join(', ') || null, numericMod)
+	})
 }
 
 /**
@@ -96,8 +84,9 @@ export function onAbilityRoll(sheet, abilityKey, event) {
  * @param {string} abilityKey - The ability key
  * @param {number} traitScoreBonus - Bonus to ability score from selected trait
  * @param {string} [traitName] - Name of the trait providing bonus
+ * @param {number} [rollModifier] - Situational modifier added to the roll (e.g. a Referee-imposed penalty)
  */
-export async function performAbilityCheck(actor, abilityKey, traitScoreBonus = 0, traitName = null) {
+export async function performAbilityCheck(actor, abilityKey, traitScoreBonus = 0, traitName = null, rollModifier = 0) {
 	const adjusted = actor.system.final
 	const baseScore = adjusted.abilities[abilityKey]?.score
 	const baseMod = adjusted.abilities[abilityKey]?.mod
@@ -114,35 +103,33 @@ export async function performAbilityCheck(actor, abilityKey, traitScoreBonus = 0
 		effectiveMod = AdventurerDataModel.computeModifier(effectiveScore)
 	}
 
-	// Build formula with effective modifier
-	const formula = effectiveMod >= 0 ? `1d6 + ${effectiveMod}` : `1d6 - ${Math.abs(effectiveMod)}`
+	// Build formula with effective modifier and any situational roll modifier
+	const formula = `1d6${signedTerm(effectiveMod)}${signedTerm(rollModifier)}`
 	const roll = new Roll(formula)
 	await roll.evaluate()
 
-	const total = roll.total
-	const isSuccess = total >= dc
+	const { isSuccess, naturalNote } = resolveD6Check(roll.dice[0].results[0].result, roll.total, dc)
 
 	let resultClass = isSuccess ? 'success' : 'failure'
-	let resultLabel = ''
-
-	if (isSuccess) {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Success')
-	} else {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Failure')
-	}
+	let resultLabel = game.i18n.localize(isSuccess ? 'DOLMEN.Roll.Success' : 'DOLMEN.Roll.Failure')
+	if (naturalNote) resultLabel += ` (${naturalNote})`
 
 	const anchor = await roll.toAnchor({ classes: ['ability-inline-roll', 'inline-dsn-hidden'] })
 
 	// Build breakdown string showing components
 	let breakdownParts = [`1d6`]
 	if (traitScoreBonus !== 0 && traitName) {
-		breakdownParts.push(`+ ${effectiveMod} (${baseScore}+${traitScoreBonus}=${effectiveScore})`)
+		breakdownParts.push(`${signedTerm(effectiveMod, true)} (${baseScore}+${traitScoreBonus}=${effectiveScore})`)
 	} else if (effectiveMod !== 0) {
-		breakdownParts.push(effectiveMod >= 0 ? `+ ${effectiveMod}` : `- ${Math.abs(effectiveMod)}`)
+		breakdownParts.push(signedTerm(effectiveMod))
 	}
-	const breakdown = breakdownParts.join(' ')
+	if (rollModifier !== 0) breakdownParts.push(signedTerm(rollModifier))
+	const breakdown = breakdownParts.join(' ').replace(/ {2,}/g, ' ').trim()
 
-	const traitBadge = traitName ? `<span class="trait-badge">${traitName}</span>` : ''
+	const traitBadge = [
+		traitName ? `<span class="trait-badge">${traitName}</span>` : '',
+		rollModifier !== 0 ? `<span class="trait-badge">${formatBonus(rollModifier)}</span>` : ''
+	].filter(Boolean).join(' ')
 
 	const chatContent = `
 		<div class="dolmen ability-roll">
@@ -201,29 +188,41 @@ export function onSaveRoll(sheet, saveKey, event) {
 		})
 	}
 
-	const position = event ? {
-		top: event.currentTarget.getBoundingClientRect().top,
-		left: event.currentTarget.getBoundingClientRect().left
-	} : { top: 100, left: 100 }
-
-	openSaveModifierPanel(sheet, saveKey, modifiers, position)
+	openRollModifierPanel(sheet, modifiers, event, ({ traitBonus, traitNames, numericMod }) => {
+		const names = numericMod !== 0 ? [...traitNames, formatBonus(numericMod)] : traitNames
+		performSavingThrow(sheet, saveKey, traitBonus + numericMod, names)
+	})
 }
 
 /**
- * Open a modifier panel for saving throws (multi-select bonuses + numeric grid).
+ * Open a roll modifier panel (multi-select trait bonuses + numeric grid).
+ * Shared by ability checks, saving throws, and skill checks.
+ * Shift-click skips the panel and rolls with the default-selected trait options only.
  * @param {DolmenSheet} sheet - The sheet instance
- * @param {string} saveKey - The save key
- * @param {object[]} modifiers - Available modifier options
- * @param {object} position - Screen position for the panel
+ * @param {object[]} modifiers - Available trait modifier options
+ * @param {Event} [event] - The click event (for positioning and Shift fast-forward)
+ * @param {Function} onRoll - Called with { traitBonus, traitNames, numericMod } when ROLL is clicked
  */
-function openSaveModifierPanel(sheet, saveKey, modifiers, position) {
+function openRollModifierPanel(sheet, modifiers, event, onRoll) {
+	if (event?.shiftKey) {
+		const defaults = modifiers.filter(m => m.defaultSelected)
+		onRoll({
+			traitBonus: defaults.reduce((sum, m) => sum + m.bonus, 0),
+			traitNames: defaults.map(m => m.name),
+			numericMod: 0
+		})
+		return
+	}
+	const position = getPanelPosition(event)
+
 	// Remove any existing context menu
 	document.querySelector('.dolmen-weapon-context-menu')?.remove()
 
 	const rollLabel = game.i18n.localize('DOLMEN.Attack.Roll')
 
 	// Build HTML
-	let html = `<div class="roll-btn"><i class="fas fa-dice-d20"></i> ${rollLabel}</div>`
+	const hint = game.i18n.localize('DOLMEN.Roll.ShiftClickHint')
+	let html = `<div class="roll-btn" data-tooltip="${hint}"><i class="fas fa-dice-d20"></i> ${rollLabel}</div>`
 
 	// Modifier toggles (multi-select)
 	if (modifiers.length > 0) {
@@ -299,28 +298,24 @@ function openSaveModifierPanel(sheet, saveKey, modifiers, position) {
 
 	// ROLL button
 	panel.querySelector('.roll-btn').addEventListener('click', () => {
-		// Gather selected modifiers
-		const selectedNames = []
-		let totalBonus = 0
+		// Gather selected trait modifiers
+		const traitNames = []
+		let traitBonus = 0
 		panel.querySelectorAll('.modifier-item.selected').forEach(item => {
 			const mod = modifiers.find(m => m.id === item.dataset.modId)
 			if (mod) {
-				totalBonus += mod.bonus
-				selectedNames.push(mod.name)
+				traitBonus += mod.bonus
+				traitNames.push(mod.name)
 			}
 		})
 
 		// Gather numeric modifier
 		const selectedNumBtn = panel.querySelector('.numeric-btn.selected')
 		const numericMod = selectedNumBtn ? parseInt(selectedNumBtn.dataset.numMod) : 0
-		totalBonus += numericMod
-		if (numericMod !== 0) {
-			selectedNames.push(numericMod > 0 ? `+${numericMod}` : `${numericMod}`)
-		}
 
 		panel.remove()
 		document.removeEventListener('click', closePanel)
-		performSavingThrow(sheet, saveKey, totalBonus, selectedNames)
+		onRoll({ traitBonus, traitNames, numericMod })
 	})
 
 	setTimeout(() => document.addEventListener('click', closePanel), 0)
@@ -402,16 +397,9 @@ async function performSavingThrow(sheet, saveKey, traitBonus = 0, modifierNames 
 export function onSkillRoll(sheet, skillKey, targetOverride, event, customName) {
 	const rollOptions = getTraitRollOptions(sheet.actor, `skills.${skillKey}`)
 
-	if (rollOptions.length === 0) {
-		performSkillCheck(sheet.actor, skillKey, targetOverride, 0, null, customName)
-	} else {
-		const position = event ? {
-			top: event.currentTarget.getBoundingClientRect().top,
-			left: event.currentTarget.getBoundingClientRect().left
-		} : { top: 100, left: 100 }
-
-		openTraitRollContextMenu(sheet, skillKey, 'skill', rollOptions, position, targetOverride, customName)
-	}
+	openRollModifierPanel(sheet, rollOptions, event, ({ traitBonus, traitNames, numericMod }) => {
+		performSkillCheck(sheet.actor, skillKey, targetOverride, traitBonus, traitNames.join(', ') || null, customName, numericMod)
+	})
 }
 
 /**
@@ -422,8 +410,9 @@ export function onSkillRoll(sheet, skillKey, targetOverride, event, customName) 
  * @param {number} traitBonus - Additional bonus from selected trait
  * @param {string} [traitName] - Name of the trait providing bonus
  * @param {string} [customName] - Custom display name for user-defined skills
+ * @param {number} [rollModifier] - Situational modifier added to the d6 roll
  */
-export async function performSkillCheck(actor, skillKey, targetOverride = null, traitBonus = 0, traitName = null, customName = null) {
+export async function performSkillCheck(actor, skillKey, targetOverride = null, traitBonus = 0, traitName = null, customName = null, rollModifier = 0) {
 	const adjusted = actor.system.final
 	let baseSkillTarget = targetOverride
 
@@ -438,24 +427,21 @@ export async function performSkillCheck(actor, skillKey, targetOverride = null, 
 
 	const skillName = customName || game.i18n.localize(`DOLMEN.Skills.${skillKey}`)
 
-	const roll = new Roll('1d6')
+	const roll = new Roll(`1d6${signedTerm(rollModifier)}`)
 	await roll.evaluate()
 
-	const d6Result = roll.dice[0].results[0].result
-	const isSuccess = d6Result >= skillTarget
+	const { isSuccess, naturalNote } = resolveD6Check(roll.dice[0].results[0].result, roll.total, skillTarget)
 
 	let resultClass = isSuccess ? 'success' : 'failure'
-	let resultLabel = ''
-
-	if (isSuccess) {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Success')
-	} else {
-		resultLabel = game.i18n.localize('DOLMEN.Roll.Failure')
-	}
+	let resultLabel = game.i18n.localize(isSuccess ? 'DOLMEN.Roll.Success' : 'DOLMEN.Roll.Failure')
+	if (naturalNote) resultLabel += ` (${naturalNote})`
 
 	const anchor = await roll.toAnchor({ classes: ['skill-inline-roll', 'inline-dsn-hidden'] })
 
-	const traitBadge = traitName ? `<span class="trait-badge">${traitName}</span>` : ''
+	const traitBadge = [
+		traitName ? `<span class="trait-badge">${traitName}</span>` : '',
+		rollModifier !== 0 ? `<span class="trait-badge">${formatBonus(rollModifier)}</span>` : ''
+	].filter(Boolean).join(' ')
 	const targetDisplay = traitBonus !== 0
 		? `${baseSkillTarget} + ${traitBonus} = ${skillTarget}`
 		: `${skillTarget}`
