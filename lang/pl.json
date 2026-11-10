@@ -831,8 +831,7 @@
 			"Failure": "Porażka",
 			"NormalRoll": "Zwykły Rzut",
 			"Result": "Wynik",
-			"OrLess": "lub mniej",
-			"ShiftClickHint": "Kliknij test z wciśniętym Shiftem, aby rzucić od razu, bez tego panelu"
+			"OrLess": "lub mniej"
 		},
 		"Edit": "Edytuj",
 		"Delete": "Usuń",
