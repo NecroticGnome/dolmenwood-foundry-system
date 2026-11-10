@@ -1,4 +1,4 @@
-/* global foundry, game, Dialog, CONFIG, ui, Item, ChatMessage, CONST */
+/* global foundry, game, CONFIG, ui, Item, ChatMessage, CONST */
 import { buildChoices, buildChoicesWithBlank, formatWeaponProficiency, formatArmorProficiency, CHOICE_KEYS } from './utils/choices.js'
 import { getFutureDateKey, getFutureDateKeyByYears } from './calendar/calendar-time.js'
 import { addRuneRefreshNote } from './sheet/listeners.js'
@@ -33,7 +33,7 @@ import { getEffectTargetLabel, getEffectListData } from './effect-fields.js'
 import { createChatMessage } from './sheet/chat-helpers.js'
 
 const TextEditor = foundry.applications.ux.TextEditor.implementation
-const { HandlebarsApplicationMixin } = foundry.applications.api
+const { HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api
 const { ActorSheetV2 } = foundry.applications.sheets
 
 /**
@@ -1072,38 +1072,40 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			<div class="memorize-spell-modal">
 				<div class="form-group">
 					<label>${game.i18n.localize('DOLMEN.Magic.SelectSpellToMemorize')}</label>
-					<select id="spell-select">${options}</select>
+					<select name="spellId">${options}</select>
 				</div>
 			</div>
 		`
 
-		const dialog = new Dialog({
-			title: game.i18n.localize('DOLMEN.Magic.MemorizeSpell'),
-			content: content,
-			buttons: {
-				memorize: {
-					icon: '<i class="fas fa-book-sparkles"></i>',
+		const spellId = await DialogV2.wait({
+			window: { title: game.i18n.localize('DOLMEN.Magic.MemorizeSpell') },
+			content,
+			buttons: [
+				{
+					action: 'memorize',
+					icon: 'fas fa-book-sparkles',
 					label: game.i18n.localize('DOLMEN.Magic.Memorize'),
-					callback: async (html) => {
-						const spellId = html.find('#spell-select').val()
-						const magicPath = spellType === 'holy' ? 'holyMagic' : 'arcaneMagic'
-						const slotData = this.actor.system[magicPath].spellSlots[rankKey]
-						const memorized = [...(slotData.memorized || [])]
-						memorized[slotIndex] = spellId
-						await this.actor.update({
-							[`system.${magicPath}.spellSlots.${rankKey}.memorized`]: memorized
-						})
-					}
+					default: true,
+					callback: (_event, button) => button.form.elements.spellId.value
 				},
-				cancel: {
-					icon: '<i class="fas fa-times"></i>',
+				{
+					action: 'cancel',
+					icon: 'fas fa-times',
 					label: game.i18n.localize('DOLMEN.Cancel')
 				}
-			},
-			default: 'memorize'
+			],
+			rejectClose: false
 		})
+		// DialogV2.wait resolves with the button's action name ('cancel') or null on close
+		if (!knownSpells.some(s => s.id === spellId)) return
 
-		dialog.render(true)
+		const magicPath = spellType === 'holy' ? 'holyMagic' : 'arcaneMagic'
+		const slotData = this.actor.system[magicPath].spellSlots[rankKey]
+		const memorized = [...(slotData.memorized || [])]
+		memorized[slotIndex] = spellId
+		await this.actor.update({
+			[`system.${magicPath}.spellSlots.${rankKey}.memorized`]: memorized
+		})
 	}
 
 	static async _onCastSpell(_event, target) {
