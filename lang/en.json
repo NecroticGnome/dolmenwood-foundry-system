@@ -1204,6 +1204,14 @@
 				"RecurrenceMonthly": "Monthly",
 				"RecurrenceYearly": "Yearly"
 			}
+		},
+		"Notifications": {
+			"NoKindredSelected": "No kindred selected",
+			"KindredNotFound": "Kindred \"{id}\" not found",
+			"ClassNotFound": "Class \"{id}\" not found",
+			"CodexEntryNotFound": "Codex entry not found: {uuid}",
+			"NoNameRollGroups": "No name roll groups configured for this kindred",
+			"MigratedAdjustments": "Dolmenwood: Migrated {count} manual adjustment(s) to Effect items."
 		}
 	}
 }

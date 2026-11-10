@@ -753,7 +753,7 @@ async function migrateAdjustmentsToEffects() {
 	await game.settings.set('dolmenwood', MIGRATION_KEY, true)
 	if (totalEffects > 0) {
 		console.log(`Dolmenwood | Migration complete: created ${totalEffects} Effect items total`)
-		ui.notifications.info(`Dolmenwood: Migrated ${totalEffects} manual adjustment(s) to Effect items.`)
+		ui.notifications.info(game.i18n.format('DOLMEN.Notifications.MigratedAdjustments', { count: totalEffects }))
 	} else {
 		console.log('Dolmenwood | Migration complete: no adjustments to migrate')
 	}

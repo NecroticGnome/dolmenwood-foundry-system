@@ -1,4 +1,4 @@
-/* global fromUuid, ui */
+/* global fromUuid, game, ui */
 /**
  * Open the codex (journal) entry referenced by a UUID in view mode.
  *
@@ -10,7 +10,7 @@ export async function openCodex(uuid) {
 	if (!uuid) return
 	const doc = await fromUuid(uuid)
 	if (!doc) {
-		ui.notifications.warn(`Codex entry not found: ${uuid}`)
+		ui.notifications.warn(game.i18n.format('DOLMEN.Notifications.CodexEntryNotFound', { uuid }))
 		return
 	}
 	if (doc.documentName === 'JournalEntryPage') {
