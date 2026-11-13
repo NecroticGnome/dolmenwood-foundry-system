@@ -691,9 +691,10 @@ export function prepareItemData(item) {
 		data.chargesMax = item.system.charges.max
 		data.chargesUsed = Math.min(item.system.charges.value || 0, item.system.charges.max)
 		data.chargesRemaining = data.chargesMax - data.chargesUsed
-		if (data.chargesRemaining === 0) data.chargesIconStyle = 'fa-light'
-		else if (data.chargesRemaining < data.chargesMax) data.chargesIconStyle = 'fa-duotone fa-light'
-		else data.chargesIconStyle = 'fa-solid'
+		// the label's look: full, partly used or empty
+		if (data.chargesRemaining === 0) data.chargesState = 'empty'
+		else if (data.chargesRemaining < data.chargesMax) data.chargesState = 'partial'
+		else data.chargesState = 'full'
 	}
 
 	return data

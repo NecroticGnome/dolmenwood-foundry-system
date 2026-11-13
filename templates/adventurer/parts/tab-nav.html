@@ -6,4 +6,5 @@
 	</a>
 	{{/each}}
 	{{#if @root.isGM}}<i class="fas {{#if @root.isLinked}}fa-link{{else}}fa-link-slash{{/if}} actor-link-icon{{#if @root.isToken}} readonly{{/if}}" title="{{#if @root.isLinked}}{{localize 'DOLMEN.TokenLinked'}}{{else}}{{localize 'DOLMEN.TokenUnlinked'}}{{/if}}"></i>{{/if}}
+	<i class="fas {{#if @root.rollsLocked}}fa-lock{{else}}fa-lock-open{{/if}} roll-lock-icon" title="{{#if @root.rollsLocked}}{{localize 'DOLMEN.RollsLocked'}}{{else}}{{localize 'DOLMEN.RollsUnlocked'}}{{/if}}"></i>
 </nav>

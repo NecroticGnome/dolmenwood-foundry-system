@@ -345,6 +345,52 @@ export function setupAbilityRollListeners(sheet) {
 }
 
 /**
+ * Setup a new character's ability setup: an unset ability shows Roll (3d6, to chat) and Enter (its
+ * usual fields, the score focused to type it in).
+ * @param {DolmenSheet} sheet - The sheet instance
+ */
+export function setupAbilitySetupListeners(sheet) {
+	const actor = sheet.actor
+	if (sheet._focusAbility) {
+		const input = sheet.element.querySelector(`input.adjustable[data-target="system.abilities.${sheet._focusAbility}.score"]`)
+		if (input) {
+			input.focus()
+			input.select()
+			sheet._focusAbility = null
+		}
+	}
+	const setAbility = (key, update = {}) => {
+		const unset = (actor.getFlag('dolmenwood', 'unsetAbilities') || []).filter(k => k !== key)
+		return actor.update({ ...update, 'flags.dolmenwood.unsetAbilities': unset })
+	}
+	sheet.element.querySelectorAll('.ability-setup-roll').forEach(btn => {
+		btn.addEventListener('click', async (event) => {
+			event.preventDefault()
+			const key = event.currentTarget.dataset.ability
+			const roll = await new Roll('3d6').evaluate()
+			await setAbility(key, { [`system.abilities.${key}.score`]: roll.total })
+			const label = game.i18n.localize(`DOLMEN.Abilities.${key.charAt(0).toUpperCase()}${key.slice(1)}`)
+			const rollAnchor = (await roll.toAnchor({ classes: ['inline-dsn-hidden'] })).outerHTML
+			await createChatMessage({
+				speaker: ChatMessage.getSpeaker({ actor }),
+				content: `<strong>${label}:</strong> ${rollAnchor}`,
+				rolls: [roll],
+				style: CONST.CHAT_MESSAGE_STYLES.OTHER
+			})
+		})
+	})
+	sheet.element.querySelectorAll('.ability-setup-manual').forEach(btn => {
+		btn.addEventListener('click', async (event) => {
+			event.preventDefault()
+			const key = event.currentTarget.dataset.ability
+			// focused once the sheet has re-rendered with the ability's usual fields
+			sheet._focusAbility = key
+			await setAbility(key)
+		})
+	})
+}
+
+/**
  * Setup saving throw roll listeners.
  * @param {DolmenSheet} sheet - The sheet instance
  */

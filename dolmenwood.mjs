@@ -114,7 +114,14 @@ Hooks.once('init', async function () {
 		/** @returns {string|null} The active unseason's key, or null */
 		getUnseason: () => game.settings.get('dolmenwood', 'activeUnseason') || null,
 		/** @returns {{ text: string, effects: string, roll: number }} Today's weather */
-		getWeather: () => game.settings.get('dolmenwood', 'currentWeather')
+		getWeather: () => game.settings.get('dolmenwood', 'currentWeather'),
+		// a module's wilderness encounter roll (CONFIG.DOLMENWOOD.wildernessEncounter)
+		/** @returns {boolean} Whether a module provides the wilderness encounter roll */
+		hasWildernessEncounter: () => !!CONFIG.DOLMENWOOD.wildernessEncounter,
+		/** @returns {Promise<number|null>} The current location's X-in-6 chance, or null (none known or no module) */
+		getWildernessEncounterChance: async (options = {}) => (await CONFIG.DOLMENWOOD.wildernessEncounter?.chance?.(options)) ?? null,
+		/** @returns {Promise<*|null>} Roll and post a wilderness encounter; null without a module's roll */
+		rollWildernessEncounter: async (options = {}) => (await CONFIG.DOLMENWOOD.wildernessEncounter?.roll?.(options)) ?? null
 	}
 
 	game.settings.register('dolmenwood', 'colorTheme', {
@@ -418,6 +425,15 @@ Hooks.once('init', async function () {
 		default: false
 	})
 
+	game.settings.register('dolmenwood', 'autoConsumeAmmo', {
+		name: 'DOLMEN.Settings.AutoConsumeAmmo',
+		hint: 'DOLMEN.Settings.AutoConsumeAmmoHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: true
+	})
+
 	game.settings.register('dolmenwood', 'autoMissileRange', {
 		name: 'DOLMEN.Settings.AutoMissileRange',
 		hint: 'DOLMEN.Settings.AutoMissileRangeHint',
@@ -443,6 +459,15 @@ Hooks.once('init', async function () {
 		config: true,
 		type: Boolean,
 		default: true
+	})
+
+	game.settings.register('dolmenwood', 'autoRollCharacter', {
+		name: 'DOLMEN.Settings.AutoRollCharacter',
+		hint: 'DOLMEN.Settings.AutoRollCharacterHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false
 	})
 
 	game.settings.register('dolmenwood', 'autoWeather', {

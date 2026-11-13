@@ -105,10 +105,10 @@ const DOLMENWOOD = {
 		hunter: ['alertness', 'stalking', 'tracking'],
 		bard: ['decipherDocument', 'legerdemain', 'monsterLore'],
 		friar: [],
-		enchanter: [],
+		enchanter: ['detectMagic'],
 		breggle: [],
 		elf: [],
-		grimalkin: ['pickLock', 'stealth', 'climbWall'],
+		grimalkin: ['pickLock'],
 		mossling: [],
 		woodgrue: []
 	},
@@ -310,6 +310,12 @@ const DOLMENWOOD = {
 		},
 		magician: {
 			detectMagic: [6, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3]
+		},
+		enchanter: {
+			detectMagic: [5, 5, 5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2]
+		},
+		grimalkin: {
+			pickLock: [6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2]
 		}
 	}
 }

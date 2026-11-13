@@ -3,6 +3,9 @@ import { drawFromTableSilent } from './utils/roll-tables.js'
 import { createChatMessage } from './sheet/chat-helpers.js'
 import { computeEncumbrance, computeAdjustedValues, getRuneUsage } from './sheet/data-context.js'
 
+// the ability scores a new character sets one by one
+const ABILITY_KEYS = ['strength', 'intelligence', 'wisdom', 'dexterity', 'constitution', 'charisma']
+
 class DolmenActor extends Actor {
 
 	/** @override */
@@ -19,6 +22,8 @@ class DolmenActor extends Actor {
 			this.updateSource({ 'prototypeToken.ring.enabled': true })
 		}
 		if (data.type === 'Adventurer') {
+			// a new character's ability scores are rolled or entered one by one (see the sheet's ability setup)
+			if (!data.system?.abilities) this.updateSource({ 'flags.dolmenwood.unsetAbilities': ABILITY_KEYS })
 			this.updateSource({
 				'prototypeToken.actorLink': true,
 				'prototypeToken.bar1.attribute': 'hp',
@@ -36,6 +41,41 @@ class DolmenActor extends Actor {
 				'prototypeToken.displayBars': CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER
 			})
 		}
+	}
+
+	/** @override */
+	_onCreate(data, options, userId) {
+		super._onCreate(data, options, userId)
+		// with Auto Roll Abilities and Details on, a new character's abilities are rolled at once (by its creator)
+		if (userId !== game.user.id || this.type !== 'Adventurer') return
+		if (!game.settings.get('dolmenwood', 'autoRollCharacter')) return
+		if (this.getFlag('dolmenwood', 'unsetAbilities')?.length) this._rollAbilities()
+	}
+
+	/**
+	 * Roll 3d6 for each ability not yet set, and send the results to chat.
+	 * @private
+	 */
+	async _rollAbilities() {
+		const keys = this.getFlag('dolmenwood', 'unsetAbilities') || []
+		const updateData = { 'flags.dolmenwood.unsetAbilities': [] }
+		const rolls = []
+		const lines = []
+		for (const key of keys) {
+			const roll = await new Roll('3d6').evaluate()
+			rolls.push(roll)
+			updateData[`system.abilities.${key}.score`] = roll.total
+			const label = game.i18n.localize(`DOLMEN.Abilities.${key.charAt(0).toUpperCase()}${key.slice(1)}`)
+			const rollAnchor = (await roll.toAnchor({ classes: ['inline-dsn-hidden'] })).outerHTML
+			lines.push(`<p><strong>${label}:</strong> ${rollAnchor}</p>`)
+		}
+		await this.update(updateData)
+		await createChatMessage({
+			speaker: ChatMessage.getSpeaker({ actor: this }),
+			content: `<div class="dolmen-roll-card"><div class="card-content"><p><strong>${game.i18n.localize('DOLMEN.RolledAbilityScores')}:</strong></p>${lines.join('')}</div></div>`,
+			rolls,
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
+		})
 	}
 
 	/** @override */
@@ -444,8 +484,8 @@ class DolmenActor extends Actor {
 		const newLanguages = kindredDoc.system.languages || ['woldish']
 		await this.update({ 'system.languages': newLanguages })
 
-		// Roll character characteristics and send to chat
-		await this._rollCharacteristics()
+		// with Auto Roll Abilities and Details on, roll the new kindred's details and send them to chat
+		if (game.settings.get('dolmenwood', 'autoRollCharacter')) await this._rollCharacteristics()
 	}
 
 	/**

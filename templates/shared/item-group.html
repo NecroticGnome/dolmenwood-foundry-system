@@ -15,7 +15,7 @@
 	<span class="item-name">{{#if (eq this.system.materialType "cold-iron")}}<i class="fas fa-snowflake"></i> {{/if}}{{#if (eq this.system.materialType "silver")}}<i class="fas fa-star-christmas"></i> {{/if}}{{this.name}}{{#if this.system.toHitBonus}}<span class="weapon-bonus">(+{{this.system.toHitBonus}})</span>{{/if}}</span>
 	<span class="item-qualities">{{{this.qualitiesDisplay}}}</span>
 	<span class="item-damage">{{this.system.damage}}</span>
-	<span class="item-charges">{{#if this.hasCharges}}<i class="{{this.chargesIconStyle}} fa-square-{{this.chargesRemaining}} item-charges-icon" data-item-id="{{this.id}}" title="{{this.chargesRemaining}}/{{this.chargesMax}}"></i>{{else}}-{{/if}}</span>
+	<span class="item-charges">{{#if this.hasCharges}}<span class="item-charges-icon charges-{{this.chargesState}}" data-item-id="{{this.id}}" title="{{this.chargesRemaining}}/{{this.chargesMax}}">{{this.chargesRemaining}}</span>{{else}}-{{/if}}</span>
 	<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 	<span class="item-quantity">
 		<span class="qty-value">{{this.system.quantity}}</span>
@@ -60,7 +60,7 @@
 	<span class="item-name">{{this.name}}</span>
 	<span class="item-bulk">{{this.bulkDisplay}}</span>
 	<span class="item-ac">{{this.system.ac}}</span>
-	<span class="item-charges">{{#if this.hasCharges}}<i class="{{this.chargesIconStyle}} fa-square-{{this.chargesRemaining}} item-charges-icon" data-item-id="{{this.id}}" title="{{this.chargesRemaining}}/{{this.chargesMax}}"></i>{{else}}-{{/if}}</span>
+	<span class="item-charges">{{#if this.hasCharges}}<span class="item-charges-icon charges-{{this.chargesState}}" data-item-id="{{this.id}}" title="{{this.chargesRemaining}}/{{this.chargesMax}}">{{this.chargesRemaining}}</span>{{else}}-{{/if}}</span>
 	<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 	<span class="item-quantity">
 		<span class="qty-value">{{this.system.quantity}}</span>
@@ -146,7 +146,7 @@
 	{{#if this.hasEffects}}<span class="item-notes"><i class="fas fa-memo tooltip"><span class="tooltiptext">{{this.tooltipEffects}}</span></i></span>
 	{{else}}<span class="item-notes">-</span>
 	{{/if}}
-	<span class="item-charges">{{#if this.hasCharges}}<i class="{{this.chargesIconStyle}} fa-square-{{this.chargesRemaining}} item-charges-icon" data-item-id="{{this.id}}" title="{{this.chargesRemaining}}/{{this.chargesMax}}"></i>{{else}}-{{/if}}</span>
+	<span class="item-charges">{{#if this.hasCharges}}<span class="item-charges-icon charges-{{this.chargesState}}" data-item-id="{{this.id}}" title="{{this.chargesRemaining}}/{{this.chargesMax}}">{{this.chargesRemaining}}</span>{{else}}-{{/if}}</span>
 	<span class="item-weight">{{#if (eq @root.encumbranceMethod "slots")}}{{stackWeight this.system.weightSlots this.system.quantity this.system.stackSize}}{{else}}{{mul this.system.weightCoins this.system.quantity}}{{/if}}</span>
 	<span class="item-quantity">
 		<span class="qty-value">{{this.system.quantity}}</span>

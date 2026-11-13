@@ -12,10 +12,6 @@
 	position: relative;
 }
 
-.sheet.dolmen .tabs:has(.item[data-tab="settings"]) {
-	padding-right: 3rem;
-}
-
 .sheet.dolmen .tabs .item {
 	padding: 0.5rem 1rem;
 	cursor: pointer;
@@ -31,7 +27,8 @@
 }
 
 .sheet.dolmen .tabs .item:hover,
-.sheet.dolmen .tabs .actor-link-icon:not(.readonly):hover {
+.sheet.dolmen .tabs .actor-link-icon:not(.readonly):hover,
+.sheet.dolmen .tabs .roll-lock-icon:hover {
 	opacity: 1;
 	text-shadow: 0 0 2px var(--dolmen-color-title);
 }
@@ -48,12 +45,24 @@
 	margin-right: 0.25rem;
 }
 
-.sheet.dolmen .tabs .item[data-tab="settings"] {
-	position: absolute;
-	right: 0;
+/* Right end of the bar, in flow (so the active tab's background can't cover its neighbours): the
+   token link icon (and a creature's codex button), the random rolls lock, then the settings tab */
+.sheet.dolmen .tabs .actor-link-icon,
+.sheet.dolmen .tabs .codex-nav-btn,
+.sheet.dolmen .tabs .roll-lock-icon {
+	order: 1;
 }
 
-.sheet.dolmen .tabs .actor-link-icon {
+.sheet.dolmen .tabs .item[data-tab="settings"] {
+	order: 2;
+}
+
+.sheet.dolmen .tabs:not(:has(.actor-link-icon, .codex-nav-btn, .roll-lock-icon)) .item[data-tab="settings"] {
+	margin-left: auto;
+}
+
+.sheet.dolmen .tabs .actor-link-icon,
+.sheet.dolmen .tabs .roll-lock-icon {
 	margin-left: auto;
 	padding: 0.5rem 1rem;
 	cursor: pointer;
@@ -65,6 +74,11 @@
 	display: inline-flex;
 	align-items: center;
 	line-height: 1;
+}
+
+/* the lock follows the link icon when there is one (GM) */
+.sheet.dolmen .tabs .actor-link-icon ~ .roll-lock-icon {
+	margin-left: 0;
 }
 
 .sheet.dolmen .tabs .actor-link-icon.readonly {

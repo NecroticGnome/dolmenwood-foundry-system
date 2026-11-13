@@ -2,6 +2,17 @@
 /*  Base Sheet Styles                           */
 /* -------------------------------------------- */
 
+/* Font Awesome 7 (Foundry v14) draws every icon in a fixed 1.25em box; the system's layouts were made
+   for Font Awesome 6's natural icon widths (as on v13). Its windows' content, chat cards and menus keep
+   those; the window header's controls are Foundry's own. Icons with fa-fw still get the fixed width. */
+.application.dolmen .window-content,
+.dolmen:not(.application),
+.dolmen-combat-tracker,
+.dolmen-action-order,
+.dolmen-roll-card {
+	--fa-width: auto;
+}
+
 .sheet.dolmen,
 .sheet.dolmen textarea {
 	font-family: var(--dolmen-font-body);

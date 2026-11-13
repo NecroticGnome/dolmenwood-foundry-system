@@ -12,6 +12,7 @@ import { parseSaveLinks } from '../chat-save.js'
 import { getWeaponTypesForGroup, WEAPON_PROF_GROUPS } from '../utils/choices.js'
 import { createAttackMacro } from '../attack-macros.js'
 import { resolveD20Roll, withNaturalNote } from '../utils/natural-rolls.js'
+import { consumeAmmo } from './ammunition.js'
 
 /* -------------------------------------------- */
 /*  Weapon Helpers                              */
@@ -335,6 +336,14 @@ export async function performAttackRoll(sheet, weapon, attackType, {
 	let hitResult = null
 	let hitNote = ''
 	const rolls = []
+
+	// a missile attack uses a piece of the weapon's equipped ammunition (a damage roll alone, none);
+	// with none equipped, a bow, crossbow or sling cannot shoot
+	if (attackType === 'missile' && !damageOnly) {
+		const ammo = await consumeAmmo(sheet.actor, weapon)
+		if (!ammo.ok) return
+		if (ammo.text) specialText = specialText ? `${specialText}<br>${ammo.text}` : ammo.text
+	}
 
 	// Get target info for hit/miss evaluation
 	const targetData = getAttackTarget()
