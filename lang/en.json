@@ -1252,6 +1252,7 @@
 			},
 			"DaytimeEncounter": "Daytime Random Encounter",
 			"NighttimeEncounter": "Nighttime Random Encounter",
+			"RolledSeparately": "Rolled separately",
 			"Unseason": {
 				"chame": "Chame: serpents and wyrms",
 				"vague": "Vague: undead",
@@ -1277,7 +1278,8 @@
 				"darkness": "Darkness (+2-in-6 lost)",
 				"hunter": "Hunter in the party (finds the path again on 3-in-6)",
 				"guide": "Guide (finds the path again on 4-in-6)",
-				"camp": "Setting camp (nighttime Random Encounter)"
+				"camp": "Setting camp (nighttime Random Encounter)",
+				"fire": "Campfire (nighttime Encounter Type)"
 			},
 			"VisibilitySettingName": "Poor Visibility on Tracks",
 			"VisibilitySettingHint": "Also add +1-in-6 to the chance of getting lost on tracks in poor visibility, as in the Player's Book. When off, it applies only when travelling wild, as in the Campaign Book."

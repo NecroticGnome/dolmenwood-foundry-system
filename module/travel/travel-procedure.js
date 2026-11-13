@@ -42,6 +42,16 @@ async function rollInSix(chance) {
 	return { roll, success: inSix(roll.total, chance) }
 }
 
+/**
+ * The selected hex's Lost/Encounters chance from a module's wilderness encounter roll.
+ * @param {'day'|'night'} time
+ * @returns {Promise<number|null>}
+ */
+async function hexChance(time) {
+	const chance = await game.dolmenwood.getWildernessEncounterChance({ time })
+	return Number.isInteger(chance) ? chance : null
+}
+
 /** Inline roll HTML for a chat card. */
 async function anchor(roll) {
 	return (await roll.toAnchor({ classes: ['encounter-inline-roll'] })).outerHTML
@@ -105,31 +115,40 @@ async function encounterCheck(title, chance, poorVisibility, unseason) {
  * Order follows Travel Procedure Per Day (DPB): weather, losing direction, daytime Random
  * Encounter, then the nighttime Random Encounter if the party sets camp.
  *
- * Modules can adjust the options (e.g. supply a hex's chance) in the
- * `dolmenwood.preTravelProcedure` hook, or return false from it to cancel.
+ * When a module provides the wilderness encounter roll (CONFIG.DOLMENWOOD.wildernessEncounter), it
+ * rolls the encounters and posts its own cards after this one; otherwise a bare check is rolled here.
+ * The chance defaults to the selected hex's daytime chance. If it is not changed from that, the
+ * module's nighttime roll uses the hex's own nighttime chance.
+ *
+ * Modules can adjust the options in the `dolmenwood.preTravelProcedure` hook, or return false
+ * from it to cancel.
  *
  * @param {object} [options]
  * @param {'road'|'track'|'wild'} [options.route='wild']
- * @param {number} [options.chance=1] - The terrain's Lost/Encounters X-in-6 chance
+ * @param {number} [options.chance] - The Lost/Encounters X-in-6 chance (default: the hex's, else 1)
  * @param {boolean} [options.noRisk] - No risk of getting lost (reliable guide, road or river, obvious landmark)
  * @param {boolean} [options.poorVisibility] - Defaults to today's weather
  * @param {boolean} [options.darkness]
  * @param {boolean} [options.hunter] - Defaults to whether the party viewer has a hunter
  * @param {boolean} [options.guide] - A hired guide's Wayfinding
  * @param {boolean} [options.camp] - Also roll the nighttime Random Encounter
- * @returns {Promise<object|null>} The results, or null if not run
+ * @param {boolean} [options.fire] - A campfire at night (the module's Encounter Type: Fire / No Fire)
+ * @returns {Promise<object|null>} The results, or null if not run. dayEncounter and nightEncounter
+ *   are booleans for the bare check, or whatever the module's roll returned.
  */
 export async function rollTravelProcedure(options = {}) {
 	if (!game.user.isGM) return null
+	const hexDay = await hexChance('day')
 	const opts = {
 		route: 'wild',
-		chance: TERRAIN_CHANCE.light,
+		chance: hexDay ?? TERRAIN_CHANCE.light,
 		noRisk: false,
 		poorVisibility: weatherHasPoorVisibility(),
 		darkness: false,
 		hunter: partyHasHunter(),
 		guide: false,
 		camp: false,
+		fire: false,
 		...options
 	}
 	if (Hooks.call('dolmenwood.preTravelProcedure', opts) === false) return null
@@ -180,18 +199,19 @@ export async function rollTravelProcedure(options = {}) {
 		}
 	}
 
-	// Daytime Random Encounter
-	const day = await encounterCheck(t('DaytimeEncounter'), opts.chance, opts.poorVisibility, unseason)
-	body += day.html
-	rolls.push(...day.rolls)
-	results.dayEncounter = day.rolls[0].total <= opts.chance
-
-	// Nighttime Random Encounter
-	if (opts.camp) {
-		const night = await encounterCheck(t('NighttimeEncounter'), opts.chance, opts.poorVisibility, unseason)
-		body += night.html
-		rolls.push(...night.rolls)
-		results.nightEncounter = night.rolls[0].total <= opts.chance
+	// Daytime and nighttime Random Encounters
+	const moduleRoll = game.dolmenwood.hasWildernessEncounter()
+	const times = opts.camp ? ['day', 'night'] : ['day']
+	for (const time of times) {
+		const title = t(time === 'day' ? 'DaytimeEncounter' : 'NighttimeEncounter')
+		if (moduleRoll) {
+			body += heading(title) + note(t('RolledSeparately'))
+			continue
+		}
+		const check = await encounterCheck(title, opts.chance, opts.poorVisibility, unseason)
+		body += check.html
+		rolls.push(...check.rolls)
+		results[`${time}Encounter`] = inSix(check.rolls[0].total, opts.chance)
 	}
 
 	const routeLabel = t(`Route.${opts.route}`)
@@ -212,31 +232,49 @@ export async function rollTravelProcedure(options = {}) {
 		speaker: { alias: t('Title') },
 		whisper: game.users.filter(u => u.isGM).map(u => u.id)
 	})
+
+	// The module posts its own cards, after this one so the day reads in order
+	if (moduleRoll) {
+		const travel = opts.route === 'wild' ? 'wild' : 'road'
+		const chanceChanged = opts.chance !== hexDay
+		for (const time of times) {
+			const rollOptions = { time, travel, poorVisibility: opts.poorVisibility }
+			if (time === 'day' || chanceChanged) rollOptions.chance = opts.chance
+			if (time === 'night') rollOptions.fire = opts.fire
+			results[`${time}Encounter`] = await game.dolmenwood.rollWildernessEncounter(rollOptions)
+		}
+	}
 	return { ...results, lostChance, options: opts }
 }
 
 /**
  * Ask the Referee for today's travel conditions, then run the Travel Procedure.
- * Remembers the last answers, except for weather and the party's hunter, which are read fresh.
+ * Remembers the last answers, except for weather, the party's hunter and the selected hex's
+ * chance, which are read fresh.
  */
 export async function openTravelProcedureDialog() {
 	if (!game.user.isGM) return
 	const last = game.settings.get('dolmenwood', 'travelProcedureLast') ?? {}
 	const v = {
 		route: last.route ?? 'wild',
-		chance: last.chance ?? TERRAIN_CHANCE.light,
+		chance: (await hexChance('day')) ?? last.chance ?? TERRAIN_CHANCE.light,
 		noRisk: last.noRisk ?? false,
 		darkness: last.darkness ?? false,
 		guide: last.guide ?? false,
 		camp: last.camp ?? false,
+		fire: last.fire ?? false,
 		poorVisibility: weatherHasPoorVisibility(),
 		hunter: partyHasHunter()
 	}
 	const checked = on => on ? ' checked' : ''
 	const routeOptions = ['road', 'track', 'wild']
 		.map(r => `<option value="${r}"${r === v.route ? ' selected' : ''}>${t(`Route.${r}`)}</option>`).join('')
-	const terrainOptions = Object.entries(TERRAIN_CHANCE)
+	let terrainOptions = Object.entries(TERRAIN_CHANCE)
 		.map(([key, chance]) => `<option value="${chance}"${chance === v.chance ? ' selected' : ''}>${t(`Terrain.${key}`, { chance })}</option>`).join('')
+	// A hex can have a chance outside the terrain defaults
+	if (!Object.values(TERRAIN_CHANCE).includes(v.chance)) {
+		terrainOptions += `<option value="${v.chance}" selected>${t('ChanceLabel', { chance: v.chance })}</option>`
+	}
 	const box = (name, on) => `
 		<label class="checkbox"><input type="checkbox" name="${name}"${checked(on)}> ${t(`Field.${name}`)}</label>`
 
@@ -250,6 +288,7 @@ export async function openTravelProcedureDialog() {
 			${box('hunter', v.hunter)}
 			${box('guide', v.guide)}
 			${box('camp', v.camp)}
+			${box('fire', v.fire)}
 		</div>`
 
 	const form = await DialogV2.wait({
@@ -271,7 +310,8 @@ export async function openTravelProcedureDialog() {
 						darkness: el.darkness.checked,
 						hunter: el.hunter.checked,
 						guide: el.guide.checked,
-						camp: el.camp.checked
+						camp: el.camp.checked,
+						fire: el.fire.checked
 					}
 				}
 			},
@@ -280,7 +320,7 @@ export async function openTravelProcedureDialog() {
 		rejectClose: false
 	})
 	if (!form || typeof form !== 'object') return
-	const { route, chance, noRisk, darkness, guide, camp } = form
-	await game.settings.set('dolmenwood', 'travelProcedureLast', { route, chance, noRisk, darkness, guide, camp })
+	const { route, chance, noRisk, darkness, guide, camp, fire } = form
+	await game.settings.set('dolmenwood', 'travelProcedureLast', { route, chance, noRisk, darkness, guide, camp, fire })
 	return rollTravelProcedure(form)
 }
