@@ -850,7 +850,11 @@
 			"Failure": "Porażka",
 			"NormalRoll": "Zwykły Rzut",
 			"Result": "Wynik",
-			"OrLess": "lub mniej"
+			"OrLess": "lub mniej",
+			"ShiftClickHint": "Shift+klik na teście rzuca od razu, bez tego panelu",
+			"Natural1": "naturalna 1",
+			"Natural6": "naturalna 6",
+			"Natural20": "naturalna 20"
 		},
 		"Edit": "Edytuj",
 		"Delete": "Usuń",
@@ -1227,6 +1231,58 @@
 				"RecurrenceMonthly": "Co Miesiąc",
 				"RecurrenceYearly": "Co Rok"
 			}
+		},
+		"Travel": {
+			"Title": "Procedura Podróży",
+			"Roll": "Rzuć",
+			"ChanceLabel": "Zgubienie się/Spotkania {chance} na 6",
+			"NoWeather": "Dziś nie losowano",
+			"LosingDirection": "Zbaczanie z Trasy",
+			"NoRiskRoad": "Podróż drogą: brak szansy zgubienia się",
+			"NoRiskNoted": "Brak ryzyka zgubienia się",
+			"Lost": "Drużyna się zgubiła!",
+			"NotLost": "Trasa utrzymana",
+			"FindPath": {
+				"hunter": "Myśliwy odnajduje drogę",
+				"guide": "Przewodnik odnajduje drogę"
+			},
+			"NoPath": {
+				"hunter": "Myśliwy nie odnajduje drogi",
+				"guide": "Przewodnik nie odnajduje drogi"
+			},
+			"DaytimeEncounter": "Losowe Spotkanie za Dnia",
+			"NighttimeEncounter": "Losowe Spotkanie w Nocy",
+			"RolledSeparately": "Rzucane osobno",
+			"Unseason": {
+				"chame": "Wyliniec: węże i wyrmy",
+				"vague": "Zamglec: nieumarli",
+				"Normal": "Zwykłe tabele spotkań"
+			},
+			"Distance": "W odległości {feet} stóp",
+			"DistanceHalved": "W odległości {feet} stóp (o połowę mniej przez słabą widoczność)",
+			"Route": {
+				"road": "Droga",
+				"track": "Ścieżka",
+				"wild": "Przez dzicz"
+			},
+			"Terrain": {
+				"light": "Łatwy teren ({chance} na 6)",
+				"moderate": "Umiarkowany teren ({chance} na 6)",
+				"difficult": "Trudny teren ({chance} na 6)"
+			},
+			"Field": {
+				"route": "Trasa",
+				"chance": "Teren (Zgubienie się/Spotkania)",
+				"noRisk": "Brak ryzyka zgubienia się (wiarygodny przewodnik, podróż drogą lub wzdłuż rzeki albo w stronę wyraźnego punktu orientacyjnego)",
+				"poorVisibility": "Słaba widoczność (+1 na 6 do zgubienia się)",
+				"darkness": "Ciemność (+2 na 6 do zgubienia się)",
+				"hunter": "Myśliwy w drużynie (odnajduje drogę przy 3 na 6)",
+				"guide": "Przewodnik (odnajduje drogę przy 4 na 6)",
+				"camp": "Rozbicie obozu (nocne Losowe Spotkanie)",
+				"fire": "Ognisko (Typ Spotkania w nocy)"
+			},
+			"VisibilitySettingName": "Słaba Widoczność na Ścieżkach",
+			"VisibilitySettingHint": "Dolicza też +1 na 6 do szansy zgubienia się na ścieżkach przy słabej widoczności, jak w Podręczniku Gracza. Wyłączone: dotyczy tylko podróży przez dzicz, jak w Księdze Kampanii."
 		},
 		"Notifications": {
 			"NoKindredSelected": "Nie wybrano rasy",
