@@ -588,7 +588,8 @@
 	color: #6ad4c8;
 }
 
-.calendar-weather-roll {
+.calendar-weather-roll,
+.calendar-travel-roll {
 	background: rgba(255, 255, 255, 0.08);
 	border: 1px solid rgba(255, 255, 255, 0.12);
 	border-radius: 0;
@@ -606,7 +607,8 @@
 	max-height: 1.5rem;
 }
 
-.calendar-weather-roll:hover {
+.calendar-weather-roll:hover,
+.calendar-travel-roll:hover {
 	background: rgba(255, 255, 255, 0.18);
 	color: #fff;
 }
