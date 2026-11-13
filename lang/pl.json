@@ -164,8 +164,11 @@
 		"Details": "Szczegóły",
 		"TokenLinked": "Token połączony z Aktorem",
 		"TokenUnlinked": "Token odłączony od Aktora",
+		"RollsLocked": "Losowanie zablokowane (kliknij, aby odblokować)",
+		"RollsUnlocked": "Losowanie odblokowane (kliknij, aby zablokować)",
 		"NameType": "Definicja",
 		"RolledKindredDetails": "Wylosowane szczegóły dla nowej rasy ({kindred})",
+		"RolledAbilityScores": "Wylosowane atrybuty",
 		"KindredClassIncompatible": "Zmiana rasy na {newKindred} jest niezgodna z twoją obecną rasą-klasą ({className}). Klasa została zmieniona na Wojownika.",
 		"Name": "Nazwa",
 		"CharacterName": "Imię",
@@ -209,6 +212,10 @@
 			"waxing": "Przybywający"
 		},
 		"AbilityScores": "Atrybuty",
+		"AbilitySetup": {
+			"Roll": "Losuj",
+			"Manual": "Wpisz"
+		},
 		"Score": "Wart.",
 		"Mod": "Mod.",
 		"Abilities": {
@@ -549,7 +556,8 @@
 			"Types": {
 				"riding": "Wierzchowy",
 				"war": "Bojowy",
-				"draft": "Pociągowy"
+				"draft": "Pociągowy",
+				"mule": "Muł"
 			},
 			"Saddle": "Siodło",
 			"Saddles": {
@@ -623,6 +631,17 @@
 			"chaotic": "Chaotyczny"
 		},
 		"ItemSheetTitle": "Karta Przedmiotu Dolmenwood",
+		"Ammo": {
+			"Label": "Amunicja",
+			"Hint": "Wyposażona jest zużywana przez ataki dystansowe broni, która z niej strzela (jedna sztuka na rzut ataku).",
+			"Types": {
+				"arrow": "Strzały",
+				"quarrel": "Bełty",
+				"stone": "Kamienie do procy"
+			},
+			"Left": "Pozostało ({ammo}): {count}",
+			"NoneEquipped": "{name}: brak wyposażonej amunicji ({ammo})"
+		},
 		"Item": {
 			"Name": "Nazwa",
 			"Cost": "Koszt",
@@ -1020,10 +1039,14 @@
 			"ThemeHighContrast": "Wysoki Kontrast",
 			"CustomSkills": "Własne Umiejętności",
 			"CustomSkillsHint": "Lista nazw własnych umiejętności oddzielonych przecinkami, dostępnych dla wszystkich postaci (np. Zielarstwo, Gotowanie, Dyplomacja).",
+			"AutoRollCharacter": "Automatyczne Losowanie Atrybutów i Szczegółów",
+			"AutoRollCharacterHint": "Losuj atrybuty nowej postaci od razu po jej utworzeniu, a jej szczegóły (wiek, wzrost, pochodzenie, wygląd…) po wybraniu rasy. Gdy wyłączone, każdą wartość losuje się lub wpisuje na karcie postaci.",
 			"RandomizeCreatureHP": "Losuj PŻ Istot",
 			"RandomizeCreatureHPHint": "Po umieszczeniu na scenie niepołączonego tokena istoty rzuć jej Kośćmi PŻ, aby wylosować jej punkty życia.",
 			"AutoApplyDamage": "Automatycznie Zadawaj Obrażenia",
 			"AutoApplyDamageHint": "Automatycznie zadaje obrażenia z ataku tokenowi wybranemu jako cel, gdy atak trafi (lub gdy obrażenia są rzucane osobno). Ataki chybione lub bez celu są pomijane. Obrażenia broni z zimnego żelaza są korygowane o ±1 zależnie od tego, czy cel jest Fey.",
+			"AutoConsumeAmmo": "Automatyczne Zużycie Amunicji",
+			"AutoConsumeAmmoHint": "Ataki dystansowe łukami, kuszami i procami zużywają jedną sztukę wyposażonych strzał, bełtów lub kamieni przy każdym ataku. Bez wyposażonej pasującej amunicji nie można strzelać.",
 			"AutoMissileRange": "Automatyczny Zasięg Ataków Dystansowych",
 			"AutoMissileRangeHint": "Automatycznie ustala zasięg ataku dystansowego (Bliski/Średni/Daleki) na podstawie odległości między tokenem atakującego a celem, zamiast o niego pytać. Wymaga tokena atakującego na scenie i dokładnie jednego celu; w przeciwnym razie wyświetla się ręczne menu zasięgu. Ataki poza dalekim zasięgiem są rzucane z dalekim zasięgiem i oznaczane jako poza zasięgiem.",
 			"AutomatedKillLog": "Automatycznie Dodawaj do Rejestru Zabitych",
@@ -1107,8 +1130,8 @@
 			"TorchExpired": "Pochodnia się wypaliła!",
 			"LanternExpired": "W latarni skończyła się oliwa!",
 			"LightExpiryTitle": "Źródło Światła",
-			"Timer": "Odliczanie",
-			"AddTimer": "Dodaj Odliczanie",
+			"Timer": "Timer",
+			"AddTimer": "Dodaj Timer",
 			"TimerName": "Nazwa",
 			"TimerDuration": "Czas Trwania (tury)",
 			"TimerGMOnly": "Tylko MG",

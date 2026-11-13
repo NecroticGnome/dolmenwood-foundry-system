@@ -286,6 +286,11 @@
 	align-items: center;
 }
 
+/* Font Awesome 7 gives its icons a fixed width (1.25em): centre them in their columns */
+.sheet.dolmen .tab-content .item-list-header > i {
+	justify-self: center;
+}
+
 .sheet.dolmen .tab-content .item-list-header .item-qualities,
 .sheet.dolmen .tab-content .item-list-header .item-bulk,
 .sheet.dolmen .tab-content .item-list-header .type-label {
@@ -603,18 +608,57 @@
 }
 
 /* -------------------------------------------- */
-/*  Inventory Tab - Item Charges Icon           */
+/*  Inventory Tab - Item Charges Label          */
 /* -------------------------------------------- */
 
 .sheet.dolmen .tab-content .item-row .item-charges {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	text-align: center;
-	font-size: 1rem;
-	cursor: pointer;
-	color: var(--dolmen-color-h2);
-	transition: color 0.1s;
-	margin-bottom: -1px;
 }
 
-.sheet.dolmen .tab-content .item-row .item-charges:hover {
+/* the charges left (up to 99): solid while full, outlined and tinted once used, faded when empty */
+.sheet.dolmen .tab-content .item-row .item-charges-icon {
+	box-sizing: border-box;
+	min-width: 1.4rem;
+	height: 1.15rem;
+	padding: 0 0.2rem;
+	border: 1.5px solid var(--dolmen-color-h2);
+	border-radius: 3px;
+	font-size: 0.75rem;
+	font-weight: bold;
+	line-height: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	user-select: none;
+	transition: background-color 0.1s, border-color 0.1s, color 0.1s;
+}
+
+.sheet.dolmen .tab-content .item-row .item-charges-icon.charges-full {
+	background-color: var(--dolmen-color-h2);
+	color: var(--dolmen-color-title);
+}
+
+.sheet.dolmen .tab-content .item-row .item-charges-icon.charges-partial {
+	background-color: color-mix(in srgb, var(--dolmen-color-h2) 25%, transparent);
 	color: var(--dolmen-color-text);
+}
+
+.sheet.dolmen .tab-content .item-row .item-charges-icon.charges-empty {
+	background-color: transparent;
+	color: var(--dolmen-color-text-muted);
+	border-color: var(--dolmen-color-text-muted);
+	opacity: 0.7;
+}
+
+.sheet.dolmen .tab-content .item-row .item-charges-icon:hover {
+	border-color: var(--dolmen-color-h1);
+	opacity: 1;
+}
+
+.sheet.dolmen .tab-content .item-row .item-charges-icon.charges-full:hover {
+	background-color: var(--dolmen-color-h1);
 }

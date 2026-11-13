@@ -418,6 +418,15 @@ Hooks.once('init', async function () {
 		default: false
 	})
 
+	game.settings.register('dolmenwood', 'autoConsumeAmmo', {
+		name: 'DOLMEN.Settings.AutoConsumeAmmo',
+		hint: 'DOLMEN.Settings.AutoConsumeAmmoHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: true
+	})
+
 	game.settings.register('dolmenwood', 'autoMissileRange', {
 		name: 'DOLMEN.Settings.AutoMissileRange',
 		hint: 'DOLMEN.Settings.AutoMissileRangeHint',
@@ -443,6 +452,15 @@ Hooks.once('init', async function () {
 		config: true,
 		type: Boolean,
 		default: true
+	})
+
+	game.settings.register('dolmenwood', 'autoRollCharacter', {
+		name: 'DOLMEN.Settings.AutoRollCharacter',
+		hint: 'DOLMEN.Settings.AutoRollCharacterHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false
 	})
 
 	game.settings.register('dolmenwood', 'autoWeather', {

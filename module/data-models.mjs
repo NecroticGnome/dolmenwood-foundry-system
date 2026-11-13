@@ -1236,6 +1236,13 @@ export class GearDataModel extends ItemDataModel {
 				integer: true,
 				min: 1,
 				initial: 1 }),
+			// the ammunition a generic item is (arrows, quarrels, sling stones), used up by missile attacks
+			ammoType: new StringField({
+				required: true,
+				blank: false,
+				initial: 'none',
+				choices: ['none', ...CHOICE_KEYS.ammoTypes]
+			}),
 			notes: new HTMLField({
 				required: true,
 				blank: true,
@@ -1289,8 +1296,8 @@ export class TreasureDataModel extends GearDataModel {
 				initial: ""
 			}),
 			charges: new SchemaField({
-				max: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
-				value: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
+				max: new NumberField({ required: true, integer: true, min: 0, max: 99, initial: 0 }),
+				value: new NumberField({ required: true, integer: true, min: 0, max: 99, initial: 0 })
 			}),
 			banked: new BooleanField({ required: true, initial: false })
 		}
@@ -1348,8 +1355,8 @@ export class WeaponDataModel extends GearDataModel {
 				initial: 0
 			}),
 			charges: new SchemaField({
-				max: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
-				value: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
+				max: new NumberField({ required: true, integer: true, min: 0, max: 99, initial: 0 }),
+				value: new NumberField({ required: true, integer: true, min: 0, max: 99, initial: 0 })
 			})
 		}
 	}
@@ -1383,8 +1390,8 @@ export class ArmorDataModel extends GearDataModel {
 				choices: CHOICE_KEYS.armorTypes
 			}),
 			charges: new SchemaField({
-				max: new NumberField({ required: true, integer: true, min: 0, initial: 0 }),
-				value: new NumberField({ required: true, integer: true, min: 0, initial: 0 })
+				max: new NumberField({ required: true, integer: true, min: 0, max: 99, initial: 0 }),
+				value: new NumberField({ required: true, integer: true, min: 0, max: 99, initial: 0 })
 			})
 		}
 	}

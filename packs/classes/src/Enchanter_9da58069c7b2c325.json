@@ -136,7 +136,9 @@
         7
       ]
     },
-    "skillProgressions": {},
+    "skillProgressions": {
+      "detectMagic": [5, 5, 5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2]
+    },
     "spellProgression": [],
     "glamourProgression": [0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10],
     "spellType": "fairy",
@@ -149,7 +151,9 @@
       "light",
       "medium"
     ],
-    "classSkills": [],
+    "classSkills": [
+      "detectMagic"
+    ],
     "canTwoWeaponFight": false,
     "hasBackstab": false,
     "skillPointsBase": 0,

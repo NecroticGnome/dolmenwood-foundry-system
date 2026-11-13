@@ -164,8 +164,11 @@
 		"Details": "Details",
 		"TokenLinked": "Token linked to Actor",
 		"TokenUnlinked": "Token unlinked from Actor",
+		"RollsLocked": "Random rolls locked (click to unlock)",
+		"RollsUnlocked": "Random rolls unlocked (click to lock)",
 		"NameType": "Definition",
 		"RolledKindredDetails": "Rolled details for new kindred ({kindred})",
+		"RolledAbilityScores": "Rolled ability scores",
 		"KindredClassIncompatible": "Changing kindred to {newKindred} is incompatible with your current kindred-class ({className}). Class changed to Fighter.",
 		"Name": "Name",
 		"CharacterName": "Name",
@@ -209,6 +212,10 @@
 			"waxing": "Waxing"
 		},
 		"AbilityScores": "Ability Scores",
+		"AbilitySetup": {
+			"Roll": "Roll",
+			"Manual": "Enter"
+		},
 		"Score": "Score",
 		"Mod": "Mod",
 		"Abilities": {
@@ -549,7 +556,8 @@
 			"Types": {
 				"riding": "Riding",
 				"war": "War",
-				"draft": "Draft"
+				"draft": "Draft",
+				"mule": "Mule"
 			},
 			"Saddle": "Saddle",
 			"Saddles": {
@@ -623,6 +631,17 @@
 			"chaotic": "Chaotic"
 		},
 		"ItemSheetTitle": "Dolmenwood Item Sheet",
+		"Ammo": {
+			"Label": "Ammunition",
+			"Hint": "Equipped, it is used up by missile attacks of the weapons that shoot it (one per attack roll).",
+			"Types": {
+				"arrow": "Arrows",
+				"quarrel": "Quarrels",
+				"stone": "Sling stones"
+			},
+			"Left": "{ammo} left: {count}",
+			"NoneEquipped": "{name} has no ammunition equipped ({ammo})"
+		},
 		"Item": {
 			"Name": "Name",
 			"Cost": "Cost",
@@ -1024,10 +1043,14 @@
 			"ThemeHighContrast": "High Contrast",
 			"CustomSkills": "Custom Skills",
 			"CustomSkillsHint": "Comma-separated list of custom skill names available for all adventurers (e.g. Herbalism, Cooking, Diplomacy).",
+			"AutoRollCharacter": "Auto Roll Abilities and Details",
+			"AutoRollCharacterHint": "Roll a new character's ability scores as soon as it is created, and its details (age, height, background, appearance…) when its kindred is chosen. When off, each is rolled or entered on the sheet.",
 			"RandomizeCreatureHP": "Randomize Creature HP",
 			"RandomizeCreatureHPHint": "When placing an unlinked creature token on the canvas, roll the creature's HP dice to randomize its hit points.",
 			"AutoApplyDamage": "Auto-Apply Damage",
 			"AutoApplyDamageHint": "Automatically apply attack damage to the targeted token when an attack hits (or when damage is rolled on its own). Attacks that miss, or that have no target, are not applied. Cold-iron weapons are adjusted by ±1 based on whether the target is fey.",
+			"AutoConsumeAmmo": "Auto Consume Ammunition",
+			"AutoConsumeAmmoHint": "Missile attacks with bows, crossbows and slings use up one piece of the character's equipped arrows, quarrels or sling stones with each attack. Can't shoot without matching ammunition equipped.",
 			"AutoMissileRange": "Auto-Calculate Missile Range",
 			"AutoMissileRangeHint": "Automatically determine missile attack range (Close/Medium/Long) from the distance between the attacker's token and the target, instead of asking. Requires the attacker to have a token on the scene and exactly one target; otherwise the manual range menu is shown. Attacks beyond long range are rolled at long range with an out-of-range note.",
 			"AutomatedKillLog": "Auto-Add to Kill Log",

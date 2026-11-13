@@ -7,28 +7,28 @@
 					<label>{{localize "DOLMEN.ExtraDetails.Head"}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.details.head" value="{{system.details.head}}">
-						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="head" title="{{detailTitles.head}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-detail" data-detail="head" title="{{detailTitles.head}}"></i>{{/unless}}
 					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Face"}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.details.face" value="{{system.details.face}}">
-						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="face" title="{{detailTitles.face}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-detail" data-detail="face" title="{{detailTitles.face}}"></i>{{/unless}}
 					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Dress"}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.details.dress" value="{{system.details.dress}}">
-						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="dress" title="{{detailTitles.dress}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-detail" data-detail="dress" title="{{detailTitles.dress}}"></i>{{/unless}}
 					</div>
 				</div>
 				<div class="header-field">
 					<label>{{bodyLabel}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.details.body" value="{{system.details.body}}">
-						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="body" title="{{detailTitles.body}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-detail" data-detail="body" title="{{detailTitles.body}}"></i>{{/unless}}
 					</div>
 				</div>
 			</div>
@@ -40,28 +40,28 @@
 					<label>{{localize "DOLMEN.ExtraDetails.Demeanour"}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.details.demeanour" value="{{system.details.demeanour}}">
-						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="demeanour" title="{{detailTitles.demeanour}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-detail" data-detail="demeanour" title="{{detailTitles.demeanour}}"></i>{{/unless}}
 					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Desires"}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.details.desires" value="{{system.details.desires}}">
-						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="desires" title="{{detailTitles.desires}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-detail" data-detail="desires" title="{{detailTitles.desires}}"></i>{{/unless}}
 					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Beliefs"}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.details.beliefs" value="{{system.details.beliefs}}">
-						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="beliefs" title="{{detailTitles.beliefs}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-detail" data-detail="beliefs" title="{{detailTitles.beliefs}}"></i>{{/unless}}
 					</div>
 				</div>
 				<div class="header-field">
 					<label>{{localize "DOLMEN.ExtraDetails.Speech"}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.details.speech" value="{{system.details.speech}}">
-						<i class="fa fa-dice-d20 rollable roll-detail" data-detail="speech" title="{{detailTitles.speech}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-detail" data-detail="speech" title="{{detailTitles.speech}}"></i>{{/unless}}
 					</div>
 				</div>
 			</div>
@@ -86,7 +86,7 @@
 							<input type="number" name="system.physical.heightCm" value="{{system.physical.heightCm}}" min="0" step="1" data-convert="height-cm">
 						</span>
 					</div>
-					<i class="fa fa-dice-d20 rollable roll-height" title="{{heightTitle}}"></i>
+					{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-height" title="{{heightTitle}}"></i>{{/unless}}
 				</div>
 			</div>
 			<div class="header-field" style="grid-column-end: span 2;">
@@ -100,14 +100,14 @@
 							<input type="number" name="system.physical.weightKg" value="{{system.physical.weightKg}}" min="0" step="1" data-convert="weight-kg">
 						</span>
 					</div>
-					<i class="fa fa-dice-d20 rollable roll-weight" title="{{weightTitle}}"></i>
+					{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-weight" title="{{weightTitle}}"></i>{{/unless}}
 				</div>
 			</div>
 			<div class="header-field" style="grid-column-end: span 1;">
 				<label>{{localize "DOLMEN.KindredDetails.CurrentAge"}}</label>
 				<div class="flexrow">
 					<input type="number" name="system.physical.age" value="{{system.physical.age}}" min="0">
-					<i class="fa fa-dice-d20 rollable roll-age" title="{{ageTitle}}"></i>
+					{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-age" title="{{ageTitle}}"></i>{{/unless}}
 				</div>
 			</div>
 			<div class="header-field" style="grid-column-end: span 1;">
@@ -117,7 +117,7 @@
 				{{else}}
 				<div class="flexrow">
 					<input type="number" name="system.physical.lifespan" value="{{system.physical.lifespan}}" min="0">
-					<i class="fa fa-dice-d20 rollable roll-lifespan" title="{{lifespanTitle}}"></i>
+					{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-lifespan" title="{{lifespanTitle}}"></i>{{/unless}}
 				</div>
 				{{/if}}
 			</div>
@@ -130,7 +130,7 @@
 					<select name="system.birthDay" value="{{system.birthDay}}" style="max-width: 50px;">
 						{{selectOptions @root.dayChoices selected=system.birthDay}}
 					</select>
-					<i class="fa fa-dice-d20 rollable roll-birthday"></i>
+					{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-birthday"></i>{{/unless}}
 				</div>
 			</div>
 			<div class="header-field" style="grid-column: span 4;">

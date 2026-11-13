@@ -19,7 +19,7 @@ import {
 import {
 	setupTabListeners, setupXPListener, setupLevelListeners, setupCoinListener,
 	setupPortraitPicker, setupSkillListeners, setupAttackListeners, setupInventoryWeaponAttackListeners,
-	setupAbilityRollListeners, setupSaveRollListeners,
+	setupAbilityRollListeners, setupAbilitySetupListeners, setupSaveRollListeners,
 	setupSkillRollListeners, setupUnitConversionListeners, setupLanguagesListener,
 	setupDetailsRollListeners, setupExtraDetailsRollListeners,
 	setupBackgroundRollListener, setupNameRollListener,
@@ -248,6 +248,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.isGM = game.user.isGM
 		context.isToken = actor.isToken
 		context.isLinked = actor.isToken ? actor.token.actorLink : actor.prototypeToken.actorLink
+		// locked: the random table rolls (name, background, details...) are hidden
+		context.rollsLocked = !!actor.getFlag('dolmenwood', 'rollsLocked')
 
 		// Prepare tabs for the tabs part
 		context.tabs = this._getTabs()
@@ -647,6 +649,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		// Read precomputed final values from prepareDerivedData
 		context.encumbrance = actor.system.encumbranceResult || { current: 0, max: 0, speed: null }
 		context.adjusted = actor.system.final || {}
+		// a new character's abilities not yet rolled or entered
+		context.unsetAbilities = Object.fromEntries((actor.getFlag('dolmenwood', 'unsetAbilities') || []).map(key => [key, true]))
 		const baseSpeed = actor.system.speed
 		const encSpeed = context.encumbrance.speed
 		const encSpeedVal = encSpeed !== null && encSpeed !== undefined ? encSpeed : 40
@@ -851,6 +855,11 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			})
 		}
 
+		// Random table rolls lock toggle
+		this.element.querySelector('.roll-lock-icon')?.addEventListener('click', () => {
+			this.actor.setFlag('dolmenwood', 'rollsLocked', !this.actor.getFlag('dolmenwood', 'rollsLocked'))
+		})
+
 		// Toggle retainer share sliders visibility
 		const sharesPanel = this.element.querySelector('.retainer-shares')
 		this.element.querySelectorAll('input[name="system.retainer"]').forEach(radio => {
@@ -880,6 +889,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		setupAttackListeners(this)
 		setupInventoryWeaponAttackListeners(this)
 		setupAbilityRollListeners(this)
+		setupAbilitySetupListeners(this)
 		setupSaveRollListeners(this)
 		setupSkillRollListeners(this)
 		setupUnitConversionListeners(this)

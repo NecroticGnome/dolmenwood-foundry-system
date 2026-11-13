@@ -8,7 +8,7 @@
 					<label>{{localize "DOLMEN.CharacterName"}}</label>
 					<div class="flexrow">
 						<input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'DOLMEN.CharacterName'}}">
-						<i class="fa fa-dice-d20 rollable roll-name" title="{{nameTitle}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-name" title="{{nameTitle}}"></i>{{/unless}}
 					</div>
 				</div>
 				<div class="header-field">
@@ -37,7 +37,7 @@
 					<label>{{localize "DOLMEN.Background"}}</label>
 					<div class="flexrow">
 						<input type="text" name="system.background.profession" value="{{system.background.profession}}">
-						<i class="fa fa-dice-d20 rollable roll-background" title="{{backgroundTitle}}"></i>
+						{{#unless @root.rollsLocked}}<i class="fa fa-dice-d20 rollable roll-background" title="{{backgroundTitle}}"></i>{{/unless}}
 					</div>
 				</div>
 				<div class="header-field">
@@ -83,94 +83,148 @@
 		<h2>{{localize "DOLMEN.AbilityScores"}}</h2>
 		<div class="abilities-grid">
 			<div class="ability">
-				<h3>{{localize "DOLMEN.Abilities.Strength"}}</h3><i class="fa fa-dice-d6 rollable ability-roll" data-ability="strength" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
-				<div class="ability-values">
-					<div class="ability-score">
-						<label>{{localize "DOLMEN.Score"}}</label>
-						<input type="hidden" name="system.abilities.strength.score" value="{{system.abilities.strength.score}}">
-						<input type="number" class="adjustable" value="{{adjusted.abilities.strength.score}}" data-base="{{system.abilities.strength.score}}" data-adjusted="{{adjusted.abilities.strength.score}}" data-manual-adj="{{system.adjustments.abilities.strength.score}}" data-target="system.abilities.strength.score" min="3" max="18">
+				<h3>{{localize "DOLMEN.Abilities.Strength"}}</h3>
+				<div class="ability-body{{#if (lookup @root.unsetAbilities "strength")}} unset{{/if}}">
+					<div class="ability-top">
+						<i class="fa fa-dice-d6 rollable ability-roll" data-ability="strength" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
+						<div class="ability-values">
+							<div class="ability-score">
+								<label>{{localize "DOLMEN.Score"}}</label>
+								<input type="hidden" name="system.abilities.strength.score" value="{{system.abilities.strength.score}}">
+								<input type="number" class="adjustable" value="{{adjusted.abilities.strength.score}}" data-base="{{system.abilities.strength.score}}" data-adjusted="{{adjusted.abilities.strength.score}}" data-manual-adj="{{system.adjustments.abilities.strength.score}}" data-target="system.abilities.strength.score" min="3" max="18">
+							</div>
+							<div class="ability-mod">
+								<label>{{localize "DOLMEN.Mod"}}</label>
+								<input type="number" value="{{adjusted.abilities.strength.mod}}" disabled>
+							</div>
+						</div>
 					</div>
-					<div class="ability-mod">
-						<label>{{localize "DOLMEN.Mod"}}</label>
-						<input type="number" value="{{adjusted.abilities.strength.mod}}" disabled>
-					</div>
+					<span class="ability-hint">{{localize "DOLMEN.Abilities.StrengthHint"}}</span>
+					{{#if (lookup @root.unsetAbilities "strength")}}
+					<a class="ability-setup-roll" data-ability="strength"><i class="fa-regular fa-dice-five"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Roll"}}</span></a>
+					<a class="ability-setup-manual" data-ability="strength"><i class="fa-regular fa-square-pen"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Manual"}}</span></a>
+					{{/if}}
 				</div>
-				<span class="ability-hint">{{localize "DOLMEN.Abilities.StrengthHint"}}</span>
 			</div>
 			<div class="ability">
-				<h3>{{localize "DOLMEN.Abilities.Intelligence"}}</h3><i class="fa fa-dice-d6 rollable ability-roll" data-ability="intelligence" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
-				<div class="ability-values">
-					<div class="ability-score">
-						<label>{{localize "DOLMEN.Score"}}</label>
-						<input type="hidden" name="system.abilities.intelligence.score" value="{{system.abilities.intelligence.score}}">
-						<input type="number" class="adjustable" value="{{adjusted.abilities.intelligence.score}}" data-base="{{system.abilities.intelligence.score}}" data-adjusted="{{adjusted.abilities.intelligence.score}}" data-manual-adj="{{system.adjustments.abilities.intelligence.score}}" data-target="system.abilities.intelligence.score" min="3" max="18">
+				<h3>{{localize "DOLMEN.Abilities.Intelligence"}}</h3>
+				<div class="ability-body{{#if (lookup @root.unsetAbilities "intelligence")}} unset{{/if}}">
+					<div class="ability-top">
+						<i class="fa fa-dice-d6 rollable ability-roll" data-ability="intelligence" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
+						<div class="ability-values">
+							<div class="ability-score">
+								<label>{{localize "DOLMEN.Score"}}</label>
+								<input type="hidden" name="system.abilities.intelligence.score" value="{{system.abilities.intelligence.score}}">
+								<input type="number" class="adjustable" value="{{adjusted.abilities.intelligence.score}}" data-base="{{system.abilities.intelligence.score}}" data-adjusted="{{adjusted.abilities.intelligence.score}}" data-manual-adj="{{system.adjustments.abilities.intelligence.score}}" data-target="system.abilities.intelligence.score" min="3" max="18">
+							</div>
+							<div class="ability-mod">
+								<label>{{localize "DOLMEN.Mod"}}</label>
+								<input type="number" value="{{adjusted.abilities.intelligence.mod}}" disabled>
+							</div>
+						</div>
 					</div>
-					<div class="ability-mod">
-						<label>{{localize "DOLMEN.Mod"}}</label>
-						<input type="number" value="{{adjusted.abilities.intelligence.mod}}" disabled>
-					</div>
+					<span class="ability-hint">{{localize "DOLMEN.Abilities.IntelligenceHint"}}</span>
+					{{#if (lookup @root.unsetAbilities "intelligence")}}
+					<a class="ability-setup-roll" data-ability="intelligence"><i class="fa-regular fa-dice-five"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Roll"}}</span></a>
+					<a class="ability-setup-manual" data-ability="intelligence"><i class="fa-regular fa-square-pen"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Manual"}}</span></a>
+					{{/if}}
 				</div>
-				<span class="ability-hint">{{localize "DOLMEN.Abilities.IntelligenceHint"}}</span>
 			</div>
 			<div class="ability">
-				<h3>{{localize "DOLMEN.Abilities.Wisdom"}}</h3><i class="fa fa-dice-d6 rollable ability-roll" data-ability="wisdom" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
-				<div class="ability-values">
-					<div class="ability-score">
-						<label>{{localize "DOLMEN.Score"}}</label>
-						<input type="hidden" name="system.abilities.wisdom.score" value="{{system.abilities.wisdom.score}}">
-						<input type="number" class="adjustable" value="{{adjusted.abilities.wisdom.score}}" data-base="{{system.abilities.wisdom.score}}" data-adjusted="{{adjusted.abilities.wisdom.score}}" data-manual-adj="{{system.adjustments.abilities.wisdom.score}}" data-target="system.abilities.wisdom.score" min="3" max="18">
+				<h3>{{localize "DOLMEN.Abilities.Wisdom"}}</h3>
+				<div class="ability-body{{#if (lookup @root.unsetAbilities "wisdom")}} unset{{/if}}">
+					<div class="ability-top">
+						<i class="fa fa-dice-d6 rollable ability-roll" data-ability="wisdom" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
+						<div class="ability-values">
+							<div class="ability-score">
+								<label>{{localize "DOLMEN.Score"}}</label>
+								<input type="hidden" name="system.abilities.wisdom.score" value="{{system.abilities.wisdom.score}}">
+								<input type="number" class="adjustable" value="{{adjusted.abilities.wisdom.score}}" data-base="{{system.abilities.wisdom.score}}" data-adjusted="{{adjusted.abilities.wisdom.score}}" data-manual-adj="{{system.adjustments.abilities.wisdom.score}}" data-target="system.abilities.wisdom.score" min="3" max="18">
+							</div>
+							<div class="ability-mod">
+								<label>{{localize "DOLMEN.Mod"}}</label>
+								<input type="number" value="{{adjusted.abilities.wisdom.mod}}" disabled>
+							</div>
+						</div>
 					</div>
-					<div class="ability-mod">
-						<label>{{localize "DOLMEN.Mod"}}</label>
-						<input type="number" value="{{adjusted.abilities.wisdom.mod}}" disabled>
-					</div>
+					<span class="ability-hint">{{localize "DOLMEN.Abilities.WisdomHint"}}</span>
+					{{#if (lookup @root.unsetAbilities "wisdom")}}
+					<a class="ability-setup-roll" data-ability="wisdom"><i class="fa-regular fa-dice-five"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Roll"}}</span></a>
+					<a class="ability-setup-manual" data-ability="wisdom"><i class="fa-regular fa-square-pen"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Manual"}}</span></a>
+					{{/if}}
 				</div>
-				<span class="ability-hint">{{localize "DOLMEN.Abilities.WisdomHint"}}</span>
 			</div>
 			<div class="ability">
-				<h3>{{localize "DOLMEN.Abilities.Dexterity"}}</h3><i class="fa fa-dice-d6 rollable ability-roll" data-ability="dexterity" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
-				<div class="ability-values">
-					<div class="ability-score">
-						<label>{{localize "DOLMEN.Score"}}</label>
-						<input type="hidden" name="system.abilities.dexterity.score" value="{{system.abilities.dexterity.score}}">
-						<input type="number" class="adjustable" value="{{adjusted.abilities.dexterity.score}}" data-base="{{system.abilities.dexterity.score}}" data-adjusted="{{adjusted.abilities.dexterity.score}}" data-manual-adj="{{system.adjustments.abilities.dexterity.score}}" data-target="system.abilities.dexterity.score" min="3" max="18">
+				<h3>{{localize "DOLMEN.Abilities.Dexterity"}}</h3>
+				<div class="ability-body{{#if (lookup @root.unsetAbilities "dexterity")}} unset{{/if}}">
+					<div class="ability-top">
+						<i class="fa fa-dice-d6 rollable ability-roll" data-ability="dexterity" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
+						<div class="ability-values">
+							<div class="ability-score">
+								<label>{{localize "DOLMEN.Score"}}</label>
+								<input type="hidden" name="system.abilities.dexterity.score" value="{{system.abilities.dexterity.score}}">
+								<input type="number" class="adjustable" value="{{adjusted.abilities.dexterity.score}}" data-base="{{system.abilities.dexterity.score}}" data-adjusted="{{adjusted.abilities.dexterity.score}}" data-manual-adj="{{system.adjustments.abilities.dexterity.score}}" data-target="system.abilities.dexterity.score" min="3" max="18">
+							</div>
+							<div class="ability-mod">
+								<label>{{localize "DOLMEN.Mod"}}</label>
+								<input type="number" value="{{adjusted.abilities.dexterity.mod}}" disabled>
+							</div>
+						</div>
 					</div>
-					<div class="ability-mod">
-						<label>{{localize "DOLMEN.Mod"}}</label>
-						<input type="number" value="{{adjusted.abilities.dexterity.mod}}" disabled>
-					</div>
+					<span class="ability-hint">{{localize "DOLMEN.Abilities.DexterityHint"}}</span>
+					{{#if (lookup @root.unsetAbilities "dexterity")}}
+					<a class="ability-setup-roll" data-ability="dexterity"><i class="fa-regular fa-dice-five"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Roll"}}</span></a>
+					<a class="ability-setup-manual" data-ability="dexterity"><i class="fa-regular fa-square-pen"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Manual"}}</span></a>
+					{{/if}}
 				</div>
-				<span class="ability-hint">{{localize "DOLMEN.Abilities.DexterityHint"}}</span>
 			</div>
 			<div class="ability">
-				<h3>{{localize "DOLMEN.Abilities.Constitution"}}</h3><i class="fa fa-dice-d6 rollable ability-roll" data-ability="constitution" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
-				<div class="ability-values">
-					<div class="ability-score">
-						<label>{{localize "DOLMEN.Score"}}</label>
-						<input type="hidden" name="system.abilities.constitution.score" value="{{system.abilities.constitution.score}}">
-						<input type="number" class="adjustable" value="{{adjusted.abilities.constitution.score}}" data-base="{{system.abilities.constitution.score}}" data-adjusted="{{adjusted.abilities.constitution.score}}" data-manual-adj="{{system.adjustments.abilities.constitution.score}}" data-target="system.abilities.constitution.score" min="3" max="18">
+				<h3>{{localize "DOLMEN.Abilities.Constitution"}}</h3>
+				<div class="ability-body{{#if (lookup @root.unsetAbilities "constitution")}} unset{{/if}}">
+					<div class="ability-top">
+						<i class="fa fa-dice-d6 rollable ability-roll" data-ability="constitution" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
+						<div class="ability-values">
+							<div class="ability-score">
+								<label>{{localize "DOLMEN.Score"}}</label>
+								<input type="hidden" name="system.abilities.constitution.score" value="{{system.abilities.constitution.score}}">
+								<input type="number" class="adjustable" value="{{adjusted.abilities.constitution.score}}" data-base="{{system.abilities.constitution.score}}" data-adjusted="{{adjusted.abilities.constitution.score}}" data-manual-adj="{{system.adjustments.abilities.constitution.score}}" data-target="system.abilities.constitution.score" min="3" max="18">
+							</div>
+							<div class="ability-mod">
+								<label>{{localize "DOLMEN.Mod"}}</label>
+								<input type="number" value="{{adjusted.abilities.constitution.mod}}" disabled>
+							</div>
+						</div>
 					</div>
-					<div class="ability-mod">
-						<label>{{localize "DOLMEN.Mod"}}</label>
-						<input type="number" value="{{adjusted.abilities.constitution.mod}}" disabled>
-					</div>
+					<span class="ability-hint">{{localize "DOLMEN.Abilities.ConstitutionHint"}}</span>
+					{{#if (lookup @root.unsetAbilities "constitution")}}
+					<a class="ability-setup-roll" data-ability="constitution"><i class="fa-regular fa-dice-five"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Roll"}}</span></a>
+					<a class="ability-setup-manual" data-ability="constitution"><i class="fa-regular fa-square-pen"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Manual"}}</span></a>
+					{{/if}}
 				</div>
-				<span class="ability-hint">{{localize "DOLMEN.Abilities.ConstitutionHint"}}</span>
 			</div>
 			<div class="ability">
-				<h3>{{localize "DOLMEN.Abilities.Charisma"}}</h3><i class="fa fa-dice-d6 rollable ability-roll" data-ability="charisma" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
-				<div class="ability-values">
-					<div class="ability-score">
-						<label>{{localize "DOLMEN.Score"}}</label>
-						<input type="hidden" name="system.abilities.charisma.score" value="{{system.abilities.charisma.score}}">
-						<input type="number" class="adjustable" value="{{adjusted.abilities.charisma.score}}" data-base="{{system.abilities.charisma.score}}" data-adjusted="{{adjusted.abilities.charisma.score}}" data-manual-adj="{{system.adjustments.abilities.charisma.score}}" data-target="system.abilities.charisma.score" min="3" max="18">
+				<h3>{{localize "DOLMEN.Abilities.Charisma"}}</h3>
+				<div class="ability-body{{#if (lookup @root.unsetAbilities "charisma")}} unset{{/if}}">
+					<div class="ability-top">
+						<i class="fa fa-dice-d6 rollable ability-roll" data-ability="charisma" title="{{localize 'DOLMEN.Roll.AbilityCheck'}}"></i>
+						<div class="ability-values">
+							<div class="ability-score">
+								<label>{{localize "DOLMEN.Score"}}</label>
+								<input type="hidden" name="system.abilities.charisma.score" value="{{system.abilities.charisma.score}}">
+								<input type="number" class="adjustable" value="{{adjusted.abilities.charisma.score}}" data-base="{{system.abilities.charisma.score}}" data-adjusted="{{adjusted.abilities.charisma.score}}" data-manual-adj="{{system.adjustments.abilities.charisma.score}}" data-target="system.abilities.charisma.score" min="3" max="18">
+							</div>
+							<div class="ability-mod">
+								<label>{{localize "DOLMEN.Mod"}}</label>
+								<input type="number" value="{{adjusted.abilities.charisma.mod}}" disabled>
+							</div>
+						</div>
 					</div>
-					<div class="ability-mod">
-						<label>{{localize "DOLMEN.Mod"}}</label>
-						<input type="number" value="{{adjusted.abilities.charisma.mod}}" disabled>
-					</div>
+					<span class="ability-hint">{{localize "DOLMEN.Abilities.CharismaHint"}}</span>
+					{{#if (lookup @root.unsetAbilities "charisma")}}
+					<a class="ability-setup-roll" data-ability="charisma"><i class="fa-regular fa-dice-five"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Roll"}}</span></a>
+					<a class="ability-setup-manual" data-ability="charisma"><i class="fa-regular fa-square-pen"></i><span class="ability-hint">{{localize "DOLMEN.AbilitySetup.Manual"}}</span></a>
+					{{/if}}
 				</div>
-				<span class="ability-hint">{{localize "DOLMEN.Abilities.CharismaHint"}}</span>
 			</div>
 		</div>
 	</section>

@@ -244,6 +244,67 @@
 	padding: 0.125rem;
 }
 
+/* An ability's body: its top (roll icon, score and modifier), then its hint. A new character's unset
+   ability keeps both, hidden, so the box is as tall as usual, and lays its Roll and Enter buttons over
+   them in two columns: each icon over the top, its label over the hint (rows shared through subgrid) */
+.sheet.dolmen .tab-content .ability-body,
+.sheet.dolmen .tab-content .ability-top {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+.sheet.dolmen .tab-content .ability-body.unset {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr auto;
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > .ability-top,
+.sheet.dolmen .tab-content .ability-body.unset > .ability-hint {
+	grid-column: 1 / -1;
+	visibility: hidden;
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > .ability-top {
+	grid-row: 1;
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > .ability-hint {
+	grid-row: 2;
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > a {
+	grid-row: 1 / 3;
+	display: grid;
+	grid-template-rows: subgrid;
+	justify-items: center;
+	cursor: pointer;
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > a:first-of-type {
+	grid-column: 1;
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > a:last-of-type {
+	grid-column: 2;
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > a i {
+	align-self: center;
+	font-size: 2rem;
+	color: var(--dolmen-color-h2);
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > a:hover i {
+	color: var(--dolmen-color-h1);
+}
+
+.sheet.dolmen .tab-content .ability-body.unset > a .ability-hint {
+	align-self: start;
+}
+
 .sheet.dolmen .tab-content .ability-hint {
 	font-size: 0.6rem;
 	color: var(--dolmen-color-h3);

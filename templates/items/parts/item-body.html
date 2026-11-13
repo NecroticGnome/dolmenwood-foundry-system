@@ -146,15 +146,23 @@
 				<input type="number" name="system.stackSize" value="{{system.stackSize}}" min="1">
 			</div>
 		</div>
+		{{#if isGenericItem}}
+		<div class="form-row">
+			<div class="form-field" style="flex: 1;" data-tooltip="DOLMEN.Ammo.Hint">
+				<label>{{localize "DOLMEN.Ammo.Label"}}</label>
+				<select name="system.ammoType">
+					{{selectOptions @root.ammoTypeChoices selected=system.ammoType}}
+				</select>
+			</div>
+			<div class="form-field" style="flex: 1;"></div>
+			<div class="form-field" style="flex: 1;"></div>
+		</div>
+		{{/if}}
 		{{#if (or isWeapon isArmor isTreasure)}}
 		<div class="form-row">
 			<div class="form-field" style="flex: 1;">
 				<label>{{localize "DOLMEN.Item.ChargesMax"}}</label>
-				<select name="system.charges.max">
-					{{#each @root.chargesMaxOptions}}
-					<option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
-					{{/each}}
-				</select>
+				<input type="number" name="system.charges.max" value="{{system.charges.max}}" min="0" max="99" step="1">
 			</div>
 			<div class="form-field" style="flex: 1;"></div>
 			<div class="form-field" style="flex: 1;"></div>

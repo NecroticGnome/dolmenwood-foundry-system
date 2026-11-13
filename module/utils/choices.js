@@ -258,7 +258,8 @@ export const CHOICE_KEYS = {
 		"oil", "polearm", "shortbow", "shortsword", "sling", "spear",
 		"staff", "torch", "twoHandedSword", "warHammer"
 	],
-	horseTypes: ['riding', 'war', 'draft'],
+	horseTypes: ['riding', 'war', 'draft', 'mule'],
+	ammoTypes: ['arrow', 'quarrel', 'stone'],
 	saddleTypes: ['none', 'riding', 'ridingBags', 'pack'],
 	riderTypes: ['none', 'small', 'medium', 'actor'],
 	vehicleTypes: ['land', 'water', 'air'],
