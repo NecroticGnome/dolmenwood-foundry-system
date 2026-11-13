@@ -114,7 +114,14 @@ Hooks.once('init', async function () {
 		/** @returns {string|null} The active unseason's key, or null */
 		getUnseason: () => game.settings.get('dolmenwood', 'activeUnseason') || null,
 		/** @returns {{ text: string, effects: string, roll: number }} Today's weather */
-		getWeather: () => game.settings.get('dolmenwood', 'currentWeather')
+		getWeather: () => game.settings.get('dolmenwood', 'currentWeather'),
+		// a module's wilderness encounter roll (CONFIG.DOLMENWOOD.wildernessEncounter)
+		/** @returns {boolean} Whether a module provides the wilderness encounter roll */
+		hasWildernessEncounter: () => !!CONFIG.DOLMENWOOD.wildernessEncounter,
+		/** @returns {Promise<number|null>} The current location's X-in-6 chance, or null (none known or no module) */
+		getWildernessEncounterChance: async (options = {}) => (await CONFIG.DOLMENWOOD.wildernessEncounter?.chance?.(options)) ?? null,
+		/** @returns {Promise<*|null>} Roll and post a wilderness encounter; null without a module's roll */
+		rollWildernessEncounter: async (options = {}) => (await CONFIG.DOLMENWOOD.wildernessEncounter?.roll?.(options)) ?? null
 	}
 
 	game.settings.register('dolmenwood', 'colorTheme', {

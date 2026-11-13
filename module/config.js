@@ -286,4 +286,15 @@ DOLMENWOOD.unseasonWeatherTable = {
 // getDolmenwoodTools hook instead.
 DOLMENWOOD.extraTools = {}
 
+// A module's wilderness encounter roll, for system features that roll one (such as a travel procedure),
+// which fall back to a bare encounter check without it. Set it in the module's init hook to an object:
+//   chance({ time })  → Promise<number|null>: the current location's Lost/Encounters X-in-6 chance
+//                       ('day' or 'night'; null when the location is unknown)
+//   roll(options)     → Promise: rolls the whole encounter (its check included) and posts it to chat.
+//                       options: { time: 'day'|'night', travel: 'road'|'wild' (roads and tracks are
+//                       'road'), fire: boolean (camping at night), poorVisibility: boolean, chance:
+//                       number }; what it is not given it takes from the game (hex, weather, time)
+// Call it through game.dolmenwood.getWildernessEncounterChance() and rollWildernessEncounter().
+DOLMENWOOD.wildernessEncounter = null
+
 export default DOLMENWOOD
