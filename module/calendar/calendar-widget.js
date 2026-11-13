@@ -8,6 +8,7 @@ import {
 } from './calendar-time.js'
 import { drawFromTableRaw } from '../utils/roll-tables.js'
 import { isDungeonTrackerAnimating } from '../dungeon-tracker/dungeon-tracker.js'
+import { openTravelProcedureDialog } from '../travel/travel-procedure.js'
 
 const { DialogV2 } = foundry.applications.api
 
@@ -281,6 +282,7 @@ function renderWidget() {
 	const weather = game.settings.get('dolmenwood', 'currentWeather')
 	const hasWeather = weather && weather.text
 	let weatherBarHtml = ''
+	const travelBtn = `<a class="calendar-travel-roll" title="${game.i18n.localize('DOLMEN.Travel.Title')}"><i class="fa-solid fa-route"></i></a>`
 	if (hasWeather) {
 		const wIcon = getWeatherIcon(weather.text)
 		let badges = ''
@@ -295,7 +297,7 @@ function renderWidget() {
 			}
 		}
 		const rollBtn = isGM
-			? `<a class="calendar-weather-roll" title="${game.i18n.localize('DOLMEN.Calendar.Weather.RollWeather')}"><i class="fa-solid fa-dice"></i></a>`
+			? `<a class="calendar-weather-roll" title="${game.i18n.localize('DOLMEN.Calendar.Weather.RollWeather')}"><i class="fa-solid fa-dice"></i></a>${travelBtn}`
 			: ''
 		weatherBarHtml = `
 			<div class="calendar-weather-bar">
@@ -309,6 +311,7 @@ function renderWidget() {
 			<div class="calendar-weather-bar">
 				<span class="calendar-weather-text">${game.i18n.localize('DOLMEN.Calendar.Weather.NoWeather')}</span>
 				<a class="calendar-weather-roll" title="${game.i18n.localize('DOLMEN.Calendar.Weather.RollWeather')}"><i class="fa-solid fa-dice"></i></a>
+				${travelBtn}
 			</div>`
 	}
 
@@ -438,6 +441,13 @@ function attachListeners(widget) {
 		weatherBtn.addEventListener('click', (e) => {
 			e.stopPropagation()
 			rollWeather()
+		})
+	}
+	const travelBtn = widget.querySelector('.calendar-travel-roll')
+	if (travelBtn) {
+		travelBtn.addEventListener('click', (e) => {
+			e.stopPropagation()
+			openTravelProcedureDialog()
 		})
 	}
 }

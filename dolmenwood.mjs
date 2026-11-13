@@ -27,6 +27,7 @@ import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrac
 import { initPartyViewer, togglePartyViewer, onPartyMembersChanged } from './module/party-viewer/party-viewer.js'
 import { openCreatureImportDialog, importCreatureStatblock } from './module/creature-importer.js'
 import { executeMacroAttack } from './module/attack-macros.js'
+import { rollTravelProcedure, openTravelProcedureDialog } from './module/travel/travel-procedure.js'
 import { registerJournalArt } from './module/journal-art.js'
 import DolmenEffectSheet from './module/dolmen-effect-sheet.js'
 import { EFFECT_FIELDS } from './module/effect-fields.js'
@@ -108,6 +109,9 @@ Hooks.once('init', async function () {
 		getDayName,
 		getHoliday,
 		getMoonForDay,
+		// travel: rollTravelProcedure({ route, chance, noRisk, poorVisibility, darkness, hunter, guide, camp })
+		rollTravelProcedure,
+		openTravelProcedureDialog,
 		// creatures
 		importCreatureStatblock,
 		openCreatureImportDialog,
@@ -468,6 +472,22 @@ Hooks.once('init', async function () {
 		config: true,
 		type: Boolean,
 		default: false
+	})
+
+	game.settings.register('dolmenwood', 'poorVisibilityOnTracks', {
+		name: 'DOLMEN.Travel.VisibilitySettingName',
+		hint: 'DOLMEN.Travel.VisibilitySettingHint',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false
+	})
+
+	game.settings.register('dolmenwood', 'travelProcedureLast', {
+		scope: 'client',
+		config: false,
+		type: Object,
+		default: {}
 	})
 
 	game.settings.register('dolmenwood', 'autoWeather', {

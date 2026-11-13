@@ -272,6 +272,10 @@ DOLMENWOOD.weatherTableNames = {
 	vague: 'Weather — Vague'
 }
 
+// Consequences of Getting Lost table (Campaign Book p113), rolled when the party gets lost if a
+// RollTable by this name exists
+DOLMENWOOD.gettingLostTableName = 'Consequences of Getting Lost'
+
 // Unseasons that use a different season's weather table (Campaign Book p.112)
 // Colliggwyld -> spring, Chame -> summer; Hitching/Vague have their own tables
 DOLMENWOOD.unseasonWeatherTable = {
