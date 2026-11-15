@@ -231,6 +231,13 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		this.render()
 	}
 
+	/** Keep the codex Open button working on a sheet that can't be edited (a locked compendium, or a viewer) */
+	_toggleDisabled(disabled) {
+		super._toggleDisabled(disabled)
+		const codexBtn = this.element.querySelector('.codex-link-btn')
+		if (codexBtn) codexBtn.disabled = false
+	}
+
 	_onRender(context, options) {
 		super._onRender(context, options)
 
