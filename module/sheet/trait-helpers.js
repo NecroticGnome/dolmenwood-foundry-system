@@ -520,10 +520,32 @@ export function prepareKindredTraits(actor) {
 export function prepareClassTraits(actor) {
 	const classItem = actor.items.find(i => i.type === 'Class')
 	const level = actor.system.level
-	const traitDef = classItem?.system?.traits
+	const traitDef = withMissingClassTraits(classItem)
 
 	if (!traitDef) return []
 	return flattenTraits(actor, traitDef, level)
+}
+
+/**
+ * Info traits added to classes after release (2.1.6), keyed by class id. Class items embedded in
+ * actors before then lack them.
+ */
+const MISSING_CLASS_TRAITS = {
+	magician: [{ id: 'magicianSkills', nameKey: 'DOLMEN.Traits.MagicianSkills', descKey: 'DOLMEN.Traits.MagicianSkillsDesc', traitType: 'info' }],
+	enchanter: [{ id: 'enchanterSkills', nameKey: 'DOLMEN.Traits.EnchanterSkills', descKey: 'DOLMEN.Traits.EnchanterSkillsDesc', traitType: 'info' }]
+}
+
+/**
+ * A class item's traits, with any info traits its stale embedded copy is missing.
+ * @param {Item} classItem - The class item
+ * @returns {object|undefined} The trait definition
+ */
+function withMissingClassTraits(classItem) {
+	const traitDef = classItem?.system?.traits
+	const missing = (MISSING_CLASS_TRAITS[classItem?.system?.classId] || [])
+		.filter(t => !flattenTraitObject(traitDef || {}).some(e => e.id === t.id))
+	if (!missing.length) return traitDef
+	return { ...traitDef, info: [...(traitDef?.info || []), ...missing] }
 }
 
 /**

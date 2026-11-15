@@ -765,6 +765,14 @@ const CLASS_TRAITS = {
 				rollFormula: '1d6',
 				rollTarget: 2
 			}
+		],
+		info: [
+			{
+				id: 'enchanterSkills',
+				nameKey: 'DOLMEN.Traits.EnchanterSkills',
+				descKey: 'DOLMEN.Traits.EnchanterSkillsDesc',
+				traitType: 'info'
+			}
 		]
 	},
 	fighter: {
@@ -978,6 +986,16 @@ const CLASS_TRAITS = {
 			}
 		]
 	},
+	magician: {
+		info: [
+			{
+				id: 'magicianSkills',
+				nameKey: 'DOLMEN.Traits.MagicianSkills',
+				descKey: 'DOLMEN.Traits.MagicianSkillsDesc',
+				traitType: 'info'
+			}
+		]
+	},
 	knight: {
 		active: [
 			{
@@ -1071,7 +1089,6 @@ const CLASS_TRAITS = {
 			}
 		]
 	},
-	magician: {},
 	thief: {
 		active: [
 			{
