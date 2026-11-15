@@ -15,3 +15,10 @@
 .sheet.dolmen .tab-content .editor-container prose-mirror {
 	height: 100%;
 }
+
+/* A sheet that can't be edited shows the text without an editor: scroll it inside its box,
+   rather than letting it run over the fields below */
+.sheet.dolmen .tab-content .editor-container > .editor-content {
+	height: 100%;
+	overflow-y: auto;
+}
