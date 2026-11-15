@@ -73,6 +73,15 @@
 	display: flex;
 }
 
+/* The text editor takes the height left above the fields below it, so only the text scrolls */
+.sheet.dolmen.item .tab-content > .editor-container,
+.sheet.dolmen.kindred .tab-content > .editor-container,
+.sheet.dolmen.class .tab-content > .editor-container {
+	flex: 1;
+	min-height: 0;
+	height: auto;
+}
+
 .sheet.dolmen.item .tab-content section,
 .sheet.dolmen.kindred .tab-content section,
 .sheet.dolmen.class .tab-content section {
