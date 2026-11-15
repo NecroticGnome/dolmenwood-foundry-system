@@ -293,7 +293,16 @@
     "hasBackstab": false,
     "skillPointsBase": 0,
     "skillPointsPerLevel": 0,
-    "traits": {}
+    "traits": {
+      "info": [
+        {
+          "id": "magicianSkills",
+          "nameKey": "DOLMEN.Traits.MagicianSkills",
+          "descKey": "DOLMEN.Traits.MagicianSkillsDesc",
+          "traitType": "info"
+        }
+      ]
+    }
   },
   "effects": [],
   "folder": null,

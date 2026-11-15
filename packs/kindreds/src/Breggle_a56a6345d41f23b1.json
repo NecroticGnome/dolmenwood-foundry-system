@@ -49,6 +49,12 @@
           "descKey": "DOLMEN.Traits.LonghornGazeDesc",
           "traitType": "active",
           "minLevel": 4,
+          "usesProgression": [
+            { "minLevel": 4, "value": 1 },
+            { "minLevel": 6, "value": 2 },
+            { "minLevel": 8, "value": 3 },
+            { "minLevel": 10, "value": 4 }
+          ],
           "usageFrequency": "DOLMEN.Traits.UsesPerDay"
         },
         {

@@ -107,12 +107,18 @@ const DOLMENWOOD = {
 		friar: [],
 		enchanter: ['detectMagic'],
 		breggle: [],
-		elf: [],
+		elf: ['detectMagic'],
 		grimalkin: ['pickLock'],
 		mossling: [],
-		woodgrue: []
+		woodgrue: ['stealth']
 	},
 	spellProgression: {
+		breggle: [
+			[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0],
+			[2, 0, 0, 0, 0, 0], [2, 1, 0, 0, 0, 0], [2, 2, 0, 0, 0, 0], [2, 2, 1, 0, 0, 0],
+			[3, 2, 2, 0, 0, 0], [3, 2, 2, 1, 0, 0], [3, 3, 2, 2, 0, 0], [3, 3, 2, 2, 1, 0],
+			[4, 3, 3, 2, 2, 0], [4, 3, 3, 2, 2, 0], [4, 4, 3, 3, 2, 0]
+		],
 		magician: [
 			[1, 0, 0, 0, 0, 0], [2, 0, 0, 0, 0, 0], [2, 1, 0, 0, 0, 0], [2, 2, 0, 0, 0, 0],
 			[2, 2, 1, 0, 0, 0], [3, 2, 2, 0, 0, 0], [3, 2, 2, 1, 0, 0], [3, 3, 2, 2, 0, 0],
@@ -183,7 +189,7 @@ const DOLMENWOOD = {
 		elf: [1, 1, 2, 3, 3, 4, 5, 5, 6, 7, 7, 8, 9, 9, 10],
 		grimalkin: [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7],
 		mossling: [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7],
-		woodgrue: [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4]
+		woodgrue: [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7]
 	},
 	saveProgressions: {
 		fighter: {
@@ -257,30 +263,30 @@ const DOLMENWOOD = {
 			spell: [16, 16, 15, 14, 14, 13, 12, 12, 11, 10, 10, 9, 8, 8, 7]
 		},
 		elf: {
-			doom: [12, 12, 11, 10, 10, 9, 8, 8, 7, 6, 6, 5, 4, 4, 3],
-			ray: [13, 13, 12, 11, 11, 10, 9, 9, 8, 7, 7, 6, 5, 5, 4],
-			hold: [14, 14, 13, 12, 12, 11, 10, 10, 9, 8, 8, 7, 6, 6, 5],
-			blast: [15, 15, 14, 13, 13, 12, 11, 11, 10, 9, 9, 8, 7, 7, 6],
-			spell: [16, 16, 15, 14, 14, 13, 12, 12, 11, 10, 10, 9, 8, 8, 7]
+			doom: [11, 11, 10, 9, 9, 8, 7, 7, 6, 5, 5, 4, 3, 3, 2],
+			ray: [12, 12, 11, 10, 10, 9, 8, 8, 7, 6, 6, 5, 4, 4, 3],
+			hold: [13, 13, 12, 11, 11, 10, 9, 9, 8, 7, 7, 6, 5, 5, 4],
+			blast: [16, 16, 15, 14, 14, 13, 12, 12, 11, 10, 10, 9, 8, 8, 7],
+			spell: [14, 14, 13, 12, 12, 11, 10, 10, 9, 8, 8, 7, 6, 6, 5]
 		},
 		grimalkin: {
-			doom: [13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6],
-			ray: [14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7],
+			doom: [11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4],
+			ray: [11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4],
 			hold: [13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6],
 			blast: [15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8],
-			spell: [15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8]
-		},
-		mossling: {
-			doom: [11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4],
-			ray: [12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5],
-			hold: [13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6],
-			blast: [16, 16, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9],
 			spell: [14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7]
 		},
+		mossling: {
+			doom: [8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 2],
+			ray: [9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2],
+			hold: [10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3],
+			blast: [13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6],
+			spell: [12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5]
+		},
 		woodgrue: {
-			doom: [11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4],
+			doom: [13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6],
 			ray: [12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5],
-			hold: [13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6],
+			hold: [14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7],
 			blast: [16, 16, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9],
 			spell: [14, 14, 13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7]
 		}
@@ -316,6 +322,12 @@ const DOLMENWOOD = {
 		},
 		grimalkin: {
 			pickLock: [6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2]
+		},
+		elf: {
+			detectMagic: [5, 5, 5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2]
+		},
+		woodgrue: {
+			stealth: [6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2]
 		}
 	}
 }
@@ -354,7 +366,12 @@ const KINDRED_TRAITS = {
 				descKey: 'DOLMEN.Traits.LonghornGazeDesc',
 				traitType: 'active',
 				minLevel: 4,
-				getMaxUses: (level) => level >= 10 ? 4 : level >= 8 ? 3 : level >= 6 ? 2 : 1,
+				usesProgression: [
+					{ minLevel: 4, value: 1 },
+					{ minLevel: 6, value: 2 },
+					{ minLevel: 8, value: 3 },
+					{ minLevel: 10, value: 4 }
+				],
 				usageFrequency: 'DOLMEN.Traits.UsesPerDay'
 			},
 			{
@@ -618,6 +635,13 @@ const KINDRED_TRAITS = {
 				adjustmentValue: 5
 			},
 			{
+				id: 'acVsLarge',
+				nameKey: 'DOLMEN.Traits.ACVsLarge',
+				descKey: 'DOLMEN.Traits.ACVsLargeDesc',
+				traitType: 'adjustment',
+				adjustmentType: 'info'
+			},
+			{
 				id: 'coldIronVuln',
 				nameKey: 'DOLMEN.Traits.ColdIronVuln',
 				descKey: 'DOLMEN.Traits.ColdIronVulnDesc',
@@ -670,7 +694,7 @@ const CLASS_TRAITS = {
 				nameKey: 'DOLMEN.Traits.Enchantment',
 				descKey: 'DOLMEN.Traits.EnchantmentDesc',
 				traitType: 'active',
-				getMaxUses: (level) => level,
+				usesPerLevel: true,
 				usageFrequency: 'DOLMEN.Traits.UsesPerDay'
 			}
 		],
@@ -764,6 +788,14 @@ const CLASS_TRAITS = {
 				rollable: true,
 				rollFormula: '1d6',
 				rollTarget: 2
+			}
+		],
+		info: [
+			{
+				id: 'enchanterSkills',
+				nameKey: 'DOLMEN.Traits.EnchanterSkills',
+				descKey: 'DOLMEN.Traits.EnchanterSkillsDesc',
+				traitType: 'info'
 			}
 		]
 	},
@@ -890,9 +922,9 @@ const CLASS_TRAITS = {
 				adjustmentTarget: 'ac',
 				adjustmentProgression: [
 					{ minLevel: 1, value: 2 },
-					{ minLevel: 5, value: 3 },
-					{ minLevel: 9, value: 4 },
-					{ minLevel: 13, value: 5 }
+					{ minLevel: 4, value: 3 },
+					{ minLevel: 7, value: 4 },
+					{ minLevel: 11, value: 5 }
 				]
 			},
 			{
@@ -974,6 +1006,16 @@ const CLASS_TRAITS = {
 				id: 'hunterSkills',
 				nameKey: 'DOLMEN.Traits.HunterSkills',
 				descKey: 'DOLMEN.Traits.HunterSkillsDesc',
+				traitType: 'info'
+			}
+		]
+	},
+	magician: {
+		info: [
+			{
+				id: 'magicianSkills',
+				nameKey: 'DOLMEN.Traits.MagicianSkills',
+				descKey: 'DOLMEN.Traits.MagicianSkillsDesc',
 				traitType: 'info'
 			}
 		]
@@ -1071,7 +1113,6 @@ const CLASS_TRAITS = {
 			}
 		]
 	},
-	magician: {},
 	thief: {
 		active: [
 			{
@@ -1103,7 +1144,13 @@ const KINDRED_CLASS_TRAITS = {
 				descKey: 'DOLMEN.Traits.LonghornGazeDesc',
 				traitType: 'active',
 				minLevel: 4,
-				getMaxUses: (level) => level >= 10 ? 4 : level >= 8 ? 3 : level >= 6 ? 2 : 1,
+				usesProgression: [
+					{ minLevel: 4, value: 1 },
+					{ minLevel: 6, value: 2 },
+					{ minLevel: 8, value: 3 },
+					{ minLevel: 10, value: 4 },
+					{ minLevel: 13, value: 5 }
+				],
 				usageFrequency: 'DOLMEN.Traits.UsesPerDay'
 			},
 			{
@@ -1197,6 +1244,12 @@ const KINDRED_CLASS_TRAITS = {
 				nameKey: 'DOLMEN.Traits.Immortal',
 				descKey: 'DOLMEN.Traits.ImmortalDesc',
 				traitType: 'info'
+			},
+			{
+				id: 'detectMagicSkill',
+				nameKey: 'DOLMEN.Traits.DetectMagicSkill',
+				descKey: 'DOLMEN.Traits.DetectMagicSkillDesc',
+				traitType: 'info'
 			}
 		]
 	},
@@ -1217,6 +1270,12 @@ const KINDRED_CLASS_TRAITS = {
 				rollFormula: '2d6',
 				maxUses: 1,
 				usageFrequency: 'DOLMEN.Traits.OncePerDay'
+			},
+			{
+				id: 'healRodent',
+				nameKey: 'DOLMEN.Traits.HealRodent',
+				descKey: 'DOLMEN.Traits.HealRodentDesc',
+				traitType: 'active'
 			},
 			{
 				id: 'furBall',
@@ -1280,18 +1339,13 @@ const KINDRED_CLASS_TRAITS = {
 	mossling: {
 		passive: [
 			{
-				id: 'resilience',
-				nameKey: 'DOLMEN.Traits.Resilience',
-				descKey: 'DOLMEN.Traits.ResilienceDesc',
+				id: 'fungalResilience',
+				nameKey: 'DOLMEN.Traits.ResilienceFungal',
+				descKey: 'DOLMEN.Traits.ResilienceClassDesc',
 				traitType: 'adjustment',
 				adjustmentType: 'rollOption',
 				adjustmentTarget: 'saves.all',
-				adjustmentValue: 2,
-				extraRollOptions: [
-					{ id: 'resilienceFungal', nameKey: 'DOLMEN.Traits.ResilienceFungal', value: 4, exclusiveGroup: 'resilience' }
-				],
-				exclusiveGroup: 'resilience',
-				rollOptionDefault: true
+				adjustmentValue: 2
 			},
 			{
 				id: 'keenSurvival',
@@ -1327,8 +1381,8 @@ const KINDRED_CLASS_TRAITS = {
 				nameKey: 'DOLMEN.Traits.EnchantedMelody',
 				descKey: 'DOLMEN.Traits.EnchantedMelodyDesc',
 				traitType: 'active',
-				maxUses: 1,
-				usageFrequency: 'DOLMEN.Traits.OncePerDay'
+				usesPerLevel: true,
+				usageFrequency: 'DOLMEN.Traits.UsesPerDay'
 			}
 		],
 		passive: [
@@ -1382,6 +1436,12 @@ const KINDRED_CLASS_TRAITS = {
 				traitType: 'sizeRestriction',
 				sizeRestriction: 'small',
 				hideFromTraitTab: false
+			},
+			{
+				id: 'stealthSkill',
+				nameKey: 'DOLMEN.Traits.StealthSkill',
+				descKey: 'DOLMEN.Traits.StealthSkillDesc',
+				traitType: 'info'
 			}
 		]
 	}
@@ -1451,6 +1511,11 @@ function generateKindredItems() {
 	return items
 }
 
+// Attacking with two weapons: characters with Strength or Dexterity as a Prime Ability
+function canTwoWeaponFight(classId) {
+	return (DOLMENWOOD.primeAbilities[classId] || []).some(a => a === 'strength' || a === 'dexterity')
+}
+
 // Create class compendium items
 function generateClassItems() {
 	const items = []
@@ -1483,7 +1548,7 @@ function generateClassItems() {
 				weaponsProficiency: DOLMENWOOD.weaponsProficiency[classId] || [],
 				armorProficiency: DOLMENWOOD.armorProficiency[classId] || [],
 				classSkills: DOLMENWOOD.classSkills[classId] || [],
-				canTwoWeaponFight: ['fighter', 'hunter', 'knight', 'thief'].includes(classId),
+				canTwoWeaponFight: canTwoWeaponFight(classId),
 				hasBackstab: classId === 'thief',
 				skillPointsBase: { thief: 4, hunter: 2, bard: 2 }[classId] || 0,
 				skillPointsPerLevel: { thief: 2, hunter: 1, bard: 1 }[classId] || 0,
@@ -1529,7 +1594,7 @@ function generateClassItems() {
 				weaponsProficiency: DOLMENWOOD.weaponsProficiency[kindredClassId] || [],
 				armorProficiency: DOLMENWOOD.armorProficiency[kindredClassId] || [],
 				classSkills: DOLMENWOOD.classSkills[kindredClassId] || [],
-				canTwoWeaponFight: ['breggle', 'elf', 'grimalkin', 'woodgrue'].includes(kindredClassId),
+				canTwoWeaponFight: canTwoWeaponFight(kindredClassId),
 				hasBackstab: false,
 				skillPointsBase: 0,
 				skillPointsPerLevel: 0,

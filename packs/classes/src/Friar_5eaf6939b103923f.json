@@ -282,9 +282,9 @@
           "adjustmentTarget": "ac",
           "adjustmentProgression": [
             { "minLevel": 1, "value": 2 },
-            { "minLevel": 5, "value": 3 },
-            { "minLevel": 9, "value": 4 },
-            { "minLevel": 13, "value": 5 }
+            { "minLevel": 4, "value": 3 },
+            { "minLevel": 7, "value": 4 },
+            { "minLevel": 11, "value": 5 }
           ]
         },
         {

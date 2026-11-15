@@ -537,8 +537,8 @@ export function getApplicableMeleeModifiers(sheet, weapon) {
 	const level = actor.system.level
 	const meleeWeaponCount = getEquippedWeaponsByQuality(sheet, 'melee').length
 
-	// Backstab - available if class has backstab feature
-	if (classItem?.system?.hasBackstab) {
+	// Backstab - class feature, only when attacking with a dagger
+	if (classItem?.system?.hasBackstab && weapon?.system?.weaponType === 'dagger') {
 		const strMod = actor.system.final.abilities.strength.mod
 		const modStr = strMod >= 0 ? ` + ${strMod}` : ` - ${Math.abs(strMod)}`
 		const weaponBonus = getWeaponDamageBonus(weapon)
@@ -824,10 +824,10 @@ async function executeMeleeAttack(sheet, weapon, attackMode, selectedModifiers, 
 		damageFormula = `${damageFormula} - ${Math.abs(exhaustion)}`
 	}
 
-	// Special text for push (interactive save link)
+	// Special text for push (interactive save link), and the charge's AC penalty this Round
 	const specialText = isPush
 		? parseSaveLinks(`[${game.i18n.localize('DOLMEN.Attack.PushEffect')}](save:hold)`)
-		: null
+		: attackMode === 'charge' ? game.i18n.localize('DOLMEN.Attack.ChargeEffect') : null
 
 	await performAttackRoll(sheet, weapon, 'melee', {
 		attackOnly: isPush || rollType === 'attack',
@@ -916,7 +916,7 @@ function computeAutoRange(sheet, weapon) {
 		band = 'Long'
 		mod = -1
 	} else {
-		// Beyond long range — still allowed, rolled at long range with a note
+		// Beyond long range: the attack is not possible
 		outOfRange = true
 	}
 
@@ -940,7 +940,10 @@ export function openMissileRangeMenu(sheet, weapons, position, rollType = null, 
 	if (!forceManual && game.settings.get('dolmenwood', 'autoMissileRange')) {
 		const resolveAuto = (weapon, proficient) => {
 			const auto = computeAutoRange(sheet, weapon)
-			if (auto) {
+			if (auto?.outOfRange) {
+				// Missile attacks beyond long range are not possible
+				ui.notifications.warn(game.i18n.localize('DOLMEN.Attack.Range.OutOfRange'))
+			} else if (auto) {
 				openMissileModifierPanel(sheet, weapon, position, proficient, rollType, auto.rangeMod, auto.rangeName, auto.outOfRange)
 			} else {
 				// Couldn't measure — show the manual range menu for this weapon

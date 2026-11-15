@@ -34,10 +34,30 @@ const TRAIT_PROGRESSION_FALLBACKS = {
 	resilience: [{ minLevel: 1, value: 2 }],
 	armorOfFaith: [
 		{ minLevel: 1, value: 2 },
-		{ minLevel: 5, value: 3 },
-		{ minLevel: 9, value: 4 },
-		{ minLevel: 13, value: 5 }
+		{ minLevel: 4, value: 3 },
+		{ minLevel: 7, value: 4 },
+		{ minLevel: 11, value: 5 }
 	]
+}
+
+/**
+ * Resolve how many times per day an active trait can be used at a given level:
+ * once per level (usesPerLevel), a level table (usesProgression), or a fixed maxUses.
+ * @param {object} trait - Trait definition
+ * @param {number} level - Character level
+ * @returns {number} Uses per day, 0 when the trait is not tracked
+ */
+export function resolveMaxUses(trait, level) {
+	if (trait.getMaxUses) return trait.getMaxUses(level)
+	if (trait.usesPerLevel) return level
+	if (Array.isArray(trait.usesProgression)) {
+		let uses = 0
+		for (const entry of trait.usesProgression) {
+			if (level >= entry.minLevel) uses = entry.value
+		}
+		return uses
+	}
+	return trait.maxUses || 0
 }
 
 /**
@@ -420,8 +440,8 @@ function prepareTrait(actor, trait, level) {
 	}
 
 	// Handle active traits with usage tracking
-	if (trait.traitType === 'active' && (trait.maxUses || trait.getMaxUses)) {
-		const maxUses = trait.getMaxUses ? trait.getMaxUses(level) : trait.maxUses
+	const maxUses = trait.traitType === 'active' ? resolveMaxUses(trait, level) : 0
+	if (maxUses > 0) {
 		const usageData = actor.system.traitUsage?.[trait.id] || { used: 0 }
 
 		prepared.hasUsageTracking = true
@@ -520,10 +540,32 @@ export function prepareKindredTraits(actor) {
 export function prepareClassTraits(actor) {
 	const classItem = actor.items.find(i => i.type === 'Class')
 	const level = actor.system.level
-	const traitDef = classItem?.system?.traits
+	const traitDef = withMissingClassTraits(classItem)
 
 	if (!traitDef) return []
 	return flattenTraits(actor, traitDef, level)
+}
+
+/**
+ * Info traits added to classes after release (2.1.6), keyed by class id. Class items embedded in
+ * actors before then lack them.
+ */
+const MISSING_CLASS_TRAITS = {
+	magician: [{ id: 'magicianSkills', nameKey: 'DOLMEN.Traits.MagicianSkills', descKey: 'DOLMEN.Traits.MagicianSkillsDesc', traitType: 'info' }],
+	enchanter: [{ id: 'enchanterSkills', nameKey: 'DOLMEN.Traits.EnchanterSkills', descKey: 'DOLMEN.Traits.EnchanterSkillsDesc', traitType: 'info' }]
+}
+
+/**
+ * A class item's traits, with any info traits its stale embedded copy is missing.
+ * @param {Item} classItem - The class item
+ * @returns {object|undefined} The trait definition
+ */
+function withMissingClassTraits(classItem) {
+	const traitDef = classItem?.system?.traits
+	const missing = (MISSING_CLASS_TRAITS[classItem?.system?.classId] || [])
+		.filter(t => !flattenTraitObject(traitDef || {}).some(e => e.id === t.id))
+	if (!missing.length) return traitDef
+	return { ...traitDef, info: [...(traitDef?.info || []), ...missing] }
 }
 
 /**

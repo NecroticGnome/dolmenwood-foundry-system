@@ -31,6 +31,7 @@ import { rollTravelProcedure, openTravelProcedureDialog } from './module/travel/
 import { registerJournalArt } from './module/journal-art.js'
 import DolmenEffectSheet from './module/dolmen-effect-sheet.js'
 import { EFFECT_FIELDS } from './module/effect-fields.js'
+import { registerClassDataSetting, migrateClassData } from './module/class-data-migration.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -42,7 +43,10 @@ function isFoundryDark() {
 		|| document.body?.classList.contains('theme-dark')
 }
 
+let activeTheme = 'auto'
+
 function applyTheme(theme) {
+	activeTheme = theme
 	const resolved = theme === 'auto'
 		? (isFoundryDark() ? 'coldironaxe' : 'silverdagger')
 		: theme
@@ -51,6 +55,60 @@ function applyTheme(theme) {
 
 function applyUiTheme(enabled) {
 	document.documentElement.toggleAttribute('data-dolmen-ui', enabled)
+}
+
+/**
+ * Read a JSON value from this browser's storage, or undefined.
+ * @param {string} key - The storage key
+ * @returns {*}
+ */
+function readStored(key) {
+	try {
+		const raw = localStorage.getItem(key)
+		return raw === null ? undefined : JSON.parse(raw)
+	} catch {
+		return undefined
+	}
+}
+
+/**
+ * The value a theme setting had when it was stored per browser (before 2.1.6), or undefined.
+ * @param {string} key - The setting key
+ * @returns {*}
+ */
+function legacyThemeSetting(key) {
+	return readStored(`dolmenwood.${key}`)
+}
+
+// The player's themes, kept in this browser so the next load can apply them before the player's
+// settings arrive (they load after init)
+const THEME_CACHE = 'dolmenwood.themeCache'
+
+function cacheThemes() {
+	try {
+		localStorage.setItem(THEME_CACHE, JSON.stringify({
+			colorTheme: game.settings.get('dolmenwood', 'colorTheme'),
+			uiTheme: game.settings.get('dolmenwood', 'uiTheme')
+		}))
+	} catch {
+		// storage unavailable: the themes still apply on ready
+	}
+}
+
+/**
+ * Theme settings are per player since 2.1.6. Carry this browser's old choice over to the player's
+ * setting once, unless the player has already picked one.
+ */
+async function migrateThemeSettings() {
+	for (const key of ['colorTheme', 'uiTheme']) {
+		const legacy = legacyThemeSetting(key)
+		if (legacy === undefined) continue
+		const setting = game.settings.settings.get(`dolmenwood.${key}`)
+		if (game.settings.get('dolmenwood', key) === setting.default && legacy !== setting.default) {
+			await game.settings.set('dolmenwood', key, legacy)
+		}
+		localStorage.removeItem(`dolmenwood.${key}`)
+	}
 }
 
 Hooks.on('initializeDynamicTokenRingConfig', ringConfig => {
@@ -131,7 +189,7 @@ Hooks.once('init', async function () {
 	game.settings.register('dolmenwood', 'colorTheme', {
 		name: 'DOLMEN.Settings.ColorTheme',
 		hint: 'DOLMEN.Settings.ColorThemeHint',
-		scope: 'client',
+		scope: 'user',
 		config: true,
 		type: String,
 		default: 'auto',
@@ -151,17 +209,23 @@ Hooks.once('init', async function () {
 			coldironaxe: 'DOLMEN.Settings.ThemeColdIronAxe',
 			highcontrast: 'DOLMEN.Settings.ThemeHighContrast'
 		},
-		onChange: applyTheme
+		onChange: theme => {
+			applyTheme(theme)
+			cacheThemes()
+		}
 	})
 
 	game.settings.register('dolmenwood', 'uiTheme', {
 		name: 'DOLMEN.Settings.UiTheme',
 		hint: 'DOLMEN.Settings.UiThemeHint',
-		scope: 'client',
+		scope: 'user',
 		config: true,
 		type: Boolean,
 		default: true,
-		onChange: applyUiTheme
+		onChange: enabled => {
+			applyUiTheme(enabled)
+			cacheThemes()
+		}
 	})
 
 	game.settings.register('dolmenwood', 'showCalendar', {
@@ -510,6 +574,8 @@ Hooks.once('init', async function () {
 		default: true
 	})
 
+	registerClassDataSetting()
+
 	game.settings.register('dolmenwood', 'effectsMigrationDone', {
 		scope: 'world',
 		config: false,
@@ -630,12 +696,20 @@ Hooks.once('init', async function () {
 		}
 	})
 
-	applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
-	applyUiTheme(game.settings.get('dolmenwood', 'uiTheme'))
+	// Player settings load after init: until then, use the themes this browser last applied
+	const cached = readStored(THEME_CACHE) ?? {}
+	applyTheme(cached.colorTheme ?? legacyThemeSetting('colorTheme') ?? 'auto')
+	applyUiTheme(cached.uiTheme ?? legacyThemeSetting('uiTheme') ?? true)
+	Hooks.once('ready', async () => {
+		await migrateThemeSettings()
+		applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
+		applyUiTheme(game.settings.get('dolmenwood', 'uiTheme'))
+		cacheThemes()
+	})
 
 	// Re-apply auto theme when Foundry's own light/dark mode changes
 	const themeObserver = new MutationObserver(() => {
-		const active = themePreview ?? game.settings.get('dolmenwood', 'colorTheme')
+		const active = themePreview ?? activeTheme
 		if (active === 'auto') applyTheme('auto')
 	})
 	themeObserver.observe(document.documentElement, { attributeFilter: ['class'] })
@@ -832,6 +906,7 @@ Hooks.once('ready', async function () {
 	if (game.user.isGM) {
 		await migrateAdjustmentsToEffects()
 		await syncLegacyKindredClassFields()
+		await migrateClassData()
 	}
 
 	initCalendarWidget()

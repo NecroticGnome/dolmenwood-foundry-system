@@ -137,7 +137,128 @@
       ]
     },
     "skillProgressions": {},
-    "spellProgression": [],
+    "spellProgression": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        2,
+        2,
+        1,
+        0,
+        0
+      ],
+      [
+        3,
+        3,
+        2,
+        2,
+        0,
+        0
+      ],
+      [
+        3,
+        3,
+        2,
+        2,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        2,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        2,
+        0
+      ],
+      [
+        4,
+        4,
+        3,
+        3,
+        2,
+        0
+      ]
+    ],
     "spellType": "arcane",
     "combatAptitude": "martial",
     "weaponsProficiency": [
@@ -160,6 +281,13 @@
           "descKey": "DOLMEN.Traits.LonghornGazeDesc",
           "traitType": "active",
           "minLevel": 4,
+          "usesProgression": [
+            { "minLevel": 4, "value": 1 },
+            { "minLevel": 6, "value": 2 },
+            { "minLevel": 8, "value": 3 },
+            { "minLevel": 10, "value": 4 },
+            { "minLevel": 13, "value": 5 }
+          ],
           "usageFrequency": "DOLMEN.Traits.UsesPerDay"
         },
         {

@@ -796,6 +796,14 @@ export class CreatureDataModel extends ActorDataModel {
 		return {
 			...super.defineSchema(),
 
+			// Monster Book alignments include "Any Alignment", "Lawful or Neutral" and similar
+			alignment: new StringField({
+				required: true,
+				blank: false,
+				initial: "neutral",
+				choices: CHOICE_KEYS.creatureAlignments
+			}),
+
 			// Monster type descriptor (Animal, Undead, Fairy, etc.)
 			monsterType: new StringField({
 				required: true,
@@ -1071,9 +1079,11 @@ export class HorseDataModel extends CreatureDataModel {
 				)
 				for (const item of this.parent.items) {
 					if (ignoreIds.has(item.system.containerId)) continue
-					const qty = item.system.quantity || 1
 					const w = isSlots ? (item.system.weightSlots || 0) : (item.system.weightCoins || 0)
-					totalWeight += w * qty
+					const qty = item.system.quantity || 1
+					// coin weight is per unit, gear slots per stack size
+					const stack = isSlots ? (item.system.stackSize || 1) : 1
+					totalWeight += stack > 1 ? w * Math.ceil(qty / stack) : w * qty
 				}
 			}
 			const coinsTotal = (this.coins.copper || 0) + (this.coins.silver || 0)

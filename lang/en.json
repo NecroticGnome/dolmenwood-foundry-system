@@ -286,9 +286,9 @@
 				"CHAMod": "CHA Modifier",
 				"Attacks": "Attacks!",
 				"Hostile": "Hostile, may attack",
-				"Uncertain": "Uncertain, confused",
-				"Indifferent": "No attack, uninterested",
-				"Friendly": "Enthusiastically friendly"
+				"Uncertain": "Uncertain, wary",
+				"Indifferent": "Indifferent, may negotiate",
+				"Friendly": "Eager, friendly"
 			},
 			"SurpriseRoll": "Surprise Check",
 			"Surprised": "Surprised!",
@@ -298,6 +298,7 @@
 				"Environment": "Environment",
 				"Dungeon": "Dungeon",
 				"Outdoors": "Outdoors",
+				"BothSurprised": "both surprised",
 				"Feet": "feet"
 			},
 			"ActionOrder": {
@@ -628,7 +629,11 @@
 		"Alignments": {
 			"lawful": "Lawful",
 			"neutral": "Neutral",
-			"chaotic": "Chaotic"
+			"chaotic": "Chaotic",
+			"any": "Any",
+			"lawfulOrNeutral": "Lawful or Neutral",
+			"neutralOrChaotic": "Neutral or Chaotic",
+			"bySeason": "By Season"
 		},
 		"ItemSheetTitle": "Dolmenwood Item Sheet",
 		"Ammo": {
@@ -818,6 +823,7 @@
 			"VsAC": "vs AC {ac} ({name})",
 			"Unarmed": "Unarmed",
 			"PushEffect": "Defender must Save vs. Hold",
+			"ChargeEffect": "Charging: AC −1 this Round",
 			"Type": {
 				"Normal": "Normal",
 				"Charge": "Charge",
@@ -1290,7 +1296,8 @@
 			"ClassNotFound": "Class \"{id}\" not found",
 			"CodexEntryNotFound": "Codex entry not found: {uuid}",
 			"NoNameRollGroups": "No name roll groups configured for this kindred",
-			"MigratedAdjustments": "Dolmenwood: Migrated {count} manual adjustment(s) to Effect items."
+			"MigratedAdjustments": "Dolmenwood: Migrated {count} manual adjustment(s) to Effect items.",
+			"ClassDataRefreshed": "Dolmenwood: Updated the class and kindred rules data on {count} character(s)."
 		}
 	}
 }

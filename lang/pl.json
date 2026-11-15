@@ -286,9 +286,9 @@
 				"CHAMod": "Modyfikator CHA",
 				"Attacks": "Atakuje!",
 				"Hostile": "Wrogość, może zaatakować",
-				"Uncertain": "Niepewność, dezorientacja",
-				"Indifferent": "Nie atakuje, obojętność",
-				"Friendly": "Przyjazne nastawienie"
+				"Uncertain": "Niepewność, ostrożność",
+				"Indifferent": "Obojętność, możliwe negocjacje",
+				"Friendly": "Chęć, przyjazne nastawienie"
 			},
 			"SurpriseRoll": "Test Zaskoczenia",
 			"Surprised": "Zaskoczenie!",
@@ -298,6 +298,7 @@
 				"Environment": "Otoczenie",
 				"Dungeon": "Lochy",
 				"Outdoors": "Dzicz",
+				"BothSurprised": "obie strony zaskoczone",
 				"Feet": "stopy"
 			},
 			"ActionOrder": {
@@ -628,7 +629,11 @@
 		"Alignments": {
 			"lawful": "Praworządny",
 			"neutral": "Neutralny",
-			"chaotic": "Chaotyczny"
+			"chaotic": "Chaotyczny",
+			"any": "Dowolny",
+			"lawfulOrNeutral": "Praworządny lub Neutralny",
+			"neutralOrChaotic": "Neutralny lub Chaotyczny",
+			"bySeason": "Zależny od pory roku"
 		},
 		"ItemSheetTitle": "Karta Przedmiotu Dolmenwood",
 		"Ammo": {
@@ -818,6 +823,7 @@
 			"VsAC": "przeciw KP {ac} ({name})",
 			"Unarmed": "Bez Broni",
 			"PushEffect": "Broniący się musi wykonać Rzut Obronny przed Spętaniem",
+			"ChargeEffect": "Szarża: KP −1 w tej Rundzie",
 			"Type": {
 				"Normal": "Zwykły",
 				"Charge": "Szarża",
@@ -1290,7 +1296,8 @@
 			"ClassNotFound": "Nie znaleziono klasy \"{id}\"",
 			"CodexEntryNotFound": "Nie znaleziono wpisu w Kodeksie: {uuid}",
 			"NoNameRollGroups": "Ta rasa nie ma skonfigurowanych grup do losowania imion",
-			"MigratedAdjustments": "Dolmenwood: zamieniono ręcznie dodane modyfikatory ({count}) na Efekty."
+			"MigratedAdjustments": "Dolmenwood: zamieniono ręcznie dodane modyfikatory ({count}) na Efekty.",
+			"ClassDataRefreshed": "Dolmenwood: zaktualizowano dane klas i ras postaci ({count})."
 		}
 	}
 }

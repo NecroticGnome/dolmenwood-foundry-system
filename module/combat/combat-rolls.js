@@ -342,13 +342,14 @@ export async function rollSurprise() {
 /* -------------------------------------------- */
 
 /**
- * Roll encounter distance (2d6 × multiplier).
+ * Roll encounter distance (2d6 × multiplier, 1d4 when both sides are surprised).
  * Dungeon = 2d6×10 feet, Outdoors = 2d6×30 feet.
  * @param {string} [environment='dungeon'] - 'dungeon' or 'outdoors'
+ * @param {boolean} [bothSurprised=false] - Both sides are surprised
  * @returns {Promise<object>} { roll, multiplier, distance }
  */
-export async function rollEncounterDistance(environment = 'dungeon') {
-	const roll = new Roll('2d6')
+export async function rollEncounterDistance(environment = 'dungeon', bothSurprised = false) {
+	const roll = new Roll(bothSurprised ? '1d4' : '2d6')
 	await roll.evaluate()
 	const multiplier = environment === 'outdoors' ? 30 : 10
 	const distance = roll.total * multiplier
@@ -357,7 +358,7 @@ export async function rollEncounterDistance(environment = 'dungeon') {
 		environment === 'outdoors'
 			? 'DOLMEN.Combat.Distance.Outdoors'
 			: 'DOLMEN.Combat.Distance.Dungeon'
-	)
+	) + (bothSurprised ? ` (${game.i18n.localize('DOLMEN.Combat.Distance.BothSurprised')})` : '')
 
 	const anchor = await roll.toAnchor({ classes: ['distance-inline-roll', 'inline-dsn-hidden'] })
 

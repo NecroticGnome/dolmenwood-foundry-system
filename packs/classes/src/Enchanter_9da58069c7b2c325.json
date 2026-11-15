@@ -169,6 +169,14 @@
           "rollFormula": "1d6",
           "rollTarget": 2
         }
+      ],
+      "info": [
+        {
+          "id": "enchanterSkills",
+          "nameKey": "DOLMEN.Traits.EnchanterSkills",
+          "descKey": "DOLMEN.Traits.EnchanterSkillsDesc",
+          "traitType": "info"
+        }
       ]
     }
   },

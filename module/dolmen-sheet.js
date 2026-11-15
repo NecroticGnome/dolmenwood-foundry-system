@@ -548,7 +548,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		const totalCoins = (actor.system.coins.copper || 0) + (actor.system.coins.silver || 0)
 			+ (actor.system.coins.gold || 0) + (actor.system.coins.pellucidium || 0)
 		const coinsWeight = isSlots ? Math.ceil(totalCoins / 100) : totalCoins
-		const rawStowedWeight = allStowedItems.reduce((sum, i) => sum + calcItemWeight(i, weightKey), 0)
+		const rawStowedWeight = [...allStowedItems, ...containerItems]
+			.reduce((sum, i) => sum + calcItemWeight(i, weightKey), 0)
 		context.stowedWeight = !encDisabled && rawStowedWeight ? rawStowedWeight : null
 		context.coinsWeight = !encDisabled && coinsWeight ? coinsWeight : null
 
@@ -1404,7 +1405,8 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 					if (!found) {
 						itemData.name = baseName
 						if (qty > 1) {
-							if (itemData.system.weightCoins) itemData.system.weightCoins = +(itemData.system.weightCoins / qty).toFixed(2)
+							// coin weight is per unit: divide a bundle's weight unless it is already per unit
+							if (itemData.system.weightCoins && (itemData.system.quantity || 1) === 1) itemData.system.weightCoins = +(itemData.system.weightCoins / qty).toFixed(2)
 							DolmenSheet._divideCost(itemData.system, qty)
 						}
 					}
@@ -1418,7 +1420,7 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 					const bagQty = parseInt(bagMatch[1]) || 1
 					itemData.name = itemData.name.replace(/\s*\(Bag of \d+\)\s*$/i, '').trim()
 					if (bagQty > 1) {
-						if (itemData.system.weightCoins) itemData.system.weightCoins = +(itemData.system.weightCoins / bagQty).toFixed(2)
+						if (itemData.system.weightCoins && (itemData.system.quantity || 1) === 1) itemData.system.weightCoins = +(itemData.system.weightCoins / bagQty).toFixed(2)
 						DolmenSheet._divideCost(itemData.system, bagQty)
 					}
 				}

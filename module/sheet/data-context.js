@@ -61,8 +61,10 @@ export function computeEncumbrance(actor) {
 	const ignoreContainerIds = new Set(
 		items.filter(i => i.type === 'Container' && i.system.ignoreEncumbrance).map(i => i.id)
 	)
+	// Containers are stowed and count with their own weight (a backpack or sack in use is 0 slots,
+	// a chest 2)
 	const equipped = items.filter(i => i.system.equipped && i.type !== 'Container')
-	const stowed = items.filter(i => !i.system.equipped && i.type !== 'Container'
+	const stowed = items.filter(i => (!i.system.equipped || i.type === 'Container')
 		&& !ignoreContainerIds.has(i.system.containerId))
 	const totalCoins = (system.coins.copper || 0) + (system.coins.silver || 0)
 		+ (system.coins.gold || 0) + (system.coins.pellucidium || 0)
@@ -79,7 +81,7 @@ export function computeEncumbrance(actor) {
 
 function computeWeightFull(equipped, stowed, totalCoins, coinCapacityAdj) {
 	const itemWeight = [...equipped, ...stowed].reduce(
-		(sum, i) => sum + (i.system.weightCoins || 0) * (i.system.quantity || 1), 0
+		(sum, i) => sum + calcItemWeight(i, 'weightCoins'), 0
 	)
 	const current = itemWeight + totalCoins
 	const max = 1600 + coinCapacityAdj
@@ -94,7 +96,7 @@ function computeWeightFull(equipped, stowed, totalCoins, coinCapacityAdj) {
 function computeWeightTreasure(equipped, stowed, totalCoins, significantLoad, coinCapacityAdj) {
 	const treasureWeight = [...equipped, ...stowed]
 		.filter(i => i.type === 'Treasure')
-		.reduce((sum, i) => sum + (i.system.weightCoins || 0) * (i.system.quantity || 1), 0)
+		.reduce((sum, i) => sum + calcItemWeight(i, 'weightCoins'), 0)
 	const current = treasureWeight + totalCoins
 	const max = 1600 + coinCapacityAdj
 	const threshold = max * (significantLoad || 50) / 100
@@ -124,20 +126,11 @@ function computeWeightTreasure(equipped, stowed, totalCoins, significantLoad, co
 	return { current, max, speed, adj: coinCapacityAdj }
 }
 
-function itemSlots(i) {
-	const w = i.system.weightSlots || 0
-	if (!w) return 0
-	const qty = i.system.quantity || 1
-	const stack = i.system.stackSize || 1
-	if (stack > 1) return w * Math.ceil(qty / stack)
-	return w * qty
-}
-
 function computeSlots(equipped, stowed, totalCoins, slotCapacityAdj) {
-	const equippedSlots = equipped.reduce((sum, i) => sum + itemSlots(i), 0)
+	const equippedSlots = equipped.reduce((sum, i) => sum + calcItemWeight(i, 'weightSlots'), 0)
 	const coinsPerSlot = game.settings.get('dolmenwood', 'coinsPerSlot')
 	const coinSlots = Math.ceil(totalCoins / coinsPerSlot)
-	const stowedSlots = stowed.reduce((sum, i) => sum + itemSlots(i), 0) + coinSlots
+	const stowedSlots = stowed.reduce((sum, i) => sum + calcItemWeight(i, 'weightSlots'), 0) + coinSlots
 	const eAdj = slotCapacityAdj.equipped || 0
 	const sAdj = slotCapacityAdj.stowed || 0
 	const equippedMax = 10 + eAdj
@@ -157,7 +150,9 @@ function computeSlots(equipped, stowed, totalCoins, slotCapacityAdj) {
 	else if (stowedSlots <= 14 + sAdj) stowedSpeed = 20
 	else stowedSpeed = 10
 
-	const speed = Math.min(equippedSpeed, stowedSpeed)
+	// More than the maximum cannot be carried, as with coin weight
+	const overMax = equippedSlots > equippedMax || stowedSlots > stowedMax
+	const speed = overMax ? 0 : Math.min(equippedSpeed, stowedSpeed)
 
 	return {
 		equipped: { current: equippedSlots, max: equippedMax, adj: eAdj },
@@ -185,9 +180,8 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 	const skillAdjusted = (name) => {
 		const overridePath = `skills.${name}`
 		if (skillOverrides[overridePath] !== undefined) {
-			// Kindred bonus = how much better than default (6). Apply that difference to class value.
-			const kindredBonus = 6 - skillOverrides[overridePath]
-			const base = system.skills[name] - kindredBonus
+			// Kindred and class targets do not stack: use the more favourable one
+			const base = Math.min(system.skills[name], skillOverrides[overridePath])
 			return base + (adj.skills[name] || 0)
 		}
 		return system.skills[name] + (adj.skills[name] || 0) + getTraitAdj(overridePath)
@@ -292,7 +286,7 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 			blast: system.saves.blast + (adj.saves.blast || 0) + getTraitAdj('saves.blast'),
 			spell: system.saves.spell + (adj.saves.spell || 0) + getTraitAdj('saves.spell')
 		},
-		magicResistance: system.abilities.wisdom.mod + (adj.magicResistance || 0) + getTraitAdj('magicResistance'),
+		magicResistance: abilityAdjusted('wisdom').mod + (adj.magicResistance || 0) + getTraitAdj('magicResistance'),
 		skills: {
 			listen: skillAdjusted('listen'),
 			search: skillAdjusted('search'),
@@ -570,7 +564,8 @@ export function groupRunesByMagnitude(runes, actor) {
 }
 
 /**
- * Calculate weight of an item accounting for stack size.
+ * Calculate the weight of an item stack. Coin weight is per unit (20 arrows weigh 20 coins).
+ * Gear slots are per stack size (up to 20 arrows take 1 slot).
  * @param {object} item - Prepared item data
  * @param {string} weightKey - 'weightSlots' or 'weightCoins'
  * @returns {number} The calculated weight
@@ -579,7 +574,7 @@ export function calcItemWeight(item, weightKey) {
 	const w = item.system[weightKey] || 0
 	if (!w) return 0
 	const qty = item.system.quantity || 1
-	const stack = item.system.stackSize || 1
+	const stack = weightKey === 'weightSlots' ? (item.system.stackSize || 1) : 1
 	return stack > 1 ? w * Math.ceil(qty / stack) : w * qty
 }
 

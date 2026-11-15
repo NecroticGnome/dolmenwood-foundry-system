@@ -345,7 +345,8 @@ async function addXP() {
 		const treasureShare = getTreasureShare(a)
 		return { actor: a, isRetainer, basePct, bonusPct, newTreasure, treasureShare }
 	})
-	const headcount = members.length
+	// XP is divided evenly between party members who earn it: townsfolk retainers (no XP share) do not
+	const headcount = members.filter(m => m.basePct > 0).length
 	const fmt = v => v % 1 === 0 ? v : parseFloat(v.toFixed(2))
 
 	// Compute auto-calculate total from party treasure (full value, loot share only affects coin division)
