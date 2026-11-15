@@ -144,6 +144,10 @@ class DolmenItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 		context.enrichedDescription = context.descriptionFieldValue
 			? await TextEditor.enrichHTML(context.descriptionFieldValue, { secrets: game.user.isGM })
 			: ''
+		// Treasure, foraged and consumable items' effects summary (HTML)
+		context.enrichedEffects = this.item.system.effects
+			? await TextEditor.enrichHTML(this.item.system.effects, { secrets: game.user.isGM })
+			: ''
 
 		// Weapon choices
 		context.weaponTypeChoices = buildChoicesWithBlank('DOLMEN.Item.WeaponType', CHOICE_KEYS.weaponTypes)
