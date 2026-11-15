@@ -268,7 +268,11 @@
 		</div>
 		<div class="form-group">
 			<label>{{localize "DOLMEN.Item.EffectsSummary"}}</label>
-			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
+			{{#if @root.editable}}
+			<prose-mirror name="system.effects" class="effects-summary" button="true" toggled="true" value="{{system.effects}}">{{{@root.enrichedEffects}}}</prose-mirror>
+			{{else}}
+			<div class="effects-summary editor-content">{{{@root.enrichedEffects}}}</div>
+			{{/if}}
 		</div>
 	</section>
 	{{/if}}
@@ -293,7 +297,11 @@
 		</div>
 		<div class="form-group">
 			<label>{{localize "DOLMEN.Item.EffectsSummary"}}</label>
-			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
+			{{#if @root.editable}}
+			<prose-mirror name="system.effects" class="effects-summary" button="true" toggled="true" value="{{system.effects}}">{{{@root.enrichedEffects}}}</prose-mirror>
+			{{else}}
+			<div class="effects-summary editor-content">{{{@root.enrichedEffects}}}</div>
+			{{/if}}
 		</div>
 	</section>
 	{{/if}}
@@ -304,7 +312,11 @@
 		<h2>{{localize "DOLMEN.Item.ConsumableDetails"}}</h2>
 		<div class="form-group">
 			<label>{{localize "DOLMEN.Item.EffectsSummary"}}</label>
-			<textarea name="system.effects" class="effects-input">{{system.effects}}</textarea>
+			{{#if @root.editable}}
+			<prose-mirror name="system.effects" class="effects-summary" button="true" toggled="true" value="{{system.effects}}">{{{@root.enrichedEffects}}}</prose-mirror>
+			{{else}}
+			<div class="effects-summary editor-content">{{{@root.enrichedEffects}}}</div>
+			{{/if}}
 		</div>
 	</section>
 	{{/if}}

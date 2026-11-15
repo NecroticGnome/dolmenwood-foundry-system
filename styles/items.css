@@ -356,16 +356,19 @@
 	padding: 0.4rem;
 }
 
-.sheet.dolmen .effects-input {
-	width: 100%;
-	min-height: 3rem;
-	padding: 0.25rem;
-	border: 1px solid var(--dolmen-color-input-border);
-	border-radius: 2px;
+/* Effects summary: read as text, with the editor's own frame only while editing */
+.sheet.dolmen .effects-summary {
+	height: auto;
+	min-height: 1.5rem;
 	font-size: 0.85rem;
-	font-family: inherit;
-	box-sizing: border-box;
-	resize: vertical;
+}
+
+.sheet.dolmen .effects-summary p {
+	margin: 0;
+}
+
+.sheet.dolmen .effects-summary p + p {
+	margin-top: 0.25rem;
 }
 
 /* -------------------------------------------- */
