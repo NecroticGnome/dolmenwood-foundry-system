@@ -23,7 +23,7 @@ function getActorMagicResistance(actor) {
 
 /**
  * Get the save modifier options available to an actor: trait roll options
- * plus magic resistance (if any).
+ * plus magic resistance (if any; a negative Wisdom modifier is a penalty).
  * @param {Actor} actor
  * @param {string} saveKey - The save type
  * @returns {object[]} Options as { id, name, bonus, exclusiveGroup }
@@ -31,7 +31,7 @@ function getActorMagicResistance(actor) {
 function getActorSaveOptions(actor, saveKey) {
 	const options = getTraitRollOptions(actor, `saves.${saveKey}`)
 	const mr = getActorMagicResistance(actor)
-	if (mr > 0) {
+	if (mr !== 0) {
 		options.push({
 			id: 'magicResistance',
 			name: game.i18n.localize('DOLMEN.Traits.MagicResistance'),

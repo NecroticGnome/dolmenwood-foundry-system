@@ -236,6 +236,7 @@ export function buildClassSkillOptions(currentSkills = []) {
 // Pre-defined choice key arrays for common dropdowns
 export const CHOICE_KEYS = {
 	alignments: ['lawful', 'neutral', 'chaotic'],
+	creatureAlignments: ['lawful', 'neutral', 'chaotic', 'any', 'lawfulOrNeutral', 'neutralOrChaotic', 'bySeason'],
 	encumbranceMethods: ['weight', 'treasure', 'slots', 'disabled'],
 	moonNames: ['grinning', 'dead', 'beast', 'squamous', 'knights', 'rotting', 'maidens', 'witch', 'robbers', 'goat', 'narrow', 'black'],
 	moonPhases: ['waxing', 'full', 'waning'],

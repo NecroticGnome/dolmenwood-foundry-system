@@ -150,7 +150,9 @@ function computeSlots(equipped, stowed, totalCoins, slotCapacityAdj) {
 	else if (stowedSlots <= 14 + sAdj) stowedSpeed = 20
 	else stowedSpeed = 10
 
-	const speed = Math.min(equippedSpeed, stowedSpeed)
+	// More than the maximum cannot be carried, as with coin weight
+	const overMax = equippedSlots > equippedMax || stowedSlots > stowedMax
+	const speed = overMax ? 0 : Math.min(equippedSpeed, stowedSpeed)
 
 	return {
 		equipped: { current: equippedSlots, max: equippedMax, adj: eAdj },
@@ -178,9 +180,8 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 	const skillAdjusted = (name) => {
 		const overridePath = `skills.${name}`
 		if (skillOverrides[overridePath] !== undefined) {
-			// Kindred bonus = how much better than default (6). Apply that difference to class value.
-			const kindredBonus = 6 - skillOverrides[overridePath]
-			const base = system.skills[name] - kindredBonus
+			// Kindred and class targets do not stack: use the more favourable one
+			const base = Math.min(system.skills[name], skillOverrides[overridePath])
 			return base + (adj.skills[name] || 0)
 		}
 		return system.skills[name] + (adj.skills[name] || 0) + getTraitAdj(overridePath)
@@ -285,7 +286,7 @@ export function computeAdjustedValues(actor, encumbranceSpeed = null) {
 			blast: system.saves.blast + (adj.saves.blast || 0) + getTraitAdj('saves.blast'),
 			spell: system.saves.spell + (adj.saves.spell || 0) + getTraitAdj('saves.spell')
 		},
-		magicResistance: system.abilities.wisdom.mod + (adj.magicResistance || 0) + getTraitAdj('magicResistance'),
+		magicResistance: abilityAdjusted('wisdom').mod + (adj.magicResistance || 0) + getTraitAdj('magicResistance'),
 		skills: {
 			listen: skillAdjusted('listen'),
 			search: skillAdjusted('search'),

@@ -43,8 +43,11 @@ const ALIGNMENT_MAP = {
 	'lawful': 'lawful',
 	'neutral': 'neutral',
 	'chaotic': 'chaotic',
-	'any alignment': 'neutral',
-	'alignment by individual': 'neutral'
+	'any alignment': 'any',
+	'alignment by individual': 'any',
+	'lawful or neutral': 'lawfulOrNeutral',
+	'neutral or chaotic': 'neutralOrChaotic',
+	'alignment by season': 'bySeason'
 }
 
 // --- Helpers ---
@@ -324,7 +327,7 @@ export function parseStatblock(text) {
 		const dashes = (lines[i].match(/\u2014/g) || []).length
 		if (dashes >= 2) {
 			const lower = lines[i].toLowerCase()
-			if (['lawful', 'neutral', 'chaotic', 'any alignment', 'alignment by individual'].some(a => lower.includes(a))) {
+			if (['lawful', 'neutral', 'chaotic', 'any alignment', 'alignment by individual', 'alignment by season'].some(a => lower.includes(a))) {
 				typeLineIndex = i
 				break
 			}

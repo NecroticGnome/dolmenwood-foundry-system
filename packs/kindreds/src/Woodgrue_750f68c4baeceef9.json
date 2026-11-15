@@ -64,6 +64,13 @@
           "adjustmentValue": 5
         },
         {
+          "id": "acVsLarge",
+          "nameKey": "DOLMEN.Traits.ACVsLarge",
+          "descKey": "DOLMEN.Traits.ACVsLargeDesc",
+          "traitType": "adjustment",
+          "adjustmentType": "info"
+        },
+        {
           "id": "coldIronVuln",
           "nameKey": "DOLMEN.Traits.ColdIronVuln",
           "descKey": "DOLMEN.Traits.ColdIronVulnDesc",

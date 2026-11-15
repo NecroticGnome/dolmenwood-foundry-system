@@ -796,6 +796,14 @@ export class CreatureDataModel extends ActorDataModel {
 		return {
 			...super.defineSchema(),
 
+			// Monster Book alignments include "Any Alignment", "Lawful or Neutral" and similar
+			alignment: new StringField({
+				required: true,
+				blank: false,
+				initial: "neutral",
+				choices: CHOICE_KEYS.creatureAlignments
+			}),
+
 			// Monster type descriptor (Animal, Undead, Fairy, etc.)
 			monsterType: new StringField({
 				required: true,

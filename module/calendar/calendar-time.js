@@ -70,6 +70,9 @@ export function getMoonForDay(dayOfYear) {
 
 /**
  * Map a phase (waxing/full/waning) and progress (0-1) to a detailed moon icon filename.
+ * The image files are named the other way round from what they show (moon_waning_crescent is lit
+ * on the right), so a waxing moon deliberately uses the "waning" images: lit on the right, as seen
+ * from the northern hemisphere.
  */
 function getPhaseIcon(phase, progress) {
 	if (phase === 'full') return 'moon_full'

@@ -102,7 +102,8 @@ export async function autoApplyDamage(message) {
 	if (!actor) return
 
 	let amount = flag.total
-	if (flag.coldIron) amount = isFey(actor) ? amount + 1 : Math.max(0, amount - 1)
+	// A successful attack always inflicts at least 1 damage
+	if (flag.coldIron) amount = isFey(actor) ? amount + 1 : Math.max(1, amount - 1)
 
 	// Don't reveal the result before Dice So Nice finishes animating
 	if (game.dice3d) await game.dice3d.waitFor3DAnimationByMessageID(message.id)
@@ -124,7 +125,7 @@ function showDamageMenu(event, damageTotal, excludeEl, { hasColdIron = false, me
 	const halfDamage = Math.floor(damageTotal / 2)
 	const doubleDamage = damageTotal * 2
 	const coldIronPlus = damageTotal + 1
-	const coldIronMinus = Math.max(0, damageTotal - 1)
+	const coldIronMinus = Math.max(1, damageTotal - 1)
 
 	// Build primary damage option(s)
 	// Cold-iron: base roll is standard damage, +1 vs fey, -1 vs non-fey

@@ -160,11 +160,11 @@ export async function performAbilityCheck(actor, abilityKey, traitScoreBonus = 0
 export function onSaveRoll(sheet, saveKey, event) {
 	const modifiers = getTraitRollOptions(sheet.actor, `saves.${saveKey}`)
 
-	// Add Magic Resistance option if actor has MR > 0
+	// Magic Resistance option (a negative Wisdom modifier is a penalty against magic)
 	const mr = sheet.actor.type === 'Adventurer'
 		? (sheet.actor.system.final?.magicResistance || 0)
 		: (sheet.actor.system.specialAbilities?.some(a => a.name.toLowerCase() === 'magic resistance') ? 2 : 0)
-	if (mr > 0) {
+	if (mr !== 0) {
 		modifiers.push({
 			id: 'magicResistance',
 			name: game.i18n.localize('DOLMEN.Traits.MagicResistance'),
@@ -404,8 +404,8 @@ export async function performSkillCheck(actor, skillKey, targetOverride = null, 
 
 	if (baseSkillTarget === undefined || baseSkillTarget === null) return
 
-	// Trait bonus increases the skill target (making it easier)
-	const skillTarget = baseSkillTarget + traitBonus
+	// A trait bonus lowers the skill target (success is d6 >= target, so lower is easier)
+	const skillTarget = baseSkillTarget - traitBonus
 
 	const skillName = customName || game.i18n.localize(`DOLMEN.Skills.${skillKey}`)
 
@@ -424,7 +424,7 @@ export async function performSkillCheck(actor, skillKey, targetOverride = null, 
 		rollModifier !== 0 ? `<span class="trait-badge">${formatBonus(rollModifier)}</span>` : ''
 	].filter(Boolean).join(' ')
 	const targetDisplay = traitBonus !== 0
-		? `${baseSkillTarget} + ${traitBonus} = ${skillTarget}`
+		? `${baseSkillTarget} ${traitBonus > 0 ? '−' : '+'} ${Math.abs(traitBonus)} = ${skillTarget}`
 		: `${skillTarget}`
 
 	const chatContent = `

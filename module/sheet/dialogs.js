@@ -329,7 +329,8 @@ export async function levelUp(sheet) {
 	const doLevelUp = async () => {
 		let hpGain
 		let formula = ''
-		const conMod = sys.abilities.constitution.mod
+		// Constitution modifier after adjustments (effects, traits)
+		const conMod = sys.final?.abilities?.constitution?.mod ?? sys.abilities.constitution.mod
 		let rollBody = ''
 		let hpRoll = null
 

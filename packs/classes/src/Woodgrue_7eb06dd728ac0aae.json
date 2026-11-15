@@ -35,22 +35,26 @@
     "attackProgression": [
       0,
       0,
-      0,
-      1,
       1,
       1,
       2,
       2,
-      2,
-      3,
       3,
       3,
       4,
       4,
-      4
+      5,
+      5,
+      6,
+      6,
+      7
     ],
     "saveProgressions": {
       "doom": [
+        13,
+        13,
+        12,
+        12,
         11,
         11,
         10,
@@ -61,11 +65,7 @@
         8,
         7,
         7,
-        6,
-        6,
-        5,
-        5,
-        4
+        6
       ],
       "ray": [
         12,
@@ -85,6 +85,8 @@
         5
       ],
       "hold": [
+        14,
+        14,
         13,
         13,
         12,
@@ -97,9 +99,7 @@
         9,
         8,
         8,
-        7,
-        7,
-        6
+        7
       ],
       "blast": [
         16,
@@ -136,7 +136,9 @@
         7
       ]
     },
-    "skillProgressions": {},
+    "skillProgressions": {
+      "stealth": [6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2]
+    },
     "spellProgression": [],
     "spellType": "none",
     "combatAptitude": "semi-martial",
@@ -148,7 +150,9 @@
       "any",
       "shields"
     ],
-    "classSkills": [],
+    "classSkills": [
+      "stealth"
+    ],
     "canTwoWeaponFight": true,
     "hasBackstab": false,
     "skillPointsBase": 0,
@@ -160,8 +164,8 @@
           "nameKey": "DOLMEN.Traits.EnchantedMelody",
           "descKey": "DOLMEN.Traits.EnchantedMelodyDesc",
           "traitType": "active",
-          "maxUses": 1,
-          "usageFrequency": "DOLMEN.Traits.OncePerDay"
+          "usesPerLevel": true,
+          "usageFrequency": "DOLMEN.Traits.UsesPerDay"
         }
       ],
       "passive": [
@@ -217,6 +221,12 @@
           "traitType": "sizeRestriction",
           "sizeRestriction": "small",
           "hideFromTraitTab": false
+        },
+        {
+          "id": "stealthSkill",
+          "nameKey": "DOLMEN.Traits.StealthSkill",
+          "descKey": "DOLMEN.Traits.StealthSkillDesc",
+          "traitType": "info"
         }
       ]
     }

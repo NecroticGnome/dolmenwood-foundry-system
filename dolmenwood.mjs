@@ -31,6 +31,7 @@ import { rollTravelProcedure, openTravelProcedureDialog } from './module/travel/
 import { registerJournalArt } from './module/journal-art.js'
 import DolmenEffectSheet from './module/dolmen-effect-sheet.js'
 import { EFFECT_FIELDS } from './module/effect-fields.js'
+import { registerClassDataSetting, migrateClassData } from './module/class-data-migration.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -573,6 +574,8 @@ Hooks.once('init', async function () {
 		default: true
 	})
 
+	registerClassDataSetting()
+
 	game.settings.register('dolmenwood', 'effectsMigrationDone', {
 		scope: 'world',
 		config: false,
@@ -903,6 +906,7 @@ Hooks.once('ready', async function () {
 	if (game.user.isGM) {
 		await migrateAdjustmentsToEffects()
 		await syncLegacyKindredClassFields()
+		await migrateClassData()
 	}
 
 	initCalendarWidget()

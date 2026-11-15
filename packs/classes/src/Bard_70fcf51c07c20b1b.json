@@ -222,7 +222,7 @@
       "legerdemain",
       "monsterLore"
     ],
-    "canTwoWeaponFight": false,
+    "canTwoWeaponFight": true,
     "hasBackstab": false,
     "skillPointsBase": 2,
     "skillPointsPerLevel": 1,
@@ -239,6 +239,7 @@
           "nameKey": "DOLMEN.Traits.Enchantment",
           "descKey": "DOLMEN.Traits.EnchantmentDesc",
           "traitType": "active",
+          "usesPerLevel": true,
           "usageFrequency": "DOLMEN.Traits.UsesPerDay"
         }
       ],

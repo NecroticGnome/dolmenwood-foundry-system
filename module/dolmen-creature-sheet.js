@@ -167,7 +167,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.sizeChoices = buildChoices('DOLMEN.Sizes', CHOICE_KEYS.sizes)
 		context.monsterTypeChoices = buildChoices('DOLMEN.MonsterTypes', CHOICE_KEYS.monsterTypes)
 		context.intelligenceChoices = buildChoices('DOLMEN.IntelligenceTypes', CHOICE_KEYS.intelligenceTypes)
-		context.alignmentChoices = buildChoices('DOLMEN.Alignments', CHOICE_KEYS.alignments)
+		context.alignmentChoices = buildChoices('DOLMEN.Alignments', CHOICE_KEYS.creatureAlignments)
 
 		// Active movement types (non-zero)
 		context.activeMovement = []

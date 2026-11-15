@@ -468,20 +468,22 @@ export default class DolmenCombatTracker extends CombatTracker {
 			{ key: 'dungeon', labelKey: 'DOLMEN.Combat.Distance.Dungeon', icon: 'fa-solid fa-dungeon' },
 			{ key: 'outdoors', labelKey: 'DOLMEN.Combat.Distance.Outdoors', icon: 'fa-solid fa-tree' }
 		]
+		const bothSurprised = game.i18n.localize('DOLMEN.Combat.Distance.BothSurprised')
 
-		const html = environments.map(({ key, labelKey, icon }) =>
-			`<div class="tracker-menu-item" data-environment="${key}">
+		// Each environment, then each again for when both sides are surprised (1d4 instead of 2d6)
+		const html = [false, true].flatMap(surprised => environments.map(({ key, labelKey, icon }) =>
+			`<div class="tracker-menu-item" data-environment="${key}" data-both-surprised="${surprised}">
 				<i class="${icon}"></i>
-				<span>${game.i18n.localize(labelKey)}</span>
+				<span>${game.i18n.localize(labelKey)}${surprised ? ` (${bothSurprised})` : ''}</span>
 			</div>`
-		).join('')
+		)).join('')
 
 		openTrackerMenu(this.element, 'rollEncounterDistance', {
 			html,
 			itemSelector: '.tracker-menu-item',
 			onItemClick: async (item, menu) => {
 				menu.remove()
-				await rollEncounterDistance(item.dataset.environment)
+				await rollEncounterDistance(item.dataset.environment, item.dataset.bothSurprised === 'true')
 			}
 		})
 	}
