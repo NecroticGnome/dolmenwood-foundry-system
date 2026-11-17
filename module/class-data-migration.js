@@ -73,7 +73,7 @@ async function refreshActor(actor, classes, kindreds) {
  * still match the old tables
  */
 function progressionUpdates(actor, oldClass, newClass) {
-	const level = Math.min(Math.max(actor.system.level || 1, 1), 15)
+	const level = Math.min(Math.max(actor.system.level || 1, 1), CONFIG.DOLMENWOOD.maxLevel)
 	const updates = {}
 	const moved = (current, oldTable, newTable) => {
 		const oldValue = oldTable?.[level - 1]

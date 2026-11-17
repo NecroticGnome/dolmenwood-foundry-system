@@ -313,7 +313,7 @@ export async function levelUp(sheet) {
 	const level = sys.level
 	const classItem = actor.getClassItem()
 
-	if (level >= 15) {
+	if (level >= CONFIG.DOLMENWOOD.maxLevel) {
 		ui.notifications.warn(game.i18n.localize('DOLMEN.LevelMaxReached'))
 		return
 	}

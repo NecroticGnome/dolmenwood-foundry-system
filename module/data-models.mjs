@@ -1,7 +1,7 @@
 import { CHOICE_KEYS } from './utils/choices.js'
 import { getEffectEntries } from './effect-fields.js'
 
-/* global foundry, game */
+/* global foundry, game, CONFIG */
 const { ArrayField, BooleanField, HTMLField, NumberField, ObjectField, SchemaField, StringField } = foundry.data.fields
 
 /* -------------------------------------------- */
@@ -248,7 +248,7 @@ class ActorDataModel extends foundry.abstract.TypeDataModel {
 	static defineSchema() {
 		return {
 			// Level - indicates power/danger level
-			level: new NumberField({ required: true, integer: true, min: 1, initial: 1, max: 15 }),
+			level: new NumberField({ required: true, integer: true, min: 1, initial: 1 }),
 
 			// Hit Points
 			hp: new SchemaField({
@@ -471,7 +471,7 @@ export class AdventurerDataModel extends ActorDataModel {
 			: null
 
 		if (spellTable) {
-			const level = Math.min(this.level, 15)
+			const level = Math.min(this.level, CONFIG.DOLMENWOOD.maxLevel)
 			const slots = spellTable[level - 1]
 			if (this.arcaneMagic.enabled && slots?.length === 6) {
 				for (let i = 0; i < 6; i++) {
@@ -488,8 +488,9 @@ export class AdventurerDataModel extends ActorDataModel {
 		// Compute XP next-level threshold from class progression
 		const xpTable = classItem?.system?.xpThresholds
 		if (xpTable?.length > 0) {
-			const level = Math.min(this.level, 15)
-			this.xp.nextLevel = level < 15 ? (xpTable[level] || 0) : 0
+			const maxLevel = CONFIG.DOLMENWOOD.maxLevel
+			const level = Math.min(this.level, maxLevel)
+			this.xp.nextLevel = level < maxLevel ? (xpTable[level] || 0) : 0
 		}
 
 		// Auto-size selection arrays for traits with requiresSelection (multi-select only)
@@ -527,7 +528,7 @@ export class AdventurerDataModel extends ActorDataModel {
 		// Compute glamours known from class item progression table
 		const glamourTable = classItem?.system?.glamourProgression
 		if (this.fairyMagic.enabled && glamourTable?.length > 0) {
-			const level = Math.min(this.level, 15)
+			const level = Math.min(this.level, CONFIG.DOLMENWOOD.maxLevel)
 
 			// Account for kindreds that start with 1 glamour known, unless it's a kindred-class
 			// Kindred-classes don't benefit from an extra glamour
