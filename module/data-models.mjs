@@ -555,7 +555,7 @@ export class AdventurerDataModel extends ActorDataModel {
 	static defineSchema() {
 		return {
 			...super.defineSchema(),
-			
+
 			// Attack bonus
 			attack: new NumberField({ required: true, integer: true, initial: 0 }),
 
@@ -803,7 +803,6 @@ export class CreatureDataModel extends ActorDataModel {
 				initial: "neutral",
 				choices: CHOICE_KEYS.creatureAlignments
 			}),
-
 			// Monster type descriptor (Animal, Undead, Fairy, etc.)
 			monsterType: new StringField({
 				required: true,
@@ -1341,19 +1340,19 @@ export class WeaponDataModel extends GearDataModel {
 				choices: CHOICE_KEYS.sizes
 			}),
 			qualities: new ArrayField(
-				new StringField({ 
-					blank: false, 
+				new StringField({
+					blank: false,
 					choices: CHOICE_KEYS.weaponQualities
-				}), 
+				}),
 				{ initial: ["melee"] }),
-			rangeShort: new NumberField({ 
-				required: false, 
+			rangeShort: new NumberField({
+				required: false,
 				integer: true,
 				min: 0,
 				initial: 0
 			}),
-			rangeMedium: new NumberField({ 
-				required: false, 
+			rangeMedium: new NumberField({
+				required: false,
 				integer: true,
 				min: 0,
 				initial: 0
@@ -1382,8 +1381,8 @@ export class ArmorDataModel extends GearDataModel {
 				initial: "light",
 				choices: CHOICE_KEYS.armorBulks
 			}),
-			ac: new NumberField({ 
-				required: true, 
+			ac: new NumberField({
+				required: true,
 				integer: true,
 				initial: 10
 			}),

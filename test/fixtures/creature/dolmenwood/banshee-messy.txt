@@ -1,0 +1,34 @@
+Banshee 
+Drifting, incorporeal shades of frost elf ladies cruelly slain in ancient wars with mortals. 
+Haunt desolate moors and hills, seeking vengeance on the living. 
+Medium Undead - Sentient - Chaotic
+
+Level 7 AC 19 HP 7d8 (31) 
+Saves D8 R9 H10 B11 S12
+Attacks Touch (+6, 1d8 + chill) or wail (death)
+Speed 50 Morale 10 XP 1,980
+Encounters 1 (10% in lair)
+Behaviour Coldly brilliant, bitter, vengeful
+Speech Rasping whisper. High Elfish, Old Woldish
+Possessions None Hoard C6 + R7 + M4
+Undead: Silent before attacking. Immune to biological
+eﬀects (e.g. dis­ease, poison) and mind-affecting spells (e.g.
+Vapours of Dream, Paralysation, Dominate).
+Immunities: Only harmed by silver weapons, magic, or
+magic weap-
+ons. Unharmed by cold-based attacks.
+Incorporeal: Can pass through walls, doors, and other
+solid objects.
+Dark sight: Can see normally without light.
+Chill touch: The victim loses 1 Strength per hit, dying if
+Strength is reduced to 0. Lost Strength is recovered at
+dawn.
+Wail (once a night): All within 30′ must Save Versus Doom
+or die. Usable only during the hours of darkness.
+37
+If killed: Before evaporating into mist and vanishing
+forever, the banshee curses her slayer to meet their doom.
+Unless the curse is removed, the character automatically
+fails their next Saving Throw against a deadly effect (e.g.
+death, petrification, poison, etc.).
+

@@ -1,0 +1,17 @@
+{
+	"data": {
+		"name": "Banshee", "size": "medium", "monsterType": "undead", "intelligence": "sentient", "alignment": "chaotic",
+		"level": 7, "ac": 19, "hpDice": "7d8", "hpValue": 31,
+		"saves": { "doom": 8, "ray": 9, "hold": 10, "blast": 11, "spell": 12 },
+		"attacks": [{ "attackName": "Touch", "attackBonus": 6, "attackDamage": "1d8", "attackGroup": "a" }, { "attackName": "Wail", "attackType": "save", "attackGroup": "b" }],
+		"speed": 50, "morale": 10, "xpAward": 1980, "encounters": "1", "lairChance": 10, "treasureType": "C6 + R7 + M4",
+		"specialAbilities": [
+			{ "name": "Undead", "description": "Silent before attacking. Immune to biological effects (e.g. disease, poison) and mind-affecting spells (e.g. Vapours of Dream, Paralysation, Dominate)." },
+			{ "name": "Immunities", "description": "Only harmed by silver weapons, magic, or magic weapons. Unharmed by cold-based attacks." },
+			{ "name": "Incorporeal", "description": "Can pass through walls, doors, and other solid objects." },
+			{ "name": "Dark sight" }, { "name": "Chill touch" }, { "name": "Wail (once a night)" },
+			{ "name": "If killed", "description": "Before evaporating into mist and vanishing forever, the banshee curses her slayer to meet their doom. Unless the curse is removed, the character automatically fails their next Saving Throw against a deadly effect (e.g. death, petrification, poison, etc.)." }
+		]
+	},
+	"warnings": 0
+}

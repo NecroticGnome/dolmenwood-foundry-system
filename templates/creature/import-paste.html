@@ -1,0 +1,10 @@
+<section class="import-paste">
+	<div class="import-formats">
+		<span>{{localize "DOLMEN.CreatureImport.FormatLabel"}}</span>
+		{{#each formats}}
+		<label><input type="radio" name="format" value="{{value}}" {{checked checked}}> {{label}}</label>
+		{{/each}}
+	</div>
+	<textarea name="statblock" spellcheck="false" placeholder="{{localize "DOLMEN.CreatureImport.Placeholder"}}">{{text}}</textarea>
+	<p class="hint">{{localize "DOLMEN.CreatureImport.Hint"}}</p>
+</section>

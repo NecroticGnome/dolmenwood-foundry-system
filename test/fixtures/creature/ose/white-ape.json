@@ -1,0 +1,13 @@
+{
+	"data": {
+		"name": "Ape, White", "alignment": "neutral", "level": 4, "ac": 13, "hpDice": "4d8", "hpValue": 18,
+		"saves": { "doom": 12, "ray": 13, "hold": 14, "blast": 15, "spell": 16 },
+		"attacks": [
+			{ "numAttacks": 2, "attackName": "Claw", "attackBonus": 3, "attackDamage": "1d4", "attackGroup": "a" },
+			{ "numAttacks": 1, "attackName": "Thrown Rock", "attackBonus": 3, "attackDamage": "1d6", "attackGroup": "b" }
+		],
+		"speed": 40, "morale": 7, "xpAward": 75, "encounters": "2d4", "treasureType": "",
+		"specialAbilities": [{ "name": "Territorial", "description": "Defend their lair with threats and, if this is ignored, violence." }]
+	},
+	"warnings": 1
+}

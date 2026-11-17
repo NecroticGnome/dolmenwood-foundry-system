@@ -1,0 +1,12 @@
+Ogre
+Frightful humanoids, 8–10′ tall, dressed
+in animal hides. Often dwell in caves.
+
+AC 5 [14] HD 4+1 (19hp) Att Club (1d10)
+THAC0 15 [+4] MV 90′ (30′) SV D10 W11
+P12 B13 S14 (4) ML 10 AL Chaotic XP 125
+NA 1d6 (2d6) TT C + 1,000gp
+▶ Sack: Outside of the lair, carry a sack
+containing 1d6 × 100gp.
+▶ Hate neanderthals: Attack on sight.
+98
