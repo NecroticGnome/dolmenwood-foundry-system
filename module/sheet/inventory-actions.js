@@ -1,9 +1,11 @@
-/* global foundry, game, Item */
+/* global foundry, game, Item, Actor */
 /**
  * Shared inventory action handlers for actor sheets.
  * These static action handlers are identical across adventurer, horse, and vehicle sheets.
  * Each function expects `this` to be the sheet instance (bound via Foundry's action system).
  */
+import { takeFromItemPile } from '../item-piles.js'
+import { promptItemQuantity } from './quantity-dialog.js'
 
 export function onOpenItem(_event, target) {
 	const itemId = target.dataset.itemId ?? target.closest('[data-item-id]')?.dataset.itemId
@@ -116,6 +118,56 @@ export function onRemoveFromContainer(_event, target) {
 	item?.update({ 'system.containerId': '' })
 }
 
+// gear: carried things that move between actors (spells, kindreds, classes and the like are copied)
+const GEAR_TYPES = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable', 'Container']
+
+/**
+ * Gear dragged from another actor the user owns moves instead of being copied: it asks how many
+ * of a stack, then takes them off the other actor. A whole container brings its contents.
+ * @param {Actor} actor - The actor receiving the item
+ * @param {Item} item - The dropped item
+ * @param {object} [placement] - Where it goes on the sheet
+ * @param {boolean} [placement.equipped] - Whether it is carried equipped
+ * @param {string} [placement.containerId] - The container it goes into
+ * @returns {Promise<boolean>} Whether the drop was a move (and is handled here)
+ */
+export async function moveFromOtherActor(actor, item, { equipped = false, containerId = '' } = {}) {
+	const source = item?.parent
+	if (!(source instanceof Actor) || source.uuid === actor.uuid || !source.isOwner) return false
+	if (!GEAR_TYPES.includes(item.type)) return false
+
+	const available = item.system.quantity || 1
+	const quantity = available > 1 ? await promptItemQuantity(item, available) : 1
+	if (!quantity) return true
+
+	const isContainer = item.type === 'Container'
+	const itemData = item.toObject()
+	delete itemData._id
+	itemData.system.quantity = quantity
+	itemData.system.containerId = isContainer ? '' : containerId
+	itemData.system.equipped = containerId && !isContainer ? false : equipped
+	const [moved] = await actor.createEmbeddedDocuments('Item', [itemData])
+	if (!moved) return true
+
+	const whole = quantity >= available
+	if (isContainer && whole) {
+		const contents = source.items.filter(i => i.system.containerId === item.id)
+		if (contents.length) {
+			await actor.createEmbeddedDocuments('Item', contents.map(content => {
+				const data = content.toObject()
+				delete data._id
+				data.system.containerId = moved.id
+				data.system.equipped = false
+				return data
+			}))
+			await source.deleteEmbeddedDocuments('Item', contents.map(content => content.id))
+		}
+	}
+	if (whole) await item.delete()
+	else await item.update({ 'system.quantity': available - quantity })
+	return true
+}
+
 /**
  * Shared drop handler for simple inventory sheets (horse, vehicle).
  * Handles dropping gear-type items into containers or the general stowed list.
@@ -128,12 +180,16 @@ export async function onDropItemSimple(sheet, event, data) {
 	if (!item) return
 
 	// Only allow gear-type items
-	const allowedTypes = ['Item', 'Weapon', 'Armor', 'Treasure', 'Foraged', 'Consumable', 'Container']
-	if (!allowedTypes.includes(item.type)) return
+	if (!GEAR_TYPES.includes(item.type)) return
 
 	// Check if dropping into a container
 	const containerEl = event.target?.closest('.container-group[data-container-id]')
 	const containerId = containerEl?.dataset?.containerId || ''
+
+	// Taken out of an Item Piles pile: Item Piles moves it, asking how many of a stack
+	if (await takeFromItemPile(sheet.actor, item, { containerId })) return
+	// Moved from another actor
+	if (await moveFromOtherActor(sheet.actor, item, { containerId })) return
 
 	// If item belongs to this actor, just move it to the container
 	if (item.parent?.id === sheet.actor.id) {

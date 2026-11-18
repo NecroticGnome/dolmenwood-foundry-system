@@ -424,6 +424,12 @@
 			"CoinsPerSlotHint": "Number of coins that occupy one inventory slot (Slots method)."
 		},
 		"Exhaustion": "Exhaustion",
+		"ItemPiles": {
+			"TakeTitle": "Take {name}",
+			"Take": "Take",
+			"BuyFromMerchant": "Buy from a merchant through its trading window.",
+			"Closed": "This pile is closed or locked."
+		},
 		"Coins": {
 			"Title": "Stowed Coins",
 			"Copper": "Copper",
@@ -844,6 +850,9 @@
 			"ChargesMax": "Max Charges"
 		},
 		"Inventory": {
+			"MoveTitle": "Move {name}",
+			"Move": "Move",
+			"QuantityLabel": "How many (up to {max})?",
 			"Equipped": "Equipped Items",
 			"Stowed": "Stowed Items",
 			"NoEquipped": "No items equipped. Drag items here or click the equip button.",

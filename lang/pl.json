@@ -424,6 +424,12 @@
 			"CoinsPerSlotHint": "Ile monet mieści jedna komórka ekwipunku (metoda Komórek Ekwipunku)."
 		},
 		"Exhaustion": "Wycieńczenie",
+		"ItemPiles": {
+			"TakeTitle": "Weź: {name}",
+			"Take": "Weź",
+			"BuyFromMerchant": "Kupuj od kupca przez jego okno handlu.",
+			"Closed": "Ten stos jest zamknięty."
+		},
 		"Coins": {
 			"Title": "Posiadane Monety",
 			"Copper": "Miedź",
@@ -786,6 +792,9 @@
 			"ChargesMax": "Maks. Ładunków"
 		},
 		"Inventory": {
+			"MoveTitle": "Przenieś: {name}",
+			"Move": "Przenieś",
+			"QuantityLabel": "Ile (maksymalnie {max})?",
 			"Equipped": "Wyposażone Przedmioty",
 			"Stowed": "Odłożone Przedmioty",
 			"NoEquipped": "Brak wyposażonych przedmiotów. Przeciągnij tu przedmioty lub kliknij przycisk wyposażenia.",

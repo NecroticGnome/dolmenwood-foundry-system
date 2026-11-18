@@ -363,3 +363,50 @@
 	border: 1px solid var(--dui-border);
 	color: var(--dui-text);
 }
+
+/* V1 windows (e.g. Item Piles): Foundry gives their text, inputs and buttons fixed parchment
+   colours, unreadable on the theme background */
+[data-dolmen-ui] .app.window-app {
+	--color-text-dark-primary: var(--dui-text);
+	--color-text-dark-secondary: var(--dui-muted);
+	--color-text-dark-header: var(--dolmen-color-h1);
+	--color-text-dark-inactive: var(--dui-muted);
+	--color-border-light-primary: var(--dui-line);
+	--color-border-light-tertiary: var(--dolmen-color-input-border);
+	--color-shadow-primary: var(--dolmen-color-input-border-focus);
+}
+
+[data-dolmen-ui] body.game .app.window-app input:is([type="text"], [type="number"], [type="password"], [type="date"], [type="time"], [type="search"]) {
+	background: var(--input-background-color);
+	border-color: var(--input-border-color);
+	color: var(--input-text-color);
+}
+
+[data-dolmen-ui] body.game .app.window-app button {
+	background: var(--button-background-color);
+	border-color: var(--button-border-color);
+	color: var(--button-text-color);
+}
+
+[data-dolmen-ui] body.game .app.window-app button:is(:hover, :focus-visible):not(:disabled) {
+	background: var(--button-hover-background-color);
+	border-color: var(--button-hover-border-color);
+	color: var(--button-hover-text-color);
+}
+
+[data-dolmen-ui] body.game .app.window-app button:disabled {
+	color: var(--dui-muted);
+}
+
+/* Item Piles sets its colours on the root element; these take over below it */
+[data-dolmen-ui] body {
+	--item-piles-inactive: var(--dolmen-color-h1);
+	--item-piles-minor-inactive: color-mix(in srgb, var(--dui-box) 70%, transparent);
+	--item-piles-shadow-primary: var(--dolmen-color-input-border-focus);
+	--item-piles-even-color: color-mix(in srgb, var(--dui-box) 50%, transparent);
+	--item-piles-odd-color: transparent;
+	--item-piles-border-dark-primary: var(--dui-line);
+	--item-piles-border-light-primary: var(--dui-line);
+	--item-piles-text-light-highlight: var(--dolmen-color-title);
+	--item-piles-text-important: var(--dolmen-color-h1);
+}

@@ -34,6 +34,7 @@ import { registerJournalArt } from './module/journal-art.js'
 import DolmenEffectSheet from './module/dolmen-effect-sheet.js'
 import { EFFECT_FIELDS } from './module/effect-fields.js'
 import { registerClassDataSetting, migrateClassData } from './module/class-data-migration.js'
+import { registerItemPilesIntegration } from './module/item-piles.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -651,6 +652,7 @@ Hooks.once('init', async function () {
 	})
 
 	registerClassDataSetting()
+	registerItemPilesIntegration()
 
 	// The version each package's data is at in this world, and the migration ids it has run (see module/migrations.js)
 	game.settings.register('dolmenwood', 'dataVersions', {
