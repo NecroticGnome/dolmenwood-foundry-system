@@ -1,0 +1,10 @@
+{
+	"data": {
+		"name": "Ogre", "alignment": "chaotic", "level": 4, "ac": 14, "hpDice": "4d8+1", "hpValue": 19,
+		"saves": { "doom": 10, "ray": 11, "hold": 12, "blast": 13, "spell": 14 },
+		"attacks": [{ "attackName": "Club", "attackBonus": 4, "attackDamage": "1d10" }],
+		"speed": 30, "morale": 10, "xpAward": 125, "encounters": "2d6", "treasureType": "C + 1,000gp",
+		"specialAbilities": [{ "name": "Sack", "description": "Outside of the lair, carry a sack containing [[/r 1d6]] x 100gp." }, { "name": "Hate Neanderthals" }]
+	},
+	"warnings": 1
+}

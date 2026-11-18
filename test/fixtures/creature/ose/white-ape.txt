@@ -1,0 +1,11 @@
+Ape, White
+Albino, herbivorous, gorilla-like apes. Live
+in caves and emerge at night to forage.
+
+AC 6 [13] HD 4 (18hp) Att 2 × claw (1d4) or
+thrown rock (1d6) THAC0 16 [+3] MV 120′
+(40′) SV D12 W13 P14 B15 S16 (2) ML 7 AL
+Neutral XP 75 NA 1d6 (2d4) TT None
+▶ Territorial: Defend their lair with
+threats and, if this is ignored, violence.
+

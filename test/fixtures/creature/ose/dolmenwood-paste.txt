@@ -1,0 +1,35 @@
+Antler Wraith
+Sinister spirits made manifest as looming humanoids, cloaked in black, with stag-skull heads
+and bony claws. Servants of grim, forgotten gods, doomed to haunt rings of standing stones.
+Medium Undead—Semi-Intelligent—Chaotic
+
+Level 4 AC 14 HP 4d8 (18) Saves D10 R11 H12 B13 S14
+Attacks Clawed grasp (+3, 1d10 + life drain)
+Speed 40 Morale 9 XP 180
+Encounters 2d4 (75% in lair)
+Behaviour Ruthless, hateful, avaricious
+Speech None. Understand Woldish and Old Woldish
+Possessions None Hoard C4 + R4 + M1
+Undead: Silent before attacking. Immune to biological
+effects (e.g. disease, poison) and mind-affecting spells (e.g.
+Vapours of Dream, Paralysation, Dominate).
+Immunities: Only harmed by silver weapons, magic, or
+magic weapons.
+Dark sight: Can see normally without light.
+Life drain: The touch of an antler wraith drains 1d3 points
+of Constitution. A character reduced to 0 Constitution dies
+and cannot be raised. Constitution damage can only be
+healed by holy magic: Bless heals 1 point.
+Sinister silence: Within 60′ of an antler wraith, sound is
+hushed and speech feels as if it disturbs something best
+left in peace. Characters casting spells have a 2-in-6 chance
+of failure (the spell is removed from memory as if cast).
+Dormant during the day: During hours of sunlight, antler
+wraiths are dormant, manifesting only as a cold mist
+around the stones they guard. If their stones or treasure
+hoards are tampered with, they manifest fully, coalescing
+out of the mist.
+Sacrificial victims: Antler wraiths seek out warm-blooded
+sentients whom they drag to their stone rings for sacrifice.
+Sacrificed victims are buried in the vicinity of the stone
+circle, along with their possessions and treasures.

@@ -391,3 +391,133 @@
 	min-height: 6rem;
 	resize: vertical;
 }
+/* Creature Statblock Importer: the paste on the left, the preview on the right */
+.creature-importer .window-content {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.75rem;
+	padding: 0.75rem;
+	overflow: hidden;
+	color: var(--dolmen-color-text);
+}
+
+.creature-importer .import-paste {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-height: 0;
+}
+
+.creature-importer .import-formats {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	font-size: 0.85rem;
+}
+
+.creature-importer .import-paste textarea {
+	flex: 1;
+	min-height: 0;
+	resize: none;
+	font-family: monospace;
+	font-size: 12px;
+}
+
+.creature-importer .hint {
+	margin: 0;
+	font-size: 0.75rem;
+	color: var(--dolmen-color-text-muted);
+}
+
+.creature-importer .import-preview {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-height: 0;
+	overflow-y: auto;
+	padding-right: 0.25rem;
+}
+
+.creature-importer .import-empty {
+	color: var(--dolmen-color-text-muted);
+	font-style: italic;
+}
+
+.creature-importer .import-error {
+	color: var(--dolmen-color-failure);
+}
+
+.creature-importer .import-warnings {
+	margin: 0;
+	padding: 0.4rem 0.6rem;
+	list-style: none;
+	font-size: 0.8rem;
+	border: 1px solid var(--dolmen-color-box-border);
+	background: var(--dolmen-color-box-background);
+}
+
+.creature-importer .import-warnings i {
+	color: var(--dolmen-color-failure);
+}
+
+.creature-importer .import-fields,
+.creature-importer .import-saves {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 0.3rem 0.5rem;
+}
+
+.creature-importer .import-saves {
+	grid-template-columns: repeat(5, 1fr);
+}
+
+.creature-importer .import-fields label,
+.creature-importer .import-saves label {
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+	font-size: 0.7rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: var(--dolmen-color-h3);
+}
+
+.creature-importer .import-fields label.wide {
+	grid-column: 1 / -1;
+}
+
+.creature-importer .import-fields input,
+.creature-importer .import-fields select,
+.creature-importer .import-saves input {
+	width: 100%;
+	font-weight: normal;
+	text-transform: none;
+}
+
+.creature-importer .import-preview h4 {
+	margin: 0.3rem 0 0;
+	font-size: 0.8rem;
+	color: var(--dolmen-color-h2);
+	border-bottom: 1px solid var(--dolmen-color-box-border);
+}
+
+.creature-importer .import-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.8rem;
+}
+
+.creature-importer .import-list li {
+	padding: 0.1rem 0.4rem;
+	border-left: 3px solid transparent;
+}
+
+.creature-importer .import-footer {
+	margin-top: auto;
+	padding-top: 0.5rem;
+}
+
+.creature-importer .import-footer button {
+	width: 100%;
+}

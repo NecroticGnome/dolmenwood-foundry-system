@@ -1,0 +1,61 @@
+{
+	"data": {
+		"name": "Antler Wraith",
+		"size": "medium",
+		"monsterType": "undead",
+		"intelligence": "semi-intelligent",
+		"alignment": "chaotic",
+		"level": 4,
+		"ac": 14,
+		"hpDice": "4d8",
+		"hpValue": 18,
+		"saves": {
+			"doom": 10,
+			"ray": 11,
+			"hold": 12,
+			"blast": 13,
+			"spell": 14
+		},
+		"attacks": [
+			{
+				"numAttacks": 1,
+				"attackName": "Clawed grasp",
+				"attackBonus": 3,
+				"attackDamage": "1d10",
+				"attackType": "attack"
+			}
+		],
+		"speed": 40,
+		"morale": 9,
+		"xpAward": 180,
+		"encounters": "2d4",
+		"lairChance": 75,
+		"treasureType": "C4 + R4 + M1",
+		"behaviour": "Ruthless, hateful, avaricious",
+		"possessions": "None",
+		"specialAbilities": [
+			{
+				"name": "Undead"
+			},
+			{
+				"name": "Immunities"
+			},
+			{
+				"name": "Dark sight"
+			},
+			{
+				"name": "Life drain"
+			},
+			{
+				"name": "Sinister silence"
+			},
+			{
+				"name": "Dormant during the day"
+			},
+			{
+				"name": "Sacrificial victims"
+			}
+		]
+	},
+	"warnings": 0
+}

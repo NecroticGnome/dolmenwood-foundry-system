@@ -1,0 +1,43 @@
+<section class="import-preview">
+	{{#if empty}}
+	<p class="import-empty">{{localize "DOLMEN.CreatureImport.Empty"}}</p>
+	{{else if error}}
+	<p class="import-error"><i class="fas fa-circle-exclamation"></i> {{error}}</p>
+	{{else}}
+	{{#if warnings.length}}
+	<ul class="import-warnings">
+		{{#each warnings}}<li><i class="fas fa-triangle-exclamation"></i> {{this}}</li>{{/each}}
+	</ul>
+	{{/if}}
+	<div class="import-fields">
+		<label class="wide">{{localize "DOLMEN.Name"}}<input type="text" name="name" value="{{data.name}}" required></label>
+		<label>{{localize "DOLMEN.Creature.Size"}}<select name="size">{{selectOptions choices.size selected=data.size}}</select></label>
+		<label>{{localize "DOLMEN.Creature.Type"}}<select name="monsterType">{{selectOptions choices.monsterType selected=data.monsterType}}</select></label>
+		<label>{{localize "DOLMEN.Creature.Intelligence"}}<select name="intelligence">{{selectOptions choices.intelligence selected=data.intelligence}}</select></label>
+		<label>{{localize "DOLMEN.Alignment"}}<select name="alignment">{{selectOptions choices.alignment selected=data.alignment}}</select></label>
+		<label>{{localize "DOLMEN.Level"}}<input type="number" name="level" value="{{data.level}}" min="0"></label>
+		<label>{{localize "DOLMEN.Combat.AC"}}<input type="number" name="ac" value="{{data.ac}}"></label>
+		<label>{{localize "DOLMEN.Creature.HPDice"}}<input type="text" name="hpDice" value="{{data.hpDice}}"></label>
+		<label>{{localize "DOLMEN.Combat.HP"}}<input type="number" name="hpValue" value="{{data.hpValue}}" min="0"></label>
+		<label>{{localize "DOLMEN.Movement.Speed"}}<input type="number" name="speed" value="{{data.speed}}" min="0"></label>
+		<label>{{localize "DOLMEN.Creature.Morale"}}<input type="number" name="morale" value="{{data.morale}}" min="2" max="12"></label>
+		<label>{{localize "DOLMEN.Creature.XPAward"}}<input type="number" name="xpAward" value="{{data.xpAward}}" min="0"></label>
+	</div>
+	<h4>{{localize "DOLMEN.SaveTargets"}}</h4>
+	<div class="import-saves">
+		{{#each saves}}<label>{{label}}<input type="number" name="saves.{{key}}" value="{{value}}"></label>{{/each}}
+	</div>
+	<h4>{{localize "DOLMEN.Creature.Attacks"}}</h4>
+	<ul class="import-list">
+		{{#each attacks}}<li {{#if group}}style="border-left-color:var(--dolmen-group-{{group}})"{{/if}}>{{text}}</li>{{else}}<li class="none">—</li>{{/each}}
+	</ul>
+	<h4>{{localize "DOLMEN.Creature.SpecialAbilities"}}</h4>
+	<ul class="import-list">
+		{{#each abilities}}<li>{{this}}</li>{{else}}<li class="none">—</li>{{/each}}
+	</ul>
+	<p class="hint">{{localize "DOLMEN.CreatureImport.EditLater"}}</p>
+	{{/if}}
+	<footer class="import-footer">
+		<button type="button" data-action="create" {{disabled cannotCreate}}><i class="fas fa-file-import"></i> {{localize "DOLMEN.CreatureImport.Button"}}</button>
+	</footer>
+</section>

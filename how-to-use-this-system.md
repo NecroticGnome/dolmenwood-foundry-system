@@ -206,7 +206,7 @@ The system exposes an API at `game.dolmenwood`, available from a module's `init`
 | `getHoliday(monthKey, day)`                              | The holiday's name, or `null`                                                                                         |
 | `getMoonForDay(dayOfYear)`                               | `{ moon, phase, phaseIcon }`. `phaseIcon` is the filename of the system's moon art                                    |
 | `importCreatureStatblock(text, format = 'dolmenwood')`   | Parses a stat block (`'dolmenwood'` or `'ose'`) and creates a Creature actor, which it returns                        |
-| `openCreatureImportDialog()`                             | Opens the stat block import dialog. Resolves when the dialog closes                                                   |
+| `openCreatureImportDialog()`                             | Opens the stat block import window. Resolves when it closes, returning the created actor or `null`                          |
 | `getUnseason()`                                          | The active unseason's key, or `null`                                                                                  |
 | `getWeather()`                                           | Today's weather: `{ text, effects, roll }`                                                                            |
 | `executeMacroAttack(macro)`                              | Runs an attack macro saved from the attack panel. Called from the macro as `game.dolmenwood.executeMacroAttack(this)` |
