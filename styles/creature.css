@@ -296,7 +296,9 @@
 /* Notes tab */
 .sheet.dolmen.creature .creature-notes-columns {
 	grid-template-rows: auto 5.5rem max-content;
-	height: 100%;
+	/* min-height so the tab scrolls instead of squeezing the boxes when short */
+	min-height: 100%;
+	flex-shrink: 0;
 }
 
 .sheet.dolmen.creature .creature-notes-fields {
@@ -360,6 +362,147 @@
 .sheet.dolmen.creature .add-ability-row:hover {
 	color: var(--dolmen-color-h1);
 	background-color: var(--dolmen-color-box-background);
+}
+
+/* Treasure icons beside the Possessions / Hoard labels */
+.sheet.dolmen.creature .treasure-field-label {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+	margin-bottom: 0.2rem;
+}
+
+.sheet.dolmen.creature .treasure-field-label .treasure-field-btn {
+	height: auto;
+	line-height: 1;
+	font-size: 0.75rem;
+}
+
+/* Treasure editor window (laid out like a sheet tab) */
+.sheet.dolmen.treasure-editor .treasure-editor-body {
+	gap: 0.5rem;
+	padding-top: 0.5rem;
+}
+
+.sheet.dolmen.treasure-editor .boxed-section {
+	min-height: 0;
+}
+
+.sheet.dolmen.treasure-editor h2 {
+	position: relative;
+}
+
+.sheet.dolmen.treasure-editor h2 .add-item-btn {
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 100%;
+	width: 1.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	color: var(--dolmen-color-title);
+	cursor: pointer;
+	font-size: 0.8rem;
+	opacity: 0.8;
+	padding: 0;
+	margin: 0;
+}
+
+.sheet.dolmen.treasure-editor h2 .add-item-btn:hover {
+	opacity: 1;
+}
+
+.sheet.dolmen.treasure-editor .treasure-entry {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.3rem;
+	padding: 0.3rem 0;
+	border-bottom: 1px solid var(--dolmen-color-box-background);
+}
+
+.sheet.dolmen.treasure-editor .treasure-chance {
+	display: flex;
+	align-items: center;
+	gap: 0.15rem;
+	flex: 0 0 auto;
+	height: var(--input-height);
+}
+
+.sheet.dolmen.treasure-editor .treasure-chance input {
+	width: 2.6rem;
+	text-align: center;
+}
+
+.sheet.dolmen.treasure-editor .treasure-results {
+	flex: 1;
+	min-width: 0;
+}
+
+.sheet.dolmen.treasure-editor .treasure-result {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	margin-bottom: 0.2rem;
+}
+
+.sheet.dolmen.treasure-editor .treasure-result .treasure-qty {
+	flex: 0 0 4.5rem;
+}
+
+.sheet.dolmen.treasure-editor .treasure-result select {
+	flex: 0 0 auto;
+	width: auto;
+}
+
+.sheet.dolmen.treasure-editor .treasure-result .treasure-value,
+.sheet.dolmen.treasure-editor .treasure-result .treasure-doc,
+.sheet.dolmen.treasure-editor .treasure-result .treasure-label-input {
+	flex: 1;
+	min-width: 0;
+}
+
+.sheet.dolmen.treasure-editor .treasure-result .treasure-doc {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-decoration: underline;
+	color: var(--dolmen-color-text);
+}
+
+.sheet.dolmen.treasure-editor .treasure-icon {
+	display: flex;
+	align-items: center;
+	height: var(--input-height);
+	cursor: pointer;
+	color: var(--dolmen-color-h2);
+}
+
+.sheet.dolmen.treasure-editor .treasure-icon:hover {
+	color: var(--dolmen-color-h1);
+}
+
+.sheet.dolmen.treasure-editor .treasure-add {
+	display: block;
+	padding: 0.15rem 0;
+	font-size: 0.8rem;
+	color: var(--dolmen-color-text-muted);
+}
+
+.sheet.dolmen.treasure-editor .treasure-add:hover {
+	color: var(--dolmen-color-h1);
+}
+
+.sheet.dolmen.treasure-editor .treasure-add-entry {
+	text-align: center;
+}
+
+.sheet.dolmen.treasure-editor .treasure-hint {
+	margin: 0.3rem 0 0;
+	font-size: 0.75rem;
+	color: var(--dolmen-color-text-muted);
 }
 
 /* Ability Edit Dialog */

@@ -252,6 +252,7 @@ export const CHOICE_KEYS = {
 	monsterTypes: ['animal', 'bug', 'construct', 'demi-fey', 'dragon', 'fairy', 'fungus', 'monstrosity', 'mortal', 'ooze', 'plant', 'undead'],
 	intelligenceTypes: ["mindless", "animal", "semi-intelligent", "sentient", "genius"],
 	costDenominations: ['gp', 'sp', 'cp', 'pp'],
+	treasureResultTypes: ['treasure', 'coins', 'document', 'text'],
 	weaponQualities: ["armor-piercing", "brace", "charge", "melee", "missile", "reach", "reload", "splash", "two-handed", "cold-iron", "silver"],
 	weaponTypes: [
 		"battleAxe", "club", "crossbow", "dagger", "flail", "handAxe",

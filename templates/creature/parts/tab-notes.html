@@ -20,11 +20,21 @@
 					<input type="text" name="system.speech" value="{{system.speech}}">
 				</div>
 				<div class="header-field" style="grid-column-end: span 2;">
-					<label>{{localize "DOLMEN.Creature.Possessions"}}</label>
+					<div class="treasure-field-label">
+						<label>{{localize "DOLMEN.Creature.Possessions"}}</label>
+						{{#if treasure.carried}}<a class="rollable treasure-field-btn" data-action="rollTreasure" data-kind="carried" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.Roll'}}"><i class="fas fa-dice"></i></a>{{/if}}
+						{{#each treasureExtras.carried}}<a class="rollable treasure-field-btn" data-action="rollTreasureExtra" data-extra="{{id}}" data-tooltip="{{label}}"><i class="{{icon}}"></i></a>{{/each}}
+						<a class="rollable treasure-field-btn" data-action="openTreasure" data-kind="carried" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.Edit'}}"><i class="fas fa-gem"></i></a>
+					</div>
 					<input type="text" name="system.possessions" value="{{system.possessions}}">
 				</div>
 				<div class="header-field" style="grid-column-end: span 2;">
-					<label>{{localize "DOLMEN.Creature.Hoard"}}</label>
+					<div class="treasure-field-label">
+						<label>{{localize "DOLMEN.Creature.Hoard"}}</label>
+						{{#if treasure.hoard}}<a class="rollable treasure-field-btn" data-action="rollTreasure" data-kind="hoard" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.Roll'}}"><i class="fas fa-dice"></i></a>{{/if}}
+						{{#each treasureExtras.hoard}}<a class="rollable treasure-field-btn" data-action="rollTreasureExtra" data-extra="{{id}}" data-tooltip="{{label}}"><i class="{{icon}}"></i></a>{{/each}}
+						<a class="rollable treasure-field-btn" data-action="openTreasure" data-kind="hoard" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.Edit'}}"><i class="fas fa-gem"></i></a>
+					</div>
 					<input type="text" name="system.treasureType" value="{{system.treasureType}}">
 				</div>
 			</div>

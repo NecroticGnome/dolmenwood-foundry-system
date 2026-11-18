@@ -26,6 +26,8 @@ import { registerCombatSystem, registerCombatSettings } from './module/combat/co
 import { initDungeonTracker, toggleDungeonTracker, onLightSourcesChanged, onTrackerPausedChanged, onTurnCounterChanged, onRestBaselineChanged } from './module/dungeon-tracker/dungeon-tracker.js'
 import { initPartyViewer, togglePartyViewer, onPartyMembersChanged } from './module/party-viewer/party-viewer.js'
 import { openCreatureImportDialog, importCreatureStatblock } from './module/creature-importer.js'
+import { runMigrations, fillCreatureTreasure } from './module/migrations.js'
+import { rollCreatureTreasure, rollTreasure, registerTreasureLinks } from './module/sheet/treasure.js'
 import { executeMacroAttack } from './module/attack-macros.js'
 import { rollTravelProcedure, openTravelProcedureDialog } from './module/travel/travel-procedure.js'
 import { registerJournalArt } from './module/journal-art.js'
@@ -173,6 +175,15 @@ Hooks.once('init', async function () {
 		// creatures
 		importCreatureStatblock,
 		openCreatureImportDialog,
+		/** Roll a creature's treasure list to chat: rollCreatureTreasure(actor, 'hoard' | 'carried') */
+		rollCreatureTreasure,
+		/** Roll a treasure code or keyword through the modules' resolvers: rollTreasure('C3', { actor, quantity }) → { html } */
+		rollTreasure,
+		/** Helpers for world data migrations (see module/migrations.js) */
+		migrations: {
+			/** Fill empty world creatures' treasure from the compendium creature each came from (GM). Returns the count updated. */
+			fillCreatureTreasure
+		},
 		/** @returns {string|null} The active unseason's key, or null */
 		getUnseason: () => game.settings.get('dolmenwood', 'activeUnseason') || null,
 		/** @returns {{ text: string, effects: string, roll: number }} Today's weather */
@@ -350,6 +361,7 @@ Hooks.once('init', async function () {
 		pattern: /\[([^\]]+)\]\(chance:(\d+)\)/g,
 		enricher: createChanceLinkEnricher
 	})
+	registerTreasureLinks()
 
 	// Register Handlebars helpers
 	Handlebars.registerHelper('add', (a, b) => (a || 0) + (b || 0))
@@ -575,6 +587,20 @@ Hooks.once('init', async function () {
 	})
 
 	registerClassDataSetting()
+
+	// The version each package's data is at in this world, and the migration ids it has run (see module/migrations.js)
+	game.settings.register('dolmenwood', 'dataVersions', {
+		scope: 'world',
+		config: false,
+		type: Object,
+		default: {}
+	})
+	game.settings.register('dolmenwood', 'migrationsDone', {
+		scope: 'world',
+		config: false,
+		type: Object,
+		default: {}
+	})
 
 	game.settings.register('dolmenwood', 'effectsMigrationDone', {
 		scope: 'world',
@@ -907,6 +933,7 @@ Hooks.once('ready', async function () {
 		await migrateAdjustmentsToEffects()
 		await syncLegacyKindredClassFields()
 		await migrateClassData()
+		await runMigrations()
 	}
 
 	initCalendarWidget()

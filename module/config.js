@@ -305,4 +305,18 @@ DOLMENWOOD.extraTools = {}
 // Call it through game.dolmenwood.getWildernessEncounterChance() and rollWildernessEncounter().
 DOLMENWOOD.wildernessEncounter = null
 
+// Treasure code resolvers, one per module that adds treasure: async (value, { actor, quantity }) => ({ html }).
+// Push yours in the module's init hook. game.dolmenwood.rollTreasure tries them in order and uses the first
+// non-empty html, so return { html: '' } for a value you don't own. Unshift instead to take precedence.
+DOLMENWOOD.treasureResolvers = []
+
+// Extra treasure buttons a module adds beside a creature's Possessions or Hoard, keyed by id (set in init):
+// { label (i18n key or text), icon (classes), kind: 'carried' | 'hoard', show?: actor => boolean,
+//   entries: [{ chance, chanceIn, results: [{ quantity, type, value, label }] }] } — the system.treasure entry shape.
+DOLMENWOOD.treasureExtras = {}
+
+// World data migrations from the system and modules: { id, package, version, run: async () => {} }. Run by the
+// active GM after ready when the world's data for that package is older than version. Push in init; see module/migrations.js.
+DOLMENWOOD.migrations = []
+
 export default DOLMENWOOD

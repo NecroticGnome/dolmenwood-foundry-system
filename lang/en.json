@@ -518,6 +518,32 @@
 			"Speech": "Speech",
 			"Possessions": "Possessions",
 			"Hoard": "Hoard",
+			"Treasure": {
+				"HoardTitle": "{name}: Hoard Treasure",
+				"CarriedTitle": "{name}: Carried Treasure",
+				"Edit": "Edit treasure rolls",
+				"Entries": "Treasure Rolls",
+				"Roll": "Roll to chat",
+				"RollHoard": "{name}: Hoard",
+				"RollCarried": "{name}: Carried",
+				"ChanceHint": "Chance the whole entry is present: 2 in 6, or 25 in 100 (blank = always)",
+				"In": "in",
+				"MissHint": "Rolled {roll}, needed {chance} or less",
+				"Quantity": "Quantity (dice formula, blank = 1)",
+				"Value": "Code or text",
+				"Label": "Label",
+				"AddEntry": "Add Treasure...",
+				"AddResult": "Add Result...",
+				"RemoveEntry": "Remove Entry",
+				"RemoveResult": "Remove Result",
+				"DropHint": "Drop a roll table or item onto an entry to add it as a result.",
+				"Types": {
+					"treasure": "Treasure",
+					"coins": "Coins",
+					"document": "Table or Item",
+					"text": "Text"
+				}
+			},
 			"EditAttack": "Edit Attack",
 			"AttackTypeLabel": "Type",
 			"AttackTypeAttack": "Attack Roll",
@@ -1321,6 +1347,11 @@
 			},
 			"VisibilitySettingName": "Poor Visibility on Tracks",
 			"VisibilitySettingHint": "Also add +1-in-6 to the chance of getting lost on tracks in poor visibility, as in the Player's Book. When off, it applies only when travelling wild, as in the Campaign Book."
+		},
+		"Migrations": {
+			"Running": "Dolmenwood: updating world data ({count} update(s) from the system and modules)…",
+			"Done": "Dolmenwood: world data updated.",
+			"Failed": "Dolmenwood: the data update {id} failed and will be retried next time. See the console (F12) for details."
 		},
 		"Notifications": {
 			"NoKindredSelected": "No kindred selected",

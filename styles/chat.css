@@ -347,6 +347,101 @@
 }
 
 /* -------------------------------------------- */
+/*  Treasure Roll Chat Message Styles           */
+/* -------------------------------------------- */
+
+.dolmen.treasure-roll {
+	background-color: var(--dolmen-color-background);
+	color: var(--dolmen-color-text);
+	border: 2px solid var(--dolmen-color-title-background);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.dolmen.treasure-roll .treasure-header {
+	padding: 0.5rem;
+	background-color: var(--dolmen-color-title-background);
+}
+
+.dolmen.treasure-roll .treasure-header h3 {
+	margin: 0;
+	border: none;
+	font-size: 0.8rem;
+	font-family: var(--dolmen-font-header);
+	color: var(--dolmen-color-title);
+	text-transform: uppercase;
+}
+
+.dolmen.treasure-roll ul {
+	margin: 0;
+	padding: 0.4rem 0.5rem 0.4rem 0.6rem;
+	list-style: none;
+}
+
+.dolmen.treasure-roll ul ul {
+	padding: 0.1rem 0 0;
+}
+
+.dolmen.treasure-roll > ul > li {
+	position: relative;
+	padding-left: 0.7rem;
+}
+
+.dolmen.treasure-roll > ul > li::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0.5em;
+	width: 0.3rem;
+	height: 0.3rem;
+	border: 1px solid currentColor;
+	border-radius: 50%;
+	box-sizing: border-box;
+}
+
+.dolmen.treasure-roll li + li {
+	margin-top: 0.2rem;
+}
+
+.dolmen.treasure-roll .treasure-chance,
+.dolmen.treasure-roll .treasure-label,
+.dolmen.treasure-roll .treasure-miss {
+	color: var(--dolmen-color-text-muted);
+}
+
+.dolmen.treasure-roll table {
+	width: 100%;
+	margin: 0.2rem 0 0;
+	border: none;
+	border-collapse: collapse;
+	background: none;
+	font-size: 0.9em;
+	word-break: normal;
+	overflow-wrap: break-word;
+}
+
+.dolmen.treasure-roll tbody,
+.dolmen.treasure-roll tr,
+.dolmen.treasure-roll th,
+.dolmen.treasure-roll td {
+	display: block;
+}
+
+.dolmen.treasure-roll th,
+.dolmen.treasure-roll td {
+	padding: 0 0.3rem;
+	text-align: left;
+}
+
+.dolmen.treasure-roll tr + tr {
+	margin-top: 0.2rem;
+}
+
+.dolmen.treasure-roll th {
+	color: var(--dolmen-color-h3);
+}
+
+/* -------------------------------------------- */
 /*  Trait Roll Chat Message Styles              */
 /* -------------------------------------------- */
 

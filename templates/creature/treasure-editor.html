@@ -1,0 +1,48 @@
+<section class="tab-content active treasure-editor-body">
+	<section class="boxed-section treasure-text">
+		<h2>{{textLabel}}</h2>
+		<input type="text" name="{{textName}}" value="{{textValue}}">
+	</section>
+
+	<section class="boxed-section treasure-entries">
+		<h2>{{localize "DOLMEN.Creature.Treasure.Entries"}}
+			{{#if entries.length}}
+			<button type="button" class="add-item-btn" data-action="roll" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.Roll'}}"><i class="fas fa-dice"></i></button>
+			{{/if}}
+		</h2>
+		{{#each entries as |entry|}}
+		<div class="treasure-entry" data-entry="{{entry.index}}">
+			<div class="treasure-chance" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.ChanceHint'}}">
+				<input type="number" name="{{entry.name}}.chance" value="{{entry.chance}}" min="0" placeholder="–"><span>{{localize "DOLMEN.Creature.Treasure.In"}}</span>
+				<input type="number" name="{{entry.name}}.chanceIn" value="{{entry.chanceIn}}" min="1" placeholder="100">
+			</div>
+			<div class="treasure-results">
+				{{#each entry.results as |r|}}
+				<div class="treasure-result">
+					<input type="text" class="treasure-qty" name="{{r.name}}.quantity" value="{{r.quantity}}" placeholder="1" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.Quantity'}}">
+					<select name="{{r.name}}.type">
+						{{selectOptions @root.typeChoices selected=r.type}}
+					</select>
+					{{#if r.isCoins}}
+					<select name="{{r.name}}.value">
+						{{selectOptions @root.coinChoices selected=r.value}}
+					</select>
+					{{else if r.isDocument}}
+					<input type="hidden" name="{{r.name}}.value" value="{{r.value}}">
+					<a class="treasure-doc" data-action="openDocument" data-uuid="{{r.value}}">{{r.docName}}</a>
+					{{else}}
+					<input type="text" class="treasure-value" name="{{r.name}}.value" value="{{r.value}}" placeholder="{{localize 'DOLMEN.Creature.Treasure.Value'}}">
+					{{/if}}
+					<input type="text" class="treasure-label-input" name="{{r.name}}.label" value="{{r.label}}" placeholder="{{localize 'DOLMEN.Creature.Treasure.Label'}}">
+					<a class="treasure-icon" data-action="removeResult" data-entry="{{entry.index}}" data-result="{{r.index}}" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.RemoveResult'}}"><i class="fas fa-square-x"></i></a>
+				</div>
+				{{/each}}
+				<a class="treasure-add" data-action="addResult" data-entry="{{entry.index}}">{{localize "DOLMEN.Creature.Treasure.AddResult"}}</a>
+			</div>
+			<a class="treasure-icon" data-action="removeEntry" data-entry="{{entry.index}}" data-tooltip="{{localize 'DOLMEN.Creature.Treasure.RemoveEntry'}}"><i class="fas fa-trash"></i></a>
+		</div>
+		{{/each}}
+		<a class="treasure-add treasure-add-entry" data-action="addEntry">{{localize "DOLMEN.Creature.Treasure.AddEntry"}}</a>
+		<p class="treasure-hint">{{localize "DOLMEN.Creature.Treasure.DropHint"}}</p>
+	</section>
+</section>
