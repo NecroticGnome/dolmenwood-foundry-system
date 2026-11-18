@@ -16,6 +16,10 @@ DOLMENWOOD.extraSkills = [
 ]
 DOLMENWOOD.maxExtraSkills = 6
 
+// The highest adventurer level. A module can raise it in init, but must also extend its classes'
+// progression tables (XP, attack, saves, skills, spells), which run to level 15.
+DOLMENWOOD.maxLevel = 15
+
 
 DOLMENWOOD.months = {
 	grimvold: { days: 30, sunrise: 8.0, sunset: 16.0 },

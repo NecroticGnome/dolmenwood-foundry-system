@@ -253,3 +253,30 @@ Hooks.on('getDolmenwoodTools', tools => {
   }
 })
 ```
+### Module settings
+
+Settings on `CONFIG.DOLMENWOOD` that a module can change within its `init` hook.
+
+| Setting                | Default                               | What it does                                                                                                                                        |
+| ---------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `extraTools`           | `{}`                                  | Tools for the Dolmenwood toolbar (see above)                                                                                                        |
+| `wildernessEncounter`  | `null`                                | Provides the wilderness encounter roll for the system's features, such as the Travel Procedure. Without it they fall back to a bare encounter check |
+| `maxLevel`             | `15`                                  | The highest adventurer level                                                                                                                        |
+| `maxExtraSkills`       | `6`                                   | How many skills a character can add beyond their class skills                                                                                       |
+| `extraSkills`          | `['detectMagic', ...]`                | The skills that can be added                                                                                                                        |
+| `weatherTableNames`    | `{ winter: 'Weather — Winter', ... }` | The roll tables the daily weather is rolled on, by season and unseason                                                                              |
+| `gettingLostTableName` | `'Consequences of Getting Lost'`      | The roll table rolled when the party gets lost, if one by that name exists                                                                          |
+
+**`wildernessEncounter`** is an object with two functions. The system calls them through `game.dolmenwood.getWildernessEncounterChance()` and `game.dolmenwood.rollWildernessEncounter()`.
+
+```js
+CONFIG.DOLMENWOOD.wildernessEncounter = {
+  // The current location's Lost/Encounters X-in-6 chance, or null when the location is unknown
+  chance: async ({ time }) => 2, // time: 'day' or 'night'
+  // Rolls the whole encounter, check included, and posts it to chat. Anything not given
+  // (hex, weather, time) comes from the game
+  roll: async ({ time, travel, fire, poorVisibility, chance }) => {} // travel: 'road' or 'wild'
+}
+```
+
+**`maxLevel`** can be raised for adventurers above level 15, but the classes' progression tables (XP, attack, saves, skills, spells and glamours) run to level 15. Extend them on the class items as well, or levels above 15 will be missing those values.

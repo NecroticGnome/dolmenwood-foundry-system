@@ -110,7 +110,7 @@ class DolmenActor extends Actor {
 			const oldLevel = this.system.level
 
 			// Only apply class progression if level actually changed
-			if (newLevel !== oldLevel && newLevel >= 1 && newLevel <= 15) {
+			if (newLevel !== oldLevel && newLevel >= 1 && newLevel <= CONFIG.DOLMENWOOD.maxLevel) {
 				await this._applyClassProgression(newLevel, changed)
 			}
 
