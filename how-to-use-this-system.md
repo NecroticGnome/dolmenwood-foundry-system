@@ -114,6 +114,7 @@ Before initiative, each combatant can declare what they're doing with the declar
 
 - Creature sheets have attacks, saves and morale. Click the morale icon to roll it.
 - With *Randomize Creature HP* on, every unlinked token placed on a scene rolls its own hit points.
+- The **Hoard** and **Possessions** fields open a treasure window. Drop a roll table, [macro](#treasure-macros) or other document onto an entry to add it, and click the dice to roll the treasure to chat.
 - **Import Statblock**, at the top of the Actors directory, turns a pasted Dolmenwood or OSE stat block into a Creature actor.
 - Horses and vehicles have their own sheets.
 
@@ -255,6 +256,20 @@ Hooks.on('getDolmenwoodTools', tools => {
   }
 })
 ```
+
+### Treasure macros
+
+A macro in a creature's treasure runs once when the treasure is rolled, with:
+
+| Variable   | Value                                                  |
+|------------|--------------------------------------------------------|
+| `actor`    | The creature                                           |
+| `token`    | Its token on the scene, or `null`                      |
+| `speaker`  | Chat speaker data for the creature                     |
+| `quantity` | The result's rolled quantity (1 when blank)            |
+
+Return a HTML string to show it on the treasure card or a document to automatically link to it.
+
 ### Module settings
 
 Settings on `CONFIG.DOLMENWOOD` that a module can change within its `init` hook.

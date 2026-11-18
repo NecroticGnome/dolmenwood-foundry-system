@@ -542,11 +542,12 @@
 				"AddResult": "Add Result...",
 				"RemoveEntry": "Remove Entry",
 				"RemoveResult": "Remove Result",
-				"DropHint": "Drop a roll table or item onto an entry to add it as a result.",
+				"MacroRan": "Ran {name}",
+				"DropHint": "Drop a roll table or other document onto an entry to add it as a result.",
 				"Types": {
 					"treasure": "Treasure",
 					"coins": "Coins",
-					"document": "Table or Item",
+					"document": "Document",
 					"text": "Text"
 				}
 			},
