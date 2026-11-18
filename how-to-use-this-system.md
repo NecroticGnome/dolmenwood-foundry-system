@@ -266,6 +266,9 @@ Settings on `CONFIG.DOLMENWOOD` that a module can change within its `init` hook.
 | `extraSkills`          | `['detectMagic', ...]`                | The skills that can be added                                                                                                                        |
 | `weatherTableNames`    | `{ winter: 'Weather — Winter', ... }` | The roll tables the daily weather is rolled on, by season and unseason                                                                              |
 | `gettingLostTableName` | `'Consequences of Getting Lost'`      | The roll table rolled when the party gets lost, if one by that name exists                                                                          |
+| `treasureResolvers`    | `[]`                                  | Functions that roll treasure codes (C3, R4, M2, gems, ...) for creature treasure and `@Treasure` links                                              |
+| `treasureExtras`       | `{}`                                  | Extra treasure buttons beside a creature's Possessions or Hoard                                                                                     |
+| `migrations`           | `[]`                                  | One-off updates to a world's data, run when the world's data is older than your module                                                              |
 
 **`wildernessEncounter`** is an object with two functions. The system calls them through `game.dolmenwood.getWildernessEncounterChance()` and `game.dolmenwood.rollWildernessEncounter()`.
 
@@ -280,3 +283,33 @@ CONFIG.DOLMENWOOD.wildernessEncounter = {
 ```
 
 **`maxLevel`** can be raised for adventurers above level 15, but the classes' progression tables (XP, attack, saves, skills, spells and glamours) run to level 15. Extend them on the class items as well, or levels above 15 will be missing those values.
+
+**`treasureResolvers`** are tried in order by `game.dolmenwood.rollTreasure()`, which uses the first non-empty result. Return `{ html: '' }` for a value you don't respond to, and `unshift` instead of `push` to take precedence.
+
+```js
+CONFIG.DOLMENWOOD.treasureResolvers.push(async (value, { actor, quantity }) => {
+  if (value !== 'X1') return { html: '' }
+  return { html: `<b>X1:</b> ${quantity ?? 1} silver spoons` }
+})
+```
+
+**`treasureExtras`** buttons roll a fixed list of treasure entries, in the same shape as a creature's own treasure:
+
+```js
+CONFIG.DOLMENWOOD.treasureExtras.pockets = {
+  label: 'Pocket contents', icon: 'fa-solid fa-hand', kind: 'carried', // or 'hoard'
+  show: actor => actor.system.intelligence === 'sentient', // optional
+  entries: [{ chance: 2, chanceIn: 6, results: [{ quantity: '1d6', type: 'coins', value: 'sp', label: '' }] }]
+}
+```
+
+**`migrations`** run once on the active GM's client after `ready`, oldest version first. Any migration whose `version` is newer than the stored value gets run. Ensure migrations are safe to `run` multiple times. Helpers are on `game.dolmenwood.migrations`, such as `fillCreatureTreasure()`, which copies treasure into world creatures from its source compendium creature.
+
+```js
+CONFIG.DOLMENWOOD.migrations.push({
+  id: 'my-module.fill-treasure', // unique; start it with your module's id
+  package: 'my-module', // use "dolmenwood" if you are wanting to migrate data based on the system's version
+  version: '1.2.0', // the version of the package that adds this migration (any version earlier than this will run the migration)
+  run: () => game.dolmenwood.migrations.fillCreatureTreasure()
+})
+```

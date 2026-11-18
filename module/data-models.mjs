@@ -20,6 +20,26 @@ function createAbilityField() {
 }
 
 /**
+ * A treasure entry: a chance (blank = always) rolled once, and the results it gives.
+ * Result types: treasure (a code like C3 or a keyword, resolved by CONFIG.DOLMENWOOD.rollTreasure),
+ * coins (value = cp/sp/gp/pp), document (value = a RollTable or Item UUID), text.
+ * @returns {SchemaField} Treasure entry schema field
+ */
+function createTreasureEntrySchema() {
+	return new SchemaField({
+		// chance in chanceIn, e.g. 2 in 6 or 25 in 100; blank chance = always, blank chanceIn = 100
+		chance: new NumberField({ required: false, nullable: true, integer: true, min: 0, initial: null }),
+		chanceIn: new NumberField({ required: false, nullable: true, integer: true, min: 1, initial: null }),
+		results: new ArrayField(new SchemaField({
+			quantity: new StringField({ required: true, blank: true, initial: '' }),
+			type: new StringField({ required: true, blank: false, initial: 'text', choices: CHOICE_KEYS.treasureResultTypes }),
+			value: new StringField({ required: true, blank: true, initial: '' }),
+			label: new StringField({ required: true, blank: true, initial: '' })
+		}), { initial: [] })
+	})
+}
+
+/**
  * Create a save target field.
  * @returns {NumberField} Save target field
  */
@@ -873,6 +893,13 @@ export class CreatureDataModel extends ActorDataModel {
 			behaviour: new StringField({ required: true, blank: true }),
 			speech: new StringField({ required: true, blank: true }),
 			possessions: new StringField({ required: true, blank: true }),
+
+			// Rollable treasure, beside the book's text: the lair hoard and what the group carries.
+			// Each entry rolls its chance once and gives all its results.
+			treasure: new SchemaField({
+				hoard: new ArrayField(createTreasureEntrySchema(), { initial: [] }),
+				carried: new ArrayField(createTreasureEntrySchema(), { initial: [] })
+			}),
 
 			// Rich-text description (lore / flavour text)
 			description: new HTMLField({ required: true, blank: true, initial: "" }),

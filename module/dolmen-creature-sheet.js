@@ -14,6 +14,7 @@ import { onOpenItem, onIncreaseQty, onDecreaseQty, onToggleContainer, onDropItem
 import { setupAdjustableInputListeners } from './sheet/listeners.js'
 import { openCodex } from './utils/codex.js'
 import DolmenSheet from './dolmen-sheet.js'
+import { TreasureEditor, rollCreatureTreasure, rollTreasureExtra, treasureExtrasFor } from './sheet/treasure.js'
 
 /** Spell item types a creature can memorize, with their magic and highest rank. */
 const CREATURE_SPELLS = {
@@ -76,7 +77,16 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			toggleContainer: onToggleContainer,
 			addEffect: DolmenCreatureSheet._onAddEffect,
 			deleteEffect: DolmenCreatureSheet._onDeleteEffect,
-			toggleEffect: DolmenCreatureSheet._onToggleEffect
+			toggleEffect: DolmenCreatureSheet._onToggleEffect,
+			openTreasure: function (_e, target) {
+				return TreasureEditor.open(this.actor, target.dataset.kind)
+			},
+			rollTreasure: function (_e, target) {
+				return rollCreatureTreasure(this.actor, target.dataset.kind)
+			},
+			rollTreasureExtra: function (_e, target) {
+				return rollTreasureExtra(this.actor, target.dataset.extra)
+			}
 		}
 	}
 
@@ -227,6 +237,8 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 		context.encumbranceMethod = game.settings.get('dolmenwood', 'encumbranceMethod')
 		this._prepareInventoryContext(context, actor)
 		this._prepareMagicContext(context, actor)
+		context.treasure = actor.system.treasure
+		context.treasureExtras = { carried: treasureExtrasFor(actor, 'carried'), hoard: treasureExtrasFor(actor, 'hoard') }
 
 		return context
 	}
