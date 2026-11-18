@@ -160,7 +160,7 @@ Before initiative, each combatant can declare what they're doing with the declar
 
 ## Settings
 
-- **Colour Theme:** a dozen themes inspired by the books, plus a high-contrast theme. *Apply Theme to Interface* also recolours Foundry's own interface. Both are set per player.
+- **Colour Theme:** a dozen themes inspired by the books, plus a high-contrast theme. *Apply Theme to Interface* also recolours Foundry's own interface. Both are set per player, unless the GM turns on *Force Theme for All Players*.
 - **Hide Journal Art:** hides the books' artwork in the Dolmenwood journals. Set per player.
 - **Show Welcome Message:** shows the welcome dialog on load.
 

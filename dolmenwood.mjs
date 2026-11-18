@@ -86,12 +86,43 @@ function legacyThemeSetting(key) {
 // settings arrive (they load after init)
 const THEME_CACHE = 'dolmenwood.themeCache'
 
+/**
+ * The themes this client shows: the GM's forced themes when "Force theme for all players" is on,
+ * otherwise this player's own choice.
+ * @returns {{ colorTheme: string, uiTheme: boolean }}
+ */
+function effectiveThemes() {
+	const forced = game.settings.get('dolmenwood', 'forceTheme')
+	return {
+		colorTheme: game.settings.get('dolmenwood', forced ? 'forcedColorTheme' : 'colorTheme'),
+		uiTheme: game.settings.get('dolmenwood', forced ? 'forcedUiTheme' : 'uiTheme')
+	}
+}
+
+/**
+ * Apply the effective themes and cache them for the next load.
+ */
+function refreshThemes() {
+	const { colorTheme, uiTheme } = effectiveThemes()
+	if (themePreview === null) applyTheme(colorTheme)
+	applyUiTheme(uiTheme)
+	cacheThemes()
+}
+
+/**
+ * While themes are forced, the GM's own theme choice is the one every player sees.
+ * @param {string} [userId] - The user who changed the setting
+ */
+async function syncForcedThemes(userId) {
+	if (!game.user.isGM || (userId && userId !== game.userId)) return
+	if (!game.settings.get('dolmenwood', 'forceTheme')) return
+	await game.settings.set('dolmenwood', 'forcedColorTheme', game.settings.get('dolmenwood', 'colorTheme'))
+	await game.settings.set('dolmenwood', 'forcedUiTheme', game.settings.get('dolmenwood', 'uiTheme'))
+}
+
 function cacheThemes() {
 	try {
-		localStorage.setItem(THEME_CACHE, JSON.stringify({
-			colorTheme: game.settings.get('dolmenwood', 'colorTheme'),
-			uiTheme: game.settings.get('dolmenwood', 'uiTheme')
-		}))
+		localStorage.setItem(THEME_CACHE, JSON.stringify(effectiveThemes()))
 	} catch {
 		// storage unavailable: the themes still apply on ready
 	}
@@ -220,9 +251,11 @@ Hooks.once('init', async function () {
 			coldironaxe: 'DOLMEN.Settings.ThemeColdIronAxe',
 			highcontrast: 'DOLMEN.Settings.ThemeHighContrast'
 		},
-		onChange: theme => {
-			applyTheme(theme)
-			cacheThemes()
+		// user settings reach every client (the GM sees all players' settings), so re-read this
+		// player's own value instead of applying the changed one
+		onChange: (value, options, userId) => {
+			refreshThemes()
+			syncForcedThemes(userId)
 		}
 	})
 
@@ -233,10 +266,41 @@ Hooks.once('init', async function () {
 		config: true,
 		type: Boolean,
 		default: true,
-		onChange: enabled => {
-			applyUiTheme(enabled)
-			cacheThemes()
+		onChange: (value, options, userId) => {
+			refreshThemes()
+			syncForcedThemes(userId)
 		}
+	})
+
+	game.settings.register('dolmenwood', 'forceTheme', {
+		name: 'DOLMEN.Settings.ForceTheme',
+		hint: 'DOLMEN.Settings.ForceThemeHint',
+		scope: 'world',
+		config: true,
+		restricted: true,
+		type: Boolean,
+		default: false,
+		onChange: async (value, options, userId) => {
+			await syncForcedThemes(userId)
+			refreshThemes()
+		}
+	})
+
+	// The GM's themes while forceTheme is on
+	game.settings.register('dolmenwood', 'forcedColorTheme', {
+		scope: 'world',
+		config: false,
+		type: String,
+		default: 'auto',
+		onChange: () => refreshThemes()
+	})
+
+	game.settings.register('dolmenwood', 'forcedUiTheme', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: true,
+		onChange: () => refreshThemes()
 	})
 
 	game.settings.register('dolmenwood', 'showCalendar', {
@@ -728,9 +792,7 @@ Hooks.once('init', async function () {
 	applyUiTheme(cached.uiTheme ?? legacyThemeSetting('uiTheme') ?? true)
 	Hooks.once('ready', async () => {
 		await migrateThemeSettings()
-		applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
-		applyUiTheme(game.settings.get('dolmenwood', 'uiTheme'))
-		cacheThemes()
+		refreshThemes()
 	})
 
 	// Re-apply auto theme when Foundry's own light/dark mode changes
@@ -1289,13 +1351,24 @@ Hooks.on('updateWorldTime', async () => {
 Hooks.on('renderSettingsConfig', (app, html) => {
 	const select = html.querySelector('[name="dolmenwood.colorTheme"]')
 	if (!select) return
+	// players can't pick their own themes while the GM forces them
+	if (game.settings.get('dolmenwood', 'forceTheme') && !game.user.isGM) {
+		const uiToggle = html.querySelector('[name="dolmenwood.uiTheme"]')
+		for (const input of [select, uiToggle]) {
+			if (!input) continue
+			input.disabled = true
+			input.closest('.form-group')?.querySelector('.hint')
+				?.insertAdjacentHTML('beforeend', ` <strong>${game.i18n.localize('DOLMEN.Settings.ThemeForced')}</strong>`)
+		}
+		return
+	}
 	select.addEventListener('change', () => {
 		themePreview = select.value
 		applyTheme(select.value)
 	})
 	app.addEventListener('close', () => {
 		themePreview = null
-		applyTheme(game.settings.get('dolmenwood', 'colorTheme'))
+		refreshThemes()
 	})
 })
 
