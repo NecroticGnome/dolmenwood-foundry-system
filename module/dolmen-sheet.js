@@ -29,9 +29,10 @@ import {
 } from './sheet/listeners.js'
 import { openAddSkillDialog, removeSkill } from './sheet/dialogs.js'
 import { createContextMenu } from './sheet/context-menu.js'
-import { onOpenItem, onIncreaseQty, onDecreaseQty, onToggleContainer, createDeleteItemHandler, onEquipItem, onStowItem, onRemoveFromContainer } from './sheet/inventory-actions.js'
+import { onOpenItem, onIncreaseQty, onDecreaseQty, onToggleContainer, createDeleteItemHandler, onEquipItem, onStowItem, onRemoveFromContainer, moveFromOtherActor } from './sheet/inventory-actions.js'
 import { getEffectTargetLabel, getEffectListData } from './effect-fields.js'
 import { createChatMessage } from './sheet/chat-helpers.js'
+import { takeFromItemPile } from './item-piles.js'
 
 const TextEditor = foundry.applications.ux.TextEditor.implementation
 const { HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api
@@ -1374,7 +1375,16 @@ class DolmenSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			const targetList = event.target.closest('[data-item-list]')?.dataset.itemList
 			const item = await Item.fromDropData(data)
 
-			// If dropped from another actor or compendium, create a copy
+			// From an Item Piles pile (through Item Piles) or another owned actor: the item moves,
+			// asking how many of a stack
+			const placement = {
+				equipped: targetList === 'equipped',
+				containerId: event.target.closest('.container-group')?.dataset.containerId || ''
+			}
+			if (await takeFromItemPile(this.actor, item, placement)) return
+			if (await moveFromOtherActor(this.actor, item, placement)) return
+
+			// Dropped from a compendium, the sidebar or an actor this user does not own: create a copy
 			if (item.parent !== this.actor) {
 				let itemData = item.toObject()
 				itemData.system.equipped = targetList === 'equipped'

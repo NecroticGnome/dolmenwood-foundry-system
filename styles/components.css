@@ -652,3 +652,24 @@
 	background-color: currentColor;
 	mask: url('../assets/icons/d_icon.webp') center / contain no-repeat;
 }
+
+/* Quantity dialog (take from a pile, move between actors): a slider beside a short number box */
+.dolmen-quantity-dialog .quantity-label {
+	margin: 0 0 0.25rem;
+	text-align: center;
+}
+
+.dolmen-quantity-dialog .quantity-fields {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.dolmen-quantity-dialog .quantity-fields input[type="range"] {
+	flex: 1;
+}
+
+.dolmen-quantity-dialog .quantity-fields input[type="number"] {
+	flex: 0 0 4rem;
+	text-align: center;
+}

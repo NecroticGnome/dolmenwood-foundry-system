@@ -51,6 +51,8 @@ Most of the Referee's tools are on the **Dolmenwood toolbar** in the scene contr
   - *Slots*: items take slots, with *Coins Per Slot* coins to a slot.
   - *Disabled*: no encumbrance.
 - Speed drops as load goes up. Exhaustion is tracked on the same tab.
+- Dragging gear from another actor you own moves it there, asking how many of a stack. A container brings its contents.
+- With the [Item Piles](https://foundryvtt.com/packages/item-piles) module, items and coins can be dropped on the map, looted and traded. Items dragged out of a pile onto a sheet are taken from it. New piles are Vehicle actors, which hold coins.
 
 ![A fighter's inventory, with equipped and stowed items](docs/images/inventory.webp)
 
