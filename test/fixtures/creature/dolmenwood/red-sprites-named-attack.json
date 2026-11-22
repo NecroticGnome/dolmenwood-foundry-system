@@ -1,0 +1,11 @@
+{
+	"data": {
+		"name": "Red Sprites",
+		"monsterType": "fairy",
+		"hpList": [1, 3, 3, 4],
+		"movement": { "fly": 40 },
+		"attacks": [{ "attackName": "Discord", "attackBonus": 0, "attackDamage": "—", "attackType": "save" }],
+		"specialAbilities": [{ "name": "Cold iron" }, { "name": "Discord" }]
+	},
+	"warnings": 1
+}

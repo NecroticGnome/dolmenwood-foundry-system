@@ -113,3 +113,21 @@ test('dolmenwood: every defaulted field is reported', () => {
 	const keys = warnings.map(w => w.key.split('.').pop())
 	for (const k of ['NoTypeLine', 'NoHP', 'NoSaves', 'NoAttacks', 'NoSpeed', 'NoMorale', 'NoXP']) assert.ok(keys.includes(k), k)
 })
+
+test('dolmenwood: the adventures\' type lines, with pipes and abbreviations', () => {
+	const forms = {
+		'Small Construct | Mindless | Lawful': ['small', 'construct', 'mindless', 'lawful'],
+		'Md. Monstrosity|Semi-Int.|Neutral': ['medium', 'monstrosity', 'semi-intelligent', 'neutral'],
+		'Md. Mortal | Sentient | Any Alignment': ['medium', 'mortal', 'sentient', 'any'],
+		'Sm. Animal | Animal Int | Neutral': ['small', 'animal', 'animal', 'neutral'],
+		'Lg. Construct | Animal Int. | Neutral': ['large', 'construct', 'animal', 'neutral'],
+		'Small Monstr. | Animal Int. | Neutral': ['small', 'monstrosity', 'animal', 'neutral'],
+		'Med. Undead—Mindless—Chaotic': ['medium', 'undead', 'mindless', 'chaotic'],
+		'Medium Undead—\nAnimal Intelligence—Neutral': ['medium', 'undead', 'animal', 'neutral']
+	}
+	for (const [line, expected] of Object.entries(forms)) {
+		const { data, warnings } = parseStatblock(`Thing\n${line}\nLevel 2 AC 12 HP 4d8 (18) Saves D12 R13 H14 B15 S16 Att Bite (+1, 1d6) Speed 40 Morale 7 XP 20`)
+		assert.deepEqual([data.size, data.monsterType, data.intelligence, data.alignment], expected, line)
+		assert.deepEqual([data.hpDice, data.hpValue, data.hpList, warnings.length], ['4d8', 18, [], 0], line)
+	}
+})
