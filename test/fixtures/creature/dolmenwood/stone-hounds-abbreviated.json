@@ -1,0 +1,13 @@
+{
+	"data": {
+		"name": "Stone Hounds",
+		"size": "large",
+		"monsterType": "construct",
+		"intelligence": "animal",
+		"alignment": "neutral",
+		"hpValue": 17,
+		"hpList": [17, 19],
+		"speed": 40
+	},
+	"warnings": 1
+}

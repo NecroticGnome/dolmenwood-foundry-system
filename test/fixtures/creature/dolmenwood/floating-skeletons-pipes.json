@@ -1,0 +1,15 @@
+{
+	"data": {
+		"name": "Floating Skeletons",
+		"size": "medium",
+		"monsterType": "undead",
+		"intelligence": "sentient",
+		"alignment": "neutral",
+		"hpValue": 8,
+		"hpList": [8, 10],
+		"speed": 0,
+		"movement": { "fly": 30 },
+		"specialAbilities": [{ "name": "Dark sight" }]
+	},
+	"warnings": 1
+}

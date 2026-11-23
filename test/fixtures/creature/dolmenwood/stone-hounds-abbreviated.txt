@@ -1,0 +1,3 @@
+Stone Hounds
+Lg. Construct | Animal Int. | Neutral
+Level 4 AC 16 HP 17, 19 Saves D10 R11 H12 B13 S14 Att Bite (+3, 1d8) Speed 40 Morale 12 XP 130

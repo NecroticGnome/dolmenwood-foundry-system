@@ -81,8 +81,12 @@ function warnings() {
 const SIZE_MAP = {
 	'tiny': 'small',
 	'small': 'small',
+	'sm': 'small',
 	'medium': 'medium',
+	'md': 'medium',
+	'med': 'medium',
 	'large': 'large',
+	'lg': 'large',
 	'huge': 'large',
 	'gigantic': 'large'
 }
@@ -96,6 +100,7 @@ const MONSTER_TYPE_MAP = {
 	'fairy': 'fairy',
 	'fungus': 'fungus',
 	'monstrosity': 'monstrosity',
+	'monstr': 'monstrosity',
 	'mortal': 'mortal',
 	'ooze': 'ooze',
 	'plant': 'plant',
@@ -303,6 +308,16 @@ function parseAttacks(attackStr) {
 		}
 	}
 
+	// Pass 3: An attack that only names an ability ("Att Discord", "Att Spells"); its effect is
+	// filled in from that ability by linkAttackEffects
+	const bare = attackStr.trim()
+	if (!attacks.length && /^[a-zA-Z][a-zA-Z ]*$/.test(bare) && !/^none$/i.test(bare)) {
+		attacks.push({
+			_pos: 0, numAttacks: 1, attackName: cleanAttackName(bare), attackBonus: 0, attackDamage: '—',
+			attackEffect: '', attackType: 'save', rangeShort: 0, rangeMedium: 0, rangeLong: 0, attackGroup: ''
+		})
+	}
+
 	// Assign group colors based on separator: "or" (|) = new group, "and" (&) = same group
 	const groups = ['a', 'b', 'c', 'd', 'e', 'f']
 	attacks.sort((a, b) => a._pos - b._pos)
@@ -407,7 +422,7 @@ const ABILITY_RE = /^([A-Z][A-Za-z' -]{0,40}(?:\s*\([^)]*\))?):\s+(.*)$/
  * The expected layout:
  *   Name
  *   Description text...
- *   Size Type—Intelligence—Alignment
+ *   Size Type—Intelligence—Alignment (or "Size Type | Intelligence | Alignment", as in the adventures)
  *   Level X AC Y HP XdY (Z) Saves D# R# H# B# S#
  *   Attacks [N] name (+bonus, damage) [and ...] Speed # [Fly #] ... Morale # XP # Encounters ...
  *   Behaviour ... Speech ... Possessions ... Hoard ...
@@ -428,7 +443,7 @@ export function parseStatblock(text) {
 	// Anchor on the type line. If the PDF gave spaced hyphens instead of dashes, accept those.
 	// Without a type line, anchor on the Level/AC line.
 	const levelIdx = lines.findIndex(l => /\bLevel\s+\d+\b/i.test(l) && /\bAC\s+\d+/i.test(l))
-	let typeIdx = lines.findIndex(l => (l.match(/—/g) || []).length >= 2 && ALIGN_RE.test(l))
+	let typeIdx = lines.findIndex(l => (l.match(/[—|]/g) || []).length >= 2 && ALIGN_RE.test(l))
 	if (typeIdx === -1) typeIdx = lines.findIndex(l => /\s-\s.*\s-\s/.test(l) && ALIGN_RE.test(l))
 	if (typeIdx !== -1 && levelIdx !== -1 && typeIdx > levelIdx) typeIdx = -1
 	if (typeIdx === -1 && levelIdx === -1) {
@@ -450,8 +465,8 @@ export function parseStatblock(text) {
 	if (typeIdx === -1) {
 		warn('NoTypeLine')
 	} else {
-		const [first = '', intPart = '', alignPart = ''] = lines[typeIdx].toLowerCase().split(/\s*—\s*|\s+-\s+/)
-		const words = first.trim().split(/\s+/)
+		const [first = '', intPart = '', alignPart = ''] = lines[typeIdx].toLowerCase().split(/\s*[—|]\s*|\s+-\s+/)
+		const words = first.trim().replace(/\./g, '').split(/\s+/)
 		if (SIZE_MAP[words[0]]) size = SIZE_MAP[words.shift()]
 		else warn('UnknownSize', { value: first })
 		const typeText = words.join(' ')
@@ -537,6 +552,9 @@ export function parseStatblock(text) {
 	let hpValue = Math.max(1, Math.floor(level * 4.5))
 	const hpMatch = stats.match(/\bHP\s+(\d+d\d+(?:[+-]\d+)?)\s*\((\d+)\)/i)
 	const hpOnly = stats.match(/\bHP\s+(\d+)\b(?!d)/i)
+	// A group lists one HP per creature: "HP 3, 3, 4, 5"
+	const hpGroup = stats.match(/\bHP\s+(\d+(?:\s*,\s*\d+)+)\b(?!d)/i)
+	const hpList = hpGroup ? hpGroup[1].split(',').map(n => parseInt(n)) : []
 	if (hpMatch) {
 		hpDice = hpMatch[1]
 		hpValue = parseInt(hpMatch[2])
@@ -579,7 +597,7 @@ export function parseStatblock(text) {
 	return {
 		data: {
 			name, description, size, monsterType, intelligence, alignment,
-			level, ac, hpDice, hpValue, saves,
+			level, ac, hpDice, hpValue, hpList, saves,
 			attacks, speed, movement,
 			morale, xpAward, encounters, lairChance, treasureType: metadata.hoard || '',
 			behaviour: metadata.behaviour || '', speech: metadata.speech || '', possessions: metadata.possessions || '',

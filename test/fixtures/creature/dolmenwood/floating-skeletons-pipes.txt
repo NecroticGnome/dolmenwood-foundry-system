@@ -1,0 +1,4 @@
+Floating Skeletons
+Medium Undead | Sentient | Neutral
+Level 2 AC 11 HP 8, 10 Saves D12 R13 H14 B15 S16 Att Claws (+1, 1d4) Fly 30 Morale 12 XP 35
+Dark sight: Can see normally without light.

@@ -1,0 +1,5 @@
+Red Sprites
+Small Fairy | Sentient | Neutral
+Level 1 AC 16 HP 1, 3, 3, 4 Saves D12 R13 H14 B15 S16 Att Discord Speed 20 Fly 40 Morale 6 XP 20
+Cold iron: As fairies, sprites suffer 1 extra point of damage when hit with cold iron weapons.
+Discord: A group of 3 red sprites can evoke intense feelings of jealousy, avarice, and bellicosity in a mortal within 20′. If the target fails a Save Versus Spell, they turn on their companions for 1d6 Rounds. If the save succeeds, the target is immune to these sprites’ magic until dawn.
