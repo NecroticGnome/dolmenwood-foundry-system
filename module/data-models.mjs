@@ -22,7 +22,7 @@ function createAbilityField() {
 /**
  * A treasure entry: a chance (blank = always) rolled once, and the results it gives.
  * Result types: treasure (a code like C3 or a keyword, resolved by CONFIG.DOLMENWOOD.rollTreasure),
- * coins (value = cp/sp/gp/pp), document (value = a RollTable or Item UUID), text.
+ * coins (value = cp/sp/gp/pp), document (value = a document UUID, any type but UNLINKABLE in module/sheet/treasure.js), text.
  * @returns {SchemaField} Treasure entry schema field
  */
 function createTreasureEntrySchema() {

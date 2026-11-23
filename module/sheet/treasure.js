@@ -4,8 +4,8 @@
  * Creature treasure: entries of results on system.treasure.hoard / .carried, edited in a window
  * opened from the Hoard / Possessions fields of the creature sheet.
  * An entry rolls its chance (blank = always) once and gives every result. The system rolls coins,
- * documents (a RollTable drawn N times, an Item listed) and text. Treasure codes (C3, R4, M2,
- * keywords like gems/magic) come from modules, through CONFIG.DOLMENWOOD.treasureResolvers
+ * documents and text. Treasure codes (C3, R4, M2, keywords like gems/magic) come from modules,
+ * through CONFIG.DOLMENWOOD.treasureResolvers
  * (see config.js) and rollTreasure below. @Treasure[code] links in any text roll them too.
  */
 
@@ -19,6 +19,9 @@ export const TREASURE_KINDS = {
 }
 
 const esc = s => foundry.utils.escapeHTML(String(s ?? ''))
+
+/** Documents not worth a treasure result; anything else dropped in is linked */
+const UNLINKABLE = ['Folder', 'Scene', 'Playlist', 'PlaylistSound']
 
 const newResult = (data = {}) => ({ quantity: '', type: 'treasure', value: '', label: '', ...data })
 
@@ -102,7 +105,7 @@ export class TreasureEditor extends HandlebarsApplicationMixin(DocumentSheetV2) 
 					name: `${base}.${index}.results.${rIndex}`,
 					isCoins: r.type === 'coins',
 					isDocument: r.type === 'document',
-					docName: r.type === 'document' ? (fromUuidSync(r.value)?.name ?? r.value) : ''
+					docName: r.type === 'document' ? (fromUuidSync(r.value, { strict: false })?.name ?? r.value) : ''
 				}))
 			}))
 		})
@@ -112,7 +115,7 @@ export class TreasureEditor extends HandlebarsApplicationMixin(DocumentSheetV2) 
 	async _onFirstRender(context, options) {
 		await super._onFirstRender(context, options)
 		if (!this.isEditable) return
-		// a RollTable or Item dropped in: a result on the entry it lands on, else a new entry
+		// a document dropped in: a result on the entry it lands on, else a new entry
 		this.element.addEventListener('dragover', e => e.preventDefault())
 		this.element.addEventListener('drop', e => this.#onDrop(e))
 	}
@@ -124,11 +127,14 @@ export class TreasureEditor extends HandlebarsApplicationMixin(DocumentSheetV2) 
 		} catch {
 			return
 		}
-		if (!['RollTable', 'Item'].includes(data?.type) || !data.uuid) return
+		if (!data?.uuid) return
 		event.preventDefault()
+		const index = Number(event.target.closest?.('.treasure-entry')?.dataset.entry)
+		const doc = await fromUuid(data.uuid).catch(() => null)
+		if (!doc || UNLINKABLE.includes(doc.documentName)) return
 		const list = this.#list()
 		const result = newResult({ type: 'document', value: data.uuid })
-		const entry = list[Number(event.target.closest?.('.treasure-entry')?.dataset.entry)]
+		const entry = list[index]
 		if (entry) entry.results.push(result)
 		else list.push({ chance: 1, chanceIn: 6, results: [result] })
 		return this.#save(list)
@@ -193,7 +199,7 @@ export class TreasureEditor extends HandlebarsApplicationMixin(DocumentSheetV2) 
 function describeResult(r) {
 	if (r.label) return esc(r.label)
 	const qty = r.quantity ? `${esc(r.quantity)} ` : ''
-	if (r.type === 'document') return qty + esc(fromUuidSync(r.value)?.name ?? r.value)
+	if (r.type === 'document') return qty + esc(fromUuidSync(r.value, { strict: false })?.name ?? r.value)
 	return qty + esc(r.value)
 }
 
@@ -241,6 +247,19 @@ async function rollResult(r, actor) {
 				drawn.push(`<b>${esc(r.label || doc.name)}:</b> ${results.map(tableResultText).join(', ')}`)
 			}
 			return drawn // a line per draw
+		}
+		if (doc.documentName === 'Macro') {
+			// runs once: return a string or document to render it on the card.
+			const name = esc(r.label || doc.name)
+			const speaker = ChatMessage.getSpeaker({ actor })
+			const token = actor.token?.object ?? actor.getActiveTokens()[0] ?? null
+			const ret = await doc.execute({ actor, token, speaker, quantity: n })
+			if (typeof ret === 'string' && ret) return `<b>${name}:</b> ${ret}`
+			// a chat macro returns its ChatMessage, already in chat
+			if (ret instanceof foundry.abstract.Document && ret.uuid && ret.documentName !== 'ChatMessage') {
+				return `<b>${name}:</b> @UUID[${ret.uuid}]{${esc(ret.name ?? ret.uuid)}}`
+			}
+			return game.i18n.format('DOLMEN.Creature.Treasure.MacroRan', { name })
 		}
 		return `${n > 1 ? `${n} × ` : ''}@UUID[${doc.uuid}]{${esc(r.label || doc.name)}}`
 	}
