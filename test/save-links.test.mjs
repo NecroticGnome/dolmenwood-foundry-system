@@ -31,3 +31,7 @@ test('empty and plain text pass through', () => {
 	assert.equal(parseSaveLinks(null), null)
 	assert.equal(parseSaveLinks('no links here'), 'no links here')
 })
+
+test('chance link with another die', () => {
+	assert.equal(parseSaveLinks('[1-in-3](chance:1/3)'), '<a class="inline-chance-link" data-target="1" data-die="3">1-in-3</a>')
+})

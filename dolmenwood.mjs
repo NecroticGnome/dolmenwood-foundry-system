@@ -35,6 +35,7 @@ import DolmenEffectSheet from './module/dolmen-effect-sheet.js'
 import { EFFECT_FIELDS } from './module/effect-fields.js'
 import { registerClassDataSetting, migrateClassData } from './module/class-data-migration.js'
 import { registerItemPilesIntegration } from './module/item-piles.js'
+import { registerEditorLinkMenu } from './module/editor-links.js'
 
 const { Actors, Items } = foundry.documents.collections
 
@@ -423,10 +424,11 @@ Hooks.once('init', async function () {
 		enricher: createSkillLinkEnricher
 	})
 	CONFIG.TextEditor.enrichers.push({
-		pattern: /\[([^\]]+)\]\(chance:(\d+)\)/g,
+		pattern: /\[([^\]]+)\]\(chance:(\d+)(?:\/(\d+))?\)/g,
 		enricher: createChanceLinkEnricher
 	})
 	registerTreasureLinks()
+	registerEditorLinkMenu()
 
 	// Register Handlebars helpers
 	Handlebars.registerHelper('add', (a, b) => (a || 0) + (b || 0))
@@ -1416,7 +1418,7 @@ document.addEventListener('click', (event) => {
 	event.stopPropagation()
 	const target = parseInt(link.dataset.target)
 	if (isNaN(target)) return
-	rollChance(target)
+	rollChance(target, parseInt(link.dataset.die) || 6)
 })
 
 // Sync embedded Kindred/Class items when source items are updated (world or compendium)

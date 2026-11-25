@@ -642,6 +642,15 @@
 	padding: 0.25rem;
 	cursor: pointer;
 }
+.dolmen-editor-icon {
+	/* the Dolmenwood drop-down in the rich text editor's menu */
+	display: inline-block;
+	width: 1.1em;
+	height: 1.1em;
+	vertical-align: middle;
+	background-color: currentColor;
+	mask: url('../assets/icons/d_icon.webp') center / contain no-repeat;
+}
 /* The Dolmenwood Tools button: the image's shape in the control's own colour, as its Font Awesome neighbours */
 .control.dolmen-tools-icon::before {
 	content: '';

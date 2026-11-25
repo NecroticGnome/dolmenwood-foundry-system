@@ -30,7 +30,8 @@ Most of the Referee's tools are on the **Dolmenwood toolbar** in the scene contr
   - `[Save vs Doom](save:doom)` rolls a save for the selected tokens. The saves are `doom`, `ray`, `hold`, `blast` and `spell`.
   - `[Strength check](ability:strength)` rolls an ability check for the selected adventurers. The abilities are `strength`, `intelligence`, `wisdom`, `dexterity`, `constitution` and `charisma` (or `str`, `int`, `wis`, `dex`, `con`, `cha`).
   - `[Listen](skill:listen)` rolls a skill check for the selected adventurers. The skills are `listen`, `search`, `survival` and the extra skills (`alertness`, `climbWall`, `decipherDocument`, `detectMagic`, `disarmMechanism`, `legerdemain`, `monsterLore`, `pickLock`, `stalking`, `stealth`, `tracking`). An adventurer without the skill is skipped.
-  - `[2-in-6 to find it](chance:2)` rolls an X-in-6 chance.
+  - `[2-in-6 to find it](chance:2)` rolls an X-in-6 chance. For another die, add it after a slash: `[1-in-3](chance:1/3)` rolls a 1-in-3 chance.
+  - You can add these links from the Dolmenwood drop-down (the Dolmenwood "D" logo) in the text editor's menu.
 
 ## Experience and levels
 
