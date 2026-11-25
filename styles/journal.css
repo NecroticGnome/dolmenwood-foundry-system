@@ -259,8 +259,11 @@ body.dolmenwood-hide-art :is(p, figure):has(> .dolmenwood-art:only-child):not(.P
 @supports (anchor-name: --a) {
 	:is(.journal-page-content, .editor-content) {
 		/* each page anchors its own crests: not to a portrait on another page in the same sheet */
-		position: relative;
 		anchor-scope: --npc-portrait;
+	}
+	.journal-page-content {
+		/* not .editor-content: core positions the editor absolutely, and that's what lets it scroll */
+		position: relative;
 	}
 	body:not(.dolmenwood-hide-art) .journal-entry-page .monster-image.float-right:has(+ .crest),
 	body:not(.dolmenwood-hide-art) .editor-content .monster-image.float-right:has(+ .crest) {
