@@ -257,9 +257,12 @@ async function showSettingsDialog() {
 	for (const pack of game.packs.filter(p => p.documentName === 'RollTable')) {
 		for (const entry of await pack.getIndex()) tableNames.add(entry.name)
 	}
-	for (const name of [...tableNames].filter(n => n.startsWith('Encounter Table:')).sort((a, b) => a.localeCompare(b))) {
+	const prefixes = ['encounter table:', game.settings.get('dolmenwood', 'encounterTablePrefix').trim().toLowerCase()].filter(Boolean)
+	const listed = n => prefixes.some(p => n.toLowerCase().startsWith(p))
+	for (const name of [...tableNames].filter(listed).sort((a, b) => a.localeCompare(b))) {
 		const sel = encounterTable === name ? ' selected' : ''
-		tableOptions.push(`<option value="${name}"${sel}>${name}</option>`)
+		const safe = foundry.utils.escapeHTML(name)
+		tableOptions.push(`<option value="${safe}"${sel}>${safe}</option>`)
 	}
 
 	const hookId = Hooks.once('renderDialogV2', (dialog) => {
