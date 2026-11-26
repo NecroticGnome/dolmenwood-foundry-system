@@ -379,6 +379,15 @@ Hooks.once('init', async function () {
 		default: ''
 	})
 
+	game.settings.register('dolmenwood', 'encounterTablePrefix', {
+		name: 'DOLMEN.DungeonTracker.EncounterTablePrefix',
+		hint: 'DOLMEN.DungeonTracker.EncounterTablePrefixHint',
+		scope: 'world',
+		config: true,
+		type: String,
+		default: ''
+	})
+
 	game.settings.register('dolmenwood', 'encounterAutoRoll', {
 		scope: 'world',
 		config: false,

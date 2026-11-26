@@ -1240,6 +1240,8 @@
 			"EncounterIntervalLabel": "Encounter check every",
 			"EncounterTableLabel": "Encounter Table",
 			"EncounterTableNone": "None",
+			"EncounterTablePrefix": "Extra Encounter Table Prefix",
+			"EncounterTablePrefixHint": "Show tables starting with this value in the dungeon tracker's settings list in addition to the default \"Encounter Table:\".",
 			"AutoRoll": "Auto roll",
 			"PublicRoll": "Public roll",
 			"RollEncounterTable": "Roll on Encounter Table",

@@ -166,6 +166,7 @@ Before initiative, each combatant can declare what they're doing with the declar
 
 - Turn it on with the dungeon button on the Dolmenwood toolbar. It sits at the top of the screen and counts 10-minute turns as world time passes, or when you click **Next Turn**.
 - In its settings, choose how often to check for wandering monsters, the chance (X in Y), an encounter table to roll on, and how often the party must rest.
+- The encounter table list shows roll tables whose names start with **Encounter Table:** (ignoring case). To add your own table to the list, name it in a similar way (e.g. `Encounter Table: My Awesome Options`). To also list tables with another prefix (e.g. `Random Happenings:`) you can use the *Extra Encounter Table Prefix* Setting.
 - It tracks torches and lanterns as they burn down, and any other timers you add. A timer can be visible to everyone or to the Referee only.
 - When a lot of time passes at once, such as after an overnight rest, it asks whether to clear, pause or process the missed turns.
 
