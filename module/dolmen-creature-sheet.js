@@ -687,7 +687,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				</div>
 				<div class="form-group">
 					<label>${game.i18n.localize('DOLMEN.Creature.AttackName')}</label>
-					<input type="text" id="attack-name" value="${attack.attackName}">
+					<input type="text" id="attack-name" value="${foundry.utils.escapeHTML(attack.attackName ?? '')}">
 				</div>
 				<div class="form-group">
 					<label>${game.i18n.localize('DOLMEN.Creature.NumAttacks')}</label>
@@ -699,7 +699,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				</div>
 				<div class="form-group">
 					<label>${game.i18n.localize('DOLMEN.Creature.AttackDamage')}</label>
-					<input type="text" id="attack-damage" value="${attack.attackDamage}" ${!isAttack ? 'disabled' : ''}>
+					<input type="text" id="attack-damage" value="${foundry.utils.escapeHTML(attack.attackDamage ?? '')}" ${!isAttack ? 'disabled' : ''}>
 				</div>
 				<div class="range-group">
 					<div class="form-group">
@@ -729,7 +729,7 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				</div>
 				<div class="form-group full-width">
 					<label>${game.i18n.localize('DOLMEN.Creature.SaveEffect')}</label>
-					<textarea id="attack-effect">${attack.attackEffect || ''}</textarea>
+					<textarea id="attack-effect">${foundry.utils.escapeHTML(attack.attackEffect || '')}</textarea>
 					<p class="formatting-hint">
 						${game.i18n.localize('DOLMEN.Creature.EffectHintSave')}: <code>[Text](save:doom)</code><br>
 						${game.i18n.localize('DOLMEN.Creature.EffectHintRoll')}: <code>[[/r 1d6]]</code>
@@ -793,11 +793,11 @@ class DolmenCreatureSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 			<div class="ability-edit-modal">
 				<div class="form-group full-width">
 					<label>${game.i18n.localize('DOLMEN.Creature.AbilityName')}</label>
-					<input type="text" id="ability-name" value="${ability.name}">
+					<input type="text" id="ability-name" value="${foundry.utils.escapeHTML(ability.name ?? '')}">
 				</div>
 				<div class="form-group full-width">
 					<label>${game.i18n.localize('DOLMEN.Creature.AbilityDescription')}</label>
-					<textarea id="ability-description">${ability.description || ''}</textarea>
+					<textarea id="ability-description">${foundry.utils.escapeHTML(ability.description || '')}</textarea>
 				</div>
 			</div>
 		`

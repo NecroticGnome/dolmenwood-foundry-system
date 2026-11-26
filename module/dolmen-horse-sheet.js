@@ -520,7 +520,7 @@ class DolmenHorseSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				</div>
 				<div class="form-group">
 					<label>${game.i18n.localize('DOLMEN.Creature.AttackName')}</label>
-					<input type="text" id="attack-name" value="${attack.attackName}">
+					<input type="text" id="attack-name" value="${foundry.utils.escapeHTML(attack.attackName ?? '')}">
 				</div>
 				<div class="form-group">
 					<label>${game.i18n.localize('DOLMEN.Creature.NumAttacks')}</label>
@@ -532,11 +532,11 @@ class DolmenHorseSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 				</div>
 				<div class="form-group">
 					<label>${game.i18n.localize('DOLMEN.Creature.AttackDamage')}</label>
-					<input type="text" id="attack-damage" value="${attack.attackDamage}" ${!isAttack ? 'disabled' : ''}>
+					<input type="text" id="attack-damage" value="${foundry.utils.escapeHTML(attack.attackDamage ?? '')}" ${!isAttack ? 'disabled' : ''}>
 				</div>
 				<div class="form-group full-width">
 					<label>${game.i18n.localize('DOLMEN.Creature.SaveEffect')}</label>
-					<textarea id="attack-effect">${attack.attackEffect || ''}</textarea>
+					<textarea id="attack-effect">${foundry.utils.escapeHTML(attack.attackEffect || '')}</textarea>
 					<p class="formatting-hint">
 						${game.i18n.localize('DOLMEN.Creature.EffectHintSave')}: <code>[Text](save:doom)</code><br>
 						${game.i18n.localize('DOLMEN.Creature.EffectHintRoll')}: <code>[[/r 1d6]]</code>
