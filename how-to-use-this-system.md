@@ -1,5 +1,24 @@
 # How to use this system
 
+- [General](#general)
+- [Creating a character](#creating-a-character)
+- [Rolls](#rolls)
+- [Experience and levels](#experience-and-levels)
+- [Inventory and encumbrance](#inventory-and-encumbrance)
+- [Magic](#magic)
+- [Traits](#traits)
+- [Resting](#resting)
+- [Combat](#combat)
+- [Creatures](#creatures)
+- [Effects](#effects)
+- [The party viewer](#the-party-viewer)
+- [The dungeon tracker](#the-dungeon-tracker)
+- [The calendar](#the-calendar)
+- [Settings](#settings)
+- [Pausing the game](#pausing-the-game)
+- [Converting an OSE world](#converting-an-ose-world)
+- [For module and macro developers](#for-module-and-macro-developers)
+
 ## General
 
 This system implements the Dolmenwood rules for Foundry VTT. It includes the Kindreds and Classes compendiums and the free Quick-Start adventure. The [**Dolmenwood Premium Game**](https://foundryvtt.com/packages/dolmenwood-premiumgame) module adds the full setting: the books' journals, creatures, items, spells and roll tables.
@@ -171,6 +190,12 @@ Before initiative, each combatant can declare what they're doing with the declar
 The combat, encumbrance and creature settings are described in their sections above.
 
 ![Four of the colour themes](docs/images/themes.webp)
+
+## Pausing the game
+
+![Custom pause indicator sign](docs/images/pause.webp)
+
+The stone sign with a skull and the word **Timeout** is a custom pause indicator for Foundry VTT. The game is paused while it shows and players can't move their tokens. Press **Space** as the GM to pause or unpause the game.
 
 ## Converting an OSE world
 
