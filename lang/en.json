@@ -912,6 +912,19 @@
 				"ArmorPiercing": "Armour Piercing"
 			}
 		},
+		"Editor": {
+			"Menu": "Dolmenwood",
+			"Chance": "X-in-Y Chance",
+			"ChanceTarget": "Chance (X)",
+			"ChanceDie": "In (Y)",
+			"Save": "Save",
+			"SaveLabel": "Save Versus {name}",
+			"Ability": "Ability Check",
+			"Skill": "Skill Check",
+			"CheckLabel": "{name} Check",
+			"Treasure": "Treasure",
+			"TreasureCode": "Treasure code"
+		},
 		"Roll": {
 			"AbilityCheck": "Ability Check",
 			"SavingThrow": "Saving Throw",

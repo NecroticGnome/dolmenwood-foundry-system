@@ -276,8 +276,8 @@ export function openInlineSaveModifierPanel(saveKey, position) {
 
 /**
  * TextEditor enricher callback for chance links.
- * Syntax: [visible text](chance:target)
- * @param {RegExpMatchArray} match - Regex match with [1]=label, [2]=target number
+ * Syntax: [visible text](chance:target), or (chance:target/die) for a die other than a d6
+ * @param {RegExpMatchArray} match - Regex match with [1]=label, [2]=target number, [3]=die size
  * @returns {HTMLElement} Anchor element with inline-chance-link class
  */
 export function createChanceLinkEnricher(match) {
@@ -286,17 +286,19 @@ export function createChanceLinkEnricher(match) {
 	const a = document.createElement('a')
 	a.classList.add('inline-chance-link')
 	a.dataset.target = target
+	if (match[3]) a.dataset.die = match[3]
 	a.textContent = label
 	return a
 }
 
 /**
- * Roll a chance check (1d6, target or less).
+ * Roll a chance check (1d6, or another die, target or less).
  * Uses the selected token's actor as speaker if available, otherwise the current user.
  * @param {number} target - The target number (roll this or less to succeed)
+ * @param {number} [die=6] - The die size: 3 for a 1-in-3 chance
  */
-export async function rollChance(target) {
-	const roll = new Roll('1d6')
+export async function rollChance(target, die = 6) {
+	const roll = new Roll(`1d${die}`)
 	await roll.evaluate()
 
 	const isSuccess = roll.total <= target
@@ -313,7 +315,7 @@ export async function rollChance(target) {
 				<i class="fa-solid fa-dice-d6"></i>
 				<div class="roll-info">
 					<h3>${game.i18n.localize('DOLMEN.Roll.ChanceRoll')}</h3>
-					<span class="roll-type">${target}-in-6</span>
+					<span class="roll-type">${target}-in-${die}</span>
 				</div>
 			</div>
 			<div class="roll-body">
