@@ -20,6 +20,15 @@
 	font-style: normal;
 }
 
+/* Poly has no bold, so switch to Foundry's own Amiri Bold scaled to Poly's letter height. */
+@font-face {
+	font-family: 'Poly';
+	src: url('../../../fonts/amiri/amiri-bold.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+	size-adjust: 110%;
+}
+
 @font-face {
 	font-family: 'Cooper Hewitt';
 	src: url('./fonts/CooperHewitt.woff2') format('woff2');
