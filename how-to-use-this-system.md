@@ -50,7 +50,10 @@ Most of the Referee's tools are on the **Dolmenwood toolbar** in the scene contr
   - `[Strength check](ability:strength)` rolls an ability check for the selected adventurers. The abilities are `strength`, `intelligence`, `wisdom`, `dexterity`, `constitution` and `charisma` (or `str`, `int`, `wis`, `dex`, `con`, `cha`).
   - `[Listen](skill:listen)` rolls a skill check for the selected adventurers. The skills are `listen`, `search`, `survival` and the extra skills (`alertness`, `climbWall`, `decipherDocument`, `detectMagic`, `disarmMechanism`, `legerdemain`, `monsterLore`, `pickLock`, `stalking`, `stealth`, `tracking`). An adventurer without the skill is skipped.
   - `[2-in-6 to find it](chance:2)` rolls an X-in-6 chance. For another die, add it after a slash: `[1-in-3](chance:1/3)` rolls a 1-in-3 chance.
+  - `@Treasure[C3]{the hoard}` rolls a treasure code to chat. You can also specify a quantity or dice formula: `@Treasure[2d6 R4]`. Treasure links are rolled by a module such as the [Dolmenwood Premium Game](https://foundryvtt.com/packages/dolmenwood-premiumgame). If no module registers a treasure resolver (see Module and Macro developers below) the link will only show its label.
   - You can add these links from the Dolmenwood drop-down (the Dolmenwood "D" logo) in the text editor's menu.
+
+![The Dolmenwood drop-down in the text editor](docs/images/editor-links.webp)
 
 ## Experience and levels
 
