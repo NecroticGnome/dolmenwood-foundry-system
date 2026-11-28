@@ -1491,7 +1491,7 @@ function buildItemStats(item) {
 	const method = game.settings.get('dolmenwood', 'encumbranceMethod')
 	const weight = method === 'slots' ? item.system?.weightSlots : item.system?.weightCoins
 	if (weight) {
-		const wtLabel = game.i18n.localize('DOLMEN.Item.Weight')
+		const wtLabel = game.i18n.localize(method === 'slots' ? 'DOLMEN.Item.WeightSlots' : 'DOLMEN.Item.WeightCoins')
 		stats.push(`<span class="compendium-stat tooltip"><i class="fas fa-weight-hanging"></i> <span class="stat-value">${weight}</span><span class="tooltiptext">${wtLabel}</span></span>`)
 	}
 	if (item.system?.cost) {
