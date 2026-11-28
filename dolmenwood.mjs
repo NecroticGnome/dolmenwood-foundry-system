@@ -202,7 +202,7 @@ Hooks.once('init', async function () {
 		getDayName,
 		getHoliday,
 		getMoonForDay,
-		// travel: rollTravelProcedure({ route, chance, noRisk, poorVisibility, darkness, hunter, guide, camp, fire })
+		// travel: rollTravelProcedure({ route, chance, noRisk, poorVisibility, darkness, hunter, guide, camp, fire, travelPoints, forcedMarch, impeded })
 		rollTravelProcedure,
 		openTravelProcedureDialog,
 		// creatures

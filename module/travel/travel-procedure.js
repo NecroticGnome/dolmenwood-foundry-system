@@ -1,6 +1,6 @@
 /* global game, Hooks, foundry, Roll, ChatMessage, CONFIG */
 
-import { TERRAIN_CHANCE, losingDirectionChance, inSix, encounterDistance } from './travel-rules.js'
+import { TERRAIN_CHANCE, TRAVEL_SPEEDS, losingDirectionChance, inSix, encounterDistance, travelPoints, partyTravelPoints } from './travel-rules.js'
 import { findRollTable } from '../utils/roll-tables.js'
 
 const { DialogV2 } = foundry.applications.api
@@ -14,23 +14,37 @@ const UNSEASON_ENCOUNTER_CHANCE = { chame: 2, vague: 2 }
 
 const t = (key, data) => data ? game.i18n.format(`DOLMEN.Travel.${key}`, data) : game.i18n.localize(`DOLMEN.Travel.${key}`)
 
+/** The party viewer's members' actors. */
+function partyActors() {
+	const entries = game.settings.get('dolmenwood', 'partyMembers') ?? []
+	return entries.map(({ sceneId, tokenId }) => game.scenes.get(sceneId)?.tokens.get(tokenId)?.actor).filter(Boolean)
+}
+
 /**
  * Whether a party member (from the party viewer) has the hunter class.
  * @returns {boolean}
  */
 function partyHasHunter() {
-	const entries = game.settings.get('dolmenwood', 'partyMembers') ?? []
-	return entries.some(({ sceneId, tokenId }) => {
-		const actor = game.scenes.get(sceneId)?.tokens.get(tokenId)?.actor
-		if (!actor) return false
+	return partyActors().some(actor => {
 		const classItem = actor.items.find(i => i.type === 'Class')
 		return (classItem?.system?.classId || actor.system?.class) === 'hunter'
 	})
 }
 
-/** Whether today's weather has the poor visibility (V) effect. */
-function weatherHasPoorVisibility() {
-	return (game.settings.get('dolmenwood', 'currentWeather')?.effects ?? '').includes('V')
+/**
+ * The party viewer's normal Travel Points per day: its slowest member's, as on their sheet.
+ * @returns {number|null} null with no party members
+ */
+function partyViewerTravelPoints() {
+	return partyTravelPoints(partyActors().map(actor => {
+		const final = actor.system.final
+		return final?.movement?.overland ?? Math.floor((final?.speed ?? actor.system.speed) / 5)
+	}))
+}
+
+/** Whether today's weather has an effect (V: poor visibility, I: travel impeded). */
+function weatherHas(effect) {
+	return (game.settings.get('dolmenwood', 'currentWeather')?.effects ?? '').includes(effect)
 }
 
 /**
@@ -112,8 +126,8 @@ async function encounterCheck(title, chance, poorVisibility, unseason) {
 
 /**
  * Run the day's Travel Procedure checks and whisper the results to the Referee.
- * Order follows Travel Procedure Per Day (DPB): weather, losing direction, daytime Random
- * Encounter, then the nighttime Random Encounter if the party sets camp.
+ * Order follows Travel Procedure Per Day (DPB): weather, the day's Travel Points, losing direction,
+ * daytime Random Encounter, then the nighttime Random Encounter if the party sets camp.
  *
  * When a module provides the wilderness encounter roll (CONFIG.DOLMENWOOD.wildernessEncounter), it
  * rolls the encounters and posts its own cards after this one; otherwise a bare check is rolled here.
@@ -133,6 +147,10 @@ async function encounterCheck(title, chance, poorVisibility, unseason) {
  * @param {boolean} [options.guide] - A hired guide's Wayfinding
  * @param {boolean} [options.camp] - Also roll the nighttime Random Encounter
  * @param {boolean} [options.fire] - A campfire at night (the module's Encounter Type: Fire / No Fire)
+ * @param {number} [options.travelPoints] - Normal Travel Points per day (default: the party viewer's
+ *   slowest member, else 8 for Speed 40)
+ * @param {boolean} [options.forcedMarch] - 50% more Travel Points
+ * @param {boolean} [options.impeded] - 2 fewer Travel Points; defaults to today's weather
  * @returns {Promise<object|null>} The results, or null if not run. dayEncounter and nightEncounter
  *   are booleans for the bare check, or whatever the module's roll returned.
  */
@@ -143,12 +161,15 @@ export async function rollTravelProcedure(options = {}) {
 		route: 'wild',
 		chance: hexDay ?? TERRAIN_CHANCE.light,
 		noRisk: false,
-		poorVisibility: weatherHasPoorVisibility(),
+		poorVisibility: weatherHas('V'),
 		darkness: false,
 		hunter: partyHasHunter(),
 		guide: false,
 		camp: false,
 		fire: false,
+		travelPoints: partyViewerTravelPoints() ?? TRAVEL_SPEEDS[0] / 5,
+		forcedMarch: false,
+		impeded: weatherHas('I'),
 		...options
 	}
 	if (Hooks.call('dolmenwood.preTravelProcedure', opts) === false) return null
@@ -156,13 +177,21 @@ export async function rollTravelProcedure(options = {}) {
 	const unseason = game.settings.get('dolmenwood', 'activeUnseason') || null
 	const visibilityOnTracks = game.settings.get('dolmenwood', 'poorVisibilityOnTracks')
 	const rolls = []
-	const results = { lost: false, foundPath: false, consequence: null, dayEncounter: false, nightEncounter: false }
+	const results = { travelPoints: 0, lost: false, foundPath: false, consequence: null, dayEncounter: false, nightEncounter: false }
 	let body = ''
 
 	// Weather
 	const weather = game.settings.get('dolmenwood', 'currentWeather')
 	body += heading(game.i18n.localize('DOLMEN.Calendar.Weather.ChatTitle'))
 	body += note(weather?.text ? escapeHTML(weather.text) + (weather.effects ? ` (${escapeHTML(weather.effects)})` : '') : t('NoWeather'))
+
+	// Travel Points
+	results.travelPoints = travelPoints({ base: opts.travelPoints, forcedMarch: opts.forcedMarch, impeded: opts.impeded })
+	const changes = [opts.forcedMarch && t('ForcedMarchNote'), opts.impeded && t('ImpededNote')].filter(Boolean)
+	body += heading(t('TravelPoints'))
+	body += note(`<strong>${t('TravelPointsTotal', { points: results.travelPoints })}</strong>`
+		+ (changes.length ? ` (${t('TravelPointsBase', { points: opts.travelPoints })}; ${changes.join('; ')})` : ''))
+	if (opts.forcedMarch) body += note(t('ForcedMarchRest'))
 
 	// Losing direction
 	body += heading(t('LosingDirection'))
@@ -250,12 +279,17 @@ export async function rollTravelProcedure(options = {}) {
 /**
  * Ask the Referee for today's travel conditions, then run the Travel Procedure.
  * Remembers the last answers, except for weather, the party's hunter and the selected hex's
- * chance, which are read fresh.
+ * chance, which are read fresh. The party's Speed is read from the party viewer.
  */
 export async function openTravelProcedureDialog() {
 	if (!game.user.isGM) return
 	const last = game.settings.get('dolmenwood', 'travelProcedureLast') ?? {}
+	const partyPoints = partyViewerTravelPoints()
+	const lastSpeed = last.speed === 'party' && partyPoints === null ? undefined : last.speed
 	const v = {
+		speed: lastSpeed ?? (partyPoints === null ? String(TRAVEL_SPEEDS[0]) : 'party'),
+		forcedMarch: last.forcedMarch ?? false,
+		impeded: weatherHas('I'),
 		route: last.route ?? 'wild',
 		chance: (await hexChance('day')) ?? last.chance ?? TERRAIN_CHANCE.light,
 		noRisk: last.noRisk ?? false,
@@ -263,7 +297,7 @@ export async function openTravelProcedureDialog() {
 		guide: last.guide ?? false,
 		camp: last.camp ?? false,
 		fire: last.fire ?? false,
-		poorVisibility: weatherHasPoorVisibility(),
+		poorVisibility: weatherHas('V'),
 		hunter: partyHasHunter()
 	}
 	const checked = on => on ? ' checked' : ''
@@ -278,10 +312,18 @@ export async function openTravelProcedureDialog() {
 	const box = (name, on) => `
 		<label class="checkbox"><input type="checkbox" name="${name}"${checked(on)}> ${t(`Field.${name}`)}</label>`
 
+	const speedOptions = [
+		...(partyPoints === null ? [] : [['party', t('Field.speedParty', { points: partyPoints })]]),
+		...TRAVEL_SPEEDS.map(speed => [String(speed), t('Field.speedValue', { speed, points: speed / 5 })])
+	].map(([value, label]) => `<option value="${value}"${value === v.speed ? ' selected' : ''}>${label}</option>`).join('')
+
 	const content = `
 		<div class="dolmen travel-procedure-form">
 			<div class="form-group"><label>${t('Field.route')}</label><select name="route">${routeOptions}</select></div>
 			<div class="form-group"><label>${t('Field.chance')}</label><select name="chance">${terrainOptions}</select></div>
+			<div class="form-group"><label>${t('Field.speed')}</label><select name="speed">${speedOptions}</select></div>
+			${box('forcedMarch', v.forcedMarch)}
+			${box('impeded', v.impeded)}
 			${box('noRisk', v.noRisk)}
 			${box('poorVisibility', v.poorVisibility)}
 			${box('darkness', v.darkness)}
@@ -302,7 +344,12 @@ export async function openTravelProcedureDialog() {
 				default: true,
 				callback: (event, button) => {
 					const el = button.form.elements
+					const speed = el.speed.value
 					return {
+						speed,
+						travelPoints: speed === 'party' ? partyPoints : Number(speed) / 5,
+						forcedMarch: el.forcedMarch.checked,
+						impeded: el.impeded.checked,
 						route: el.route.value,
 						chance: Number(el.chance.value),
 						noRisk: el.noRisk.checked,
@@ -320,7 +367,7 @@ export async function openTravelProcedureDialog() {
 		rejectClose: false
 	})
 	if (!form || typeof form !== 'object') return
-	const { route, chance, noRisk, darkness, guide, camp, fire } = form
-	await game.settings.set('dolmenwood', 'travelProcedureLast', { route, chance, noRisk, darkness, guide, camp, fire })
+	const { speed, forcedMarch, route, chance, noRisk, darkness, guide, camp, fire } = form
+	await game.settings.set('dolmenwood', 'travelProcedureLast', { speed, forcedMarch, route, chance, noRisk, darkness, guide, camp, fire })
 	return rollTravelProcedure(form)
 }
