@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { TERRAIN_CHANCE, losingDirectionChance, inSix, encounterDistance } from '../module/travel/travel-rules.js'
+import { TERRAIN_CHANCE, TRAVEL_SPEEDS, losingDirectionChance, inSix, encounterDistance, travelPoints, partyTravelPoints } from '../module/travel/travel-rules.js'
 
 // Travel (https://www.dolmenwood.necroticgnome.com/rules/doku.php?id=travel):
 // road, no chance of getting lost; track, 1-in-6; travelling wild, by terrain.
@@ -56,4 +56,26 @@ test('X-in-6 comes up on X or lower', () => {
 test('encounter distance is 2d6 × 30′, halved in poor visibility', () => {
 	assert.equal(encounterDistance(7), 210)
 	assert.equal(encounterDistance(7, true), 105)
+})
+
+// Travel Points Per Day table: Speed 40 → 8 (forced march 12), 30 → 6 (9), 20 → 4 (6), 10 → 2 (3).
+test('Travel Points match the Travel Points Per Day table', () => {
+	const table = { 40: [8, 12], 30: [6, 9], 20: [4, 6], 10: [2, 3] }
+	for (const speed of TRAVEL_SPEEDS) {
+		const base = speed / 5
+		assert.deepEqual([travelPoints({ base }), travelPoints({ base, forcedMarch: true })], table[speed])
+	}
+})
+
+test('travel impeded costs 2 Travel Points, after a forced march, never below 0', () => {
+	assert.equal(travelPoints({ base: 8, impeded: true }), 6)
+	assert.equal(travelPoints({ base: 8, forcedMarch: true, impeded: true }), 10)
+	assert.equal(travelPoints({ base: 2, impeded: true }), 0)
+	assert.equal(travelPoints({ base: 1, impeded: true }), 0)
+})
+
+test('the party uses its slowest member', () => {
+	assert.equal(partyTravelPoints([8, 6, 8]), 6)
+	assert.equal(partyTravelPoints([8, undefined, NaN]), 8)
+	assert.equal(partyTravelPoints([]), null)
 })

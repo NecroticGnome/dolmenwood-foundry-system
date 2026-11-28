@@ -6,6 +6,9 @@
  * with a reliable guide, following a road or river, or heading towards an obvious landmark.
  * The Campaign Book (p112) limits the poor visibility increase to travelling wild.
  * Random Encounters use the terrain's Lost/Encounters chance on any route.
+ *
+ * Travel Points (DPB): a party has Speed ÷ 5 Travel Points per day, using its slowest member's
+ * Speed (Time and Movement). A forced march gives 50% more. Travel impeded weather (DCB) costs 2.
  */
 
 /** Lost/Encounters X-in-6 chance by terrain (Terrain Types, DPB). */
@@ -52,4 +55,30 @@ export function inSix(face, chance) {
 export function encounterDistance(total, poorVisibility = false) {
 	const feet = total * 30
 	return poorVisibility ? feet / 2 : feet
+}
+
+/** Speeds on the Travel Points Per Day table, fastest first (mounted 40, cart or wagon 30). */
+export const TRAVEL_SPEEDS = [40, 30, 20, 10]
+
+/**
+ * Travel Points for the day.
+ * @param {object} options
+ * @param {number} options.base - Normal Travel Points (the party's Speed ÷ 5)
+ * @param {boolean} [options.forcedMarch] - 50% more
+ * @param {boolean} [options.impeded] - Travel impeded weather, 2 fewer
+ * @returns {number}
+ */
+export function travelPoints({ base, forcedMarch = false, impeded = false }) {
+	const points = forcedMarch ? Math.floor(base * 1.5) : base
+	return Math.max(points - (impeded ? 2 : 0), 0)
+}
+
+/**
+ * The party's normal Travel Points: those of its slowest member.
+ * @param {number[]} memberPoints - Each member's Travel Points per day
+ * @returns {number|null} null with no members
+ */
+export function partyTravelPoints(memberPoints) {
+	const known = memberPoints.filter(Number.isFinite)
+	return known.length ? Math.min(...known) : null
 }
